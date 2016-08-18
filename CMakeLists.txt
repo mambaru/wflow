@@ -16,12 +16,12 @@ add_library(
   iow/workflow/timer_manager_base.cpp
   iow/workflow/timer_manager.cpp
   iow/workflow/thread_pool_base.cpp
-  iow/jsonrpc/incoming/incoming_holder.cpp
-  iow/jsonrpc/outgoing/outgoing_holder.cpp
-  iow/jsonrpc/incoming/send_error.cpp
+ # iow/jsonrpc/incoming/incoming_holder.cpp
+ # iow/jsonrpc/outgoing/outgoing_holder.cpp
+ # iow/jsonrpc/incoming/send_error.cpp
 )
 
-target_link_libraries(iow ${Boost_LIBRARIES} )
+target_link_libraries(iow wjrpc ${Boost_LIBRARIES} )
 
 if ( IOW_BUILD_TEST OR IOW_BUILD_ALL )
   if( IOW_BUILD_TEST )
