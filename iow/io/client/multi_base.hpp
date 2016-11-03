@@ -78,7 +78,7 @@ public:
     return cli->send( std::move(d) );
   }
   
-public:
+private:
   size_t _current;
   io_service_type& _io_service;
   client_list _clients;
