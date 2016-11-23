@@ -27,7 +27,8 @@ namespace _dmu_{
         typedef void _Known_bound;
     };
 
-} // wjrpc
+} 
+
 
 
 namespace std{
