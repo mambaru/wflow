@@ -17,32 +17,32 @@ void thread_pool_base::rate_limit(size_t rps)
   _rate_limit = rps;
 }
 
-bool thread_pool_base::reconfigure(std::shared_ptr<bique> s, int threads) 
+bool thread_pool_base::reconfigure(std::shared_ptr<bique> s, size_t threads) 
 {
   return this->reconfigure_(s, threads); 
 }
 
-bool thread_pool_base::reconfigure(std::shared_ptr<asio_queue> s, int threads)
+bool thread_pool_base::reconfigure(std::shared_ptr<asio_queue> s, size_t threads)
 {
   return this->reconfigure_(s, threads); 
 }
 
-bool thread_pool_base::reconfigure(std::shared_ptr<delayed_queue> s, int threads) 
+bool thread_pool_base::reconfigure(std::shared_ptr<delayed_queue> s, size_t threads) 
 {
   return this->reconfigure_(s, threads); 
 }
 
-void thread_pool_base::start(std::shared_ptr<bique> s, int threads) 
+void thread_pool_base::start(std::shared_ptr<bique> s, size_t threads) 
 {
   this->start_(s, threads); 
 }
 
-void thread_pool_base::start(std::shared_ptr<asio_queue> s, int threads)
+void thread_pool_base::start(std::shared_ptr<asio_queue> s, size_t threads)
 { 
   this->start_(s, threads); 
 }
 
-void thread_pool_base::start(std::shared_ptr<delayed_queue> s, int threads) 
+void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads) 
 {
   this->start_(s, threads); 
 }
@@ -62,7 +62,7 @@ void thread_pool_base::stop()
 }
 
 template<typename S>
-bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, int threads)
+bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
 {
   std::lock_guard< std::mutex > lk(_mutex);
   
@@ -74,7 +74,7 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, int threads)
   
   if ( threads > _threads.size() ) 
   {
-    int diff = threads - _threads.size();
+    size_t diff = threads - _threads.size();
     this->run_more_(s, diff);
   }
   else
@@ -88,7 +88,7 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, int threads)
 }
 
 template<typename S>
-void thread_pool_base::start_(std::shared_ptr<S> s, int threads)
+void thread_pool_base::start_(std::shared_ptr<S> s, size_t threads)
 {
   std::lock_guard< std::mutex > lk(_mutex);
   
@@ -104,10 +104,10 @@ void thread_pool_base::start_(std::shared_ptr<S> s, int threads)
 }
 
 template<typename S>
-void thread_pool_base::run_more_(std::shared_ptr<S> s, int threads)
+void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
 {
   _threads.reserve( _threads.size() + threads);
-  for (int i = 0 ; i < threads; ++i)
+  for (size_t i = 0 ; i < threads; ++i)
   {
     thread_flag pflag = std::make_shared<bool>(true);
     std::weak_ptr<bool> wflag = pflag;

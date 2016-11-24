@@ -25,26 +25,26 @@ public:
   void rate_limit(size_t rps);
 
   
-  bool reconfigure(std::shared_ptr<bique> s, int threads);
-  bool reconfigure(std::shared_ptr<asio_queue> s, int threads);
-  bool reconfigure(std::shared_ptr<delayed_queue> s, int threads);
+  bool reconfigure(std::shared_ptr<bique> s, size_t threads);
+  bool reconfigure(std::shared_ptr<asio_queue> s, size_t threads);
+  bool reconfigure(std::shared_ptr<delayed_queue> s, size_t threads);
 
-  void start(std::shared_ptr<bique> s, int threads);
-  void start(std::shared_ptr<asio_queue> s, int threads);
-  void start(std::shared_ptr<delayed_queue> s, int threads);
+  void start(std::shared_ptr<bique> s, size_t threads);
+  void start(std::shared_ptr<asio_queue> s, size_t threads);
+  void start(std::shared_ptr<delayed_queue> s, size_t threads);
 
   // только после _service->stop();
   void stop();
   
 private: 
   template<typename S>
-  bool reconfigure_(std::shared_ptr<S> s, int threads);
+  bool reconfigure_(std::shared_ptr<S> s, size_t threads);
 
   template<typename S>
-  void start_(std::shared_ptr<S> s, int threads);
+  void start_(std::shared_ptr<S> s, size_t threads);
 
   template<typename S>
-  void run_more_(std::shared_ptr<S> s, int threads);
+  void run_more_(std::shared_ptr<S> s, size_t threads);
 
 private:
   bool _started;
