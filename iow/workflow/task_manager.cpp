@@ -70,6 +70,17 @@ void task_manager::stop()
   _queue->reset();
 }
 
+
+size_t task_manager::get_threads( ) const
+{
+  return _pool==nullptr ? 0 : _pool->get_threads();
+}
+
+size_t task_manager::get_counter( size_t thread ) const
+{
+  return _pool==nullptr ? 0 : _pool->get_counter( thread );
+}
+
 void task_manager::run()
 {
   _queue->run();

@@ -47,6 +47,19 @@ void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads)
   this->start_(s, threads); 
 }
 
+size_t thread_pool_base::get_threads( ) const
+{
+  std::lock_guard< std::mutex > lk(_mutex);
+  return this->_threads.size();
+}
+size_t thread_pool_base::get_counter( size_t thread) const
+{
+  std::lock_guard< std::mutex > lk(_mutex);
+  if ( thread >= _counters.size() )
+    return 0;
+  return _counters[thread];
+}
+
 
 // только после _service->stop();
 void thread_pool_base::stop()
@@ -83,6 +96,7 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
       _threads[i].detach();
     _threads.resize(threads);
     _flags.resize(threads);
+    _counters.resize(threads);
   }
   return true;
 }
@@ -106,14 +120,18 @@ void thread_pool_base::start_(std::shared_ptr<S> s, size_t threads)
 template<typename S>
 void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
 {
-  _threads.reserve( _threads.size() + threads);
+  size_t prev_size = _threads.size();
+  _threads.reserve( prev_size + threads);
+  _counters.resize( prev_size + threads );
   for (size_t i = 0 ; i < threads; ++i)
   {
     thread_flag pflag = std::make_shared<bool>(true);
     std::weak_ptr<bool> wflag = pflag;
     std::weak_ptr<self> wthis = this->shared_from_this();
     _flags.push_back(pflag);
-    _threads.push_back( std::thread( [wthis, s, wflag]()
+    auto& counter = _counters[prev_size + i];
+    counter = 0;
+    _threads.push_back( std::thread( [wthis, s, wflag, &counter]()
     {
       auto start = std::chrono::system_clock::now();
       size_t count = 0;
@@ -123,7 +141,7 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
           break;
         if ( wflag.lock() == nullptr)
           break;
-        
+        ++counter;
         if ( pthis->_rate_limit != 0 )
         {
           ++count;

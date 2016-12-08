@@ -11,7 +11,7 @@ struct options
 {
   ConnectionOptions connection;
   bool async_connect = true;
-  time_t reconnect_timeout_ms;
+  time_t reconnect_timeout_ms = 1000;
   std::string addr;
   std::string port;
   int threads = 0;
