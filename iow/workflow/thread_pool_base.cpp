@@ -137,14 +137,16 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       size_t count = 0;
       while ( auto pthis = wthis.lock() )
       {
-        if ( !s->run_one() )
+        size_t handlers = s->run_one();
+        if ( handlers == 0 )
           break;
         if ( wflag.lock() == nullptr)
           break;
-        ++counter;
+        counter += handlers;
         if ( pthis->_rate_limit != 0 )
         {
-          ++count;
+          //++count;
+          count += handlers;
           if ( count >= pthis->_rate_limit )
           {
             auto now = std::chrono::system_clock::now();
