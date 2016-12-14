@@ -15,8 +15,8 @@ struct options_json
   typedef ::wjson::object<
     options,
     ::wjson::member_list<
-        ::wjson::base< ::iow::io::stream::options_json<data_type> >,
-        ::wjson::member< n_keep_alive, options, bool, &options::keep_alive>
+      ::wjson::member< n_keep_alive, options, bool, &options::keep_alive>,
+      ::wjson::base< ::iow::io::stream::options_json<data_type> >
     >
   > type;
   typedef type::target target;

@@ -19,9 +19,8 @@ struct options_json
   typedef ::wjson::object<
     ServerOptions,
     ::wjson::member_list<
-      ::wjson::base< AcceptorJson >,
-      // перенести в общий серевер
-      ::wjson::member<n_threads, ServerOptions, int, &ServerOptions::threads>
+      ::wjson::member<n_threads, ServerOptions, int, &ServerOptions::threads>, //< перенести в общий серевер
+      ::wjson::base< AcceptorJson >
     >
   > type;
   typedef typename type::target target;
