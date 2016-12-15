@@ -59,6 +59,11 @@ public:
       IOW_LOG_ERROR("iow::io::descriptor::manager::erase: id=" << id << " not found")
     }
   }
+  
+  size_t size() const
+  {
+    return _holders.size();
+  }
 
 private:
   std::function<void(holder_ptr)> _initilizer;

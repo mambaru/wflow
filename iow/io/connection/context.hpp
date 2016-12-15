@@ -19,9 +19,6 @@ namespace base{
 struct context: base::context
 {
   typedef base::context::data_type data_type;
-  //typedef ::iow::io::data_pool< data_type > pool_type;
-  //typedef std::shared_ptr< pool_type> pool_ptr;
-  //pool_ptr pool;
 };
 
 }}}

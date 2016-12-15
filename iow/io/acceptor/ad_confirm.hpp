@@ -12,38 +12,17 @@ struct ad_confirm
   template<typename T, typename P>
   void operator()(T& t, P p)
   {
-    //typedef typename T::io_id_type io_id_type;
-    //typedef typename type_<T>::options_type options_type;
-    //options_type opt = t.get_aspect().template get<_context_>().connection_options;
-
-    /*
-    std::weak_ptr<T> wthis = t.shared_from_this();
-    opt.shutdown_handler = t.wrap([wthis](io_id_type id)
+    const auto& context = t.get_aspect().template get<_context_>();
+    if ( context.max_connections == 0 || context.manager->size() < static_cast<size_t>(context.max_connections)  )
     {
-      if ( auto pthis = wthis.lock() )
-      {
-        std::lock_guard<typename T::mutex_type> lk(pthis->mutex());
-        pthis->get_aspect().template get<_context_>().manager->erase(id);
-      }
-    });
-    */
-
-    //p->start(opt);
-    p->start();
-    t.get_aspect().template get<_context_>().manager->attach(p->get_id(), p);
+      p->start();
+      context.manager->attach(p->get_id(), p);
+    }
+    else
+    {
+      p->stop();
+    };
   }
-
-private:
-  
-  /*
-  template<typename T>
-  struct type_
-  {
-    typedef typename T::aspect::template  advice_cast<_context_>::type context_type;
-    typedef typename context_type::connection_type connection_type;
-    typedef typename connection_type::options_type options_type;
-  };
-  */
 
 };
 

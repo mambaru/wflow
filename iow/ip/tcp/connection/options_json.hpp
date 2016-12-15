@@ -9,13 +9,11 @@ namespace iow{ namespace ip{ namespace tcp{ namespace connection{
   
 struct options_json
 {
-  JSON_NAME(keep_alive)
   typedef options::data_type data_type;
   
   typedef ::wjson::object<
     options,
     ::wjson::member_list<
-      ::wjson::member< n_keep_alive, options, bool, &options::keep_alive>,
       ::wjson::base< ::iow::io::stream::options_json<data_type> >
     >
   > type;

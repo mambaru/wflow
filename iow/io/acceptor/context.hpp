@@ -20,7 +20,8 @@ struct context
   typedef ::iow::io::descriptor::manager<connection_type> manager_type;
   typedef std::shared_ptr<manager_type> manager_ptr;
   
-  int backlog;
+  int backlog = 0;
+  int max_connections = 0;
   std::string addr;
   std::string port;
 

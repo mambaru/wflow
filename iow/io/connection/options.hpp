@@ -10,8 +10,6 @@ struct options:
   ::iow::io::descriptor::options<context>,
   ::iow::io::stream::options<context::data_type>
 {
-  /*typedef context::pool_ptr pool_ptr;
-  pool_ptr pool;*/
 };
 
   
