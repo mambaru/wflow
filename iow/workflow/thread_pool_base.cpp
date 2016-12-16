@@ -4,6 +4,7 @@
 #include <iow/workflow/bique.hpp>
 #include <iow/workflow/asio_queue.hpp>
 #include <sys/syscall.h>
+#include <sys/types.h>
 
 namespace iow {
 
