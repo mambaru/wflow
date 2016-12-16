@@ -40,6 +40,8 @@ public:
   size_t get_counter( size_t thread ) const;
   std::vector< int > get_ids() const;
 private: 
+  void add_id(int id) ;
+
   template<typename S>
   bool reconfigure_(std::shared_ptr<S> s, size_t threads);
 
@@ -53,6 +55,7 @@ private:
   bool _started;
   std::atomic<size_t> _rate_limit;
   mutable std::mutex _mutex;
+  std::vector< int > _threads_ids;
   mutable std::vector< std::thread > _threads;
   std::vector< size_t > _counters;
   std::vector< thread_flag > _flags;

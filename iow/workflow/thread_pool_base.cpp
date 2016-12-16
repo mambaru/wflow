@@ -3,6 +3,7 @@
 #include <iow/workflow/delayed_queue.hpp>
 #include <iow/workflow/bique.hpp>
 #include <iow/workflow/asio_queue.hpp>
+#include <sys/syscall.h>
 
 namespace iow {
 
@@ -63,13 +64,16 @@ size_t thread_pool_base::get_counter( size_t thread) const
 std::vector< int > thread_pool_base::get_ids() const
 {
   std::lock_guard< std::mutex > lk(_mutex);
-  std::vector< int > ids;
+  return _threads_ids;
+  
+  /*std::vector< int > ids;
   ids.reserve( this->_threads.size() );
   for (auto& t : this->_threads)
   {
     ids.push_back( t.native_handle() );
   }
   return std::move( ids );
+  */
 }
 
 // только после _service->stop();
@@ -128,6 +132,12 @@ void thread_pool_base::start_(std::shared_ptr<S> s, size_t threads)
   this->run_more_(s, threads);
 }
 
+void thread_pool_base::add_id(int id) 
+{
+  std::lock_guard<std::mutex> lk(_mutex);
+  _threads_ids.push_back(id);
+}
+
 template<typename S>
 void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
 {
@@ -144,6 +154,8 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     counter = 0;
     _threads.push_back( std::thread( [wthis, s, wflag, &counter]()
     {
+      if ( auto pthis = wthis.lock() )
+        pthis->add_id( syscall(SYS_gettid) );
       auto start = std::chrono::system_clock::now();
       size_t count = 0;
       while ( auto pthis = wthis.lock() )
