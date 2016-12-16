@@ -50,7 +50,7 @@ void workflow::stop()
   _impl->stop();
 }
 
-std::shared_ptr< task_manager > workflow::get() const
+std::shared_ptr< task_manager > workflow::manager() const
 {
   return _impl;
 }

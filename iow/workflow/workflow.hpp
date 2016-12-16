@@ -34,7 +34,7 @@ public:
   explicit workflow(workflow_options opt = workflow_options() );
   workflow(io_service_type& io, workflow_options opt = workflow_options() );
   
-  std::shared_ptr<task_manager> get() const;
+  std::shared_ptr<task_manager> manager() const;
   std::shared_ptr<timer_type> get_timer() const;
   
   void start();

@@ -36,8 +36,9 @@ public:
   // только после _service->stop();
   void stop();
 
-  size_t get_threads( ) const;
+  size_t get_size( ) const;
   size_t get_counter( size_t thread ) const;
+  std::vector< int > get_ids() const;
 private: 
   template<typename S>
   bool reconfigure_(std::shared_ptr<S> s, size_t threads);
@@ -52,7 +53,7 @@ private:
   bool _started;
   std::atomic<size_t> _rate_limit;
   mutable std::mutex _mutex;
-  std::vector< std::thread > _threads;
+  mutable std::vector< std::thread > _threads;
   std::vector< size_t > _counters;
   std::vector< thread_flag > _flags;
 };

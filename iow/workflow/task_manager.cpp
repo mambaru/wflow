@@ -73,13 +73,21 @@ void task_manager::stop()
 
 size_t task_manager::get_threads( ) const
 {
-  return _pool==nullptr ? 0 : _pool->get_threads();
+  return _pool==nullptr ? 0 : _pool->get_size();
 }
 
 size_t task_manager::get_counter( size_t thread ) const
 {
   return _pool==nullptr ? 0 : _pool->get_counter( thread );
 }
+
+std::vector< int > task_manager::get_ids() const
+{
+  return _pool==nullptr 
+    ? std::vector<int>()
+    : _pool->get_ids();
+}
+
 
 void task_manager::run()
 {

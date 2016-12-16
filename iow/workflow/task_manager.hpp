@@ -54,6 +54,7 @@ public:
   
   size_t get_threads( ) const;
   size_t get_counter( size_t thread ) const;
+  std::vector< int > get_ids() const;
 
 
 private:

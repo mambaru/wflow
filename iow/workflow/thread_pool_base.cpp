@@ -47,7 +47,7 @@ void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads)
   this->start_(s, threads); 
 }
 
-size_t thread_pool_base::get_threads( ) const
+size_t thread_pool_base::get_size( ) const
 {
   std::lock_guard< std::mutex > lk(_mutex);
   return this->_threads.size();
@@ -60,6 +60,17 @@ size_t thread_pool_base::get_counter( size_t thread) const
   return _counters[thread];
 }
 
+std::vector< int > thread_pool_base::get_ids() const
+{
+  std::lock_guard< std::mutex > lk(_mutex);
+  std::vector< int > ids;
+  ids.reserve( this->_threads.size() );
+  for (auto& t : this->_threads)
+  {
+    ids.push_back( t.native_handle() );
+  }
+  return std::move( ids );
+}
 
 // только после _service->stop();
 void thread_pool_base::stop()
@@ -145,7 +156,6 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
         counter += handlers;
         if ( pthis->_rate_limit != 0 )
         {
-          //++count;
           count += handlers;
           if ( count >= pthis->_rate_limit )
           {
