@@ -19,6 +19,21 @@ void thread_pool_base::rate_limit(size_t rps)
   _rate_limit = rps;
 }
 
+void thread_pool_base::set_startup( startup_handler handler )
+{
+  _startup = handler;
+}
+
+void thread_pool_base::set_finish( finish_handler handler )
+{
+  _finish = handler;
+}
+
+void thread_pool_base::set_statistics( statistics_handler handler )
+{
+  _statistics = handler;
+}
+
 bool thread_pool_base::reconfigure(std::shared_ptr<bique> s, size_t threads) 
 {
   return this->reconfigure_(s, threads); 
@@ -66,15 +81,6 @@ std::vector< int > thread_pool_base::get_ids() const
 {
   std::lock_guard< std::mutex > lk(_mutex);
   return _threads_ids;
-  
-  /*std::vector< int > ids;
-  ids.reserve( this->_threads.size() );
-  for (auto& t : this->_threads)
-  {
-    ids.push_back( t.native_handle() );
-  }
-  return std::move( ids );
-  */
 }
 
 // только после _service->stop();
@@ -155,8 +161,18 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     counter = 0;
     _threads.push_back( std::thread( [wthis, s, wflag, &counter]()
     {
+      startup_handler startup;
+      finish_handler finish;
+      statistics_handler statistics;
+
       if ( auto pthis = wthis.lock() )
+      {
+        startup = pthis->_startup;
+        finish = pthis->_finish;
+        statistics = pthis->_statistics;
         pthis->add_id( syscall(SYS_gettid) );
+      }
+      std::thread::id thread_id = std::this_thread::get_id();
       auto start = std::chrono::system_clock::now();
       size_t count = 0;
       while ( auto pthis = wthis.lock() )
@@ -166,7 +182,32 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
           break;
         if ( wflag.lock() == nullptr)
           break;
+
         counter += handlers;
+        if ( statistics != nullptr || pthis->_rate_limit != 0 )
+        {
+          auto now = std::chrono::system_clock::now();
+          auto span = now - start ;
+          if ( statistics != nullptr )
+            statistics( thread_id, handlers, span );
+          
+          if ( pthis->_rate_limit != 0 )
+          {
+            count += handlers;
+            if ( count >= pthis->_rate_limit )
+            {
+              auto now = std::chrono::system_clock::now();
+              auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( now - start ).count();
+              if ( tm_ms < 1000 )
+                std::this_thread::sleep_for( std::chrono::milliseconds(1000-tm_ms)  );
+              
+              count = 0;
+            }
+          }
+          start = std::chrono::system_clock::now();
+        }
+        
+        /*
         if ( pthis->_rate_limit != 0 )
         {
           count += handlers;
@@ -180,7 +221,7 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
             count = 0;
             start = std::chrono::system_clock::now();
           }
-        }
+        }*/
       }
     }));
   }

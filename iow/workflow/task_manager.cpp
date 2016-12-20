@@ -55,6 +55,25 @@ void task_manager::rate_limit(size_t rps)
     _pool->rate_limit(rps);
 }
 
+void task_manager::set_startup( startup_handler handler )
+{
+  if ( _pool!=nullptr) 
+    _pool->set_startup(handler);
+}
+
+void task_manager::set_finish( finish_handler handler )
+{
+  if ( _pool!=nullptr) 
+    _pool->set_finish(handler);
+}
+
+void task_manager::set_statistics( statistics_handler handler )
+{
+  if ( _pool!=nullptr) 
+    _pool->set_statistics(handler);
+}
+
+
 void task_manager::start()
 {
   if ( _pool!=nullptr) 

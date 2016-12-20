@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <thread>
 
 namespace iow{
 
@@ -21,6 +22,15 @@ struct workflow_options
   // для таймера проверки wrnsize
   std::shared_ptr< ::iow::workflow> workflow_ptr;
   std::function<bool()> handler = nullptr;
+  
+  typedef std::function<void(std::thread::id)> startup_handler_t;
+  typedef std::function<void(std::thread::id)> finish_handler_t;
+  
+  typedef std::chrono::time_point<std::chrono::steady_clock>::duration statistics_duration;
+  typedef std::function<void(std::thread::id, size_t count, statistics_duration)> statistics_handler_t;
+  startup_handler_t startup_handler;
+  finish_handler_t finish_handler;
+  statistics_handler_t statistics_handler;
 };
 
 }

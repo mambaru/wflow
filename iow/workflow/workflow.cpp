@@ -41,6 +41,9 @@ void workflow::reconfigure(workflow_options opt)
   _id = opt.id;
   _workflow_ptr = opt.workflow_ptr;
   _impl->rate_limit( opt.rate_limit );
+  _impl->set_startup( opt.startup_handler );
+  _impl->set_finish( opt.finish_handler );
+  _impl->set_statistics( opt.statistics_handler );
   _impl->reconfigure(opt.maxsize, opt.threads, opt.use_io_service);
   this->create_wrn_timer_(opt);
 }
@@ -158,6 +161,7 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
     ? opt.handler
     : [this, wrnsize, dropsave]() mutable ->bool 
     {
+      // TODO: Вынести логирование
       auto dropped = this->_impl->dropped();
       auto size = this->_impl->size();
       auto dropdiff = dropped - dropsave;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <iow/workflow/timer_manager.hpp>
-//#include <iow/workflow/queue_options.hpp>
 #include <iow/asio.hpp>
+#include <thread>
 
 namespace iow{
 
@@ -11,6 +11,7 @@ class bique;
 class task_manager
 {
   class pool_impl;
+  typedef pool_impl pool_type;
 public:
   typedef bique queue_type;
 
@@ -18,9 +19,14 @@ public:
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
   typedef time_point_t::duration                              duration_t;
   typedef ::iow::asio::io_service io_service_type;
-
   typedef timer_manager<queue_type> timer_type;
-  typedef pool_impl pool_type;
+  
+  typedef std::function<void(std::thread::id)> startup_handler;
+  typedef std::function<void(std::thread::id)> finish_handler;
+  
+  typedef std::chrono::time_point<std::chrono::steady_clock>::duration statistics_duration;
+  typedef std::function<void(std::thread::id, size_t count, statistics_duration)> statistics_handler;
+
 
   task_manager( io_service_type& io, size_t queue_maxsize );
   
@@ -31,6 +37,10 @@ public:
   void reconfigure(size_t queue_maxsize, int threads, bool use_asio /*= false*/ );
   
   void rate_limit(size_t rps);
+  void set_startup( startup_handler handler );
+  void set_finish( finish_handler handler );
+  void set_statistics( statistics_handler handler );
+
   
   void start();
 
