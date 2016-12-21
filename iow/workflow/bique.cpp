@@ -26,6 +26,7 @@ bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
   _io = std::make_shared<io_service_type>();
   _asio = std::make_shared<asio_queue>( *_io, maxsize);
   _asio_st = std::make_shared<asio_queue>( io, maxsize);
+  _delayed = std::make_shared<delayed_queue>(maxsize);
   /*
   _dflag = !use_asio;
   _io = std::make_shared<io_service_type>();
