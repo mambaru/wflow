@@ -1,11 +1,13 @@
 #pragma once 
 
 #include <chrono>
+#include <atomic>
 #include <queue>
 #include <utility>
 #include <mutex>
 #include <condition_variable>
 #include <functional>
+
 
 namespace iow {
 
@@ -22,7 +24,7 @@ public:
   typedef std::condition_variable                             condition_variable_t;
   typedef std::mutex                                          mutex_t;
   typedef std::queue<function_t>                              queue_t;
-  typedef std::priority_queue<event_t, std::vector<event_t>, queue_cmp>  delayed_queue_t;
+  typedef std::priority_queue<event_t, std::deque<event_t>, queue_cmp>  delayed_queue_t;
 
   delayed_queue( delayed_queue const & ) = delete;
   void operator=( delayed_queue const & ) = delete;
@@ -81,7 +83,7 @@ private:
   condition_variable_t     _cond_var;
   queue_t                  _que;
   delayed_queue_t          _delayed_que;
-  bool                     _loop_exit = false;
+  std::atomic<bool>        _loop_exit;
 
   size_t                   _maxsize = 0;
   size_t                   _drop_count = 0;

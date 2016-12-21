@@ -36,10 +36,9 @@ std::size_t delayed_queue::run()
   
 std::size_t delayed_queue::run_one()
 {
-  std::unique_lock<mutex_t> lck( _mutex );
   if ( _loop_exit ) 
     return 0;
-  lck.unlock();
+  std::unique_lock<mutex_t> lck( _mutex, std::defer_lock );
   return this->run_one_( lck );
 }
 
@@ -47,7 +46,7 @@ std::size_t delayed_queue::poll_one()
 {
   std::unique_lock<mutex_t> lck( _mutex, std::defer_lock );
   if ( _loop_exit ) 
-    return false;
+    return 0;
   return this->poll_one_( lck );
 }
 
@@ -136,8 +135,6 @@ void delayed_queue::push_at_(time_point_t time_point, function_t f)
   
 std::size_t delayed_queue::poll_one_( std::unique_lock<mutex_t>& lck)
 {
-  function_t run_func;
-
   lck.lock();
   if ( ! _delayed_que.empty() )
   {
@@ -152,7 +149,7 @@ std::size_t delayed_queue::poll_one_( std::unique_lock<mutex_t>& lck)
     lck.unlock();
     return 0;
   }
-  run_func.swap( _que.front() );
+  function_t run_func = std::move( _que.front() );
   _que.pop();
   lck.unlock();
    

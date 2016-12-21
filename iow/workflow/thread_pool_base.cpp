@@ -173,10 +173,10 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
         pthis->add_id( syscall(SYS_gettid) );
       }
       std::thread::id thread_id = std::this_thread::get_id();
-      auto start = std::chrono::system_clock::now();
       size_t count = 0;
       while ( auto pthis = wthis.lock() )
       {
+        auto start = std::chrono::system_clock::now();
         size_t handlers = s->run_one();
         if ( handlers == 0 )
           break;
@@ -204,7 +204,6 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
               count = 0;
             }
           }
-          start = std::chrono::system_clock::now();
         }
         
         /*
