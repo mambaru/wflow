@@ -73,7 +73,11 @@ void bique::reconfigure(size_t maxsize, bool use_asio, bool mt )
 
 void bique::reset()
 {
+  _delayed->reset();
+  _asio->reset();
+  /*
   return this->invoke_( &delayed_queue::reset, &asio_queue::reset);
+  */
 }
 
 std::size_t bique::run()
@@ -93,7 +97,8 @@ std::size_t bique::poll_one()
 
 void bique::stop()
 {
-  return this->invoke_( &delayed_queue::stop, &asio_queue::stop);
+  _delayed->stop();
+  _asio->stop();
 }
 
 bool bique::post( function_t f )
