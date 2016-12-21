@@ -15,25 +15,28 @@ class bique
   typedef std::shared_ptr<asio_queue> asio_ptr;
 public:
   typedef ::iow::asio::io_service io_service_type;
+  typedef std::shared_ptr<io_service_type> io_service_ptr;
   typedef std::function<void()>                               function_t;
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
   typedef time_point_t::duration                              duration_t;
   
   virtual ~bique();
  
-  bique( size_t maxsize);
+  bique( size_t maxsize, bool use_asio);
 
-  bique( io_service_type& io, size_t maxsize, bool use_asio/*= true*/ );
+  bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt );
   
-  void reconfigure(size_t maxsize, bool use_asio /*= true*/);
+  void reconfigure( size_t maxsize, bool use_asio, bool mt );
+  
+  //void reconfigure(size_t maxsize, bool use_asio );
 
   void reset();
 
-  bool run();
+  std::size_t run();
   
-  bool run_one();
+  std::size_t run_one();
   
-  bool poll_one();
+  std::size_t poll_one();
 
   void stop();
 
@@ -63,8 +66,11 @@ private:
 
 private:
   std::atomic<bool> _dflag;
+  std::atomic<bool> _mt_flag;
   delayed_ptr _delayed;
   asio_ptr   _asio;
+  asio_ptr   _asio_st;
+  io_service_ptr _io;
 };
 
 }

@@ -25,25 +25,25 @@ void delayed_queue::reset()
   _loop_exit = false;
 }
 
-bool delayed_queue::run()
+std::size_t delayed_queue::run()
 {
   std::unique_lock<mutex_t> lck( _mutex );
   if ( _loop_exit ) 
-    return false;
+    return 0;
   lck.unlock();
   return this->loop_(lck, false);
 }
   
-bool delayed_queue::run_one()
+std::size_t delayed_queue::run_one()
 {
   std::unique_lock<mutex_t> lck( _mutex );
   if ( _loop_exit ) 
-    return false;
+    return 0;
   lck.unlock();
   return this->run_one_( lck );
 }
 
-bool delayed_queue::poll_one()
+std::size_t delayed_queue::poll_one()
 {
   std::unique_lock<mutex_t> lck( _mutex, std::defer_lock );
   if ( _loop_exit ) 
@@ -134,7 +134,7 @@ void delayed_queue::push_at_(time_point_t time_point, function_t f)
   _delayed_que.emplace( time_point, std::move( f ) );
 }
   
-bool delayed_queue::poll_one_( std::unique_lock<mutex_t>& lck)
+std::size_t delayed_queue::poll_one_( std::unique_lock<mutex_t>& lck)
 {
   function_t run_func;
 
@@ -150,7 +150,7 @@ bool delayed_queue::poll_one_( std::unique_lock<mutex_t>& lck)
   if ( _que.empty() )
   {
     lck.unlock();
-    return false;
+    return 0;
   }
   run_func.swap( _que.front() );
   _que.pop();
@@ -158,16 +158,17 @@ bool delayed_queue::poll_one_( std::unique_lock<mutex_t>& lck)
    
   run_func();
     
-  return true;
+  return 1;
 }
 
-bool delayed_queue::run_one_( std::unique_lock<mutex_t>& lck)
+std::size_t delayed_queue::run_one_( std::unique_lock<mutex_t>& lck)
 {
   return this->loop_( lck, true);
 }
 
-bool delayed_queue::loop_(std::unique_lock<mutex_t>& lck, bool one)
+std::size_t delayed_queue::loop_(std::unique_lock<mutex_t>& lck, bool one)
 {
+  std::size_t result = 0;
   while ( !_loop_exit )
   {
     if ( !this->poll_one_( lck ) )
@@ -176,10 +177,13 @@ bool delayed_queue::loop_(std::unique_lock<mutex_t>& lck, bool one)
     } 
     else if ( one )
     {
-      return true;
+      return 1;
     }
+    else
+      ++result;
+    
   }
-  return true;
+  return result;
 }
 
 void delayed_queue::run_wait_( std::unique_lock<mutex_t> & lck)

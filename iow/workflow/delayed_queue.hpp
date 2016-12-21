@@ -35,11 +35,11 @@ public:
 
   void reset();
 
-  bool run();
+  std::size_t run();
   
-  bool run_one();
+  std::size_t run_one();
 
-  bool poll_one();
+  std::size_t poll_one();
 
   void stop();
   
@@ -59,11 +59,11 @@ private:
 
   void push_at_(time_point_t time_point, function_t f);
   
-  bool poll_one_( std::unique_lock<mutex_t>& lck);
+  std::size_t poll_one_( std::unique_lock<mutex_t>& lck);
 
-  bool run_one_( std::unique_lock<mutex_t>& lck);
+  std::size_t run_one_( std::unique_lock<mutex_t>& lck);
 
-  bool loop_(std::unique_lock<mutex_t>& lck, bool one);
+  std::size_t loop_(std::unique_lock<mutex_t>& lck, bool one);
 
   void run_wait_( std::unique_lock<mutex_t> & lck);
 

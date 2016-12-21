@@ -29,25 +29,31 @@ const asio_queue::io_service_type& asio_queue::get_io_service() const
   return _io;
 }
   
-bool asio_queue::run()
+std::size_t asio_queue::run()
 {
-  return 0!=_io.run();
+  return _io.run();
 }
   
-bool asio_queue::run_one()
+std::size_t asio_queue::run_one()
 {
-  return 0!=_io.run_one();
+  return _io.run_one();
 }
   
-bool asio_queue::poll_one()
+std::size_t asio_queue::poll_one()
 {
-  return 0!=_io.poll_one();
+  return _io.poll_one();
 }
-  
-void asio_queue::reset() {}
-  
-void asio_queue::stop(){}
-  
+
+void asio_queue::reset() 
+{
+  _io.reset();
+}
+
+void asio_queue::stop()
+{
+  _io.stop();
+}
+
 bool asio_queue::post( function_t f )
 {
   if ( !this->check_() )

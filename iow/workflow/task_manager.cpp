@@ -18,19 +18,21 @@ public:
 };
 
 
+/*
 task_manager::task_manager( io_service_type& io, size_t queue_maxsize )
   : _threads(0)
 {
   // delayed отключен и пул потоков
-  _queue = std::make_shared<queue_type>(io, queue_maxsize, true );
+  _queue = std::make_shared<queue_type>(io, queue_maxsize, true, false );
   _timer = std::make_shared<timer_type>(_queue);
   _pool = nullptr;
 }
+*/
   
-task_manager::task_manager( size_t queue_maxsize, int threads )
+task_manager::task_manager( size_t queue_maxsize, int threads, bool use_asio )
   : _threads(threads)
 {
-  _queue = std::make_shared<queue_type>(queue_maxsize);
+  _queue = std::make_shared<queue_type>(queue_maxsize, use_asio);
   _timer = std::make_shared<timer_manager<queue_type> >(_queue);
   _pool = std::make_shared<pool_type>(_queue);
 }
@@ -38,7 +40,7 @@ task_manager::task_manager( size_t queue_maxsize, int threads )
 task_manager::task_manager( io_service_type& io, size_t queue_maxsize, int threads, bool use_asio /*= false*/  )
   : _threads(threads)
 {
-  _queue = std::make_shared<queue_type>(io, queue_maxsize, threads==0 || use_asio );
+  _queue = std::make_shared<queue_type>(io, queue_maxsize, use_asio, threads!=0  );
   _timer = std::make_shared<timer_type>(_queue);
   _pool = std::make_shared<pool_type>(_queue);
 }
@@ -46,7 +48,7 @@ task_manager::task_manager( io_service_type& io, size_t queue_maxsize, int threa
 void task_manager::reconfigure(size_t queue_maxsize, int threads, bool use_asio /*= false*/ )
 {
   _threads = threads;
-  _queue->reconfigure(queue_maxsize, threads==0 || use_asio );
+  _queue->reconfigure(queue_maxsize, use_asio, threads!=0/* threads==0 || use_asio*/ );
 }
   
 void task_manager::rate_limit(size_t rps) 
@@ -108,17 +110,17 @@ std::vector< int > task_manager::get_ids() const
 }
 
 
-void task_manager::run()
+std::size_t task_manager::run()
 {
-  _queue->run();
+  return _queue->run();
 }
   
-bool task_manager::run_one()
+std::size_t task_manager::run_one()
 {
   return _queue->run_one();
 }
   
-bool task_manager::poll_one()
+std::size_t task_manager::poll_one()
 {
   return _queue->poll_one();
 }

@@ -32,11 +32,11 @@ public:
   
   const io_service_type& get_io_service() const;
   
-  bool run();
+  std::size_t run();
   
-  bool run_one();
+  std::size_t run_one();
   
-  bool poll_one();
+  std::size_t poll_one();
   
   void reset();
   

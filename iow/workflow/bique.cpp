@@ -8,7 +8,36 @@ bique::~bique()
 {
   this->stop();
 }
- 
+
+bique::bique( size_t maxsize, bool use_asio)
+{
+  _dflag = !use_asio;
+  _io = std::make_shared<io_service_type>();
+  _asio = std::make_shared<asio_queue>( *_io, maxsize);
+  _delayed = std::make_shared<delayed_queue>(maxsize);
+  _asio_st = 0;
+  _mt_flag = true;
+}
+
+bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
+{
+  _dflag = !use_asio;
+  _mt_flag = mt;
+  _io = std::make_shared<io_service_type>();
+  _asio = std::make_shared<asio_queue>( *_io, maxsize);
+  _asio_st = std::make_shared<asio_queue>( io, maxsize);
+  /*
+  _dflag = !use_asio;
+  _io = std::make_shared<io_service_type>();
+  if ( mt )
+    _asio = std::make_shared<asio_queue>( *_io, maxsize);
+  else
+    _asio = std::make_shared<asio_queue>( io, maxsize);
+  _delayed = std::make_shared<delayed_queue>(maxsize);
+  */
+}
+
+/*
 bique::bique( size_t maxsize )
 {
   _dflag = true;
@@ -16,22 +45,28 @@ bique::bique( size_t maxsize )
   _asio  = nullptr;
 }
 
-bique::bique( io_service_type& io, size_t maxsize, bool use_asio /*= true*/ )
+bique::bique( io_service_type& io, size_t maxsize, bool use_asio  )
 {
   _dflag = !use_asio;
   _delayed = std::make_shared<delayed_queue>(maxsize);
   _asio = std::make_shared<asio_queue>(io, maxsize);
 }
-  
-void bique::reconfigure(size_t maxsize, bool use_asio /*= true*/)
+*/
+
+
+void bique::reconfigure(size_t maxsize, bool use_asio, bool mt )
 {
+  /*
   bool newflag = !use_asio;
   if ( _asio == nullptr ) 
     newflag = true;
-
   _dflag = newflag;
+  */
+  _dflag = use_asio;
+  _mt_flag = mt;
   _delayed->set_maxsize(maxsize);
-  if( _asio ) 
+  _asio->set_maxsize(maxsize);
+  if( _asio_st ) 
     _asio->set_maxsize(maxsize);
 }
 
@@ -40,17 +75,17 @@ void bique::reset()
   return this->invoke_( &delayed_queue::reset, &asio_queue::reset);
 }
 
-bool bique::run()
+std::size_t bique::run()
 {
   return this->invoke_( &delayed_queue::run, &asio_queue::run);
 }
   
-bool bique::run_one()
+std::size_t bique::run_one()
 {
   return this->invoke_( &delayed_queue::run_one, &asio_queue::run_one);
 }
   
-bool bique::poll_one()
+std::size_t bique::poll_one()
 {
   return this->invoke_( &delayed_queue::poll_one, &asio_queue::poll_one);
 }
@@ -94,7 +129,9 @@ R bique::invoke_(
 {
   return _dflag 
          ? (_delayed.get()->*method1)( std::move(args)...)
-         : (_asio.get()->*method2)( std::move(args)...);
+         : _mt_flag
+             ? (_asio.get()->*method2)( std::move(args)...)
+             : (_asio_st.get()->*method2)( std::move(args)...);
 }
 
 template<typename R, typename... Args>
@@ -105,7 +142,9 @@ R bique::invoke_(
 {
   return _dflag 
          ? (_delayed.get()->*method1)( std::move(args)...)
-         : (_asio.get()->*method2)( std::move(args)...);
+         : _mt_flag
+           ? (_asio.get()->*method2)( std::move(args)...)
+           : (_asio_st.get()->*method2)( std::move(args)...);
 }
 
 }

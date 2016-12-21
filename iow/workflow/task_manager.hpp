@@ -28,9 +28,9 @@ public:
   typedef std::function<void(std::thread::id, size_t count, statistics_duration)> statistics_handler;
 
 
-  task_manager( io_service_type& io, size_t queue_maxsize );
+  //task_manager( io_service_type& io, size_t queue_maxsize );
   
-  task_manager( size_t queue_maxsize, int threads );
+  task_manager( size_t queue_maxsize, int threads, bool use_asio );
   
   task_manager( io_service_type& io, size_t queue_maxsize, int threads, bool use_asio /*= false*/  );
 
@@ -46,11 +46,11 @@ public:
 
   void stop();
 
-  void run();
+  std::size_t run();
   
-  bool run_one();
+  std::size_t run_one();
   
-  bool poll_one();
+  std::size_t poll_one();
   
   bool post( function_t&& f );
   
