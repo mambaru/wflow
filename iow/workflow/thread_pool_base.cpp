@@ -181,9 +181,9 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       auto pthis = wthis.lock();
       if ( startup != nullptr )
         startup(thread_id);
-      if ( statistics == nullptr && pthis->_rate_limit == 0 )
+      /*if ( statistics == nullptr && pthis->_rate_limit == 0 )
         s->run();
-      else for (;;)
+      else */for (;;)
       {
         auto start = std::chrono::system_clock::now();
         size_t handlers = s->run_one();
