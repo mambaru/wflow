@@ -64,6 +64,7 @@ void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads)
   this->start_(s, threads); 
 }
 
+/*
 size_t thread_pool_base::get_size( ) const
 {
   std::lock_guard< std::mutex > lk(_mutex);
@@ -82,6 +83,7 @@ std::vector< int > thread_pool_base::get_ids() const
   std::lock_guard< std::mutex > lk(_mutex);
   return _threads_ids;
 }
+*/
 
 // только после _service->stop();
 void thread_pool_base::stop()
@@ -117,8 +119,8 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
     for ( size_t i = threads; i < _threads.size(); ++i)
       _threads[i].detach();
     _threads.resize(threads);
-    _flags.resize(threads);
-    _counters.resize(threads);
+    //_flags.resize(threads);
+    //_counters.resize(threads);
   }
   return true;
 }
@@ -150,16 +152,16 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
 {
   size_t prev_size = _threads.size();
   _threads.reserve( prev_size + threads);
-  _counters.resize( prev_size + threads );
+  //_counters.resize( prev_size + threads );
   for (size_t i = 0 ; i < threads; ++i)
   {
     thread_flag pflag = std::make_shared<bool>(true);
     std::weak_ptr<bool> wflag = pflag;
     std::weak_ptr<self> wthis = this->shared_from_this();
-    _flags.push_back(pflag);
-    auto& counter = _counters[prev_size + i];
-    counter = 0;
-    _threads.push_back( std::thread( [wthis, s, wflag, &counter]()
+    //_flags.push_back(pflag);
+    //auto& counter = _counters[prev_size + i];
+    //counter = 0;
+    _threads.push_back( std::thread( [wthis, s, wflag, /*&counter*/]()
     {
       startup_handler startup;
       finish_handler finish;
@@ -174,18 +176,22 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       }
       std::thread::id thread_id = std::this_thread::get_id();
       size_t count = 0;
+      auto pthis = wthis.lock();
       if ( startup != nullptr )
         startup(thread_id);
-      while ( auto pthis = wthis.lock() )
+      boost::system::error_code ec;
+      if ( statistics == nullptr && pthis->_rate_limit == 0 )
+        s->run(ec);
+      else for (;;)
       {
         auto start = std::chrono::system_clock::now();
-        size_t handlers = s->run_one();
-        if ( handlers == 0 )
+        size_t handlers = s->run_one(ec);
+        if ( ec || handlers == 0 )
           break;
         if ( wflag.lock() == nullptr)
           break;
 
-        counter += handlers;
+        //counter += handlers;
         if ( statistics != nullptr || pthis->_rate_limit != 0 )
         {
           auto now = std::chrono::system_clock::now();

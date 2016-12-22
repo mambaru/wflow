@@ -41,9 +41,10 @@ public:
   // только после _service->stop();
   void stop();
 
-  size_t get_size( ) const;
+  /*size_t get_size( ) const;
   size_t get_counter( size_t thread ) const;
   std::vector< int > get_ids() const;
+  */
 private: 
   void add_id(int id) ;
 
@@ -62,8 +63,9 @@ private:
   mutable std::mutex _mutex;
   std::vector< int > _threads_ids;
   mutable std::vector< std::thread > _threads;
-  std::vector< size_t > _counters;
+  /*std::vector< size_t > _counters;
   std::vector< thread_flag > _flags;
+  */
   startup_handler _startup;
   finish_handler _finish;
   statistics_handler _statistics;

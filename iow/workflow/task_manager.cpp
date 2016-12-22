@@ -91,6 +91,7 @@ void task_manager::stop()
   _queue->reset();
 }
 
+/*
 
 size_t task_manager::get_threads( ) const
 {
@@ -108,7 +109,7 @@ std::vector< int > task_manager::get_ids() const
     ? std::vector<int>()
     : _pool->get_ids();
 }
-
+*/
 
 std::size_t task_manager::run()
 {

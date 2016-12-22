@@ -62,10 +62,11 @@ public:
   std::size_t dropped() const;
   std::shared_ptr<timer_type> timer();
   
+  /*
   size_t get_threads( ) const;
   size_t get_counter( size_t thread ) const;
   std::vector< int > get_ids() const;
-
+  */
 
 private:
   std::atomic<int> _threads;
