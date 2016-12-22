@@ -17,6 +17,9 @@ workflow::workflow(workflow_options opt )
   _workflow_ptr = opt.workflow_ptr;
   _impl = std::make_shared<task_manager>(opt.maxsize, opt.threads, opt.use_io_service);
   _impl->rate_limit( opt.rate_limit );
+  _impl->set_startup( opt.startup_handler );
+  _impl->set_finish( opt.finish_handler );
+  _impl->set_statistics( opt.statistics_handler );
   _delay_ms = opt.post_delay_ms;
   this->create_wrn_timer_(opt);
 }
@@ -27,6 +30,9 @@ workflow::workflow(io_service_type& io, workflow_options opt)
   _workflow_ptr = opt.workflow_ptr;
   _impl = std::make_shared<task_manager>(io, opt.maxsize, opt.threads, opt.use_io_service);
   _impl->rate_limit( opt.rate_limit );
+  _impl->set_startup( opt.startup_handler );
+  _impl->set_finish( opt.finish_handler );
+  _impl->set_statistics( opt.statistics_handler );
   _delay_ms = opt.post_delay_ms;
   this->create_wrn_timer_(opt);
 }
