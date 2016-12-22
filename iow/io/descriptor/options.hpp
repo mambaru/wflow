@@ -22,6 +22,7 @@ public:
   startup_handler_type  startup_handler;
   shutdown_handler_type shutdown_handler;
   fatal_handler_type    fatal_handler;
+ 
 };
   
 }}}

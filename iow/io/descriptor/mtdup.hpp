@@ -68,8 +68,11 @@ public:
 
       h->start(opt);
 
-      _threads.push_back( std::thread([io]()
+      auto tup = opt.thread_startup;
+      auto tdown = opt.thread_shutdown;
+      _threads.push_back( std::thread([io, tup, tdown]()
       {
+        if (tup) tup(std::this_thread::get_id());
         iow::system::error_code ec;
         io->run(ec);
         if (!ec)
@@ -80,7 +83,7 @@ public:
         {
           IOW_LOG_FATAL("mtdup thread io_service::run error: " << ec.message())
         }
-        
+        if (tdown) tdown(std::this_thread::get_id());
       }));
     }
     

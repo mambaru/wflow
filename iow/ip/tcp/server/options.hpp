@@ -10,6 +10,10 @@ struct options:  AcceptorOptions
 {
   // TODO: в базовый сервер
   int threads = 0;
+  typedef std::function<void(std::thread::id)> thread_handler;
+  thread_handler thread_startup;
+  thread_handler thread_shutdown;
+
 };
 
 }}}}
