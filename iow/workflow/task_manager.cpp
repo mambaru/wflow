@@ -126,19 +126,19 @@ std::size_t task_manager::poll_one()
   return _queue->poll_one();
 }
   
-bool task_manager::post( function_t&& f )
+bool task_manager::post( function_t f, function_t drop )
 {
-  return _queue->post(std::move(f) );
+  return _queue->post(std::move(f), std::move(drop) );
 }
   
-bool task_manager::post_at(time_point_t tp, function_t&& f)
+bool task_manager::post_at(time_point_t tp, function_t f, function_t drop)
 {
-  return _queue->post_at( tp, std::move(f));
+  return _queue->post_at( tp, std::move(f), std::move(drop));
 }
 
-bool task_manager::delayed_post(duration_t duration, function_t&& f)
+bool task_manager::delayed_post(duration_t duration, function_t f, function_t drop)
 {
-  return _queue->delayed_post(duration, std::move(f));
+  return _queue->delayed_post(duration, std::move(f), std::move(drop));
 }
   
 std::size_t task_manager::size() const

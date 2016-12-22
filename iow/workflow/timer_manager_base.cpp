@@ -55,7 +55,7 @@ timer_manager_base::timer_id_t timer_manager_base::create_( std::shared_ptr<Q> p
   std::shared_ptr<bool> pflag = std::make_shared<bool>(true);
   std::weak_ptr<bool> wflag = pflag;
   _id_map.insert( std::make_pair(id, pflag) );
-  pq->post_at( start_time, timer::make(pq, delay, std::move(handler), expires_after, wflag) );
+  pq->post_at( start_time, timer::make(pq, delay, std::move(handler), expires_after, wflag), nullptr );
   return id;
 }
 

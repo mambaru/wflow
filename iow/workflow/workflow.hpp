@@ -49,9 +49,9 @@ public:
   size_t dropped() const;
 
 
-  bool post(post_handler handler);
-  bool post(time_point_t, post_handler handler);
-  bool post(duration_t,   post_handler handler);
+  bool post(post_handler handler, post_handler drop = nullptr);
+  bool post(time_point_t, post_handler handler, post_handler drop = nullptr);
+  bool post(duration_t,   post_handler handler, post_handler drop = nullptr);
 
   timer_id_t create_timer(duration_t, timer_handler, bool = true);
   timer_id_t create_async_timer(duration_t, async_timer_handler, bool = true);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iow/owner/owner.hpp>
+//#include <iow/owner/owner.hpp>
 #include <functional>
 #include <chrono>
 #include <memory>
@@ -58,7 +58,7 @@ protected:
 private:
   typedef std::map< timer_id_t, std::shared_ptr<bool> > id_map;
 
-  owner _owner;
+//  owner _owner;
   timer_id_t _id_counter;
   id_map     _id_map;
 };

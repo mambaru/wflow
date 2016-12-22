@@ -68,7 +68,10 @@ private:
               timer_handler(true);
             }
           }
-        });
+        },
+        // в случае переполнения очереди
+        [timer_handler](){ timer_handler(true);}
+        );
       }
     };
     (i.get()->*mem_ptr)( std::move(req), callback );

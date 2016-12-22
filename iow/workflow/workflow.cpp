@@ -69,22 +69,22 @@ std::shared_ptr< workflow::timer_type> workflow::get_timer() const
   return _impl->timer();
 }
 
-bool workflow::post(post_handler handler)
+bool workflow::post(post_handler handler, post_handler drop)
 {
   if ( _delay_ms == 0)
-    return _impl->post( std::move(handler) );
+    return _impl->post( std::move(handler), std::move(drop) );
   else
-    return this->post( std::chrono::milliseconds(_delay_ms), std::move(handler) );
+    return this->post( std::chrono::milliseconds(_delay_ms), std::move(handler), std::move(drop) );
 }
 
-bool workflow::post(time_point_t tp, post_handler handler)
+bool workflow::post(time_point_t tp, post_handler handler, post_handler drop)
 {
-  return _impl->post_at( tp, std::move(handler) );
+  return _impl->post_at( tp, std::move(handler), std::move(drop) );
 }
 
-bool workflow::post(duration_t d,   post_handler handler)
+bool workflow::post(duration_t d,   post_handler handler, post_handler drop)
 {
-  return _impl->delayed_post(d, std::move(handler) );
+  return _impl->delayed_post(d, std::move(handler), std::move(drop) );
 }
 
 workflow::timer_id_t workflow::create_timer(duration_t d, timer_handler handler, bool expires_after)

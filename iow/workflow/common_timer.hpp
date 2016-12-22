@@ -56,9 +56,11 @@ private:
       if ( auto pq = wq.lock() )
       {
         pq->delayed_post(delay, [wq, delay, handler, wflag]()
-        {
-          common_timer::expires_after_(wq, delay, std::move(handler), wflag );
-        });
+          {
+            common_timer::expires_after_(wq, delay, std::move(handler), wflag );
+          }, 
+          nullptr /*nullptr*/
+        );
       }
     }
   }
@@ -84,7 +86,7 @@ private:
         
         if ( auto pq = wq.lock() )
         {
-          pq->delayed_post(delay, post_handler);
+          pq->delayed_post(delay, post_handler, nullptr /*drop*/);
         }
       });
     }
@@ -92,7 +94,7 @@ private:
     {
       if ( auto pq = wq.lock() )
       {
-        pq->delayed_post(delay, post_handler);
+        pq->delayed_post(delay, post_handler, nullptr /*drop*/);
       }
     }
   }
@@ -112,11 +114,13 @@ private:
     std::weak_ptr<bool> wres = pres;
     
     pq->delayed_post(delay, [wq, delay, handler, wflag, wres]()
-    {
-      if ( wres.lock() == nullptr )
-        return;
-      common_timer::expires_before_(wq, delay, std::move(handler), wflag );
-    });
+      {
+        if ( wres.lock() == nullptr )
+          return;
+        common_timer::expires_before_(wq, delay, std::move(handler), wflag );
+      },
+      nullptr /*drop*/
+    );
     
     if ( *pflag==false || !handler() )
     {
@@ -139,12 +143,14 @@ private:
     std::weak_ptr<bool> wres = pres;
 
     pq->delayed_post(delay, [wq, delay, handler, wflag, wres]()
-    {
-      if ( wres.lock() == nullptr )
-        return;
-      
-      common_timer::expires_before_(wq, delay, std::move(handler), wflag );
-    });
+      {
+        if ( wres.lock() == nullptr )
+          return;
+        
+        common_timer::expires_before_(wq, delay, std::move(handler), wflag );
+      }
+      , nullptr /*drop*/
+    );
     
     if ( *pflag==true )
     {
