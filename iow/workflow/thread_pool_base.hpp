@@ -61,9 +61,10 @@ private:
   bool _started;
   std::atomic<size_t> _rate_limit;
   mutable std::mutex _mutex;
-  std::vector< int > _threads_ids;
   mutable std::vector< std::thread > _threads;
-  /*std::vector< size_t > _counters;
+  /*
+  std::vector< int > _threads_ids;
+  std::vector< size_t > _counters;
   std::vector< thread_flag > _flags;
   */
   startup_handler _startup;

@@ -141,11 +141,13 @@ void thread_pool_base::start_(std::shared_ptr<S> s, size_t threads)
   this->run_more_(s, threads);
 }
 
+/*
 void thread_pool_base::add_id(int id) 
 {
   std::lock_guard<std::mutex> lk(_mutex);
   _threads_ids.push_back(id);
 }
+*/
 
 template<typename S>
 void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
@@ -172,7 +174,7 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
         startup = pthis->_startup;
         finish = pthis->_finish;
         statistics = pthis->_statistics;
-        pthis->add_id( syscall(SYS_gettid) );
+        //pthis->add_id( syscall(SYS_gettid) );
       }
       std::thread::id thread_id = std::this_thread::get_id();
       size_t count = 0;
