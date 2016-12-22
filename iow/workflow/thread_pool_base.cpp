@@ -174,6 +174,8 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       }
       std::thread::id thread_id = std::this_thread::get_id();
       size_t count = 0;
+      if ( startup != nullptr )
+        startup(thread_id);
       while ( auto pthis = wthis.lock() )
       {
         auto start = std::chrono::system_clock::now();
@@ -190,7 +192,7 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
           auto span = now - start ;
           if ( statistics != nullptr )
             statistics( thread_id, handlers, span );
-          
+
           if ( pthis->_rate_limit != 0 )
           {
             count += handlers;
@@ -200,28 +202,14 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
               auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( now - start ).count();
               if ( tm_ms < 1000 )
                 std::this_thread::sleep_for( std::chrono::milliseconds(1000-tm_ms)  );
-              
               count = 0;
             }
           }
         }
-        
-        /*
-        if ( pthis->_rate_limit != 0 )
-        {
-          count += handlers;
-          if ( count >= pthis->_rate_limit )
-          {
-            auto now = std::chrono::system_clock::now();
-            auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( now - start ).count();
-            if ( tm_ms < 1000 )
-              std::this_thread::sleep_for( std::chrono::milliseconds(1000-tm_ms)  );
-            
-            count = 0;
-            start = std::chrono::system_clock::now();
-          }
-        }*/
       }
+      if ( finish != nullptr )
+        finish(thread_id);
+
     }));
   }
 }
