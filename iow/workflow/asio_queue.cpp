@@ -31,17 +31,20 @@ const asio_queue::io_service_type& asio_queue::get_io_service() const
   
 std::size_t asio_queue::run()
 {
-  return _io.run();
+  ::iow::system::error_code ec;
+  return _io.run(ec);
 }
   
 std::size_t asio_queue::run_one()
 {
-  return _io.run_one();
+  ::iow::system::error_code ec;
+  return _io.run_one(ec);
 }
   
 std::size_t asio_queue::poll_one()
 {
-  return _io.poll_one();
+  ::iow::system::error_code ec;
+  return _io.poll_one(ec);
 }
 
 void asio_queue::reset() 
