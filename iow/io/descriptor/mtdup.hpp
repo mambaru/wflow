@@ -4,6 +4,7 @@
 #include <list>
 #include <thread>
 #include <cstdlib>
+#include <chrono>
 
 #include <iow/io/basic/tags.hpp>
 #include <iow/logger/logger.hpp>
@@ -70,11 +71,31 @@ public:
 
       auto tup = opt.thread_startup;
       auto tdown = opt.thread_shutdown;
-      _threads.push_back( std::thread([io, tup, tdown]()
+      auto tstat = opt.thread_statistics;
+      _threads.push_back( std::thread([io, tup, tdown, tstat]()
       {
-        if (tup) tup(std::this_thread::get_id());
+        auto thread_id = std::this_thread::get_id();
+        
+        if (tup) tup(thread_id);
         iow::system::error_code ec;
-        io->run(ec);
+        if ( tstat == nullptr )
+          io->run(ec);
+        else
+        {
+          for (;;)
+          {
+            auto start = std::chrono::steady_clock::now();
+            size_t handlers = io->run_one(ec);
+            if ( ec || handlers == 0 )
+              break;
+
+            auto finish = std::chrono::steady_clock::now();
+            auto span = finish - start ;
+            if ( tstat != nullptr )
+              tstat( thread_id, handlers, span );
+          }
+        }
+        
         if (!ec)
         {
           IOW_LOG_MESSAGE("mtdup thread stopped")
@@ -83,7 +104,7 @@ public:
         {
           IOW_LOG_FATAL("mtdup thread io_service::run error: " << ec.message())
         }
-        if (tdown) tdown(std::this_thread::get_id());
+        if (tdown) tdown(thread_id);
       }));
     }
     
