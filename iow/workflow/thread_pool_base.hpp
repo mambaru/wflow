@@ -64,9 +64,9 @@ private:
   mutable std::vector< std::thread > _threads;
   /*
   std::vector< int > _threads_ids;
-  std::vector< size_t > _counters;
+  std::vector< size_t > _counters;*/
   std::vector< thread_flag > _flags;
-  */
+  
   startup_handler _startup;
   finish_handler _finish;
   statistics_handler _statistics;

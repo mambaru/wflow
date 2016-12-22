@@ -119,7 +119,7 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
     for ( size_t i = threads; i < _threads.size(); ++i)
       _threads[i].detach();
     _threads.resize(threads);
-    //_flags.resize(threads);
+    _flags.resize(threads);
     //_counters.resize(threads);
   }
   return true;
@@ -160,7 +160,7 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     thread_flag pflag = std::make_shared<bool>(true);
     std::weak_ptr<bool> wflag = pflag;
     std::weak_ptr<self> wthis = this->shared_from_this();
-    //_flags.push_back(pflag);
+    _flags.push_back(pflag);
     //auto& counter = _counters[prev_size + i];
     //counter = 0;
     _threads.push_back( std::thread( [wthis, s, wflag, /*&counter*/]()
@@ -181,9 +181,9 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       auto pthis = wthis.lock();
       if ( startup != nullptr )
         startup(thread_id);
-      /*if ( statistics == nullptr && pthis->_rate_limit == 0 )
+      if ( statistics == nullptr && pthis->_rate_limit == 0 )
         s->run();
-      else */for (;;)
+      else for (;;)
       {
         auto start = std::chrono::system_clock::now();
         size_t handlers = s->run_one();
