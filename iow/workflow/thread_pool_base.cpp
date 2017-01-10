@@ -163,11 +163,12 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     _flags.push_back(pflag);
     //auto& counter = _counters[prev_size + i];
     //counter = 0;
-    _threads.push_back( std::thread( [wthis, s, wflag, /*&counter*/]()
+    _threads.push_back( std::thread( std::function<void()>( [wthis, s, wflag]()
     {
-      startup_handler startup;
-      finish_handler finish;
-      statistics_handler statistics;
+      thread_pool_base::startup_handler startup;
+      thread_pool_base::finish_handler finish;
+      thread_pool_base::statistics_handler statistics;
+      
 
       if ( auto pthis = wthis.lock() )
       {
@@ -217,7 +218,7 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       if ( finish != nullptr )
         finish(thread_id);
 
-    }));
+    })));
   }
 }
 
