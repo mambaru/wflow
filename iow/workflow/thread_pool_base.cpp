@@ -90,6 +90,8 @@ void thread_pool_base::stop()
 {
   std::lock_guard< std::mutex > lk(_mutex);
 
+  _flags.clear();
+
   for (auto& t : _threads)
     t.join();
 
