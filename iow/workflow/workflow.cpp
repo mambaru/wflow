@@ -160,7 +160,11 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
     wrkf.release_timer(_wrn_timer);
 
   if ( ( opt.wrnsize == 0 && opt.maxsize==0) || opt.show_wrn_ms==0)
+  {
+    // заглушка, чтобы не выскакивал
+    _wrn_timer = wrkf.create_timer(std::chrono::seconds(3600), []{ return true;} );
     return;
+  }
 
   size_t wrnsize = opt.wrnsize;
   std::function<bool()> handler = opt.handler != nullptr
