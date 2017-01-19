@@ -180,7 +180,6 @@ std::size_t delayed_queue::loop_(std::unique_lock<mutex_t>& lck, bool one)
     }
     else
       ++result;
-    
   }
   return result;
 }
