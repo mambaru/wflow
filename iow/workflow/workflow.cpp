@@ -156,38 +156,41 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
 {
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
   size_t dropsave = 0;
-  if ( _wrn_timer != 0 )
+  auto old_timer = _wrn_timer;
+  /*if ( _wrn_timer != 0 )
     wrkf.release_timer(_wrn_timer);
+    */
 
   if ( ( opt.wrnsize == 0 && opt.maxsize==0) || opt.show_wrn_ms==0)
   {
     // заглушка, чтобы не выскакивал
     _wrn_timer = wrkf.create_timer(std::chrono::seconds(3600), []{ return true;} );
-    return;
   }
-
-  size_t wrnsize = opt.wrnsize;
-  std::function<bool()> handler = opt.handler != nullptr
-    ? opt.handler
-    : [this, wrnsize, dropsave]() mutable ->bool 
-    {
-      // TODO: Вынести логирование
-      auto dropped = this->_impl->dropped();
-      auto size = this->_impl->size();
-      auto dropdiff = dropped - dropsave;
-      if ( dropdiff!=0 )
+  else
+  {
+    size_t wrnsize = opt.wrnsize;
+    std::function<bool()> handler = opt.handler != nullptr
+      ? opt.handler
+      : [this, wrnsize, dropsave]() mutable ->bool 
       {
-        IOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropped << ", size " << size << ")" )
-        dropsave = dropped;
-      }
-      else if ( size > wrnsize )
-      {
-        IOW_LOG_WARNING("Workflow '" << this->_id << "' queue size warning. Size " << size << " (wrnsize=" << wrnsize << ")")
-      }
-      return true;
-    };
-
-  _wrn_timer = wrkf.create_timer(std::chrono::milliseconds(opt.show_wrn_ms), handler );
+        // TODO: Вынести логирование
+        auto dropped = this->_impl->dropped();
+        auto size = this->_impl->size();
+        auto dropdiff = dropped - dropsave;
+        if ( dropdiff!=0 )
+        {
+          IOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropped << ", size " << size << ")" )
+          dropsave = dropped;
+        }
+        else if ( size > wrnsize )
+        {
+          IOW_LOG_WARNING("Workflow '" << this->_id << "' queue size warning. Size " << size << " (wrnsize=" << wrnsize << ")")
+        }
+        return true;
+      };
+    _wrn_timer = wrkf.create_timer(std::chrono::milliseconds(opt.show_wrn_ms), handler );
+  }
+  wrkf.release_timer(old_timer);
 }
   
 }
