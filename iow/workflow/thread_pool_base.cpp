@@ -183,13 +183,16 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       if ( startup != nullptr )
         startup(thread_id);
       if ( statistics == nullptr && pthis->_rate_limit == 0 )
-        s->run();
+      {
+        while ( wflag.lock() != nullptr)
+          s->run();
+      }
       else for (;;)
       {
         auto start = std::chrono::system_clock::now();
         size_t handlers = s->run_one();
-        if (  handlers == 0 )
-          break;
+        /*if (  handlers == 0 )
+          break;*/
         if ( wflag.lock() == nullptr)
           break;
 
