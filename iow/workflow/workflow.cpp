@@ -51,6 +51,7 @@ void workflow::reconfigure(workflow_options opt)
   _impl->set_finish( opt.finish_handler );
   _impl->set_statistics( opt.statistics_handler );
   _impl->reconfigure(opt.maxsize, opt.threads, opt.use_io_service);
+  _delay_ms = opt.post_delay_ms;
   this->create_wrn_timer_(opt);
 }
 

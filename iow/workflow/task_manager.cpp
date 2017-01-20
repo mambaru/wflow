@@ -41,6 +41,9 @@ task_manager::task_manager( io_service_type& io, size_t queue_maxsize, int threa
   : _threads(threads)
 {
   _queue = std::make_shared<queue_type>(io, queue_maxsize, use_asio, threads!=0  );
+  
+  //_queue->reconfigure(queue_maxsize, use_asio, threads!=0 );
+  
   _timer = std::make_shared<timer_type>(_queue);
   _pool = std::make_shared<pool_type>(_queue);
 }
@@ -79,7 +82,17 @@ void task_manager::set_statistics( statistics_handler handler )
 void task_manager::start()
 {
   if ( _pool!=nullptr) 
+  {
+    /*_queue->post(
+      [](){ std::cout << std::endl<< std::endl << "post -1- void task_manager::start()" << std::endl;},
+      [](){ std::cout << std::endl<< std::endl << "post  -2- void task_manager::start()" << std::endl;}
+    );*/
     _pool->start(_threads);
+    /*_timer->create( std::chrono::seconds(1), [](){
+      std::cout << "void task_manager::start()" << std::endl;
+      return true;
+    } );*/
+  }
 }
 
 void task_manager::stop()
