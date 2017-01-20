@@ -29,6 +29,13 @@ bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
   _delayed = std::make_shared<delayed_queue>(maxsize);
 }
 
+bique::io_service_type::work bique::work() const
+{
+  return _mt_flag
+    ? _asio->work()
+    : _asio_st->work();
+}
+
 void bique::reconfigure(size_t maxsize, bool use_asio, bool mt )
 {
   _dflag = !use_asio;

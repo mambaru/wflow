@@ -137,5 +137,10 @@ asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
   return std::make_shared<timer_type>( this->_io, ptime);
 }
 
+asio_queue::io_service_type::work asio_queue::work() const
+{
+  return io_service_type::work(_io);
+}
+
 } // iow
 

@@ -3,6 +3,7 @@
 #include <iow/workflow/delayed_queue.hpp>
 #include <iow/workflow/bique.hpp>
 #include <iow/workflow/asio_queue.hpp>
+#include <iow/logger/logger.hpp>
 #include <sys/syscall.h>
 #include <sys/types.h>
 
@@ -167,10 +168,10 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     //counter = 0;
     _threads.push_back( std::thread( std::function<void()>( [wthis, s, wflag]()
     {
+      auto w = s->work();
       thread_pool_base::startup_handler startup;
       thread_pool_base::finish_handler finish;
       thread_pool_base::statistics_handler statistics;
-      
 
       if ( auto pthis = wthis.lock() )
       {
@@ -222,7 +223,6 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       }
       if ( finish != nullptr )
         finish(thread_id);
-
     })));
   }
 }

@@ -54,6 +54,7 @@ public:
   std::size_t size() const;
   std::size_t dropped() const;
 
+  bool work() { return false;}
 private:
   bool check_(function_t drop);
 
