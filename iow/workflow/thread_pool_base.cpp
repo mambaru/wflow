@@ -144,14 +144,9 @@ void thread_pool_base::start_(std::shared_ptr<S> s, size_t threads)
   this->run_more_(s, threads);
 }
 
-/*
-void thread_pool_base::add_id(int id) 
-{
-  std::lock_guard<std::mutex> lk(_mutex);
-  _threads_ids.push_back(id);
-}
-*/
 
+template<typename T>
+static void nowarn(T&){}
 template<typename S>
 void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
 {
@@ -169,6 +164,8 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     _threads.push_back( std::thread( std::function<void()>( [wthis, s, wflag]()
     {
       auto w = s->work();
+      nowarn(w);
+
       thread_pool_base::startup_handler startup;
       thread_pool_base::finish_handler finish;
       thread_pool_base::statistics_handler statistics;
@@ -220,6 +217,7 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
             }
           }
         }
+        
       }
       if ( finish != nullptr )
         finish(thread_id);
