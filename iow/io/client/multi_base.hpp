@@ -57,13 +57,16 @@ public:
 
   void stop()
   {
-    std::lock_guard<mutex_type> lk(_mutex);
+    client_list clients;
+    {
+      std::lock_guard<mutex_type> lk(_mutex);
+      _clients.swap(clients);
+    }
 
-    for ( auto& conn : _clients )
+    for ( auto& conn : clients )
     {
       conn->stop();
     }
-    _clients.clear();
   }
 
   data_ptr send(data_ptr d)
