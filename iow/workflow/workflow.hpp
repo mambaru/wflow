@@ -49,7 +49,7 @@ public:
   size_t dropped() const;
 
 
-  bool post(post_handler handler, post_handler drop /*= nullptr*/);
+  bool post(post_handler handler, post_handler drop = nullptr);
   bool post(time_point_t, post_handler handler, post_handler drop = nullptr);
   bool post(duration_t,   post_handler handler, post_handler drop = nullptr);
 
