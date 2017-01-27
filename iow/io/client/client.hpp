@@ -158,7 +158,7 @@ private:
       {
         this->upgrate_options_(opt);
         this->connect_( *this, opt );
-      }
+      }, nullptr
     );
   }
   
