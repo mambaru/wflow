@@ -1,4 +1,3 @@
-#include <wfc/core/workflow.hpp>
 #include <iow/workflow/workflow.hpp>
 #include <iow/workflow/bique.hpp>
 

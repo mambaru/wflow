@@ -33,6 +33,7 @@ data_line_test_options getopt(
   dlto.bufsize = bufsize;
   dlto.maxbuf = maxbuf; 
   dlto.minbuf = minbuf;
+  dlto.sep="";
   // dlto.wrnsize = wrnsize;
   //dlto.maxsize = maxsize;
   dlto.first_as_is = first_as_is;

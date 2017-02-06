@@ -1,5 +1,7 @@
 #include <fas/testing.hpp>
 #include <iow/workflow/delayed_queue.hpp>
+#include <iow/workflow/asio_queue.hpp>
+#include <iow/asio.hpp>
 #include <chrono>
 #include <atomic>
 #include <thread>

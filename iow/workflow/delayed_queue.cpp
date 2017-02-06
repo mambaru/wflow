@@ -6,6 +6,7 @@ delayed_queue::delayed_queue(size_t maxsize)
   : _maxsize(maxsize)
 {
   _drop_count = 0;
+  _loop_exit = false;
 }
 
 delayed_queue::~delayed_queue ()
@@ -93,7 +94,7 @@ bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t d
   if ( !this->check_( std::move(drop) ) )
     return false;
 
-  if ( ! duration.count() )
+  if ( 0 == duration.count() )
     _que.push( std::move( f ) );
   else
     this->push_at_( std::move( std::chrono::system_clock::now() + duration), std::move(f) );

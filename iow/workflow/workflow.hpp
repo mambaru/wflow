@@ -3,7 +3,7 @@
 #include <iow/workflow/workflow_options.hpp>
 #include <iow/workflow/task_manager.hpp>
 #include <iow/workflow/bique.hpp>
-#include <wfc/asio.hpp>
+#include <iow/asio.hpp>
 #include <chrono>
 
 
@@ -12,7 +12,7 @@ namespace iow{
 class workflow
 {
 public:
-  typedef ::wfc::asio::io_service io_service_type;
+  typedef ::iow::asio::io_service io_service_type;
   typedef std::function< void() > post_handler;
 
   typedef std::function<bool()> timer_handler;

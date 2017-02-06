@@ -16,7 +16,7 @@ UNIT(workflow1, "")
   queue.post([&t, &counter](){
     ++counter;
     t << message("post");
-  });
+  }, nullptr);
   queue.timer()->create(std::chrono::milliseconds(400), [&t, &counter](){
     ++counter;
     t << message("timer 400ms");
@@ -25,13 +25,13 @@ UNIT(workflow1, "")
   queue.delayed_post( std::chrono::milliseconds(600), [&t, &counter](){
     ++counter;
     t << message("delayed post 600ms");
-  });
+  }, nullptr);
   for (int i =0 ; i < 3 ; ++i)
   {
     queue.delayed_post( std::chrono::milliseconds(300 + i*300), [&t, &counter, i](){
       ++counter;
       t << message("delayed post ") << 300 + i*300 << "ms";
-    });
+    }, nullptr);
   }
   sleep(1);
   queue.stop();
@@ -69,7 +69,7 @@ UNIT(workflow2, "")
   pw = &wfl;
   wfl.start();
   for (int i =0 ; i < 5; i++)
-    wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [](){std::cout << "<->" << std::endl;});
+    wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [](){std::cout << "<->" << std::endl;}, nullptr);
   io.run();
   t << is_true<expect>(ready) << FAS_TESTING_FILE_LINE;
   t << is_true<expect>(pw->dropped()==1) << FAS_TESTING_FILE_LINE;

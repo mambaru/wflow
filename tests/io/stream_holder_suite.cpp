@@ -57,14 +57,16 @@ UNIT(stream_holder_unit, "")
     h2->get_aspect().get< ::iow::io::writer::_output_>()( *h2, std::move(d) );
     // callback(std::move(d));
   };
+  opt.reader.sep = "";
+  opt.writer.sep = "";
   t << message("start1");
   h1->start(opt);
   t << message("start2");
   h2->reconfigure(opt);
   t << message("service.run()...");
-  service.run();
+  service.run_one();
   t << message("...service.run()");
-  service.run();
+  //service.run();
   
   char outstr[128];
   int size = read(f2[0], outstr, 128);
