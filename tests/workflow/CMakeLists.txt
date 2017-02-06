@@ -1,7 +1,7 @@
 
 set( SUITE_LIST
   delayed_queue_suite.cpp
-  deadline_timer_suite.cpp
+  asio_queue_suite.cpp
   thread_pool_suite.cpp
   timer_manager_suite.cpp
   workflow_suite.cpp

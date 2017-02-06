@@ -37,7 +37,7 @@ UNIT(timer_manager1, "")
     t << message("tick1");
     return true;
   } );
-  tm->create( std::chrono::milliseconds(400), [&counter, &t]()
+  tm->create(std::chrono::milliseconds(400), [&counter, &t]()
   {
     ++counter;
     t << message("tick2");
@@ -59,8 +59,53 @@ UNIT(timer_manager1, "")
   t << equal< assert,int >( counter, 4 ) << "counter 4!=" << counter ;
 }
 
+UNIT(timer_manager2, "")
+{
+  using namespace ::fas::testing;
+  using namespace ::std::chrono;
+  iow::asio::io_service io;
+  auto pq = std::make_shared< ::iow::asio_queue >(io, 0);
+  auto tm = std::make_shared< ::iow::timer_manager< ::iow::asio_queue > >( pq );
+
+  auto start = high_resolution_clock::now();
+  auto finish = start;
+  tm->create( std::chrono::milliseconds(0), std::chrono::milliseconds(200), [&finish, &t]()
+  {
+    finish = high_resolution_clock::now();
+    t << message("tick1");
+    return false;
+  } );
+  io.run();
+  auto interval = duration_cast<milliseconds>(finish - start).count();
+  t << equal<expect>(interval, 0) << FAS_FL;
+  t << nothing;
+}
+
+UNIT(timer_manager3, "")
+{
+  using namespace ::fas::testing;
+  using namespace ::std::chrono;
+  iow::asio::io_service io;
+  auto pq = std::make_shared< ::iow::asio_queue >(io, 0);
+  auto tm = std::make_shared< ::iow::timer_manager< ::iow::asio_queue > >( pq );
+
+  auto start = high_resolution_clock::now();
+  auto finish = start;
+  tm->create(std::chrono::milliseconds(200), [&finish, &t]()
+  {
+    finish = high_resolution_clock::now();
+    t << message("tick1");
+    return false;
+  }, false );
+  io.run();
+  auto interval = duration_cast<milliseconds>(finish - start).count();
+  t << equal<expect>(interval, 0) << FAS_FL;
+  t << nothing;
+}
 
 BEGIN_SUITE(timer_manager, "")
   ADD_UNIT(timer_manager1)
+  ADD_UNIT(timer_manager2)
+  ADD_UNIT(timer_manager3)
 END_SUITE(timer_manager)
 
