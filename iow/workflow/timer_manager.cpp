@@ -98,13 +98,13 @@ template<typename Handler>                                                      
 timer_manager<bique>::timer_id_t                                                                                                \
   timer_manager<bique>::create_(const std::string& start_time, duration_t delay, Handler h, bool expires_after)                 \
 {                                                                                                                               \
-  time_point_t tp = clock_t::now() + delay;                                                                                     \
-  timer::today_from_string( start_time, tp );                                                                                  \
-  /*if ( !start_time.empty() )                                                                                                 \
-  {                                                                                                                          \
-    if ( !timer::today_from_string( start_time, tp ) )                                                                        \
-     return 0;                                                                                                               \
-  } */                                                                                                                          \
+  time_point_t tp = clock_t::now();                                                                                             \
+  if ( !start_time.empty() )                                                                                                    \
+  {                                                                                                                             \
+    tp += delay;                                                                                                                \
+    if ( !timer::today_from_string( start_time, tp ) )                                                                          \
+    { }                                                                                                                         \
+  }                                                                                                                             \
   return this->create_(tp, delay, std::move(h), expires_after);                                                                 \
 }
 
