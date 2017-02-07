@@ -91,7 +91,7 @@ UNIT(timer_manager3, "")
 
   auto start = high_resolution_clock::now();
   auto finish = start;
-  tm->create(std::chrono::milliseconds(200), [&finish, &t]()
+  tm->create( "", std::chrono::milliseconds(200), [&finish, &t]()
   {
     finish = high_resolution_clock::now();
     t << message("tick1");
