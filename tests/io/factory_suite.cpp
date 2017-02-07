@@ -42,7 +42,6 @@ void thread1()
   {
     std::lock_guard<std::mutex> lk(mutex);
     ++tem;
-    //std::cout << i << std::endl;
   }
   std::cout << std::endl <<  tem << std::endl;
 }
@@ -56,7 +55,6 @@ void thread2()
     ++tem;
     auto d = std::unique_ptr<data_type>( new data_type(SIZE) );
     d.reset();
-    //std::cout << i << std::endl;
   }
   std::cout << std::endl <<  tem << std::endl;
 }

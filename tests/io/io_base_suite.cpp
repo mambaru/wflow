@@ -10,7 +10,6 @@ struct ad_start
   template<typename T>
   void operator() (T& t) 
   {
-    std::cout << std::endl << "start" << std::endl;
     t.virt();
     t.started = true;
   }
@@ -22,7 +21,6 @@ struct ad_init
   template<typename T>
   void operator() (T& t, int val)
   {
-    std::cout << std::endl << "init" << std::endl;
     t.value = val;
     t.virt();
   }

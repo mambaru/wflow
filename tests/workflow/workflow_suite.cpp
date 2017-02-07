@@ -36,13 +36,12 @@ UNIT(workflow1, "")
   sleep(1);
   queue.stop();
   t << equal< assert,int >( counter, 7 ) << "counter 7!=" << counter ;
-  t << nothing;
+  
 }
 
 UNIT(workflow2, "")
 {
   using namespace ::fas::testing;
-  t << message("Покхали" );
   ::iow::asio::io_service io;  
   ::iow::asio::io_service::work wrk(io);
   ::iow::workflow* pw = nullptr;
@@ -76,8 +75,54 @@ UNIT(workflow2, "")
   t << is_true<expect>( pw->queue_size()==1  ) << pw->queue_size() << " " << FAS_TESTING_FILE_LINE;
 }
 
+struct foo
+{
+  struct request
+  {
+    typedef std::unique_ptr<request> ptr; 
+  };
+
+  struct response
+  {
+    typedef std::unique_ptr<response> ptr;
+    typedef std::function< void(ptr) > handler;
+  };
+  void method( request::ptr, response::handler h) { h( std::make_unique<response>() ); };
+};
+
+UNIT(requester1, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+  auto f = std::make_shared<foo>();
+  iow::asio::io_service ios;
+  iow::workflow_options wo;
+  wo.threads = 0;
+  iow::workflow flw(ios, wo);
+  iow::workflow::timer_id_t id;
+  auto start = high_resolution_clock::now();
+  auto finish = start;
+  id = flw.create_requester< foo::request, foo::response >(
+    milliseconds(0), milliseconds(1000), f, &foo::method,
+    [&id, &ios, &finish]( foo::response::ptr ) -> foo::request::ptr
+    {
+      std::cout << std::endl << id << std::endl;
+      finish = high_resolution_clock::now();
+      ios.stop();
+      return std::make_unique<foo::request>();
+    }
+  );
+  t << message("requester: ") << id;
+  flw.start();
+  ios.run();
+  auto interval = duration_cast<milliseconds>(finish - start).count();
+  t << equal<expect>(interval, 0) << FAS_FL;
+
+}
+
 BEGIN_SUITE(workflow, "")
   ADD_UNIT(workflow1)
   ADD_UNIT(workflow2)
+  ADD_UNIT(requester1)
 END_SUITE(workflow)
 
