@@ -38,13 +38,19 @@ std::function<void()> timer::make( std::shared_ptr<delayed_queue> pq, duration_t
 
 bool timer::today_from_string(const std::string& strtime, time_point_t& result)
 {
+  if ( strtime.empty() )
+  {
+    result = time_point_t();
+    return true;
+  }
   std::time_t now = std::time(0);
   std::tm ptm;
   ::localtime_r(&now, &ptm);
 
   if ( nullptr ==  strptime(strtime.c_str(), "%H:%M:%S", &ptm) )
   {
-    result = std::chrono::system_clock::now();
+    // result = std::chrono::system_clock::now();
+    result = time_point_t();
     return false;
   }
 

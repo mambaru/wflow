@@ -139,7 +139,7 @@ private:
     if ( pq == nullptr )
       return;
 
-    std::shared_ptr<bool> pres = std::make_shared<bool>(true);  // ???
+    std::shared_ptr<bool> pres = std::make_shared<bool>(true);
     std::weak_ptr<bool> wres = pres;
 
     pq->delayed_post(delay, [wq, delay, handler, wflag, wres]()

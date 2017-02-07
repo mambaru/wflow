@@ -74,34 +74,39 @@ public:
   timer_id_t create( duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
     // в отличие от таймера, первый вызов немедленно 
-    return this->create( std::chrono::milliseconds(0), d, this->make_reqester_<Req, Res>(i, mem_fun, result_handler));
+    // TODO: Не работает
+    return this->create( std::chrono::milliseconds(0), d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
   }
-
 
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   timer_id_t create( duration_t sd, duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
-    return this->create(sd, d, this->make_reqester_<Req, Res>(i, mem_fun, result_handler));
+    return this->create(sd, d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
   }
 
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   timer_id_t create( time_point_t st, duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
-    return this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, result_handler));
+    return this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
   }
 
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   timer_id_t create( std::string st, duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
     return this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, result_handler));
+    
+    /*return !st.empty() 
+      ? this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)))
+      : this->create<Req, Res>( d, i, mem_fun, std::move(result_handler) );
+      */
+    
   }
 
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   timer_id_t create( std::string st, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
-    return this->create(st, this->make_reqester_<Req, Res>(i, mem_fun, result_handler));
+    return this->create(st, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
   }
-
 
   /// //////////////
 

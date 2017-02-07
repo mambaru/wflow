@@ -78,6 +78,8 @@ bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
 {
   if ( !this->check_(std::move(drop)) )
     return false;
+  if ( tp <= time_point_t::clock::now() )
+    return this->post( std::move(f), std::move(drop) );
 
   auto ptimer = this->create_timer_( tp );
   std::weak_ptr<self> wthis = this->shared_from_this();

@@ -3,6 +3,8 @@
 #include <iow/workflow/asio_queue.hpp>
 #include <iow/workflow/delayed_queue.hpp>
 #include <iow/workflow/bique.hpp>
+#include <iow/logger/logger.hpp>
+
 
 namespace iow{
 
@@ -55,7 +57,13 @@ timer_manager_base::timer_id_t timer_manager_base::create_( std::shared_ptr<Q> p
   std::shared_ptr<bool> pflag = std::make_shared<bool>(true);
   std::weak_ptr<bool> wflag = pflag;
   _id_map.insert( std::make_pair(id, pflag) );
-  pq->post_at( start_time, timer::make(pq, delay, std::move(handler), expires_after, wflag), nullptr );
+  auto drop = [](){
+    IOW_LOG_FATAL("timer_manager_base::create_: обработчик таймера выброшен из очереди из-за перереполнения")
+  };
+  if ( start_time!=time_point_t() )
+    pq->post_at( start_time, timer::make(pq, delay, std::move(handler), expires_after, wflag), drop );
+  else
+    pq->post( timer::make(pq, delay, std::move(handler), expires_after, wflag), drop );
   return id;
 }
 
