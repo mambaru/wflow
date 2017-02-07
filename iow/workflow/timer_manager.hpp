@@ -94,12 +94,6 @@ public:
   timer_id_t create( std::string st, duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
     return this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, result_handler));
-    
-    /*return !st.empty() 
-      ? this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)))
-      : this->create<Req, Res>( d, i, mem_fun, std::move(result_handler) );
-      */
-    
   }
 
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
