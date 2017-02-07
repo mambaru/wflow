@@ -172,7 +172,6 @@ public:
         itr = beg;
       }
     }
-    //std::cout << std::distance(_strands.begin(), itr ) << " - " << _strands.size() << std::endl;
 /*#warning
 
     auto& io = (*itr)->get_io_service();

@@ -14,16 +14,10 @@ struct ad_handler
     while (auto d = buf.detach() )
     {
       if (d->empty() )
-      {
-        std::cout << "Кривая ошибка" << std::endl;
         continue;
-        // Кривая ошибка
-        // t.get_aspect().template get<_aaaa_>()(t, "");
-      }
       t.get_aspect().template get<_incoming_>()(t, std::move(d) );
     }
   }
 };
-
 
 }}}}

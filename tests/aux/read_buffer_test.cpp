@@ -225,7 +225,7 @@ void test_buff4(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
   if ( !chk.empty() )
     t << equal<expect>(chk, vectres) << FAS_TESTING_FILE_LINE;
   t << equal<assert, size_t>(buf.size(), 0) << "buf.size()==" << buf.size() << FAS_TESTING_FILE_LINE;
-  t << equal<assert, size_t>(buf.count(), 0) << "buf.cout()==" << buf.count() << FAS_TESTING_FILE_LINE;
+  t << equal<assert, size_t>(buf.count(), 0) << "buf.count()==" << buf.count() << FAS_TESTING_FILE_LINE;
 }
 
 

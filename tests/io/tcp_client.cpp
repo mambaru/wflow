@@ -79,24 +79,6 @@ int main()
   {
     std::cout << "OK" << std::endl;
   }
-  
-  
-  
-  
-  /*
-  typedef ::iow::ip::tcp::client::client<> tcp_client;
-  typedef tcp_client::descriptor_type accept_descriptor;
-  typedef tcp_client::options_type options;
-  iow::asio::io_service io_service; 
-  accept_descriptor desc = accept_descriptor(io_service);
-  auto client = std::make_shared<tcp_client>( std::move(desc)  );
-  options opt;
-  opt.host = "0.0.0.0";
-  opt.port = "12345";
-  client->start(opt);
-  io_service.run();
-  */
- 
   t.join();
   return 0;
 }

@@ -55,7 +55,6 @@ UNIT(workflow2, "")
   opt.id = "test";
   opt.handler = [&pw, &ready, &io]()->bool 
   {
-    std::cout << "]]]] " << pw->queue_size() << std::endl;
     if ( ready )
       return false;
     ready = pw->queue_size() == 1;
@@ -69,7 +68,7 @@ UNIT(workflow2, "")
   pw = &wfl;
   wfl.start();
   for (int i =0 ; i < 5; i++)
-    wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [](){std::cout << "<->" << std::endl;}, nullptr);
+    wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [](){}, nullptr);
   io.run();
   t << is_true<expect>(ready) << FAS_TESTING_FILE_LINE;
   t << is_true<expect>(pw->dropped()==1) << FAS_TESTING_FILE_LINE;

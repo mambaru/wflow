@@ -335,7 +335,7 @@ END_SUITE(aux)
     getopt( 10,     20,    5,    false,      100,      100  ),
     getopt( 33,     34,    32,   false,      1000,     1000 ),
   };
-  std::cout << sizeof(optlist) <<std::endl;
+
   ::fas::testing::suite_counts sc;
   fas_aux_suite as;
   
@@ -345,9 +345,7 @@ END_SUITE(aux)
   auto opt = as.get_aspect().get<_test_options_>();
   for (size_t i =0 ; i < std::extent< decltype(optlist) >::value; i++)
   {
-    std::cout << std::endl << i << std::endl;
     *opt=optlist[i];
-    //opt->fix();
     as.run();
     sc += as.counts();
   }

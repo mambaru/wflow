@@ -52,10 +52,7 @@ UNIT(stream_holder_unit, "")
   
   options_type opt;
   opt.incoming_handler = [&](options_type::data_ptr d, size_t, options_type::outgoing_handler_type /*callback*/){
-    std::cout << std::endl << "yooooooooooo!!!" << std::endl;
-    std::cout << std::endl << std::string(d->begin(), d->end() );
     h2->get_aspect().get< ::iow::io::writer::_output_>()( *h2, std::move(d) );
-    // callback(std::move(d));
   };
   opt.reader.sep = "";
   opt.writer.sep = "";

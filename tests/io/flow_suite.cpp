@@ -33,7 +33,6 @@ struct ad_some
     
     auto dd = std::make_shared<typename T::input_t>( std::move(d) );
     t.service.post([&t, dd](){
-      std::cout << "POST" << std::endl;
       auto tmp = std::move(t.input.front());
       t.input.pop_front();
       std::copy(tmp->begin(), tmp->end(), (*dd)->begin());

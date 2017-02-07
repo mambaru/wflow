@@ -44,7 +44,6 @@ struct ad_write_some
       return;
     
     t.service.post([&t, p](){
-      std::cout << "writer write" << std::endl;
       t.result += std::string(p.first, p.first + p.second);
       t.get_aspect().template get< ::iow::io::writer::_complete_>()(t, std::move(p) /*.first, p.second*/ );
     });

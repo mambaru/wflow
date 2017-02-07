@@ -24,14 +24,12 @@ struct ad_read_some
   template<typename T, typename D>
   void operator()(T& t, D d)
   {
-    std::cout << "ad_read_some: " << d.second << std::endl;
     if ( t.input.empty() )
       return;
     
     //auto dd = std::make_shared<typename T::input_t>( std::move(d) );
     
     t.service.post([&t, d](){
-       std::cout << "ad_read_some (post ready) : " << d.second << std::endl;
       auto dd = d;
       auto tmp = std::move(t.input.front());
       t.input.pop_front();
@@ -55,7 +53,6 @@ struct ad_write_some
       return;
     
     t.service.post([&t, p](){
-      std::cout << "writer write" << std::endl;
       t.result += std::string(p.first, p.first + p.second);
       t.get_aspect().template get< ::iow::io::writer::_complete_>()(t, std::move(p) /*.first, p.second*/ );
     });
@@ -99,16 +96,6 @@ public:
     stream_options opt;
     opt.reader.sep.clear();
     opt.writer.sep.clear();
-    //opt.buffer_pool = std::make_shared<stream_options::buffer_pool_type>();
-    /*::iow::io::data_pool_options dpo;
-    dpo.poolsize = 10;
-    dpo.minbuf = 128;
-    dpo.maxbuf = 1024;
-    opt.buffer_pool->set_options(dpo);
-    */
-    //opt.write_buffer = std::make_shared<stream_options::write_buffer_options>();
-    //opt.write_buffer->fix();
-    //opt.read_buffer = std::make_shared<stream_options::read_buffer_options>();
     this->start_(*this, opt ); 
   }
   
