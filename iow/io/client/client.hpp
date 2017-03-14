@@ -152,14 +152,22 @@ private:
   template<typename Opt>
   void delayed_reconnect_(Opt opt)
   {
-    _workflow->post( 
-      std::chrono::milliseconds( this->_reconnect_timeout_ms ),
-      [opt, this]() mutable
-      {
-        this->upgrate_options_(opt);
-        this->connect_( *this, opt );
-      }, nullptr
-    );
+    if ( _workflow!= nullptr )
+    {
+      _workflow->post( 
+        std::chrono::milliseconds( this->_reconnect_timeout_ms ),
+        [opt, this]() mutable
+        {
+          this->upgrate_options_(opt);
+          this->connect_( *this, opt );
+        }, 
+        [](){ IOW_LOG_FATAL("Client Reconnect FAILED. Workflow overflow")  }
+      );
+    } 
+    else
+    {
+      IOW_LOG_FATAL("Reconnect not supported. Required initialize 'workflow'.")
+    }
   }
   
   template<typename Opt>
@@ -229,72 +237,7 @@ private:
         IOW_LOG_ERROR("Client incoming_handler not set [" << d << "]" )
       }; 
     }
-
-    /*
-    auto popt = std::make_shared<Opt>(opt);
-    auto startup_handler  = opt.connection.startup_handler;
-    auto shutdown_handler = opt.connection.shutdown_handler;
-    auto connect_handler  = opt.args.connect_handler;
-    auto error_handler    = opt.args.error_handler;
-
-    std::weak_ptr<self> wthis = this->shared_from_this();
-    popt->args.connect_handler = [wthis, connect_handler, popt]()
-    {
-      if ( connect_handler ) connect_handler();
-      if ( auto pthis = wthis.lock() )
-      {
-        std::lock_guard<mutex_type> lk( pthis->mutex() );
-        pthis->client_start_(*popt);
-      }
-    };
-    
-    popt->args.error_handler = [wthis, error_handler, popt](::iow::system::error_code ec)
-    {
-      if ( error_handler!=nullptr ) error_handler(ec);
-      if ( auto pthis = wthis.lock() )
-      {
-        std::lock_guard<mutex_type> lk( pthis->mutex() );
-        pthis->delayed_reconnect_(popt);
-      }
-    };
-    
-    popt->connection.shutdown_handler = [wthis, shutdown_handler, popt]( io_id_t io_id) 
-    {
-      if ( shutdown_handler!=nullptr ) shutdown_handler(io_id);
-      if ( auto pthis = wthis.lock() )
-      {
-        std::lock_guard<mutex_type> lk( pthis->mutex() );
-        pthis->_ready_for_write = false;
-        pthis->delayed_reconnect_(popt);
-      }
-    };
-
-    popt->connection.startup_handler = [wthis, startup_handler]( io_id_t io_id, outgoing_handler_t outgoing)
-    {
-      if ( auto pthis = wthis.lock() )
-      {
-        std::lock_guard<mutex_type> lk( pthis->mutex() );
-        pthis->startup_handler_(io_id, outgoing);
-      }
-
-      if ( startup_handler != nullptr )
-      {
-        startup_handler( io_id, outgoing);
-      }
-    };
-      
-    if ( popt->connection.incoming_handler == nullptr )
-    {
-      popt->connection.incoming_handler
-        = [wthis]( data_ptr d, io_id_t o_id, outgoing_handler_t outgoing)
-      {
-        IOW_LOG_ERROR("Client incoming_handler not set [" << d << "]" )
-      }; 
-    }
-
-    opt = *popt;
-    */
-  }
+ }
 private:
   bool _started;
   bool _ready_for_write;

@@ -36,7 +36,6 @@ struct ad_initialize
       cntx.fatal_handler = [](int code, std::string message)
       {
         IOW_LOG_FATAL("iow::io::descriptor: Default fatal handler (" << code << ") " << message)
-        abort();
       };
     }
 

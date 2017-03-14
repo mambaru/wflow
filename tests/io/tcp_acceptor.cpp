@@ -37,6 +37,7 @@ int main()
   options opt;
   opt.addr = "0.0.0.0";
   opt.port = "12345";
+  acceptor->listen(opt);
   acceptor->start(opt);
   io_service.run();
 }

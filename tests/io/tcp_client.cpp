@@ -3,8 +3,10 @@
 #include <iow/ip/tcp/server/server.hpp>
 #include <iow/ip/tcp/server/options.hpp>
 #include <iow/ip/tcp/client/client.hpp>
+#include <iow/workflow/workflow.hpp>
 #include <thread>
 #include <mutex>
+#include <memory>
 
 iow::asio::io_service io_service; 
 std::atomic<int> connect_count;
@@ -56,9 +58,14 @@ int main()
   opt.addr = "0.0.0.0";
   opt.port = "12345";
   opt.reconnect_timeout_ms = 1000;
+  auto workflow = std::make_shared< iow::workflow>(io_service);
+  opt.args.workflow = workflow;
   opt.connection.incoming_handler=[](iow::io::data_ptr, iow::io::io_id_t, ::iow::io::outgoing_handler_t)
   {
-    
+  };
+  opt.connection.fatal_handler = [](int code, std::string msg )
+  {
+    std::cout << "---> " << code  << ": " << msg << std::endl;
   };
   opt.connection.reader.trimsep=true;
   // std::cout << "client connect..." << std::endl;
@@ -67,6 +74,8 @@ int main()
   tcp_client->start(opt);
   tcp_client->send( iow::io::make("Hello World!") );
   std::thread t(server);
+  sleep(4);
+  
   std::cout << "client main run..." << std::endl;
   io_service.run();
   if ( connect_count != 0 ) 
