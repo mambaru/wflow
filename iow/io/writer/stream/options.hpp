@@ -6,11 +6,9 @@
 #define IOW_STREAM_DEFAULT_WRNSIZE (1024*1024)
 
 namespace iow{ namespace io{ namespace writer{ namespace stream{
-  
 
-template<typename DataType>
 struct options:
-  ::iow::io::write_buffer_options<DataType>
+  ::iow::io::write_buffer_options
 {
   // Вынести на более высокий уровень
   size_t maxsize = 1024*1024*128;

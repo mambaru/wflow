@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iow/memory.hpp>
+#include <iow/io/types.hpp>
 #include <queue>
 #include <memory>
 #include <string>
@@ -8,10 +9,8 @@
 
 namespace iow{ namespace io{
 
-template<typename DataType>
 struct write_buffer_options
 {
-  typedef std::unique_ptr<DataType> data_ptr;
   typedef std::function< data_ptr(size_t, size_t) > create_fun;
   typedef std::function< void(data_ptr) > free_fun;
   

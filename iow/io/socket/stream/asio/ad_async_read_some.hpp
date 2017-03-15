@@ -3,7 +3,7 @@
 #include <iow/asio.hpp>
 #include <utility>
 
-namespace iow{ namespace io{ namespace connection{ namespace asio{
+namespace iow{ namespace io{ namespace socket{ namespace stream{ namespace asio{
 
 struct ad_async_read_some
 {
@@ -17,4 +17,4 @@ struct ad_async_read_some
   }
 };
 
-}}}}
+}}}}}

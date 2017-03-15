@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iow/io/connection/connection.hpp>
+#include <iow/io/socket/stream/socket.hpp>
 #include <iow/asio.hpp>
 
 
@@ -62,11 +62,11 @@ typedef fas::aspect<
 
 template<typename A = fas::aspect<> >
 class connection_base
-  : public ::iow::io::connection::connection_base< typename fas::merge_aspect<A, aspect>::type >
+  : public ::iow::io::socket::stream::socket_base< typename fas::merge_aspect<A, aspect>::type >
 {
 public:
   typedef connection_base<A> self;
-  typedef ::iow::io::connection::connection_base< typename fas::merge_aspect<A, aspect>::type > super;
+  typedef ::iow::io::socket::stream::socket_base< typename fas::merge_aspect<A, aspect>::type > super;
   typedef typename super::descriptor_type descriptor_type;
   typedef typename super::data_ptr data_ptr;
   

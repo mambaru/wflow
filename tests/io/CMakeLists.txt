@@ -5,6 +5,7 @@ set( SUITE_LIST
   stream_suite.cpp
   factory_suite.cpp
   stream_holder_suite.cpp
+  dgram_holder_suite.cpp
 )
 
 add_executable( io_test ${FAS_TESTING_CPP} io_test.cpp ${SUITE_LIST} )

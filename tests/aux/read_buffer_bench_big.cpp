@@ -14,9 +14,9 @@
 #endif
 #define DATA_SIZE 50000
 
-typedef std::vector<char> data_type;
-typedef ::iow::io::read_buffer<data_type>  read_buffer;
-typedef read_buffer::data_ptr data_ptr;
+typedef ::iow::io::data_type data_type;
+typedef ::iow::io::read_buffer  read_buffer;
+typedef ::iow::io::data_ptr data_ptr;
 
 /*
 void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bufsize, size_t minbuf, size_t maxbuf, bool use_pool)

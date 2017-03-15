@@ -4,8 +4,6 @@
 #include <iow/io/reader/stream/options_json.hpp>
 #include <iow/io/writer/stream/options_json.hpp>
 #include <wjson/json.hpp>
-#include <wjson/name.hpp>
-
 
 namespace iow{ namespace io{ namespace stream{
   

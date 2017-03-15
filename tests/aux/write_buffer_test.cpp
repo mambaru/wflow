@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <cstring>
 
+typedef ::iow::io::data_type data_type;
+typedef ::iow::io::data_ptr  data_ptr;
+
 struct _data_line_;
 struct _generator_;
 struct _init_line_;
@@ -12,7 +15,7 @@ struct _data_size_;
 struct _data_line_init_;
 struct _test_options_;
 
-struct data_line_test_options: iow::io::write_buffer_options< std::string /*std::vector<char>*/ >
+struct data_line_test_options: iow::io::write_buffer_options
 {
   size_t data_size;
   size_t data_count;
@@ -45,13 +48,10 @@ data_line_test_options getopt(
 struct generator
 {
   template<typename T>
-  typename T::aspect::template advice_cast<_data_line_>::type::data_ptr
-  operator()(T&, size_t offset, size_t size) 
+  data_ptr operator()(T&, size_t offset, size_t size) 
   {
     typedef typename T::aspect::template advice_cast<_data_line_>::type data_line_t;
-    typedef typename data_line_t::data_type data_type;
-    typedef typename data_line_t::data_ptr data_ptr;
-    
+        
     data_ptr d = std::make_unique<data_type>();
     for ( size_t j = offset; j < offset + size; j++)
       d->push_back('A'+j%10);
@@ -61,8 +61,7 @@ struct generator
 };
 
 template<typename T>
-typename T::aspect::template advice_cast<_data_line_>::type::data_ptr
-generate(T& t, size_t offset, size_t size)
+data_ptr generate(T& t, size_t offset, size_t size)
 {
   return t.get_aspect().template get<_generator_>()(t, offset, size);
 }
@@ -75,7 +74,7 @@ struct init_line
     using namespace fas::testing;
     auto& data_line = t.get_aspect().template get<_data_line_>();
     typedef typename std::remove_reference<decltype(data_line)>::type data_line_t;
-    typedef typename data_line_t::data_ptr data_ptr;
+    
 
     auto opt = t.get_aspect().template get<_test_options_>();
     data_line.clear();
@@ -160,7 +159,7 @@ UNIT(nobuf_test, "non-buffering mode")
     auto d3 = data_line.next();
     t << is_true<assert>( d3.first!=nullptr ) << "c: " << c << ": " << FAS_TESTING_FILE_LINE;
     t << stop;
-    t << equal<assert, std::string>( d3.first, *d2 ) << "c: " << c << ", " << d3.first << "!=" << *d2 << FAS_TESTING_FILE_LINE;
+    t << equal<assert, data_type>( data_type( d3.first, d3.first + d3.second), *d2 ) << "c: " << c << ", " << FAS_TESTING_FILE_LINE;
     data_line.confirm(d3);
     t << is_true<assert>( data_line.size()==0 )  << FAS_TESTING_FILE_LINE;
     t << is_true<assert>( data_line.count()==0 ) << FAS_TESTING_FILE_LINE;
@@ -179,8 +178,7 @@ UNIT(fullbuf_test, "full-buffering mode")
 
   using namespace fas::testing;
   typedef typename T::aspect::template advice_cast<_data_line_>::type data_line_t;
-  typedef typename data_line_t::data_type data_type;
-
+  
   data_line_t& data_line = t.get_aspect().template get<_data_line_>();
   //typedef typename decltype(data_line)::data_ptr data_ptr;
 
@@ -218,7 +216,7 @@ UNIT(fullbuf_test, "full-buffering mode")
     
     if ( d1!=nullptr )
     {
-      t << equal<assert, std::string>( *d1, *d2 ) << "c: " << c << ", " << *d1 << "!=" << *d2 << FAS_TESTING_FILE_LINE;
+      t << equal<assert, data_type>( *d1, *d2 ) << "c: " << c << ", " << FAS_TESTING_FILE_LINE;
       t << stop;
     }
     else
@@ -254,7 +252,7 @@ UNIT(ignore_first_test, "buffering with ignore first flag mode")
     auto d3 = data_line.next();
     t << is_true<assert>( d3.first!=nullptr ) << "c: " << c << ": " << FAS_TESTING_FILE_LINE;
     t << stop;
-    t << equal<assert, std::string>( d3.first, *d2 ) << "c: " << c << ", " << d3.first << "!=" << *d2 << FAS_TESTING_FILE_LINE;
+    t << equal<assert, data_type>( data_type(d3.first, d3.first + d3.second), *d2 ) << "c: " << c << ", " << FAS_FL;
     data_line.confirm(d3);
     t << is_true<assert>( data_line.size()==0 )  << FAS_TESTING_FILE_LINE;
     t << is_true<assert>( data_line.count()==0 ) << FAS_TESTING_FILE_LINE;
@@ -272,8 +270,7 @@ UNIT(partconfirm_test, "partconfirm_test")
   typedef typename T::aspect::template advice_cast<_data_line_>::type data_line_t;
   auto& data_line = t.get_aspect().template get<_data_line_>();
   auto test_opt = t.get_aspect().template get<_test_options_>();
-  typedef typename std::remove_reference< decltype( data_line ) >::type::data_type data_type;
-  
+    
   //!! test_opt.except_first   = false;
   //!! test_opt.except_confirm = false;
   data_line.clear();
@@ -307,7 +304,7 @@ UNIT(partconfirm_test, "partconfirm_test")
     d2 = data_line.next();
   }
   
-  t <<   equal<assert>( result1, result2 )     << result1 << "!=" << result2 << FAS_TESTING_FILE_LINE;
+  t <<   equal<assert>( result1, result2 ) << FAS_TESTING_FILE_LINE;
   t << is_true<assert>( data_line.size()==0 )  << data_line.size() << FAS_TESTING_FILE_LINE;
   t << is_true<assert>( data_line.count()==0 ) << FAS_TESTING_FILE_LINE;
 }
@@ -319,7 +316,7 @@ BEGIN_SUITE(aux,"aux suite")
   ADD_UNIT(ignore_first_test)
   ADD_UNIT(partconfirm_test)
   ADD_VALUE(_test_options_, std::shared_ptr<data_line_test_options> )
-  ADD_VALUE(_data_line_, ::iow::io::write_buffer< std::string > )
+  ADD_VALUE(_data_line_, ::iow::io::write_buffer )
   ADD_ADVICE(_generator_, generator)
   ADD_ADVICE(_init_line_, init_line)
 END_SUITE(aux)

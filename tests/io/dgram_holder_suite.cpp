@@ -13,6 +13,7 @@ typedef std::vector<char> data_type;
 typedef iow::asio::posix::stream_descriptor descriptor_type;
 typedef iow::io::socket::stream::options options_type;
 
+
 struct aspect_stream : fas::aspect<
     fas::type< ::iow::io::descriptor::_descriptor_type_, descriptor_type >,
     fas::type< ::iow::io::_options_type_, options_type >,
@@ -48,7 +49,9 @@ UNIT(stream_holder_unit, "")
   
   options_type opt;
   opt.incoming_handler = [&](options_type::data_ptr d, size_t, options_type::outgoing_handler_type /*callback*/){
+    /*!!!
     h2->get_aspect().get< ::iow::io::writer::_output_>()( *h2, std::move(d) );
+    */
   };
   opt.reader.sep = "\r\n";
   opt.reader.trimsep = true;
@@ -70,7 +73,7 @@ UNIT(stream_holder_unit, "")
   t << equal<expect, std::string>(outstr, "Hello world!") << FAS_FL;
 }
 
-BEGIN_SUITE(stream_holder,"")
+BEGIN_SUITE(dgram_holder,"")
   ADD_UNIT(stream_holder_unit)
-END_SUITE(stream_holder)
+END_SUITE(dgram_holder)
 

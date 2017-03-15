@@ -14,20 +14,19 @@
 #include <iow/system.hpp>
 #include <iow/asio.hpp>
 #include <fas/aop.hpp>
-#include <iow/io/connection/tags.hpp>
+#include <iow/io/socket/stream/tags.hpp>
 
-#include <iow/io/connection/asio/aspect.hpp>
-#include <iow/io/connection/context.hpp>
+#include <iow/io/socket/stream/asio/aspect.hpp>
+#include <iow/io/socket/stream/context.hpp>
 
 
-namespace iow{ namespace io{ namespace connection{
+namespace iow{ namespace io{ namespace socket{ namespace stream{
 
-//template<typename ContextType = context>
 struct aspect: fas::aspect<
   fas::advice< ::iow::io::reader::stream::_incoming_, ::iow::io::descriptor::ad_incoming_handler>,
   fas::alias< ::iow::io::descriptor::_outgoing_, ::iow::io::writer::_output_>,
-  ::iow::io::connection::asio::aspect,
+  ::iow::io::socket::stream::asio::aspect,
   ::iow::io::descriptor::aspect< context, ::iow::io::stream::_initialize_, true >
 >{};
   
-}}}
+}}}}

@@ -4,7 +4,7 @@
 #include <utility>
 #include <iow/logger/logger.hpp>
 #include <iow/io/types.hpp>
-namespace iow{ namespace io{ namespace connection{ namespace asio{
+namespace iow{ namespace io{ namespace socket{ namespace stream{ namespace asio{
 
 struct ad_async_write_some
 {
@@ -18,4 +18,4 @@ struct ad_async_write_some
   }
 };
 
-}}}}
+}}}}}

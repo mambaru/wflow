@@ -7,7 +7,6 @@
 namespace iow{ namespace io{ namespace acceptor{
 
 template <typename ConnectionType, typename A = fas::empty_type>
-//using acceptor = ::iow::io::descriptor::holder< typename fas::merge_aspect<A, aspect<ConnectionType> >::type >;
 class acceptor
   : public ::iow::io::descriptor::holder< typename fas::merge_aspect<A, aspect<ConnectionType> >::type >
 {
@@ -16,7 +15,6 @@ public:
   typedef ConnectionType connection_type;
   typedef typename super::descriptor_type descriptor_type;
   typedef typename super::mutex_type mutex_type;
-
 
   acceptor(descriptor_type&& desc)
     : super( std::forward<descriptor_type>(desc))

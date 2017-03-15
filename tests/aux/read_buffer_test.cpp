@@ -7,7 +7,7 @@
 
 typedef std::vector<char> data_type;
 typedef std::string sep_type;
-typedef ::iow::io::read_buffer<data_type> read_buffer;
+typedef ::iow::io::read_buffer read_buffer;
 typedef read_buffer::options_type options;
 
 UNIT(basic_test, "")

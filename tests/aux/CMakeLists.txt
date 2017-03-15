@@ -1,8 +1,9 @@
-add_executable(write_buffer_test ${FAS_TESTING_CPP} write_buffer_test.cpp )
-add_executable(read_buffer_test ${FAS_TESTING_CPP} read_buffer_test.cpp )
-add_executable(write_buffer_bench write_buffer_bench.cpp )
-add_executable(read_buffer_bench read_buffer_bench.cpp )
-add_executable(read_buffer_bench_big read_buffer_bench_big.cpp )
+
+add_executable(write_buffer_test ${FAS_TESTING_CPP} write_buffer_test.cpp ../../iow/io/aux/write_buffer.cpp)
+add_executable(read_buffer_test ${FAS_TESTING_CPP} read_buffer_test.cpp ../../iow/io/aux/read_buffer.cpp )
+add_executable(write_buffer_bench write_buffer_bench.cpp ../../iow/io/aux/write_buffer.cpp)
+add_executable(read_buffer_bench read_buffer_bench.cpp ../../iow/io/aux/read_buffer.cpp)
+add_executable(read_buffer_bench_big read_buffer_bench_big.cpp ../../iow/io/aux/read_buffer.cpp)
 
 #target_link_libraries(write_buffer_test iow)
 #target_link_libraries(read_buffer_test iow)

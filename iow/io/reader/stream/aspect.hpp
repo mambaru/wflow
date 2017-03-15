@@ -15,7 +15,6 @@
 
 namespace iow{ namespace io{ namespace reader{ namespace stream{
   
-template<typename DataType = std::vector<char> >
 struct aspect: fas::aspect<
   ::iow::io::reader::aspect::advice_list,
   fas::advice< _initialize_, ad_initialize>,
@@ -26,7 +25,7 @@ struct aspect: fas::aspect<
   fas::advice< ::iow::io::reader::_confirm_, ad_confirm>,
   fas::advice< ::iow::io::reader::_rollback_, ad_rollback>,
   fas::advice< ::iow::io::reader::_handler_,  ad_handler>,
-  fas::value< _read_buffer_, ::iow::io::read_buffer< DataType > >
+  fas::value< _read_buffer_, ::iow::io::read_buffer >
 >{};
 
 }}}}

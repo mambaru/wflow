@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-namespace iow{ namespace io{ namespace connection{
+namespace iow{ namespace io{ namespace socket{ namespace stream{
 
 namespace base{
   using context = ::iow::io::descriptor::context<
@@ -21,4 +21,4 @@ struct context: base::context
   typedef base::context::data_type data_type;
 };
 
-}}}
+}}}}

@@ -6,11 +6,10 @@
 
 namespace iow{ namespace io{
     
-template<typename DataType>  
 struct write_buffer_options_json
 {
   typedef DataType data_type;
-  typedef ::iow::io::write_buffer_options<data_type>  options_type;
+  typedef ::iow::io::write_buffer_options  options_type;
 
   JSON_NAME(sep)
   JSON_NAME(bufsize)

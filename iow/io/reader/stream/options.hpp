@@ -4,9 +4,8 @@
 
 namespace iow{ namespace io{ namespace reader{ namespace stream{
   
-template<typename DataType>
 struct options:
-  ::iow::io::read_buffer_options<DataType>
+  ::iow::io::read_buffer_options
 {
   // TODO: не используються по факту
   size_t maxsize = 1024*1024*128;

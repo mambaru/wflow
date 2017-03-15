@@ -7,8 +7,8 @@
 
 
 typedef std::vector<char> data_type;
-typedef ::iow::io::write_buffer<data_type>  write_buffer;
-typedef write_buffer::data_ptr data_ptr;
+typedef ::iow::io::write_buffer  write_buffer;
+typedef ::iow::io::data_ptr data_ptr;
 
 int fd = -1;
 

@@ -63,8 +63,8 @@ struct stream_options
 {
   //typedef ::iow::io::data_pool< data_type > buffer_pool_type;
   //typedef std::shared_ptr<buffer_pool_type> buffer_pool_ptr;
-  typedef ::iow::io::write_buffer_options<data_type> write_buffer_options;
-  typedef ::iow::io::read_buffer_options<data_type> read_buffer_options;
+  typedef ::iow::io::write_buffer_options write_buffer_options;
+  typedef ::iow::io::read_buffer_options read_buffer_options;
   write_buffer_options writer;
   read_buffer_options reader;
   //buffer_pool_ptr buffer_pool;
@@ -76,7 +76,7 @@ class stream
       fas::advice< ::iow::io::reader::_some_, ad_read_some>,
       fas::advice< ::iow::io::writer::_some_, ad_write_some>,
       ::iow::io::basic::aspect<std::recursive_mutex>::advice_list,
-      ::iow::io::stream::aspect<data_type>::advice_list,
+      ::iow::io::stream::aspect::advice_list,
       fas::type< ::iow::io::_options_type_, fas::empty_type >,
       fas::alias< ::iow::io::reader::stream::_incoming_, ::iow::io::writer::_output_>,
       fas::group< ::iow::io::_initialize_, ::iow::io::stream::_initialize_>
