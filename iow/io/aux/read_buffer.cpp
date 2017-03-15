@@ -52,7 +52,8 @@ namespace iow{ namespace io{
   {
     size_t result = 0;
     for (auto& buf: _buffers)
-      result += _buffers.capacity();
+      if ( buf != nullptr)
+        result += buf->capacity();
     return result;
   }
 
@@ -235,7 +236,7 @@ namespace iow{ namespace io{
 
   size_t read_buffer::last_buff_() const
   {
-    if ( _readbuf==-1 || (_readpos > 0 && _readpos!=-1) )
+    if ( _readbuf==read_buffer::npos() || (_readpos > 0 && _readpos!=read_buffer::npos()) )
     {
       return _buffers.size() - 1;
     }

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iow/io/descriptor/holder.hpp>
-#include <iow/io/socket/stream/aspect.hpp>
-#include <iow/io/socket/stream/options.hpp>
+#include <iow/io/socket/dgram/aspect.hpp>
+#include <iow/io/socket/dgram/options.hpp>
 #include <iow/io/reader/asio/aspect.hpp>
 #include <iow/io/writer/asio/aspect.hpp>
 #include <iow/io/stream/aspect.hpp>
@@ -11,12 +11,12 @@
 
 typedef std::vector<char> data_type;
 typedef iow::asio::posix::stream_descriptor descriptor_type;
-typedef iow::io::socket::stream::options options_type;
+typedef iow::io::socket::dgram::options options_type;
 
 struct aspect_stream : fas::aspect<
     fas::type< ::iow::io::descriptor::_descriptor_type_, descriptor_type >,
     fas::type< ::iow::io::_options_type_, options_type >,
-    ::iow::io::socket::stream::aspect,
+    ::iow::io::socket::dgram::aspect,
     ::iow::io::reader::asio::aspect,
     ::iow::io::writer::asio::aspect,
     ::iow::io::stream::aspect,
