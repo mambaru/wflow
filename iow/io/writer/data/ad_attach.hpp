@@ -1,9 +1,9 @@
 #pragma once
 
-#include <iow/io/writer/stream/tags.hpp>
+#include <iow/io/writer/data/tags.hpp>
 #include <memory>
 
-namespace iow{ namespace io{ namespace writer{ namespace stream{
+namespace iow{ namespace io{ namespace writer{ namespace data{
   
 struct ad_attach
 {

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <iow/io/reader/stream/tags.hpp>
+#include <iow/io/reader/data/tags.hpp>
 #include <memory>
 
-namespace iow{ namespace io{ namespace reader{ namespace stream{
+namespace iow{ namespace io{ namespace reader{ namespace data{
 
 struct ad_rollback
 {
@@ -16,7 +16,7 @@ struct ad_rollback
       // read error
       // t.get_aspect().template get<_error_>(t, "")
     }
-    }
+  }
 };
 
 }}}}

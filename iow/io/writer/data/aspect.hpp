@@ -1,18 +1,18 @@
 #pragma once
 
-#include <iow/io/writer/stream/ad_clear.hpp>
-#include <iow/io/writer/stream/ad_initialize.hpp>
-#include <iow/io/writer/stream/ad_attach.hpp>
-#include <iow/io/writer/stream/ad_next.hpp>
-#include <iow/io/writer/stream/ad_confirm.hpp>
-#include <iow/io/writer/stream/ad_rollback.hpp>
-#include <iow/io/writer/stream/tags.hpp>
+#include <iow/io/writer/data/ad_clear.hpp>
+#include <iow/io/writer/data/ad_initialize.hpp>
+#include <iow/io/writer/data/ad_attach.hpp>
+#include <iow/io/writer/data/ad_next.hpp>
+#include <iow/io/writer/data/ad_confirm.hpp>
+#include <iow/io/writer/data/ad_rollback.hpp>
+#include <iow/io/writer/data/tags.hpp>
 #include <iow/io/writer/aspect.hpp>
 #include <iow/io/aux/write_buffer.hpp>
 #include <iow/io/basic/tags.hpp>
 #include <fas/aop.hpp>
 
-namespace iow{ namespace io{ namespace writer{ namespace stream{
+namespace iow{ namespace io{ namespace writer{ namespace data{
 
 struct ad_can_write
 {

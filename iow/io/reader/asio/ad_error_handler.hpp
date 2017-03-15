@@ -41,7 +41,6 @@ struct ad_error_handler
     else
     {
       IOW_LOG_WARNING("iow::io::reader::asio::ad_error_handler (operation_canceled): " << ec.message());
-      
     }
   }
 };

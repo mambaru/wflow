@@ -1,6 +1,6 @@
 #pragma once
 
-namespace iow{ namespace io{ namespace reader{ namespace stream{
+namespace iow{ namespace io{ namespace reader{ namespace data{
 
 struct _clear_;
 struct _incoming_;

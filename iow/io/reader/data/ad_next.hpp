@@ -1,10 +1,10 @@
 #pragma once
 
-#include <iow/io/reader/stream/tags.hpp>
+#include <iow/io/reader/data/tags.hpp>
 #include <utility>
 #include <memory>
 
-namespace iow{ namespace io{ namespace reader{ namespace stream{
+namespace iow{ namespace io{ namespace reader{ namespace data{
   
 //template<typename DataType>
 struct ad_next

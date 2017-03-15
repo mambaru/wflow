@@ -1,19 +1,19 @@
 #pragma once
 
-#include <iow/io/reader/stream/ad_clear.hpp>
-#include <iow/io/reader/stream/ad_initialize.hpp>
-#include <iow/io/reader/stream/ad_confirm.hpp>
-#include <iow/io/reader/stream/ad_rollback.hpp>
-#include <iow/io/reader/stream/ad_handler.hpp>
-#include <iow/io/reader/stream/ad_next.hpp>
-#include <iow/io/reader/stream/tags.hpp>
+#include <iow/io/reader/data/ad_clear.hpp>
+#include <iow/io/reader/data/ad_initialize.hpp>
+#include <iow/io/reader/data/ad_confirm.hpp>
+#include <iow/io/reader/data/ad_rollback.hpp>
+#include <iow/io/reader/data/ad_handler.hpp>
+#include <iow/io/reader/data/ad_next.hpp>
+#include <iow/io/reader/data/tags.hpp>
 
 #include <iow/io/reader/aspect.hpp>
 #include <iow/io/aux/read_buffer.hpp>
 #include <iow/io/basic/tags.hpp>
 #include <fas/aop.hpp>
 
-namespace iow{ namespace io{ namespace reader{ namespace stream{
+namespace iow{ namespace io{ namespace reader{ namespace data{
   
 struct aspect: fas::aspect<
   ::iow::io::reader::aspect::advice_list,

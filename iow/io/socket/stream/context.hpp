@@ -8,17 +8,8 @@
 
 namespace iow{ namespace io{ namespace socket{ namespace stream{
 
-namespace base{
-  using context = ::iow::io::descriptor::context<
-    size_t, 
-    std::vector<char>, 
-    std::unique_ptr<std::vector<char> >
-  >;
-}
-
-struct context: base::context
+struct context: public ::iow::io::descriptor::context<io_id_t, data_type, data_ptr>
 {
-  typedef base::context::data_type data_type;
 };
 
 }}}}

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <iow/io/writer/stream/tags.hpp>
+#include <iow/io/writer/data/tags.hpp>
 
-namespace iow{ namespace io{ namespace writer{ namespace stream{
+namespace iow{ namespace io{ namespace writer{ namespace data{
   
 struct ad_clear
 {

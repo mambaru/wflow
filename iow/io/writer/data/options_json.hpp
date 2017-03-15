@@ -1,15 +1,14 @@
 #pragma once
 
-#include <iow/io/reader/stream/options.hpp>
-#include <iow/io/aux/read_buffer_options_json.hpp>
-#include <wjson/json.hpp>
+#include <iow/io/writer/data/options.hpp>
+#include <iow/io/aux/write_buffer_options_json.hpp>
 
-namespace iow{ namespace io{ namespace reader{ namespace stream{
+namespace iow{ namespace io{ namespace writer{ namespace data{
 
 struct options_json
 {
-  typedef ::iow::io::reader::stream::options  options_type;
-  typedef ::iow::io::read_buffer_options_json buffer_json;
+  typedef ::iow::io::writer::data::options  options_type;
+  typedef ::iow::io::write_buffer_options_json buffer_json;
 
   typedef ::wjson::object<
     options_type,
