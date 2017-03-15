@@ -6,7 +6,7 @@
 #include <iow/io/types.hpp>
 
 namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
-
+/*
 struct ad_async_send_to
 {
   template<typename T>
@@ -33,7 +33,8 @@ struct ad_async_send_to
     t.mutex().lock();
   }
 };
-  /*
+*/
+  
 struct ad_async_write_some
 {
   template<typename T, typename P, typename H>
@@ -44,6 +45,6 @@ struct ad_async_write_some
       std::forward<H>(handler)
     );
   }
-};*/
+};
 
 }}}}}

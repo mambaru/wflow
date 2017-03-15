@@ -5,12 +5,17 @@
 
 namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
 
-struct ad_receive_from
+struct ad_async_read_some/*ad_receive_from*/
 {
   template<typename T, typename P, typename H>
   void operator()(T& t, P p, H&& handler)
   {
+    t.descriptor().async_read_some(
+      ::iow::asio::buffer( p.first, p.second ),
+      std::forward<H>(handler)
+    );
 
+/*
     auto dd = std::make_shared<typename T::data_ptr>( std::move(d) );
     
     auto pep = std::make_shared<endpoint_type>();
@@ -26,6 +31,7 @@ struct ad_receive_from
     t.mutex().unlock();
     t.descriptor().async_receive_from( ::boost::asio::buffer( **dd ), *pep, callback);
     t.mutex().lock();
+  */
   }
 };
 
