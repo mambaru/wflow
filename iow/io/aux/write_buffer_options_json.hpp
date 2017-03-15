@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iow/io/aux/write_buffer_options.hpp>
+#include <iow/io/types.hpp>
 #include <wjson/json.hpp>
 #include <wjson/name.hpp>
 
@@ -8,7 +9,6 @@ namespace iow{ namespace io{
     
 struct write_buffer_options_json
 {
-  typedef DataType data_type;
   typedef ::iow::io::write_buffer_options  options_type;
 
   JSON_NAME(sep)

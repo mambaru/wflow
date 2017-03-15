@@ -8,7 +8,6 @@ namespace iow{ namespace io{
     
 struct read_buffer_options_json
 {
-  typedef DataType data_type;
   typedef ::iow::io::read_buffer_options  options_type;
   
   JSON_NAME(sep)

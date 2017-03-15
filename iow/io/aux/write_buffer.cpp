@@ -53,7 +53,8 @@ namespace iow{ namespace io{
   {
     size_t result = 0;
     for ( auto& d : _list )
-      result += _list.capacity();
+      if ( d != nullptr )
+        result += d->capacity();
 
     return result;
   }

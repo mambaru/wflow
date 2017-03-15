@@ -6,12 +6,10 @@
 
 namespace iow{ namespace io{ namespace reader{ namespace stream{
 
-template<typename DataType>  
 struct options_json
 {
-  typedef DataType data_type;
-  typedef ::iow::io::reader::stream::options<data_type>  options_type;
-  typedef ::iow::io::read_buffer_options_json<data_type> buffer_json;
+  typedef ::iow::io::reader::stream::options  options_type;
+  typedef ::iow::io::read_buffer_options_json buffer_json;
 
   typedef ::wjson::object<
     options_type,

@@ -9,12 +9,10 @@ namespace iow{ namespace ip{ namespace tcp{ namespace connection{
   
 struct options_json
 {
-  typedef options::data_type data_type;
-  
   typedef ::wjson::object<
     options,
     ::wjson::member_list<
-      ::wjson::base< ::iow::io::stream::options_json<data_type> >
+      ::wjson::base< ::iow::io::stream::options_json >
     >
   > type;
   typedef type::target target;
