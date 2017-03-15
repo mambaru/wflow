@@ -14,18 +14,7 @@ struct ad_confirm
     if ( !result )
     {
       // read error
-      // t.get_aspect().template get<_error_>(t, "")
     }
-    /*
-    auto d = t.get_aspect().template get<_write_buffer_>().confirm(p);
-    if ( d != nullptr )
-    {
-      if ( t.get_aspect().template get<_buffer_pool_>()!=nullptr )
-      {
-        t.get_aspect().template get<_buffer_pool_>()->free( std::move(d) );
-      }
-    }
-    */
   }
 };
 
