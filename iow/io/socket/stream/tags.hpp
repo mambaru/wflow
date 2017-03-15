@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include <iow/io/descriptor/tags.hpp>
 
 namespace iow{ namespace io{ namespace socket{ namespace stream{
@@ -10,3 +10,4 @@ struct _write_handler_;
 struct _incoming_handler_;
 
 }}}}
+*/
