@@ -419,7 +419,6 @@ namespace iow{ namespace io{
   // Удаляем отработанные буферы и настраиваем состояние
   void read_buffer::prepare_(const read_buffer::search_pair& p) 
   {
-//#warning TODO: сократить список буфферов при разрастании 
     if ( p.first==0 )
     {
       if ( _buffers[0] == nullptr )

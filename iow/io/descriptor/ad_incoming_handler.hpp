@@ -15,7 +15,8 @@ struct ad_incoming_handler
     if ( cntx.incoming_handler != nullptr )
     {
       auto incoming = cntx.incoming_handler;
-      auto outgoing = cntx.outgoing_handler;
+      //auto outgoing = cntx.outgoing_handler;
+      auto outgoing = t.get_aspect().template get<_make_outgoing_>()(t);
       auto io_id = t.get_id_(t);
       t.mutex().unlock();
       try

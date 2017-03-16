@@ -25,15 +25,18 @@ public:
 
 public:
 
+  holder_base(const holder_base& ) = delete;
+  void operator=(const holder_base& ) = delete;
+  
   holder_base(descriptor_type&& desc)
     : super()
-    , _descriptor( std::forward<descriptor_type>(desc))
+    , _descriptor(std::move(desc))
   {}
 
   void attach(descriptor_type&& desc)
   {
     std::lock_guard< mutex_type > lk( super::mutex() );
-    _descriptor = std::forward<descriptor_type>(desc);
+    _descriptor = std::move(desc);
   }
 
   descriptor_type&& detach()
@@ -105,7 +108,8 @@ protected:
   template<typename T>
   void start_(T& /*t*/)
   {
-    _start_with_opt();
+    if ( _start_with_opt!= nullptr)
+      _start_with_opt();  
   }
   
 private:

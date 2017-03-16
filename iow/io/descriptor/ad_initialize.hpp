@@ -69,9 +69,7 @@ private:
           std::lock_guard<typename T::mutex_type> lk( pthis->mutex() );
           pthis->get_aspect().template get<_outgoing_>()( *pthis, std::move(d) );
           if ( shutdown )
-          {
             pthis->get_aspect().template get< ::iow::io::_shutdown_>()( *pthis, nullptr );
-          }
         }
       }
     }, 

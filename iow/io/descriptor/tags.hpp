@@ -15,4 +15,5 @@ struct _before_stop_;
 struct _after_start_;
 struct _close_;
 
+struct _make_outgoing_;
 }}}

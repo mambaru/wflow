@@ -116,6 +116,7 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
   
   auto span = std::chrono::duration_cast<std::chrono::microseconds>( finish - start).count();
   
+  std::cout << "use data pool: " << std::boolalpha << use_pool << std::endl;
   std::cout << "time: " << span << " microseconds" << std::endl;
   std::cout << "reads blocks: " << read_block << std::endl;
   std::cout << "expected packs: " << pack_count * total << std::endl;

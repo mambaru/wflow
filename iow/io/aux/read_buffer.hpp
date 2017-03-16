@@ -6,6 +6,7 @@
 #include <fas/typemanip/empty_type.hpp>
 #include <queue>
 #include <memory>
+#include <deque>
 #include <algorithm>
 
 

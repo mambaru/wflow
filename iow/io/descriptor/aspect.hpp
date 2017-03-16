@@ -7,6 +7,7 @@
 #include <iow/io/descriptor/ad_after_start.hpp>
 #include <iow/io/descriptor/ad_incoming_handler.hpp>
 #include <iow/io/descriptor/ad_initialize.hpp>
+#include <iow/io/descriptor/ad_make_outgoing.hpp>
 #include <iow/io/descriptor/context.hpp>
 #include <fas/aop.hpp>
 
@@ -21,7 +22,8 @@ struct aspect: fas::aspect<
   fas::group< ::iow::io::_after_start_, _after_start_>,
   fas::group< ::iow::io::_before_stop_, _before_stop_>,
   fas::advice< ::iow::io::_initialize_, ad_initialize<TgInitialize, MakeOutgoung> >,
-  fas::advice<_incoming_, ad_incoming_handler>
+  fas::advice<_incoming_, ad_incoming_handler>,
+  fas::advice<_make_outgoing_, ad_make_outgoing>
 > {};
 
 }}}

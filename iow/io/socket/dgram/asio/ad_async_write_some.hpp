@@ -40,10 +40,11 @@ struct ad_async_write_some
   template<typename T, typename P, typename H>
   void operator()(T& t, P p, H&& handler)
   {
-    t.descriptor().async_write_some(
+    using namespace std::placeholders;
+    auto ep = t.get_aspect().template get<_current_endpoint_>();
+    t.descriptor().async_send_to( 
       ::boost::asio::buffer( p.first, p.second ),
-      std::forward<H>(handler)
-    );
+      *ep, std::forward<H>(handler));
   }
 };
 
