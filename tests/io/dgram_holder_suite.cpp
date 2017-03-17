@@ -41,10 +41,10 @@ UNIT(dgram_holder_unit, "")
   options_type opt;
   opt.reader.sep="";
   opt.writer.sep="";
-  /*opt.incoming_handler = [&]( iow::io::data_ptr d, size_t, options_type::outgoing_handler_type)
+  opt.incoming_handler = [&]( iow::io::data_ptr d, size_t, options_type::outgoing_handler_type)
   {
     server->get_aspect().get< ::iow::io::writer::_output_>()( *server, std::move(d) );
-  };*/
+  };
   server->start(opt);
   sock_client.send_to( boost::asio::buffer("Привет Мир!!!"), ep );
   char result[1024]={'\0'};
