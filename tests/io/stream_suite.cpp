@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iow/io/io_base.hpp>
 #include <iow/io/basic/aspect.hpp>
-#include <iow/io/stream/aspect.hpp>
+#include <iow/io/rw/aspect.hpp>
 /*
  * #include <iow/io/reader/aspect.hpp>
 #include <iow/io/writer/aspect.hpp>
@@ -76,10 +76,10 @@ class stream
       fas::advice< ::iow::io::reader::_some_, ad_read_some>,
       fas::advice< ::iow::io::writer::_some_, ad_write_some>,
       ::iow::io::basic::aspect<std::recursive_mutex>::advice_list,
-      ::iow::io::stream::aspect::advice_list,
+      ::iow::io::rw::aspect::advice_list,
       fas::type< ::iow::io::_options_type_, fas::empty_type >,
       fas::alias< ::iow::io::reader::data::_incoming_, ::iow::io::writer::_output_>,
-      fas::group< ::iow::io::_initialize_, ::iow::io::stream::_initialize_>
+      fas::group< ::iow::io::_initialize_, ::iow::io::rw::_initialize_>
     > >
 {
 public:

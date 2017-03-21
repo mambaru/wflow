@@ -1,10 +1,10 @@
 #pragma once
 
-#include <iow/io/stream/tags.hpp>
+#include <iow/io/rw/tags.hpp>
 #include <iow/io/reader/data/tags.hpp>
 #include <iow/io/writer/data/tags.hpp>
 
-namespace iow{ namespace io{ namespace stream{
+namespace iow{ namespace io{ namespace rw{
 
 struct ad_initialize
 {

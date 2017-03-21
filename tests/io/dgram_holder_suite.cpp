@@ -5,7 +5,7 @@
 #include <iow/io/socket/dgram/tags.hpp>
 #include <iow/io/reader/asio/aspect.hpp>
 #include <iow/io/writer/asio/aspect.hpp>
-#include <iow/io/stream/aspect.hpp>
+#include <iow/io/rw/aspect.hpp>
 #include <iow/io/basic/aspect.hpp>
 
 #include <fas/testing.hpp>
@@ -23,7 +23,7 @@ struct aspect_stream : fas::aspect<
     fas::value< ::iow::io::socket::dgram::_current_endpoint_, std::shared_ptr< boost::asio::ip::udp::endpoint > >,
     ::iow::io::reader::asio::aspect,
     ::iow::io::writer::asio::aspect,
-    ::iow::io::stream::aspect,
+    ::iow::io::rw::aspect,
     ::iow::io::basic::aspect< std::recursive_mutex >::advice_list
 >{};
 

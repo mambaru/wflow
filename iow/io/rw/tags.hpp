@@ -1,6 +1,6 @@
 #pragma once
 
-namespace iow{ namespace io{ namespace stream{
+namespace iow{ namespace io{ namespace rw{
 
 struct _clear_;
 struct _handler_;

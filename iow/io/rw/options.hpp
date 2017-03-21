@@ -3,7 +3,7 @@
 #include <iow/io/reader/data/options.hpp>
 #include <iow/io/writer/data/options.hpp>
 
-namespace iow{ namespace io{ namespace stream{
+namespace iow{ namespace io{ namespace rw{
 
 struct options
 {

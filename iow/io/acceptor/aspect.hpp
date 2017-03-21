@@ -16,7 +16,7 @@
 #include <iow/io/reader/aspect.hpp>
 #include <iow/io/reader/asio/aspect.hpp>
 #include <iow/io/writer/asio/aspect.hpp>
-#include <iow/io/stream/aspect.hpp>
+#include <iow/io/rw/aspect.hpp>
 #include <iow/io/descriptor/manager.hpp>
 #include <iow/io/descriptor/aspect.hpp>
 #include <iow/io/descriptor/ad_initialize.hpp>

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <iow/io/stream/options.hpp>
+#include <iow/io/rw/options.hpp>
 #include <iow/io/reader/data/options_json.hpp>
 #include <iow/io/writer/data/options_json.hpp>
 #include <wjson/json.hpp>
 
-namespace iow{ namespace io{ namespace stream{
+namespace iow{ namespace io{ namespace rw{
   
 struct options_json
 {
