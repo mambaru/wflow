@@ -35,7 +35,13 @@ UNIT(dgram_holder_unit, "")
   using namespace fas::testing;
   iow::asio::io_service service;
   boost::asio::ip::udp::endpoint ep(boost::asio::ip::udp::v4(), 12345);
-  boost::asio::ip::udp::socket sock_server(service, ep );
+  boost::asio::ip::udp::socket sock_server(service);
+  
+  
+  sock_server.open(boost::asio::ip::udp::v4());
+  sock_server.bind( ep );
+  
+  
   boost::asio::ip::udp::socket sock_client(service, boost::asio::ip::udp::v4());
   auto server = std::make_shared<stream_holder>( std::move(sock_server) );
   options_type opt;

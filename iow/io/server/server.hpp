@@ -31,7 +31,6 @@ public:
   {
     super::stop();
   }
-
 };
   
 }}}
