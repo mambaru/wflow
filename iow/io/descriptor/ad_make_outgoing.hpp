@@ -19,7 +19,7 @@ struct ad_make_outgoing
   auto operator()(T& t) 
     -> typename context<T>::outgoing_handler_t
   {
-    typedef typename context<T>::type context_type;
+    //typedef typename context<T>::type context_type;
     return t.get_aspect().template get<_context_>().outgoing_handler;
   }
 };

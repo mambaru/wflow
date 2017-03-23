@@ -94,8 +94,7 @@ public:
   connection(descriptor_type&& desc)
     : super( std::move( desc ) )
   {}
-  
-  
+
   template<typename Opt>
   void connect(Opt&& opt)
   {

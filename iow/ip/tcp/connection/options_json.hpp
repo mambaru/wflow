@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iow/ip/tcp/connection/options.hpp>
-#include <iow/io/stream/options_json.hpp>
+#include <iow/io/rw/options_json.hpp>
 #include <wjson/json.hpp>
 #include <wjson/name.hpp>
 
@@ -12,7 +12,7 @@ struct options_json
   typedef ::wjson::object<
     options,
     ::wjson::member_list<
-      ::wjson::base< ::iow::io::stream::options_json >
+      ::wjson::base< ::iow::io::rw::options_json >
     >
   > type;
   typedef type::target target;

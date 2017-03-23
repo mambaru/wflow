@@ -9,6 +9,8 @@ namespace iow{ namespace ip{ namespace udp{ namespace server{
   
 struct options_json
 {
+  JSON_NAME(addr)
+  JSON_NAME(port)
   JSON_NAME(threads)
   typedef ::wjson::object<
     options,
