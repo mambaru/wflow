@@ -14,6 +14,7 @@ struct read_buffer_options_json
   JSON_NAME(bufsize)
   JSON_NAME(maxbuf)
   JSON_NAME(minbuf)
+  JSON_NAME(maxsize)
   JSON_NAME(trimsep)
 
   typedef ::wjson::object<
@@ -23,6 +24,7 @@ struct read_buffer_options_json
       ::wjson::member< n_bufsize,  options_type, size_t,      &options_type::bufsize >,
       ::wjson::member< n_maxbuf,   options_type, size_t,      &options_type::maxbuf  >,
       ::wjson::member< n_minbuf,   options_type, size_t,      &options_type::minbuf  >,
+      ::wjson::member< n_maxsize,   options_type, size_t,      &options_type::maxsize  >,
       ::wjson::member< n_trimsep,  options_type, bool,        &options_type::trimsep >
     >
   > type;

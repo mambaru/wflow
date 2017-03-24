@@ -50,7 +50,7 @@ struct generator
   template<typename T>
   data_ptr operator()(T&, size_t offset, size_t size) 
   {
-    typedef typename T::aspect::template advice_cast<_data_line_>::type data_line_t;
+    //typedef typename T::aspect::template advice_cast<_data_line_>::type data_line_t;
         
     data_ptr d = std::make_unique<data_type>();
     for ( size_t j = offset; j < offset + size; j++)
@@ -73,7 +73,7 @@ struct init_line
   {
     using namespace fas::testing;
     auto& data_line = t.get_aspect().template get<_data_line_>();
-    typedef typename std::remove_reference<decltype(data_line)>::type data_line_t;
+    //typedef typename std::remove_reference<decltype(data_line)>::type data_line_t;
     
 
     auto opt = t.get_aspect().template get<_test_options_>();

@@ -57,7 +57,7 @@ UNIT(dgram_holder_unit, "")
   sock_client.async_receive_from(
     boost::asio::buffer(result, 1024),
     ep,
-    [&result, &service](const boost::system::error_code& ec, std::size_t bytes_transferred)
+    [&result, &service](const boost::system::error_code& , std::size_t bytes_transferred)
     {
       result[bytes_transferred]='\0';
       service.stop();

@@ -48,11 +48,11 @@ public:
 
   size_t capacity() const noexcept;
 
+  bool overflow() const noexcept;
+  
   bool ready() const;
 
   bool waiting() const;
-
-  void addsep_( data_type& d, bool reserve );
 
   void attach(data_ptr d);
 
@@ -61,8 +61,12 @@ public:
   bool confirm(data_pair p);
 
   void rollback();
+  
+  
 
 private:
+  
+  void addsep_( data_type& d, bool reserve );
 
   data_ptr create_(size_t size, size_t maxbuf) const;
 
@@ -79,19 +83,20 @@ private:
 private:
   
   // options
-  sep_ptr _sep;
-  size_t _sep_size;
-  size_t _bufsize;
-  size_t _maxbuf;
-  size_t _minbuf;
-  bool _first_as_is;
-  create_fun _create;
-  free_fun _free;
+  sep_ptr _sep = nullptr;
+  size_t _sep_size = 0;
+  size_t _bufsize = 0;
+  size_t _maxbuf = 0;
+  size_t _minbuf = 0;
+  size_t _maxsize = 0;
+  bool _first_as_is = false;
+  create_fun _create = nullptr;
+  free_fun _free = nullptr;
 
   // -------------------
-  size_t _size;
-  size_t _offset;
-  size_t _wait; // в байтах
+  size_t _size = 0;
+  size_t _offset = 0;
+  size_t _wait = 0; // в байтах
 
   data_list _list;
 };
@@ -114,6 +119,7 @@ private:
     _bufsize = opt.bufsize;
     _maxbuf = opt.maxbuf;
     _minbuf = opt.minbuf;
+    _maxsize= opt.maxsize;
     _first_as_is = opt.first_as_is;
 
     _create = opt.create;
@@ -161,6 +167,7 @@ private:
     opt.first_as_is = _first_as_is;
     opt.create  = _create;
     opt.free    = _free;
+    opt.maxsize=_maxsize;
   }
 
 }}

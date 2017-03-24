@@ -10,17 +10,6 @@ namespace iow{ namespace io{
 
 
   write_buffer::write_buffer() noexcept
-    : _sep(nullptr)
-    , _sep_size(0)
-    , _bufsize(8*1024)
-    , _maxbuf(8*1024)
-    , _minbuf(0) 
-    , _first_as_is(true)
-    , _create(nullptr)
-    , _free(nullptr)
-    , _size(0)
-    , _offset(0)
-    , _wait(0)
   {
     _list.reserve(2);
   }
@@ -109,6 +98,11 @@ namespace iow{ namespace io{
         _list.push_back( std::move(d) );
       }
     }
+  }
+
+  bool write_buffer::overflow() const noexcept
+  {
+    return _maxsize!=0 && _maxsize > this->capacity();
   }
 
   write_buffer::data_pair write_buffer::next()

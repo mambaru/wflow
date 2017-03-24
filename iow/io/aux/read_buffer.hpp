@@ -53,6 +53,8 @@ public:
 
   bool waiting() const noexcept;
 
+  bool overflow() const noexcept;
+
   data_pair next();
 
   bool rollback(data_pair d);
@@ -61,6 +63,7 @@ public:
 
   data_ptr detach();
 
+  
 private:
 
   static constexpr size_t npos();
@@ -111,29 +114,30 @@ private:
 private:
 
 // options
-  sep_ptr _sep;
-  size_t _sep_size;
-  size_t _bufsize;
-  size_t _maxbuf;
-  size_t _minbuf;
-  bool   _trimsep;
+  sep_ptr _sep = nullptr;
+  size_t _sep_size = 0;
+  size_t _bufsize = 0;
+  size_t _maxbuf = 0;
+  size_t _minbuf = 0;
+  size_t _maxsize = 0;
+  bool   _trimsep = 0;
 
-  create_fun _create;
-  free_fun _free;
+  create_fun _create = nullptr;
+  free_fun _free = nullptr;
 
-  size_t  _size;
-  size_t  _offset;  // Смещение в первом буфере
-  size_t  _readbuf; // -1 - если не ожидает подтверждения
-  size_t  _readpos;
+  size_t  _size = 0;
+  size_t  _offset = 0;  // Смещение в первом буфере
+  size_t  _readbuf = 0; // -1 - если не ожидает подтверждения
+  size_t  _readpos = 0;
   
   // Номер буфера, с которого продолжить парсинг
   //   при _buffers.empty() равен 0, но в это случае поиск не производится
-  size_t  _parsebuf;
+  size_t  _parsebuf = 0;
   // Позиция в буфере, с которого продолжить парсинг
   // Может быть равен _buffers[_parsebuf]->size() для _buffers.size()-1==_parsebuf
   //   в этом случае корректируется при следующем next(), если выделяеться новый буфер
   //   и поиск до confirm() недоступен
-  size_t  _parsepos;
+  size_t  _parsepos = 0;
 
   buffer_list   _buffers;
 };
@@ -160,6 +164,7 @@ private:
     _trimsep = opt.trimsep;
     _create = opt.create;
     _free = opt.free;
+    _maxsize = opt.maxsize;
 
     if ( _bufsize == 0 )
     {
@@ -194,6 +199,7 @@ private:
       opt.sep.clear();
     }
 
+    opt.maxsize = _maxsize;
     opt.bufsize = _bufsize;
     opt.maxbuf  = _maxbuf;
     opt.minbuf  = _minbuf;

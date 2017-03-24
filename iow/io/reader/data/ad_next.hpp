@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iow/io/reader/data/tags.hpp>
+#include <iow/logger/logger.hpp>
+
 #include <utility>
 #include <memory>
 
@@ -13,14 +15,16 @@ struct ad_next
   std::pair<char*, size_t> operator()(T& t)
   {
     // Проверить размер 
-    
-    auto p = t.get_aspect().template get<_read_buffer_>().next();
-    if ( p.first == nullptr )
+    auto& buff = t.get_aspect().template get<_read_buffer_>();
+    auto p = buff.next();
+
+    if ( buff.overflow() )
     {
-      // TODO: жесткое закрытие 
+      buff.clear();
+      IOW_LOG_ERROR("read buffer overflow");
+      t.get_aspect().template get< ::iow::io::_stop_>()(t);
     }
     return std::move(p);
-    //return t.get_aspect().template get<_read_buffer_>().next();
   }
 };
 

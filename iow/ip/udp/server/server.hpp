@@ -32,7 +32,7 @@ public:
 */
 
 template <typename A = fas::empty_type>
-class worker
+class worker_base
   : public ::iow::io::descriptor::holder< typename fas::merge_aspect<A, aspect >::type >
 {
   typedef ::iow::io::descriptor::holder< typename fas::merge_aspect<A, aspect >::type > super;
@@ -40,10 +40,9 @@ public:
   typedef typename super::descriptor_type descriptor_type;
   typedef typename super::mutex_type mutex_type;
 
-  worker(descriptor_type&& desc)
+  worker_base(descriptor_type&& desc)
     : super( std::forward<descriptor_type>(desc))
   {}
-
   
   template<typename O>
   void listen(O&& opt)
@@ -51,12 +50,26 @@ public:
     std::lock_guard<mutex_type> lk( super::mutex() );
     this->get_aspect().template get<_open_>()(*this, std::forward<O>(opt) );
   }
-  
+
 };
 
+class worker: public worker_base<>
+{
+public:
+  typedef worker_base<> super;
+  typedef typename super::descriptor_type descriptor_type;
+  worker(descriptor_type&& desc)
+    : super( std::forward<descriptor_type>(desc))
+  {}
+};
 
+template<typename Worker = worker >
+using server = ::iow::io::server::server<Worker>;
+
+/*
 template<typename Worker = worker<> >
 using server = ::iow::io::server::server<Worker>;
+*/
 
 /*
 template<typename A = fas::aspect<> >

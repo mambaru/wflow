@@ -12,6 +12,8 @@ struct ad_incoming_handler
   void operator()(T& t, D d)
   {
     const auto& cntx = t.get_aspect().template get<_context_>();
+    std::cout << "\n\n\n " << (cntx.incoming_handler != nullptr) << "\n\n\n";
+
     if ( cntx.incoming_handler != nullptr )
     {
       auto incoming = cntx.incoming_handler;

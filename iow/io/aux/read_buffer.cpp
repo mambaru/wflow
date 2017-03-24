@@ -4,25 +4,12 @@
 #include <queue>
 #include <memory>
 #include <algorithm>
+#include <iostream>
 
 
 namespace iow{ namespace io{
 
   read_buffer::read_buffer()
-    : _sep(nullptr)
-    , _sep_size(0)
-    , _bufsize(4096)
-    , _maxbuf(4096*4)
-    , _minbuf(512)
-    , _trimsep(false)
-    , _create(nullptr)
-    , _free(nullptr)
-    , _size(0)
-    , _offset(0)
-    , _readbuf(-1)
-    , _readpos(-1)
-    , _parsebuf(0)
-    , _parsepos(0)
   {
     _buffers.reserve(2);
   }
@@ -62,6 +49,11 @@ namespace iow{ namespace io{
     return _readbuf!=npos();
   }
 
+  bool read_buffer::overflow() const noexcept
+  {
+    return _maxsize!=0 && _maxsize > this->capacity();
+  }
+  
   read_buffer::data_pair read_buffer::next()
   {
     data_pair result(0,0);
@@ -71,6 +63,7 @@ namespace iow{ namespace io{
 
     if ( _buffers.empty() )
       return create_for_next_();
+
 
     data_ptr& last = _buffers.back();
 
@@ -128,11 +121,13 @@ namespace iow{ namespace io{
     _readpos = -1;
     _readbuf = -1;
 
+    std::cout << "read_buffer::confirm() _buffers.size() " << _buffers.size() << std::endl;
     return true;
   }
 
   data_ptr read_buffer::detach()
   {
+    std::cout << "read_buffer::detach() _buffers.size() " << _buffers.size() << std::endl;
     if ( _buffers.empty() )
       return nullptr;
 

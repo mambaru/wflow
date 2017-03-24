@@ -3,6 +3,7 @@
 #include <iow/io/reader/data/options.hpp>
 #include <iow/io/aux/read_buffer_options_json.hpp>
 #include <wjson/json.hpp>
+#include <wjson/name.hpp>
 
 namespace iow{ namespace io{ namespace reader{ namespace data{
 
