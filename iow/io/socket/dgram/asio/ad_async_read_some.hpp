@@ -6,7 +6,7 @@
 
 namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
 
-struct ad_async_read_some/*ad_receive_from*/
+struct ad_async_read_some
 {
   template<typename T, typename P, typename H>
   void operator()(T& t, P p, H&& handler)
@@ -15,8 +15,8 @@ struct ad_async_read_some/*ad_receive_from*/
     using endpoint_ptr = typename T::aspect::template advice_cast<_current_endpoint_>::type;
     using endpoint_type = typename endpoint_ptr::element_type;
     endpoint_ptr pep = std::make_shared<endpoint_type>();
-    
-    auto set_ep = [&t, pep](boost::system::error_code, size_t)
+
+    auto set_ep = [&t, pep](boost::system::error_code , size_t )
     {
       t.get_aspect().template get<_current_endpoint_>() = pep;
     };

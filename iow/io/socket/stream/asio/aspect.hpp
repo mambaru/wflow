@@ -10,7 +10,7 @@ namespace iow{ namespace io{ namespace socket{ namespace stream{ namespace asio{
 
   
 typedef fas::aspect<
-  fas::advice< ::iow::io::reader::_read_some_, ad_async_read_some>,
+  fas::advice< ::iow::io::reader::_read_some_, ad_async_read_some1>,
   fas::advice< ::iow::io::writer::_write_some_, ad_async_write_some>
 > aspect;
   

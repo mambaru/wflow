@@ -22,7 +22,10 @@ struct ad_make_handler
       if ( auto pthis = wthis.lock() )
       {
         std::lock_guard<typename T::mutex_type> lk(pthis->mutex());
-        if ( handler!=nullptr ) handler(ec, bytes_transferred);
+        if ( handler!=nullptr ) 
+        {
+          handler(ec, bytes_transferred);
+        }
         pthis->get_aspect().template get<_read_handler_>()(*pthis, std::move(p), std::move(ec), bytes_transferred);
       }
     });

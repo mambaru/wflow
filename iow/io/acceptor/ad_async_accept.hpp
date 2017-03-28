@@ -9,6 +9,7 @@ struct ad_async_accept
   template<typename T, typename P, typename H>
   void operator()(T& t, P p, H handler)
   {
+    abort();
     t.descriptor().async_accept( p->descriptor(), std::move(handler) );
   }
 };

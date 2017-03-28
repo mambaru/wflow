@@ -17,7 +17,6 @@ struct ad_next
     // Проверить размер 
     auto& buff = t.get_aspect().template get<_read_buffer_>();
     auto p = buff.next();
-
     if ( buff.overflow() )
     {
       buff.clear();

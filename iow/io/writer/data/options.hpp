@@ -9,7 +9,7 @@ struct options:
   ::iow::io::write_buffer_options
 {
   // Вынести на более высокий уровень
-  size_t maxsize = 1024*1024*128;
+  size_t maxsize = 0;
   size_t wrnsize = 1024*1024;
 };
 

@@ -5,7 +5,7 @@
 
 namespace iow{ namespace io{ namespace socket{ namespace stream{ namespace asio{
 
-struct ad_async_read_some
+struct ad_async_read_some1
 {
   template<typename T, typename P, typename H>
   void operator()(T& t, P p, H&& handler)

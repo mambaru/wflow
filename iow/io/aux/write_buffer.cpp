@@ -102,7 +102,8 @@ namespace iow{ namespace io{
 
   bool write_buffer::overflow() const noexcept
   {
-    return _maxsize!=0 && _maxsize > this->capacity();
+    
+    return (_maxsize!=0) && ( this->capacity() > _maxsize );
   }
 
   write_buffer::data_pair write_buffer::next()

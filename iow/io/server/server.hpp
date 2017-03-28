@@ -23,11 +23,8 @@ public:
   template<typename Opt>
   void start(Opt&& opt)
   {
-    std::cout << "\n--3.1--\n";
     super::origin()->listen(opt);
-    std::cout << "\n--3.2--\n";
     super::start(opt);
-    std::cout << "\n--3.3--\n";
   }
 
   void stop()

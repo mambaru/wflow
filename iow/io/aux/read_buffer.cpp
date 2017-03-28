@@ -51,7 +51,7 @@ namespace iow{ namespace io{
 
   bool read_buffer::overflow() const noexcept
   {
-    return _maxsize!=0 && _maxsize > this->capacity();
+    return _maxsize!=0 && this->capacity() > _maxsize;
   }
   
   read_buffer::data_pair read_buffer::next()
@@ -121,13 +121,11 @@ namespace iow{ namespace io{
     _readpos = -1;
     _readbuf = -1;
 
-    std::cout << "read_buffer::confirm() _buffers.size() " << _buffers.size() << std::endl;
     return true;
   }
 
   data_ptr read_buffer::detach()
   {
-    std::cout << "read_buffer::detach() _buffers.size() " << _buffers.size() << std::endl;
     if ( _buffers.empty() )
       return nullptr;
 
@@ -222,6 +220,7 @@ namespace iow{ namespace io{
     _readbuf = _buffers.size()-1;
     _readpos = 0;
     data_ptr& last = _buffers.back();
+   
     return data_pair( &((*last)[0]), last->size());
   }
 
