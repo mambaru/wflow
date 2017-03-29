@@ -354,9 +354,6 @@ UNIT(basic_sep1, "")
             {"aa", "||", "bb", "||", "cc", "||", "dd", "||", "ee", "||"},
             {"aa|", "|", "bb|", "|", "cc|", "|", "dd|", "|", "ee|", "|"}
            );
-  
-  
-  
 }
 
 
@@ -375,9 +372,6 @@ UNIT(basic_sep2, "")
             {"aa##", "##", "bb##", "##cc##", "##dd", "####ee####"}, 
             {"aa##", "##", "bb##", "##", "cc##", "##", "dd##", "##", "ee##", "##"}
            );
-  
-  
-  
   opt.bufsize = 1;
   opt.minbuf = 1;
   buf.set_options(opt);
@@ -398,7 +392,7 @@ UNIT(basic_sep2, "")
 UNIT(basic_sep3, "")
 {
   using namespace fas::testing;
-    read_buffer buf;
+  read_buffer buf;
   options opt;
   buf.get_options(opt);
   opt.sep="@@@";
@@ -430,6 +424,31 @@ UNIT(basic_sep3, "")
            );
 }
 
+UNIT(empty_test, "Ошибка без сепаратора (работает через раз)")
+{
+  using namespace fas::testing;
+  read_buffer buf;
+  options opt;
+  buf.get_options(opt);
+  opt.sep="";
+  buf.set_options(opt);
+  std::string req1 = "{запрос номер одын}";
+  std::string req2 = "{запрос номер два}";
+  auto p = buf.next();
+  std::copy(req1.begin(), req1.end(), p.first);
+  p.second = req1.size();
+  buf.confirm(p);
+  auto res = buf.detach();
+  t << equal<expect, std::string>( req1, std::string(res->begin(), res->end()) ) << FAS_FL;
+  res = buf.detach();
+  t << equal<expect>( res, nullptr ) << FAS_FL;
+  p = buf.next();
+  std::copy(req2.begin(), req2.end(), p.first);
+  p.second = req2.size();
+  buf.confirm(p);
+  res = buf.detach();
+  t << equal<expect, std::string>( req2, std::string(res->begin(), res->end()) ) << FAS_FL;
+}
 
 BEGIN_SUITE(read_buffer, "read_buffer suite")
   ADD_UNIT(basic_test)
@@ -437,6 +456,7 @@ BEGIN_SUITE(read_buffer, "read_buffer suite")
   ADD_UNIT(basic_sep1)
   ADD_UNIT(basic_sep2)
   ADD_UNIT(basic_sep3)
+  ADD_UNIT(empty_test)
 END_SUITE(read_buffer)
 
 BEGIN_TEST
