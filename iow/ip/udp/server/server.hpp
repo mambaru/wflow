@@ -45,10 +45,10 @@ public:
   {}
   
   template<typename O>
-  void listen(O&& opt)
+  void listen(O opt)
   {
     std::lock_guard<mutex_type> lk( super::mutex() );
-    this->get_aspect().template get<_open_>()(*this, std::forward<O>(opt) );
+    this->get_aspect().template get<_open_>()(*this, opt );
   }
 
 };

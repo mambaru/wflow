@@ -21,7 +21,7 @@ public:
   {}
   
   template<typename Opt>
-  void start(Opt&& opt)
+  void start(Opt opt)
   {
     super::origin()->listen(opt);
     super::start(opt);
