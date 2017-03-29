@@ -93,6 +93,7 @@ namespace iow{ namespace io{
 
   bool read_buffer::confirm(data_pair d)
   {
+    std::cout << "read_buffer::confirm [" << std::string( d.first, d.first + d.second) << "]" << std::endl;
     if ( !this->waiting() )
       return false;
 
@@ -121,40 +122,49 @@ namespace iow{ namespace io{
     _readpos = -1;
     _readbuf = -1;
 
+    std::cout << "read_buffer::confirm DONE" << std::endl;
     return true;
   }
 
   data_ptr read_buffer::detach()
   {
+    std::cout << "read_buffer::detach() -1.1- " << std::endl;
+    std::cout << "_offset= " << _offset << " _parsebuf=" << _parsebuf << " _parsepos=" << _parsepos << std::endl;
     if ( _buffers.empty() )
       return nullptr;
-
+    std::cout << "read_buffer::detach() -1.2- [" << (_sep==nullptr) << "]" << std::endl;
     auto res = search_();
-
+    std::cout << "read_buffer::detach() -1.3- " << std::endl;
     if ( res.first == this->npos() )
     {
       if ( _readbuf != this->npos() )
       {
+        std::cout << "read_buffer::detach() -1.4- " << std::endl;
         _parsebuf = _readbuf;
         _parsepos = _readpos;
       }
       else
       {
+        std::cout << "read_buffer::detach() -1.5- " << std::endl;
         _parsebuf = _buffers.size()-1;
         _parsepos = _buffers.back()->size();
       }
+      std::cout << "read_buffer::detach() -1.6- " << std::endl;
       return nullptr;
     }
 
+    std::cout << "read_buffer::detach() -1.7- " << std::endl;
     auto resbuf = this->make_result_(res);
     this->prepare_(res);
     size_t bufsize = resbuf->size();
     _size -= bufsize;
     if ( _trimsep && bufsize >= _sep_size )
     {
+      std::cout << "read_buffer::detach() -1.8- " << std::endl;
       resbuf->resize( bufsize - _sep_size);
     }
-
+    std::cout << "read_buffer::detach() -1.9- " << std::endl;
+    std::cout << "_offset= " << _offset << " _parsebuf=" << _parsebuf << " _parsepos=" << _parsepos << std::endl;
     return std::move(resbuf);
   }
 
@@ -336,27 +346,34 @@ namespace iow{ namespace io{
 
   read_buffer::search_pair read_buffer::nosep_search_() const
   {
+    std::cout << "nosep_search_ -1-" << std::endl;
     if ( _offset!=0 && _parsebuf==0 && _offset==_parsepos ) 
     {
+      std::cout << "nosep_search_ -2-" << std::endl;
       return search_pair(-1, -1);
     }
 
+    std::cout << "nosep_search_ -3-" << std::endl;
     if ( _readbuf==npos() )
     {
+      std::cout << "nosep_search_ -4-" << std::endl;
       // Если последний буфер не выделен под чтение
       return search_pair(_buffers.size() - 1, _buffers.back()->size());
     }
     else if (_readpos != 0)
     {
+      std::cout << "nosep_search_ -5-" << std::endl;
       // Если последний буфер выделен под чтение, но не сначала
       return search_pair(_readbuf, _readpos);
     }
     else if ( _readbuf != 0 )
     {
+      std::cout << "nosep_search_ -6-" << std::endl;
       // Если последний буфер выделен под чтение с начала
       // и он не первый
       return search_pair( _readbuf-1, _buffers[_readbuf-1]->size());
     }
+    std::cout << "nosep_search_ -7-" << std::endl;
     // Нет готовых данных
     return search_pair(-1, -1);
   }

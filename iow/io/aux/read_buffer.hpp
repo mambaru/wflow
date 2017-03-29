@@ -185,6 +185,7 @@ private:
     {
       _maxbuf = _bufsize;
     }
+    
   }
 
   template<typename O>
