@@ -108,14 +108,11 @@ namespace iow{ namespace io{
 
   write_buffer::data_pair write_buffer::next()
   {
-    std::cout << "write_buffer::data_pair write_buffer::next() -1- " << std::endl;
     if ( !this->ready() )
       return data_pair();
-    std::cout << "write_buffer::data_pair write_buffer::next() -2- " << std::endl;
     auto size = this->cur_size_();
     auto ptr  = this->cur_ptr_();
     _wait = size;
-    std::cout << "write_buffer::data_pair write_buffer::next() -3- " << std::endl;
     return data_pair( ptr, size );
   }
 

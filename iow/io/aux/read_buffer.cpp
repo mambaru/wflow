@@ -83,7 +83,6 @@ namespace iow{ namespace io{
       result = create_for_next_();
     }
 
-    std::cout << "read_buffer::next(): " << "_offset=" << _offset << " _parsebuf=" << _parsebuf << " _parsepos=" << _parsepos << std::endl;
     return result;
   }
 
@@ -95,15 +94,12 @@ namespace iow{ namespace io{
 
   bool read_buffer::confirm(data_pair d)
   {
-    std::cout << "read_buffer::confirm() -1- " << std::endl;
     if ( !this->waiting() )
       return false;
 
-    std::cout << "read_buffer::confirm() -2- " << std::endl;
     if ( _readbuf >= _buffers.size() )
       return false;
 
-    std::cout << "read_buffer::confirm() -3- " << std::endl;
     auto& buf = _buffers[_readbuf];
 
     if ( d.second > 0 )
@@ -116,7 +112,6 @@ namespace iow{ namespace io{
 
       _size += d.second;
     }
-    std::cout << "read_buffer::confirm() -4- " << std::endl;
     buf->resize( _readpos + d.second );
     if ( buf->empty() )
     {
@@ -125,16 +120,13 @@ namespace iow{ namespace io{
     }
     _readpos = -1;
     _readbuf = -1;
-    std::cout << "read_buffer::confirm: " << "_offset=" << _offset << " _parsebuf=" << _parsebuf << " _parsepos=" << _parsepos << std::endl;
     return true;
   }
 
   data_ptr read_buffer::detach()
   {
-    std::cout << "read_buffer::detach()" << std::endl;
     if ( _buffers.empty() )
       return nullptr;
-    std::cout << "read_buffer::detach1: " << "_offset=" << _offset << " _parsebuf=" << _parsebuf << " _parsepos=" << _parsepos << " capacity=" << this->capacity() << std::endl;
     auto res = search_();
     if ( res.first == this->npos() )
     {
@@ -159,7 +151,6 @@ namespace iow{ namespace io{
     {
       resbuf->resize( bufsize - _sep_size);
     }
-    std::cout << "read_buffer::detach2: " << "_offset=" << _offset << " _parsebuf=" << _parsebuf << " _parsepos=" << _parsepos << std::endl;
     return std::move(resbuf);
   }
 
