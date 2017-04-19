@@ -156,7 +156,7 @@ namespace iow{ namespace io{
 
   constexpr size_t read_buffer::npos()
   {
-    return ~0;
+    return ~0ul;
   }
 
   data_ptr read_buffer::create_(size_t size, size_t maxbuf) const noexcept
