@@ -173,7 +173,7 @@ private:
     
     if ( _minbuf==0 )
     {
-      _minbuf=128;
+      _minbuf = _maxbuf;
     }
 
     if ( _minbuf > _bufsize )

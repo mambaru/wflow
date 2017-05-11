@@ -3,6 +3,7 @@
 #include <fas/testing.hpp>
 #include <cstring>
 #include <mutex>
+#include <cstdlib>
 //#include <ucommon/socket.h>
 
 typedef std::vector<char> data_type;
@@ -85,7 +86,8 @@ void test_buff1(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
     auto p = buf.next();
     t << is_true<assert>(s.size() <= p.second) << FAS_TESTING_FILE_LINE;
     t << stop;
-    std::strcpy( p.first, s.c_str());
+    //std::strcpy( p.first, s.c_str());
+    std::copy(s.begin(), s.end(), p.first );
     p.second = s.size();
     bool confirm = buf.confirm(p);
     t << is_true<assert>( confirm ) << FAS_TESTING_FILE_LINE;
@@ -118,7 +120,8 @@ void test_buff2(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
     auto p = buf.next();
     t << is_true<assert>(s.size() <= p.second) << FAS_TESTING_FILE_LINE;
     t << stop;
-    std::strcpy( p.first, s.c_str());
+    //std::strcpy( p.first, s.c_str());
+    std::copy(s.begin(), s.end(), p.first );
     p.second = s.size();
     bool confirm = buf.confirm(p);
     t << is_true<assert>( confirm ) << FAS_TESTING_FILE_LINE;
@@ -190,7 +193,8 @@ void test_buff3(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
     auto p = buf.next();
     t << is_true<assert>(s.size() <= p.second) << s.size() << " > " << p.second << FAS_TESTING_FILE_LINE;
     t << stop;
-    std::strcpy( p.first, s.c_str());
+    //std::strcpy( p.first, s.c_str());
+    std::copy(s.begin(), s.end(), p.first );
     p.second = s.size();
     do_detach(t, buf, vectres, result);
     bool confirm = buf.confirm(p);
@@ -217,7 +221,8 @@ void test_buff4(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
     incoming += s;
     t << is_true<assert>(s.size() <= p.second) << s.size() << " > " << p.second << FAS_TESTING_FILE_LINE;
     t << stop;
-    std::strcpy( p.first, s.c_str());
+    //std::strcpy( p.first, s.c_str());
+    std::copy(s.begin(), s.end(), p.first );
     p.second = s.size();
     
     bool confirm = buf.confirm(p);
@@ -450,13 +455,84 @@ UNIT(empty_test, "Ошибка без сепаратора (работает ч�
   t << equal<expect, std::string>( req2, std::string(res->begin(), res->end()) ) << FAS_FL;
 }
 
+UNIT(bug_test, "Ошибка склеивания с мусором")
+{
+  using namespace fas::testing;
+  t << nothing;
+  read_buffer buf;
+  options opt;
+  buf.get_options(opt);
+  opt.sep="\r\n";
+  opt.trimsep = true;
+  opt.minbuf = 0;
+  buf.set_options(opt);
+
+  auto p = buf.next();
+  for (int i = 0; i!=10000; ++i)
+  {
+    std::string req;
+    std::generate_n( std::back_inserter(req), 1 + std::rand()%1024, [](){ return static_cast<char>('0' + std::rand()%32); });
+    req+="\r\n";
+    t << message("size=") << p.second << " req.size=" << req.size();
+    t << message("STRING [") << req << "] i=" << i  ;
+    std::copy(req.begin(), req.end(), p.first);
+    p.second = req.size();
+    buf.confirm(p);
+    p = buf.next();
+    auto res = buf.detach();
+    t << not_equal<assert>(res, nullptr) << FAS_FL;
+    t << stop;
+    req.resize(req.size() - 2);
+    t << equal<expect, std::string>( req, std::string(res->begin(), res->end()) ) << FAS_FL;
+  }
+  
+  opt.sep="\r\n";
+  opt.trimsep = true;
+  buf.set_options(opt);
+
+
+  std::string req2 = "{'jsonrpc':'2.0'\r\n";
+  std::string req1 = "{'jsonrpc':'2.0','method':'insert','params':{'table':'new_contact','fields':{'platform':['web-site'],'partner':['mambaru'],'link':['none'],'age_from':62,'age_to':62,'gender_from':['F'],'gender_to':['M'],'country_from':['Russian Federation'],'country_to':['Russian Federation']},'values':[1635296312,1645340482]}}\r\n";
+  
+  //p = buf.next();
+  //t << message("size=") << p.second << " req1.size=" << req1.size();
+  //t << message("-");
+  std::copy(req1.begin(), req1.end(), p.first);
+  p.second = req1.size();
+  buf.confirm(p);
+
+  p = buf.next();
+  t << message("size=") << p.second << " req2.size=" << req1.size();
+  std::copy(req2.begin(), req2.end(), p.first);
+  p.second = req2.size();
+  buf.confirm(p);
+
+  auto res = buf.detach();
+  t << not_equal<assert>(res, nullptr) << FAS_FL;
+  t << stop;
+  req1.resize(req1.size() - 2);
+  t << equal<expect, std::string>( req1, std::string(res->begin(), res->end()) ) << FAS_FL;
+
+  res = buf.detach();
+  t << not_equal<assert>(res, nullptr) << FAS_FL;
+  t << stop;
+  req2.resize(req2.size() - 2);
+  t << equal<expect, std::string>( req2, std::string(res->begin(), res->end()) ) << FAS_FL;
+
+  res = buf.detach();
+  t << equal<expect>( res, nullptr ) << FAS_FL;
+}
+
+
 BEGIN_SUITE(read_buffer, "read_buffer suite")
-  ADD_UNIT(basic_test)
+  /*ADD_UNIT(basic_test)
   ADD_UNIT(basic_sep0)
   ADD_UNIT(basic_sep1)
   ADD_UNIT(basic_sep2)
   ADD_UNIT(basic_sep3)
   ADD_UNIT(empty_test)
+  */
+  ADD_UNIT(bug_test)
 END_SUITE(read_buffer)
 
 BEGIN_TEST
