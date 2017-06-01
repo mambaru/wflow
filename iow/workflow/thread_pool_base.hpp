@@ -5,6 +5,7 @@
 #include <vector>
 #include <atomic>
 #include <memory>
+#include <functional>
 
 namespace iow {
 

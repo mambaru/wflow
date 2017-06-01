@@ -2,6 +2,7 @@
 
 #include <iow/memory.hpp>
 #include <chrono>
+#include <functional>
 
 namespace iow{
 
