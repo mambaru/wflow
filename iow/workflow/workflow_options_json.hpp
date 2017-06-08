@@ -9,6 +9,7 @@ namespace iow {
 struct workflow_options_json
 {
   JSON_NAME(threads)
+  JSON_NAME(debug)
   JSON_NAME(use_io_service)
   JSON_NAME(maxsize)
   JSON_NAME(wrnsize)
@@ -22,7 +23,8 @@ struct workflow_options_json
       ::wjson::member< n_maxsize, workflow_options, size_t, &workflow_options::maxsize >,
       ::wjson::member< n_show_wrn_ms, workflow_options, time_t, &workflow_options::show_wrn_ms >,
       ::wjson::member< n_threads, workflow_options, int,  &workflow_options::threads >,
-      ::wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >
+      ::wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >,
+      ::wjson::member< n_debug, workflow_options, bool, &workflow_options::debug >
     >
   > type;
   typedef typename type::target target;

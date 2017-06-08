@@ -15,12 +15,12 @@ struct ad_next
   std::pair<char*, size_t> operator()(T& t)
   {
     // Проверить размер 
-    auto& buff = t.get_aspect().template get<_read_buffer_>();
-    auto p = buff.next();
-    if ( buff.overflow() )
+    auto& buf = t.get_aspect().template get<_read_buffer_>();
+    auto p = buf.next();
+    if ( buf.overflow() )
     {
-      buff.clear();
-      IOW_LOG_ERROR("read buffer overflow");
+      buf.clear();
+      IOW_LOG_ERROR("Read buffer overflow. The descriptor will be closed.");
       t.get_aspect().template get< ::iow::io::_stop_>()(t);
     }
     return std::move(p);

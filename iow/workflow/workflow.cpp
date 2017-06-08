@@ -169,9 +169,10 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
   else
   {
     size_t wrnsize = opt.wrnsize;
+    bool debug = opt.debug;
     std::function<bool()> handler = opt.handler != nullptr
       ? opt.handler
-      : [this, wrnsize, dropsave]() mutable ->bool 
+      : [this, wrnsize, dropsave, debug]() mutable ->bool 
       {
         // TODO: Вынести логирование
         auto dropped = this->_impl->dropped();
@@ -185,6 +186,10 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
         else if ( size > wrnsize )
         {
           IOW_LOG_WARNING("Workflow '" << this->_id << "' queue size warning. Size " << size << " (wrnsize=" << wrnsize << ")")
+        } 
+        else if ( debug )
+        {
+          IOW_LOG_MESSAGE("Workflow '" << this->_id << "' debug: total dropped " << dropped << ", queue size " << size)
         }
         return true;
       };

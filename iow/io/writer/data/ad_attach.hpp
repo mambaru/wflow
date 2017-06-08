@@ -16,7 +16,7 @@ struct ad_attach
     if ( buf.overflow() )
     {
       buf.clear();
-      IOW_LOG_ERROR("write buffer overflow");
+      IOW_LOG_ERROR("Write buffer overflow. The descriptor will be closed.");
       t.get_aspect().template get< ::iow::io::_stop_>()(t);
     }
   }

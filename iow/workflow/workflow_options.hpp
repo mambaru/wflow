@@ -13,6 +13,7 @@ struct workflow_options
   std::string id;
   // в delayed_queue есть баг
   bool use_io_service = true;
+  bool debug = false;
   int  threads = 0;
 
   size_t maxsize = 1024*1024*128;
