@@ -35,13 +35,6 @@ struct owner_handler2
     {
       return _handler(std::forward<Args>(args)...);
     }
-    /*
-    typedef typename std::result_of< H(Args&&...) >::type result_type;
-    typedef std::function< result_type(Args&&...) > func_type;
-    func_type f = _alt_handler;*/
-    IOW_LOG_DEBUG("owner_handler2() мимо 2")
-    //return f( std::forward<Args>(args)... );
-    // abort();
     return _alt_handler(std::forward<Args>(args)...);
   }
 private:
