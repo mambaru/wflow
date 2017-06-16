@@ -31,7 +31,7 @@ struct ad_initialize
       {
         sh(id);
       }
-    });
+    }, nullptr);
     context.manager = std::make_shared<typename context_type::manager_type>( std::move(conn_opt) );
     context.addr = opt.addr;
     context.port = opt.port;

@@ -185,7 +185,7 @@ private:
         std::lock_guard<mutex_type> lk( pthis->mutex() );
         pthis->client_start_(opt2);
       }
-    });
+    }, nullptr);
 
     opt.args.error_handler = this->wrap([wthis, opt2](::iow::system::error_code ec)
     {
@@ -199,7 +199,7 @@ private:
         pthis->_ready_for_write = false;
         pthis->delayed_reconnect_(opt2);
       }
-    });
+    }, nullptr);
     
     opt.connection.shutdown_handler = this->wrap([wthis, opt2]( io_id_t io_id) 
     {
@@ -213,7 +213,7 @@ private:
         pthis->_ready_for_write = false;
         pthis->delayed_reconnect_(opt2);
       }
-    });
+    }, nullptr);
 
     opt.connection.startup_handler = [wthis, opt2]( io_id_t io_id, outgoing_handler_t outgoing)
     {

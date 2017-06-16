@@ -39,7 +39,7 @@ struct ad_connect
             popt->args.error_handler(ec);
         }
       }
-    });
+    }, nullptr);
 
 
     IOW_LOG_BEGIN("Client connect to " << opt.addr << ":" << opt.port << " ..." )

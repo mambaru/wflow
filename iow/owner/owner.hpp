@@ -7,7 +7,6 @@
 #pragma once
 
 #include <iow/owner/owner_handler.hpp>
-#include <iow/owner/owner_handler2.hpp>
 #include <memory>
 
 namespace iow{
@@ -38,35 +37,16 @@ public:
     _alive = std::make_shared<int>(*_alive + 1);
   }
   
-  template<typename Handler>
-  owner_handler<typename std::remove_reference<Handler>::type>
-  wrap(Handler&& h) const
-  {
-    return
-      owner_handler< 
-        typename std::remove_reference<Handler>::type 
-      >(
-          std::forward<Handler>(h),
-          std::weak_ptr<int>(_alive)
-       );
-  }
-
-  template<typename Handler>
-  owner_handler<typename std::remove_reference<Handler>::type>
-  callback(Handler&& h) const
-  {
-    return this->wrap( std::forward<Handler>(h) );
-  }
 
   template<typename Handler, typename AltHandler>
-  owner_handler2< 
+  owner_handler< 
     typename std::remove_reference<Handler>::type, 
     typename std::remove_reference<AltHandler>::type
   >
   wrap(Handler&& h, AltHandler&& nh) const
   {
     return 
-      owner_handler2<
+      owner_handler<
         typename std::remove_reference<Handler>::type, 
         typename std::remove_reference<AltHandler>::type
       >(

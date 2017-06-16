@@ -19,7 +19,7 @@ struct ad_make_handler
         std::lock_guard<typename T::mutex_type> lk(pthis->mutex());
         pthis->get_aspect().template get<_write_handler_>()(*pthis, std::move(p), std::move(ec), bytes_transferred);
       }
-    });
+    }, nullptr);
   }
 };
 

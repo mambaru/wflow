@@ -24,7 +24,7 @@ struct ad_make_handler
         std::lock_guard<typename T::mutex_type> lk(pthis->mutex());
         pthis->get_aspect().template get<_accept_handler_>()(*pthis, std::move(p), std::move(ec));
       }
-    });
+    }, nullptr);
   }
 };
   

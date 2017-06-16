@@ -96,13 +96,14 @@ public:
     typedef typename std::result_of<advice_type(self&, Args...) >::type type;
   };
   
+  /*
   template<typename Handler>
   auto wrap(Handler&& h) const
     -> typename result_of<_wrap_, Handler>::type
   {
     std::lock_guard< mutex_type > lk(_mutex);
-    return this->wrap_( *this, std::forward<Handler>(h) );
-  }
+    return this->wrap_( *this, std::forward<Handler>(h), nullptr);
+  }*/
 
   template<typename Handler, typename AltHandler>
   auto wrap(Handler&& h, AltHandler&& ah) const
@@ -160,13 +161,14 @@ public:
     t.get_aspect().template get<_shutdown_>()(t, std::forward<shutdown_complete>(handler));
   }
 
+  /*
   template<typename T, typename Handler>
   auto wrap_( T& t, Handler&& h) const
     -> typename result_of<_wrap_, Handler>::type
   {
     return t.get_aspect().template get<_wrap_>()(t, std::forward<Handler>(h) );
   }
-
+*/
   template<typename T, typename Handler, typename AltHandler>
   auto wrap_( T& t, Handler&& h, AltHandler&& ah) const
     -> typename result_of<_wrap_, Handler, AltHandler>::type
