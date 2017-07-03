@@ -20,7 +20,7 @@ public:
   typedef const value_type* value_ptr;
   typedef std::unique_ptr<value_type[]> sep_ptr;
   typedef std::pair<value_ptr, size_t> data_pair;
-  typedef std::vector<data_ptr> data_list;
+  typedef std::deque<data_ptr> data_list;
   //typedef std::unique_ptr<deque_list> deque_ptr;
   
   typedef std::function<data_ptr(size_t, size_t)> create_fun;
@@ -145,7 +145,7 @@ private:
       _maxbuf = _bufsize;
     }
 
-    _list.reserve(2);
+    //_list.reserve(2);
   }
 
   template<typename O>

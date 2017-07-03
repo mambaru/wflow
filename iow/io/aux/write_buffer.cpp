@@ -11,7 +11,7 @@ namespace iow{ namespace io{
 
   write_buffer::write_buffer() noexcept
   {
-    _list.reserve(2);
+    //_list.reserve(2);
   }
 
   void write_buffer::clear()
@@ -131,8 +131,10 @@ namespace iow{ namespace io{
     {
       _offset = 0;
       free_( std::move(_list.front()) );
-      //_list.pop_front();
-      _list.erase( _list.begin() );
+      _list.pop_front();
+      std::cout << "capacity: " << this->capacity() << /*" size=" << this->size() << */ " list="<< _list.size() <<  std::endl;
+
+      //_list.erase( _list.begin() );
     }
     
     // TODO: убрал копирование для minbuf
