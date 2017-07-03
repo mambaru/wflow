@@ -19,7 +19,8 @@ struct options_json
       ::wjson::member<n_threads, options, int, &options::threads>,
       ::wjson::member< n_addr, options, std::string, &options::addr>,
       ::wjson::member< n_port, options, std::string, &options::port>
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef type::target target;
   typedef type::serializer serializer;

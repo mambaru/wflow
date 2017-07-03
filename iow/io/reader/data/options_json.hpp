@@ -16,7 +16,8 @@ struct options_json
     options_type,
     ::wjson::member_list<
       ::wjson::base<buffer_json>
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef typename type::target target;
   typedef typename type::serializer serializer;

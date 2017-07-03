@@ -13,7 +13,8 @@ struct options_json
     options,
     ::wjson::member_list<
       ::wjson::base< ::iow::io::rw::options_json >
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef type::target target;
   typedef type::serializer serializer;

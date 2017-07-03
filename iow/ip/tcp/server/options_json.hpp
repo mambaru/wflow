@@ -21,7 +21,8 @@ struct options_json
     ::wjson::member_list<
       ::wjson::member<n_threads, ServerOptions, int, &ServerOptions::threads>, //< перенести в общий серевер
       ::wjson::base< AcceptorJson >
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef typename type::target target;
   typedef typename type::serializer serializer;

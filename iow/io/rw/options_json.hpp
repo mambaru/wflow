@@ -23,7 +23,8 @@ struct options_json
     ::wjson::member_list<
         ::wjson::member<n_reader, options_type, reader_options, &options_type::reader, reader_options_json >,
         ::wjson::member<n_writer, options_type, writer_options, &options_type::writer, writer_options_json >
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef typename type::target target;
   typedef typename type::serializer serializer;

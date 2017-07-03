@@ -27,7 +27,8 @@ struct write_buffer_options_json
       ::wjson::member< n_minbuf,   options_type, size_t,      &options_type::minbuf  >,
       ::wjson::member< n_maxsize,   options_type, size_t,      &options_type::maxsize  >,
       ::wjson::member< n_first_as_is,  options_type, bool,        &options_type::first_as_is >
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   
   typedef typename type::target target;

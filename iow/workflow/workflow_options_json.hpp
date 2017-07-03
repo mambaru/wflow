@@ -25,7 +25,8 @@ struct workflow_options_json
       ::wjson::member< n_threads, workflow_options, int,  &workflow_options::threads >,
       ::wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >,
       ::wjson::member< n_debug, workflow_options, bool, &workflow_options::debug >
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef typename type::target target;
   typedef typename type::serializer serializer;
@@ -43,7 +44,8 @@ struct workflow_options2_json
       ::wjson::base< workflow_options_json >,
       ::wjson::member< n_post_delay_ms, workflow_options, time_t, &workflow_options::post_delay_ms >,
       ::wjson::member< n_rate_limit, workflow_options, size_t, &workflow_options::rate_limit >
-    >
+    >,
+    ::wjson::strict_mode
   > type;
 
   typedef typename type::target target;
@@ -61,7 +63,8 @@ struct workflow_options_on_json
     ::wjson::member_list<
       ::wjson::member< n_threads, workflow_options, int,  &workflow_options::threads >,
       ::wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef typename type::target target;
   typedef typename type::serializer serializer;

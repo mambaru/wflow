@@ -32,7 +32,8 @@ struct options_json
       ::wjson::member< n_async_connect, option_type, bool, &option_type::async_connect>,
       ::wjson::member< n_reconnect_timeout_ms, option_type, time_t, &option_type::reconnect_timeout_ms>,
       ::wjson::member< n_connection, option_type, connection_options, &option_type::connection, connection_json>
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef typename type::target target;
   typedef typename type::serializer serializer;

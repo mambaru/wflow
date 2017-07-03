@@ -28,7 +28,8 @@ struct options_json
       ::wjson::member< n_backlog, options_type, int, &options_type::backlog>,
       ::wjson::member< n_max_connections, options_type, int, &options_type::max_connections >,
       ::wjson::member< n_connection, options_type, connection_options_type, &options_type::connection, connection_options_json>
-    >
+    >,
+    ::wjson::strict_mode
   > type;
   typedef typename type::target target;
   typedef typename type::serializer serializer;
