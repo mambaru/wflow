@@ -132,9 +132,8 @@ namespace iow{ namespace io{
       _offset = 0;
       free_( std::move(_list.front()) );
       _list.pop_front();
-      std::cout << "capacity: " << this->capacity() << /*" size=" << this->size() << */ " list="<< _list.size() <<  std::endl;
-
-      //_list.erase( _list.begin() );
+      //std::cout << "capacity: " << this->capacity() << " size=" << this->size() <<  " list="<< _list.size() << " listcap=" << _list.capacity() <<  std::endl;
+      //ist.erase( _list.begin() );
     }
     
     // TODO: убрал копирование для minbuf

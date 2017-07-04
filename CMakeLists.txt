@@ -35,7 +35,7 @@ add_library(
 
 target_link_libraries(iow ${Boost_LIBRARIES} )
 
-if ( IOW_BUILD_TEST OR IOW_BUILD_ALL )
+if ( BUILD_TESTING )
   enable_testing()
   add_subdirectory(tests)
 endif()

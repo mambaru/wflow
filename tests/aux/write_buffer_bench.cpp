@@ -59,7 +59,7 @@ void run(size_t total, size_t count, size_t bufsize, size_t minbuf, size_t maxbu
   auto span = std::chrono::duration_cast<std::chrono::microseconds>( finish - start).count();
   auto rate = total*count*1000000 / span ;
   
-  std::cout << "run " << span << " " << rate << std::endl;
+  std::cout << "run " << span << "mks " << rate << "persec" << std::endl;
 }
 
 int main()

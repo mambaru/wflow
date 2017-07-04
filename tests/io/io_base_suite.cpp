@@ -125,7 +125,7 @@ UNIT(owner, "")
   
   iobase io;
   int value = 0;
-  auto test1= io.wrap([&value](int val) { value = val; });
+  auto test1= io.wrap([&value](int val) { value = val; }, nullptr);
   
   test1(10);
   t << is_true< assert >(value==10) << value << FAS_TESTING_FILE_LINE;

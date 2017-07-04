@@ -21,7 +21,6 @@ public:
   typedef std::unique_ptr<value_type[]> sep_ptr;
   typedef std::pair<value_ptr, size_t> data_pair;
   typedef std::deque<data_ptr> data_list;
-  //typedef std::unique_ptr<deque_list> deque_ptr;
   
   typedef std::function<data_ptr(size_t, size_t)> create_fun;
   typedef std::function<void(data_ptr)> free_fun;

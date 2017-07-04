@@ -49,7 +49,7 @@ UNIT(owner, "")
 {
   using namespace fas::testing;
   ::iow::owner own;
-  auto test1 = own.wrap(&inc);
+  auto test1 = own.wrap(&inc, nullptr);
   int val = 0;
   val = test1(1);
   t << equal<expect>(val, 2) << FAS_TESTING_FILE_LINE;
@@ -65,7 +65,7 @@ UNIT(owner, "")
   t << equal<expect>(val, 1) << FAS_TESTING_FILE_LINE;
   
   foo f;
-  auto test3 = own.wrap([f](int val)->int { return val + 1;});
+  auto test3 = own.wrap([f](int val)->int { return val + 1;}, nullptr);
   val = test3(1);
   t << equal<expect>(val, 2) << FAS_TESTING_FILE_LINE;
   t << equal<expect>(foo::ctor, 1) << FAS_TESTING_FILE_LINE;
@@ -99,7 +99,7 @@ UNIT(owner, "")
   val = test5(2);
   t << equal<expect>(val, 1) << FAS_TESTING_FILE_LINE;
 
-  auto test6 = own.wrap([f](int val)->int { return val + 1;});
+  auto test6 = own.wrap([f](int val)->int { return val + 1;}, nullptr);
   auto test7 = test6;
   val = test7(2);
   t << equal<expect>(val, 3) << FAS_TESTING_FILE_LINE;
