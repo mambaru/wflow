@@ -2,6 +2,7 @@
 
 #include <iow/io/reader/data/options.hpp>
 #include <iow/io/writer/data/options.hpp>
+#include <memory>
 
 namespace iow{ namespace io{ namespace rw{
 

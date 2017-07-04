@@ -8,12 +8,13 @@
 
 namespace iow{ namespace io{
 
-struct data_pool_options
+/*struct data_pool_options
 {
   size_t poolsize = 1024;
   size_t minbuf = 128;
   size_t maxbuf = 4096;
 };
+*/
 
   
 template<typename DataType>
@@ -53,6 +54,7 @@ public:
     opt.maxbuf = _maxbuf;
   }
 
+  /*
   data_ptr create()
   {
     std::lock_guard<mutex_type> lk(_mutex);
@@ -64,7 +66,7 @@ public:
     std::lock_guard<mutex_type> lk(_mutex);
     return this->create_(bufsize, _maxbuf);
   }
-  
+  */
   
   data_ptr create(size_t bufsize, size_t maxbuf )
   {
