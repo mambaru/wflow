@@ -65,9 +65,10 @@ struct stream_options
   //typedef std::shared_ptr<buffer_pool_type> buffer_pool_ptr;
   typedef ::iow::io::write_buffer_options write_buffer_options;
   typedef ::iow::io::read_buffer_options read_buffer_options;
+  typedef ::iow::io::data_pool_options data_pool_options;
   write_buffer_options writer;
   read_buffer_options reader;
-  //buffer_pool_ptr buffer_pool;
+  data_pool_options data_pool;
 };
 
 

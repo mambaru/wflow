@@ -21,6 +21,7 @@ add_library(
   iow
   iow/io/aux/read_buffer.cpp
   iow/io/aux/write_buffer.cpp
+  iow/io/aux/global_pool.cpp
   iow/logger/global_log.cpp
   iow/workflow/workflow.cpp
   iow/workflow/delayed_queue.cpp
