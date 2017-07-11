@@ -5,7 +5,7 @@ namespace iow{ namespace io{
 
 typedef pool_map< data_type, std::mutex > pool_type;
 typedef std::shared_ptr<pool_type> pool_ptr;
-pool_ptr static_pool;
+static pool_ptr static_pool;
 
 void global_pool::initialize(data_map_options opt)
 {
@@ -14,14 +14,14 @@ void global_pool::initialize(data_map_options opt)
   static_pool->set_options(opt);
 }
 
-data_ptr create(size_t bufsize, size_t maxbuf)
+data_ptr global_pool::create(size_t bufsize, size_t maxbuf)
 {
   if ( static_pool == nullptr )
     return std::make_unique<data_type>(bufsize);
   return static_pool->create(bufsize, maxbuf);
 }
 
-void free(data_ptr d)
+void global_pool::free(data_ptr d)
 {
   if ( static_pool == nullptr )
     return;

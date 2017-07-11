@@ -13,7 +13,7 @@ struct options
   typedef ::iow::io::writer::data::options writer_options;
   reader_options reader;
   writer_options writer;
-  data_pool_options data_pool;
+  /*data_map_options data_pool;*/
 };
 
 }}}
