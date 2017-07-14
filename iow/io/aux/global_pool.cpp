@@ -1,9 +1,11 @@
 #include "global_pool.hpp"
 #include "data_pool.hpp"
+#include <iow/mutex.hpp>
+#include <iow/memory.hpp>
 
 namespace iow{ namespace io{
 
-typedef pool_map< data_type, std::mutex > pool_type;
+typedef pool_map< data_type, spinlock > pool_type;
 typedef std::shared_ptr<pool_type> pool_ptr;
 static pool_ptr static_pool;
 
@@ -17,7 +19,11 @@ void global_pool::initialize(data_map_options opt)
 data_ptr global_pool::create(size_t bufsize, size_t maxbuf)
 {
   if ( static_pool == nullptr )
-    return std::make_unique<data_type>(bufsize);
+  {
+    auto p = std::make_unique<data_type>(maxbuf);
+    p->resize(bufsize);
+    return std::move(p);
+  }
   return static_pool->create(bufsize, maxbuf);
 }
 

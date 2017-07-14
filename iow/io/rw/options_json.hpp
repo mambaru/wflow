@@ -3,7 +3,6 @@
 #include <iow/io/rw/options.hpp>
 #include <iow/io/reader/data/options_json.hpp>
 #include <iow/io/writer/data/options_json.hpp>
-#include <iow/io/aux/data_pool_options_json.hpp>
 #include <wjson/json.hpp>
 
 namespace iow{ namespace io{ namespace rw{
@@ -18,14 +17,12 @@ struct options_json
   
   JSON_NAME(reader)
   JSON_NAME(writer)
-  JSON_NAME(data_pool)
 
   typedef ::wjson::object<
     options_type,
     ::wjson::member_list<
         ::wjson::member<n_reader, options_type, reader_options, &options_type::reader, reader_options_json >,
-        ::wjson::member<n_writer, options_type, writer_options, &options_type::writer, writer_options_json >/*,
-        ::wjson::member<n_data_pool, options_type, data_map_options, &options_type::data_pool, data_map_options_json >*/
+        ::wjson::member<n_writer, options_type, writer_options, &options_type::writer, writer_options_json >
     >,
     ::wjson::strict_mode
   > type;
