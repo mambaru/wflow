@@ -157,9 +157,7 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
   size_t dropsave = 0;
   auto old_timer = _wrn_timer;
-  /*if ( _wrn_timer != 0 )
-    wrkf.release_timer(_wrn_timer);
-    */
+    
 
   if ( ( opt.wrnsize == 0 && opt.maxsize==0) || opt.show_wrn_ms==0)
   {
@@ -174,7 +172,6 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
       ? opt.handler
       : [this, wrnsize, dropsave, debug]() mutable ->bool 
       {
-        // TODO: Вынести логирование
         auto dropped = this->_impl->dropped();
         auto size = this->_impl->size();
         auto dropdiff = dropped - dropsave;

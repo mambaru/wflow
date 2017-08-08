@@ -44,6 +44,7 @@ void bique::reconfigure(size_t maxsize, bool use_asio, bool mt )
   _asio->set_maxsize(maxsize);
   if( _asio_st ) 
     _asio_st->set_maxsize(maxsize);
+  
 }
 
 void bique::reset()

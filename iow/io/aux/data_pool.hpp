@@ -27,6 +27,10 @@ public:
   typedef std::vector<data_ptr> pool_type;
   typedef MutexType mutex_type;
   typedef data_pool_options options_type;
+
+  /*data_pool(data_pool&&)  =delete;
+  data_pool& operator=(data_pool&&)  =delete;
+  */
   
   data_pool() noexcept
     : _poolsize(1024)
@@ -45,6 +49,9 @@ public:
     _maxbuf = opt.maxbuf;
     if ( _minbuf > _maxbuf )
       _minbuf = _maxbuf;
+    if ( _poolsize == 0 )
+        abort();
+
   }
 
   template<typename O>
@@ -81,19 +88,22 @@ public:
   void free(data_ptr d) noexcept
   {
     std::lock_guard<mutex_type> lk(_mutex);
-    if ( d==nullptr )
+    if ( d==nullptr || d->empty() )
       return;
-    
+
     //std::cout << "free " << d->capacity() << std::endl;
     if ( _pool.size() >= _poolsize)
     {
-      //std::cout << "free1 " << std::endl;
+      //std::cout << "free1 " << _pool.size() << " >= " << _poolsize << " " << reinterpret_cast<size_t>(this) << std::endl;
+      //std::cout.flush();
+      if (_poolsize==0)
+        abort();
       return;
     }
     
     if ( d->capacity() < _minbuf || d->capacity() > _maxbuf)
     {
-     // std::cout << "free2 _maxbuf=" << _maxbuf << std::endl;
+      std::cout << "free2 _maxbuf=" << _maxbuf << std::endl;
       return;
     }
     
@@ -104,7 +114,7 @@ public:
     _pool.push_back( std::move(d));
   }
   
-  size_t count() const noexcept
+  size_t count() const noexcept 
   {
     std::lock_guard<mutex_type> lk(_mutex);
     return _pool.size();
@@ -127,19 +137,24 @@ private:
   {
     if (_pool.empty() )
     {
-      //std::cout << "create1 " << bufsize << std::endl;
-      return std::make_unique< data_type >(bufsize);
+      //std::cout << "create1 " << maxbuf << std::endl;
+      if ( maxbuf==156)
+        abort();
+      auto p = std::make_unique< data_type >(maxbuf);
+      p->resize(bufsize);
+      return std::move(p);
     }
     
     auto& buf = _pool.back();
     if ( buf->capacity() < bufsize || buf->capacity() > maxbuf )
     {
-      //std::cout << "create2 " << bufsize << " buf" << buf->capacity() << std::endl;
-      return std::make_unique< data_type >(bufsize);
+      std::cout << "create2 " << bufsize << " buf " << buf->capacity() << std::endl;
+      auto p = std::make_unique< data_type >(maxbuf);
+      p->resize(bufsize);
+      return std::move(p);
     }
-    
+//    std::cout << "create " << bufsize <<   " from pool " << buf->capacity() << std::endl;
     buf->resize(bufsize);
-    //std::cout << "create " << bufsize <<   " from pool " << buf->capacity() << std::endl;
     auto result = std::move(buf);
     _pool.pop_back();
     return std::move(result);
@@ -184,7 +199,7 @@ public:
     _minbuf = opt.minbuf;
     _maxbuf = opt.maxbuf;
 
-    _list = pool_list(opt.maxbuf);
+    _list = pool_list(opt.maxbuf+1);
     /*if ( opt.maxbuf > opt.minbuf )
       _list = pool_list(opt.dimension);
       */
@@ -214,8 +229,11 @@ public:
   {
     std::lock_guard<mutex_type> lk(_mutex);
     if ( maxbuf > _maxbuf )
+    {
+      std::cout << "DEF" << std::endl;
       return _def.create(bufsize, maxbuf);
-    return _list[ maxbuf ].create(bufsize, maxbuf);
+    }
+    return _list.at( maxbuf/10 ).create(bufsize, maxbuf);
   }
   
   /*
@@ -265,7 +283,7 @@ public:
   void free(data_ptr d) noexcept
   {
     
-    if ( d==nullptr )
+    if ( d==nullptr || d->empty() )
       return;
 
     std::lock_guard<mutex_type> lk(_mutex);
@@ -273,9 +291,12 @@ public:
     size_t bufsize = d->capacity();
   
     if ( bufsize > _maxbuf )
+    {
+      std::cout << "no free" << std::endl;
       return;
+    }
     
-    return _list[ bufsize ].free( std::move(d) );
+    return _list.at( bufsize/10 ).free( std::move(d) );
   }
 
   /*

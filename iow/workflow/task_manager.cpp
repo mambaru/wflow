@@ -37,6 +37,7 @@ task_manager::task_manager( io_service_type& io, size_t queue_maxsize, int threa
 void task_manager::reconfigure(size_t queue_maxsize, int threads, bool use_asio /*= false*/ )
 {
   _threads = threads;
+  _pool->reconfigure(_threads);
   _queue->reconfigure(queue_maxsize, use_asio, threads!=0/* threads==0 || use_asio*/ );
 }
   

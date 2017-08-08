@@ -184,7 +184,6 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
         startup(thread_id);
       if ( statistics == nullptr && pthis->_rate_limit == 0 )
       {
-        //while ( wflag.lock() != nullptr)
         s->run();
       }
       else for (;;)

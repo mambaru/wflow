@@ -5,7 +5,7 @@ namespace iow{ namespace io{
 
 struct data_pool_options
 {
-  size_t poolsize = 16;
+  size_t poolsize = 1024;
   size_t minbuf = 64;
   size_t maxbuf = 4096*2;
 };
