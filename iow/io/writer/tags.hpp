@@ -15,11 +15,7 @@ struct _write_some_;
 struct _can_write_;
 struct _rollback_;
 
-
-//struct _output_type_;
-
 struct _on_complete_;
-// struct _on_done_;
 
 }}}
 

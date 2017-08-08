@@ -4,7 +4,7 @@
 #include <wjson/json.hpp>
 namespace iow{ namespace io{
 
-struct data_pool_options_json
+struct data_pool_options_json_1
 {
   typedef data_pool_options options_type;
   //JSON_NAME(disabled)
@@ -38,6 +38,7 @@ struct data_map_options_json
     options_type,
     ::wjson::member_list<
       ::wjson::member< n_disabled,   options_type, bool,   &options_type::disabled  >,
+      ::wjson::base<data_pool_options_json_1>,
       ::wjson::member< n_dimension,  options_type, size_t, &options_type::dimension >
     >,
     ::wjson::strict_mode
