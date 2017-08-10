@@ -6,30 +6,30 @@
 #include <mutex>
 namespace iow{ namespace io{ namespace descriptor{
 
-struct ad_incoming_handler
+struct ad_input_handler
 {
   template<typename T, typename D>
   void operator()(T& t, D d)
   {
     const auto& cntx = t.get_aspect().template get<_context_>();
 
-    if ( cntx.incoming_handler != nullptr )
+    if ( cntx.input_handler != nullptr )
     {
-      auto incoming = cntx.incoming_handler;
+      auto input = cntx.input_handler;
       //auto output = cntx.output_handler;
       auto output = t.get_aspect().template get<_make_output_>()(t);
       auto io_id = t.get_id_(t);
       t.mutex().unlock();
       try
       {
-        incoming( std::move(d), std::move(io_id), std::move(output));
+        input( std::move(d), std::move(io_id), std::move(output));
       }
       catch(const std::exception& e)
       {
         if ( output ) output(nullptr);
         std::lock_guard<typename T::mutex_type> lk(t.mutex());
         if ( cntx.fatal_handler != nullptr ) try {
-          cntx.fatal_handler(-1, std::string("iow::io::descriptor::ad_incoming_handler: std::exception: ") + std::string(e.what()));
+          cntx.fatal_handler(-1, std::string("iow::io::descriptor::ad_input_handler: std::exception: ") + std::string(e.what()));
         } catch(...) {}
       }
       catch(...)
@@ -37,7 +37,7 @@ struct ad_incoming_handler
         if ( output ) output(nullptr);
         std::lock_guard<typename T::mutex_type> lk(t.mutex());
         if ( cntx.fatal_handler != nullptr ) try {
-          cntx.fatal_handler(-1, "iow::io::descriptor::ad_incoming_handler: Unhandled exception in incoming handler");
+          cntx.fatal_handler(-1, "iow::io::descriptor::ad_input_handler: Unhandled exception in input handler");
           } catch(...) {}
       }
       t.mutex().lock();

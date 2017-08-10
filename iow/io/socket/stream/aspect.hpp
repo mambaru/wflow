@@ -14,7 +14,7 @@
 namespace iow{ namespace io{ namespace socket{ namespace stream{
 
 struct aspect: fas::aspect<
-  fas::advice< ::iow::io::reader::data::_incoming_, ::iow::io::descriptor::ad_incoming_handler>,
+  fas::advice< ::iow::io::reader::data::_input_, ::iow::io::descriptor::ad_input_handler>,
   fas::alias< ::iow::io::descriptor::_output_, ::iow::io::writer::_output_>,
   ::iow::io::socket::stream::asio::aspect,
   ::iow::io::descriptor::aspect< context, ::iow::io::rw::_initialize_, true >

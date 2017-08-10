@@ -229,12 +229,12 @@ private:
       }
     };
 
-    if ( opt2.connection.incoming_handler == nullptr )
+    if ( opt2.connection.input_handler == nullptr )
     {
-      opt2.connection.incoming_handler
+      opt2.connection.input_handler
         = [wthis]( data_ptr d, io_id_t /*o_id*/, output_handler_t /*output*/)
       {
-        IOW_LOG_ERROR("Client incoming_handler not set [" << d << "]" )
+        IOW_LOG_ERROR("Client input_handler not set [" << d << "]" )
       }; 
     }
  }

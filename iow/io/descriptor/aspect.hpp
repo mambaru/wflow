@@ -22,7 +22,7 @@ struct aspect: fas::aspect<
   fas::group< ::iow::io::_after_start_, _after_start_>,
   fas::group< ::iow::io::_before_stop_, _before_stop_>,
   fas::advice< ::iow::io::_initialize_, ad_initialize<TgInitialize, MakeOutgoung> >,
-  fas::advice<_incoming_, ad_incoming_handler>,
+  fas::advice<_input_, ad_input_handler>,
   fas::advice<_make_output_, ad_make_output>
 > {};
 

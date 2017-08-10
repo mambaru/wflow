@@ -21,12 +21,12 @@ struct ad_initialize
     context_type& cntx = t.get_aspect().template get<_context_>();
 
     cntx.output_handler  = opt.output_handler;
-    cntx.incoming_handler  = opt.incoming_handler;
+    cntx.input_handler  = opt.input_handler;
     cntx.startup_handler   = opt.startup_handler;
     cntx.shutdown_handler  = opt.shutdown_handler;
     cntx.fatal_handler     = opt.fatal_handler;
 
-    if (  opt.incoming_handler != nullptr )
+    if (  opt.input_handler != nullptr )
     {
       this->make_output_(t, cntx, fas::bool_<MakeOutgoingHandler>() );
     }
@@ -53,7 +53,7 @@ private:
     io_id_t io_id = t.get_id_(t);
     typedef Cntx context_type;
     auto callback = cntx.output_handler;
-    auto incoming = cntx.incoming_handler;
+    auto input = cntx.input_handler;
     std::weak_ptr<T> wthis = t.shared_from_this();
     cntx.output_handler = t.wrap([wthis, callback](typename context_type::data_ptr d)
     {
@@ -73,24 +73,24 @@ private:
         }
       }
     }, 
-    [wthis, io_id, incoming](typename context_type::data_ptr d) ->void
+    [wthis, io_id, input](typename context_type::data_ptr d) ->void
     { 
       if ( d != nullptr )
       {
       }
       
-      if ( incoming ) 
+      if ( input ) 
       {
         if ( auto pthis = wthis.lock() )
         {
-          incoming(nullptr, io_id, nullptr);
+          input(nullptr, io_id, nullptr);
         }
       }
       else
       {
         if ( auto pthis = wthis.lock() )
         {
-          pthis->get_aspect().template get<_incoming_>()( *pthis, nullptr );
+          pthis->get_aspect().template get<_input_>()( *pthis, nullptr );
         }
       }
     }

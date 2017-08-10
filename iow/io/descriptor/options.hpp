@@ -9,14 +9,14 @@ private:
   typedef ContextType context_type;
 public:
   typedef typename context_type::output_handler_type  output_handler_type;
-  typedef typename context_type::incoming_handler_type  incoming_handler_type;
+  typedef typename context_type::input_handler_type  input_handler_type;
   typedef typename context_type::startup_handler_type   startup_handler_type;
   typedef typename context_type::shutdown_handler_type  shutdown_handler_type;
   typedef typename context_type::fatal_handler_type     fatal_handler_type;
 
   bool nonblocking = true; 
   output_handler_type output_handler;
-  incoming_handler_type incoming_handler;
+  input_handler_type input_handler;
   startup_handler_type  startup_handler;
   shutdown_handler_type shutdown_handler;
   fatal_handler_type    fatal_handler;

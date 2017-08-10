@@ -19,7 +19,7 @@ public:
   typedef typename super::aspect::template advice_cast<_context_>::type context_type;
   typedef typename context_type::data_ptr data_ptr;
   typedef typename context_type::output_handler_type output_handler_type;
-  typedef typename context_type::incoming_handler_type incoming_handler_type;
+  typedef typename context_type::input_handler_type input_handler_type;
   typedef typename context_type::startup_handler_type  startup_handler_type;
   typedef typename context_type::shutdown_handler_type shutdown_handler_type;
 
