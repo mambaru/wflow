@@ -6,7 +6,7 @@
 #include <mutex>
 namespace iow{ namespace io{ namespace descriptor{
 
-struct ad_make_output
+struct ad_make_output_handler
 {
   template<typename T>
   struct context

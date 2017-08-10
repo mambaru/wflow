@@ -2,7 +2,7 @@
 
 #include <iow/io/socket/dgram/asio/ad_async_read_some.hpp>
 #include <iow/io/socket/dgram/asio/ad_async_write_some.hpp>
-#include <iow/io/socket/dgram/asio/ad_make_outgoing.hpp>
+#include <iow/io/socket/dgram/asio/ad_make_output.hpp>
 #include <iow/io/reader/tags.hpp>
 #include <iow/io/writer/tags.hpp>
 #include <fas/aop.hpp>
