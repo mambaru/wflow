@@ -17,7 +17,7 @@ struct ad_after_start
     auto& cntx = t.get_aspect().template get< _context_ >();
     if ( cntx.startup_handler )
     {
-      cntx.startup_handler( t.get_id_(t), cntx.outgoing_handler);
+      cntx.startup_handler( t.get_id_(t), cntx.output_handler);
     }
   }
 };

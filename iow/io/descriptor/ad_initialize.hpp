@@ -20,7 +20,7 @@ struct ad_initialize
     typedef typename T::aspect::template advice_cast< _context_>::type context_type;
     context_type& cntx = t.get_aspect().template get<_context_>();
 
-    cntx.outgoing_handler  = opt.outgoing_handler;
+    cntx.output_handler  = opt.output_handler;
     cntx.incoming_handler  = opt.incoming_handler;
     cntx.startup_handler   = opt.startup_handler;
     cntx.shutdown_handler  = opt.shutdown_handler;
@@ -28,7 +28,7 @@ struct ad_initialize
 
     if (  opt.incoming_handler != nullptr )
     {
-      this->make_outgoing_(t, cntx, fas::bool_<MakeOutgoingHandler>() );
+      this->make_output_(t, cntx, fas::bool_<MakeOutgoingHandler>() );
     }
 
     if (  cntx.fatal_handler == nullptr )
@@ -48,14 +48,14 @@ struct ad_initialize
 private:
 
   template<typename T, typename Cntx> 
-  void make_outgoing_(T& t, Cntx& cntx, fas::true_ )
+  void make_output_(T& t, Cntx& cntx, fas::true_ )
   {
     io_id_t io_id = t.get_id_(t);
     typedef Cntx context_type;
-    auto callback = cntx.outgoing_handler;
+    auto callback = cntx.output_handler;
     auto incoming = cntx.incoming_handler;
     std::weak_ptr<T> wthis = t.shared_from_this();
-    cntx.outgoing_handler = t.wrap([wthis, callback](typename context_type::data_ptr d)
+    cntx.output_handler = t.wrap([wthis, callback](typename context_type::data_ptr d)
     {
       if ( auto pthis = wthis.lock() )
       {
@@ -67,7 +67,7 @@ private:
         {
           bool shutdown = (d == nullptr );
           std::lock_guard<typename T::mutex_type> lk( pthis->mutex() );
-          pthis->get_aspect().template get<_outgoing_>()( *pthis, std::move(d) );
+          pthis->get_aspect().template get<_output_>()( *pthis, std::move(d) );
           if ( shutdown )
             pthis->get_aspect().template get< ::iow::io::_shutdown_>()( *pthis, nullptr );
         }
@@ -98,7 +98,7 @@ private:
   }
 
   template<typename T, typename Cntx>
-  void make_outgoing_(T& /*t*/, Cntx& /*cntx*/, fas::false_ )
+  void make_output_(T& /*t*/, Cntx& /*cntx*/, fas::false_ )
   {
   }
 

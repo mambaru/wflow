@@ -11,13 +11,13 @@ struct context
   typedef DataType data_type;
   typedef DataPtr  data_ptr;
 
-  typedef std::function< void(data_ptr) > outgoing_handler_type;
-  typedef std::function< void(data_ptr, io_id_type, outgoing_handler_type )> incoming_handler_type;
-  typedef std::function< void(io_id_type, outgoing_handler_type) > startup_handler_type;
+  typedef std::function< void(data_ptr) > output_handler_type;
+  typedef std::function< void(data_ptr, io_id_type, output_handler_type )> incoming_handler_type;
+  typedef std::function< void(io_id_type, output_handler_type) > startup_handler_type;
   typedef std::function< void(io_id_type) > shutdown_handler_type;
   typedef std::function< void(int, std::string)> fatal_handler_type;
 
-  outgoing_handler_type outgoing_handler;
+  output_handler_type output_handler;
   incoming_handler_type incoming_handler;
   startup_handler_type  startup_handler;
   shutdown_handler_type shutdown_handler;

@@ -12,7 +12,7 @@ namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
 typedef fas::aspect<
   fas::advice< ::iow::io::reader::_read_some_, ad_async_read_some>,
   fas::advice< ::iow::io::writer::_write_some_, ad_async_write_some>,
-  fas::advice< ::iow::io::descriptor::_make_outgoing_, ad_make_outgoing>
+  fas::advice< ::iow::io::descriptor::_make_output_, ad_make_output>
 > aspect;
   
 }}}}}

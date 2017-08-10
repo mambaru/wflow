@@ -41,7 +41,7 @@ public:
   }
   
   // для мулти-коннект клиента
-  void send( data_ptr d, io_id_t id, outgoing_handler_t handler)
+  void send( data_ptr d, io_id_t id, output_handler_t handler)
   {
     if ( auto h = super::holder() )
     {

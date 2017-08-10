@@ -24,7 +24,7 @@ public:
   typedef typename super::descriptor_type descriptor_type;
   typedef ::iow::asio::io_service io_service_type;
   typedef typename super::mutex_type mutex_type;
-  typedef typename super::outgoing_handler_type outgoing_handler_t;
+  typedef typename super::output_handler_type output_handler_t;
   typedef std::vector< data_ptr > wait_data_t;
   
   client( io_service_type& io)
@@ -105,9 +105,9 @@ public:
     if ( d==nullptr )
       return nullptr;    
 
-    if ( _ready_for_write && _outgoing_handler!=nullptr )
+    if ( _ready_for_write && _output_handler!=nullptr )
     {
-      _outgoing_handler( std::move(d) );
+      _output_handler( std::move(d) );
     }
     else
     {
@@ -117,7 +117,7 @@ public:
     return nullptr;
   }
   
-  void send( data_ptr d, io_id_t , outgoing_handler_t handler)
+  void send( data_ptr d, io_id_t , output_handler_t handler)
   {
     auto dd = this->send( std::move(d) ) ;
     if ( dd!=nullptr && handler!=nullptr )
@@ -140,13 +140,13 @@ private:
   {
     super::stop_(*this);
     _ready_for_write = false;
-    _outgoing_handler = nullptr;
+    _output_handler = nullptr;
   }
   
-  void startup_handler_(io_id_t, outgoing_handler_t handler)
+  void startup_handler_(io_id_t, output_handler_t handler)
   {
     _ready_for_write = true;
-    _outgoing_handler = handler;
+    _output_handler = handler;
   }
   
   template<typename Opt>
@@ -215,24 +215,24 @@ private:
       }
     }, nullptr);
 
-    opt.connection.startup_handler = [wthis, opt2]( io_id_t io_id, outgoing_handler_t outgoing)
+    opt.connection.startup_handler = [wthis, opt2]( io_id_t io_id, output_handler_t output)
     {
       if ( auto pthis = wthis.lock() )
       {
         std::lock_guard<mutex_type> lk( pthis->mutex() );
-        pthis->startup_handler_(io_id, outgoing);
+        pthis->startup_handler_(io_id, output);
       }
 
       if ( opt2.connection.startup_handler != nullptr )
       {
-        opt2.connection.startup_handler( io_id, outgoing);
+        opt2.connection.startup_handler( io_id, output);
       }
     };
 
     if ( opt2.connection.incoming_handler == nullptr )
     {
       opt2.connection.incoming_handler
-        = [wthis]( data_ptr d, io_id_t /*o_id*/, outgoing_handler_t /*outgoing*/)
+        = [wthis]( data_ptr d, io_id_t /*o_id*/, output_handler_t /*output*/)
       {
         IOW_LOG_ERROR("Client incoming_handler not set [" << d << "]" )
       }; 
@@ -242,7 +242,7 @@ private:
   bool _started;
   bool _ready_for_write;
   time_t _reconnect_timeout_ms;
-  outgoing_handler_t _outgoing_handler;
+  output_handler_t _output_handler;
   std::shared_ptr< ::iow::workflow > _workflow;
 };
 

@@ -47,7 +47,7 @@ UNIT(stream_holder_unit, "")
   t << message("...write:") << res1;
   
   options_type opt;
-  opt.incoming_handler = [&]( iow::io::data_ptr d, size_t, options_type::outgoing_handler_type /*callback*/){
+  opt.incoming_handler = [&]( iow::io::data_ptr d, size_t, options_type::output_handler_type /*callback*/){
     t << message("data: ") << d ;
     h2->get_aspect().get< ::iow::io::writer::_output_>()( *h2, std::move(d) );
   };

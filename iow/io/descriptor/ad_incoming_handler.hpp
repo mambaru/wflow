@@ -16,17 +16,17 @@ struct ad_incoming_handler
     if ( cntx.incoming_handler != nullptr )
     {
       auto incoming = cntx.incoming_handler;
-      //auto outgoing = cntx.outgoing_handler;
-      auto outgoing = t.get_aspect().template get<_make_outgoing_>()(t);
+      //auto output = cntx.output_handler;
+      auto output = t.get_aspect().template get<_make_output_>()(t);
       auto io_id = t.get_id_(t);
       t.mutex().unlock();
       try
       {
-        incoming( std::move(d), std::move(io_id), std::move(outgoing));
+        incoming( std::move(d), std::move(io_id), std::move(output));
       }
       catch(const std::exception& e)
       {
-        if ( outgoing ) outgoing(nullptr);
+        if ( output ) output(nullptr);
         std::lock_guard<typename T::mutex_type> lk(t.mutex());
         if ( cntx.fatal_handler != nullptr ) try {
           cntx.fatal_handler(-1, std::string("iow::io::descriptor::ad_incoming_handler: std::exception: ") + std::string(e.what()));
@@ -34,7 +34,7 @@ struct ad_incoming_handler
       }
       catch(...)
       {
-        if ( outgoing ) outgoing(nullptr);
+        if ( output ) output(nullptr);
         std::lock_guard<typename T::mutex_type> lk(t.mutex());
         if ( cntx.fatal_handler != nullptr ) try {
           cntx.fatal_handler(-1, "iow::io::descriptor::ad_incoming_handler: Unhandled exception in incoming handler");
@@ -45,7 +45,7 @@ struct ad_incoming_handler
     }
     else
     {
-      t.get_aspect().template get<_outgoing_>()( t, std::move(d) );
+      t.get_aspect().template get<_output_>()( t, std::move(d) );
     }
   }
 };
