@@ -14,7 +14,7 @@ public:
   typedef Service service_type;
   typedef std::shared_ptr<service_type> service_ptr;
 
-  thread_pool(service_ptr service)
+  explicit thread_pool(const service_ptr& service)
     : _service(service)
   {
   }

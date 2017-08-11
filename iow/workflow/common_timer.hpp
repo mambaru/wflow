@@ -66,7 +66,7 @@ private:
   }
 
   template<typename Q>
-  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, async_handler handler, wflag_type wflag)
+  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, const async_handler& handler, wflag_type wflag)
   {
     auto pflag = wflag.lock();
     if ( pflag == nullptr )

@@ -44,8 +44,10 @@ UNIT(workflow2, "")
   using namespace ::fas::testing;
   ::iow::asio::io_service io;  
   ::iow::asio::io_service::work wrk(io);
-  ::iow::workflow* pw = nullptr;
   ::iow::workflow_options opt;
+  ::iow::workflow wfl(io, opt);
+  ::iow::workflow* pw = &wfl;
+
   bool ready = false;
   opt.maxsize = 5; // + handler timer
   opt.use_io_service = true;
@@ -63,8 +65,6 @@ UNIT(workflow2, "")
     io.stop();
     return false;
   };
-  ::iow::workflow wfl(io, opt);
-  pw = &wfl;
   wfl.start();
   for (int i =0 ; i < 5; i++)
     wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [](){}, nullptr);

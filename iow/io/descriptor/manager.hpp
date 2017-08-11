@@ -20,12 +20,10 @@ public:
   typedef ::iow::asio::io_service io_service;
 
   template<typename Opt>
-  manager(Opt&& opt)
+  explicit manager(Opt&& opt)
+    : _initilizer([opt](holder_ptr h){ h->initialize(opt);})
   {
-    _initilizer = [opt](holder_ptr h)
-    {
-      h->initialize(opt);
-    };
+    
   }
   
   void attach(io_id_type id, holder_ptr h)

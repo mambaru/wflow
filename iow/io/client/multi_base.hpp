@@ -18,7 +18,7 @@ public:
   typedef typename client_type::io_service_type io_service_type;
   typedef std::mutex mutex_type;
   
-  multi_base(io_service_type& io)
+  explicit multi_base(io_service_type& io)
     : _current(0)
     , _io_service(io)
   {}

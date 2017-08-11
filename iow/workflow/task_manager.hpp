@@ -60,7 +60,7 @@ public:
   
   std::size_t size() const;
   std::size_t dropped() const;
-  std::shared_ptr<timer_type> timer();
+  std::shared_ptr<timer_type> timer() const;
   
   /*
   size_t get_threads( ) const;

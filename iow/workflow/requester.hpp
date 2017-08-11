@@ -59,7 +59,7 @@ private:
         {
           if ( auto next_req = result_handler( std::move(*pres) ) )
           {
-            send_request_<Res>( wq, std::move(next_req), wi, mem_ptr, std::move(result_handler), std::move(timer_handler) );
+            send_request_<Res>( wq, std::move(next_req), wi, mem_ptr, std::move(result_handler), timer_handler );
           }
           else
           {

@@ -12,7 +12,7 @@ class task_manager::pool_impl
 {
   typedef thread_pool<task_manager::queue_type> super;
 public:
-  pool_impl(super::service_ptr service)
+  explicit pool_impl(const super::service_ptr& service)
     : super(service)
   {}
 };
@@ -20,10 +20,10 @@ public:
 
 task_manager::task_manager( size_t queue_maxsize, size_t threads, bool use_asio )
   : _threads(threads)
+  , _queue( std::make_shared<queue_type>(queue_maxsize, use_asio) )
+  , _timer( std::make_shared<timer_manager<queue_type> >(_queue) )
+  , _pool( std::make_shared<pool_type>(_queue) )
 {
-  _queue = std::make_shared<queue_type>(queue_maxsize, use_asio);
-  _timer = std::make_shared<timer_manager<queue_type> >(_queue);
-  _pool = std::make_shared<pool_type>(_queue);
 }
   
 task_manager::task_manager( io_service_type& io, size_t queue_maxsize, size_t threads, bool use_asio /*= false*/  )
@@ -143,7 +143,7 @@ std::size_t task_manager::dropped() const
   return _queue->dropped();
 }
   
-std::shared_ptr<task_manager::timer_type> task_manager::timer()
+std::shared_ptr<task_manager::timer_type> task_manager::timer() const
 {
   return _timer;
 }

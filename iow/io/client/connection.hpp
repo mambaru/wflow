@@ -70,7 +70,7 @@ public:
   typedef typename super::descriptor_type descriptor_type;
   typedef typename super::data_ptr data_ptr;
   
-  connection_base(descriptor_type&& desc)
+  explicit connection_base(descriptor_type&& desc)
     : super( std::move( desc ) )
   {}
   
@@ -91,7 +91,7 @@ public:
    typedef typename super::descriptor_type descriptor_type;
    typedef typename super::mutex_type mutex_type;
   
-  connection(descriptor_type&& desc)
+  explicit connection(descriptor_type&& desc)
     : super( std::move( desc ) )
   {}
 

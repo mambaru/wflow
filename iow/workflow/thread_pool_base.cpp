@@ -11,8 +11,8 @@ namespace iow {
 
 thread_pool_base::thread_pool_base()
   : _started(false)
+  , _rate_limit(0)
 {
-  _rate_limit = 0;
 }
 
 void thread_pool_base::rate_limit(size_t rps) 
@@ -178,7 +178,6 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
         //pthis->add_id( syscall(SYS_gettid) );
       }
       std::thread::id thread_id = std::this_thread::get_id();
-      size_t count = 0;
       auto pthis = wthis.lock();
       if ( startup != nullptr )
         startup(thread_id);
@@ -186,37 +185,39 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       {
         s->run();
       }
-      else for (;;)
-      {
-        auto start = std::chrono::system_clock::now();
-        size_t handlers = s->run_one();
-        if (  handlers == 0 )
-          break;
-        if ( wflag.lock() == nullptr)
-          break;
-
-        //counter += handlers;
-        if ( statistics != nullptr || pthis->_rate_limit != 0 )
+      else { 
+        size_t count = 0;
+        for (;;)
         {
-          auto now = std::chrono::system_clock::now();
-          auto span = now - start ;
-          if ( statistics != nullptr )
-            statistics( thread_id, handlers, span );
+          auto start = std::chrono::system_clock::now();
+          size_t handlers = s->run_one();
+          if (  handlers == 0 )
+            break;
+          if ( wflag.lock() == nullptr)
+            break;
 
-          if ( pthis->_rate_limit != 0 )
+          //counter += handlers;
+          if ( statistics != nullptr || pthis->_rate_limit != 0 )
           {
-            count += handlers;
-            if ( count >= pthis->_rate_limit )
+            auto now = std::chrono::system_clock::now();
+            auto span = now - start ;
+            if ( statistics != nullptr )
+              statistics( thread_id, handlers, span );
+
+            if ( pthis->_rate_limit != 0 )
             {
-              auto ts_now = std::chrono::system_clock::now();
-              auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( ts_now - start ).count();
-              if ( tm_ms < 1000 )
-                std::this_thread::sleep_for( std::chrono::milliseconds(1000-tm_ms)  );
-              count = 0;
+              count += handlers;
+              if ( count >= pthis->_rate_limit )
+              {
+                auto ts_now = std::chrono::system_clock::now();
+                auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( ts_now - start ).count();
+                if ( tm_ms < 1000 )
+                  std::this_thread::sleep_for( std::chrono::milliseconds(1000-tm_ms)  );
+                count = 0;
+              }
             }
           }
         }
-        
       }
       if ( finish != nullptr )
         finish(thread_id);

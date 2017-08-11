@@ -20,7 +20,7 @@ struct owner_handler
 
   owner_handler() = default;
 
-  owner_handler(H&& h, NA&& nh,  weak_type alive)
+  owner_handler(H&& h, NA&& nh,  const weak_type& alive)
     : _handler(  std::forward<H>(h) )
     , _alt_handler(  std::forward<NA>(nh) )
     , _alive(alive)
@@ -50,7 +50,7 @@ struct owner_handler< H, std::nullptr_t >
 
   owner_handler() = default;
 
-  owner_handler(H&& h, std::nullptr_t, weak_type alive)
+  owner_handler(H&& h, std::nullptr_t, const weak_type& alive)
     : _handler(  std::forward<H>(h) )
     , _alive(alive)
   {

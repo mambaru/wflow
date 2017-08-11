@@ -23,7 +23,7 @@ public:
   typedef typename client_type::io_service_type io_service_type;
   typedef typename client_type::data_ptr data_ptr;
 
-  thread(io_service_type& io)
+  explicit thread(io_service_type& io)
     : super(io)
   {
   }

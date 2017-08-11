@@ -27,7 +27,7 @@ public:
   typedef ::iow::asio::io_service io_service_type;
   typedef std::shared_ptr<io_service_type> io_service_ptr;
 
-  thread(io_service_type& io)
+  explicit thread(io_service_type& io)
     : _started(false)
     , _io_service(io)
   {

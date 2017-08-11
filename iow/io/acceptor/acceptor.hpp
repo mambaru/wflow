@@ -16,7 +16,7 @@ public:
   typedef typename super::descriptor_type descriptor_type;
   typedef typename super::mutex_type mutex_type;
 
-  acceptor(descriptor_type&& desc)
+  explicit acceptor(descriptor_type&& desc)
     : super( std::forward<descriptor_type>(desc))
   {}
 

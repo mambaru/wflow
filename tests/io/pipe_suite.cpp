@@ -136,7 +136,7 @@ public:
   typedef data_ptr input_t;
   typedef data_ptr output_t;
 
-  writer1(::iow::asio::io_service& io)
+  explicit writer1(::iow::asio::io_service& io)
     : service(io) 
   {}
   

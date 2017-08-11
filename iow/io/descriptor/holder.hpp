@@ -28,7 +28,7 @@ public:
   holder_base(const holder_base& ) = delete;
   void operator=(const holder_base& ) = delete;
   
-  holder_base(descriptor_type&& desc)
+  explicit holder_base(descriptor_type&& desc)
     : super()
     , _descriptor(std::move(desc))
   {}
@@ -128,7 +128,7 @@ public:
   typedef typename super::mutex_type mutex_type;
   typedef typename super::descriptor_type descriptor_type;
   
-  holder(descriptor_type&& desc)
+  explicit holder(descriptor_type&& desc)
     : super(std::move(desc) )
   {}
 

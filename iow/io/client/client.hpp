@@ -27,7 +27,7 @@ public:
   typedef typename super::output_handler_type output_handler_t;
   typedef std::vector< data_ptr > wait_data_t;
   
-  client( io_service_type& io)
+  explicit client( io_service_type& io)
     : super(std::move(descriptor_type(io)) )
     , _started(false)
     , _ready_for_write(false)

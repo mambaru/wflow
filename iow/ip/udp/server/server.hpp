@@ -40,7 +40,7 @@ public:
   typedef typename super::descriptor_type descriptor_type;
   typedef typename super::mutex_type mutex_type;
 
-  worker_base(descriptor_type&& desc)
+  explicit worker_base(descriptor_type&& desc)
     : super( std::forward<descriptor_type>(desc))
   {}
   
@@ -58,7 +58,7 @@ class worker: public worker_base<>
 public:
   typedef worker_base<> super;
   typedef typename super::descriptor_type descriptor_type;
-  worker(descriptor_type&& desc)
+  explicit worker(descriptor_type&& desc)
     : super( std::forward<descriptor_type>(desc))
   {}
 };

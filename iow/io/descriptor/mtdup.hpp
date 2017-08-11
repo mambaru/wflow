@@ -29,7 +29,7 @@ public:
   typedef std::shared_ptr<io_service_type> io_service_ptr;
   typedef std::list<io_service_ptr> service_list;
 
-  mtdup(descriptor_type&& desc)
+  explicit mtdup(descriptor_type&& desc)
     : _origin( std::make_shared<holder_type>( std::forward<descriptor_type>(desc)))
   {
   }

@@ -72,7 +72,7 @@ class flow1
 public:
   typedef data_ptr input_t;
 
-  flow1(::iow::asio::io_service& io)
+  explicit flow1(::iow::asio::io_service& io)
     : service(io) 
   {}
   

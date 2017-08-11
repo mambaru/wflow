@@ -29,7 +29,7 @@ public:
   delayed_queue( delayed_queue const & ) = delete;
   void operator=( delayed_queue const & ) = delete;
 
-  delayed_queue(size_t maxsize);
+  explicit delayed_queue(size_t maxsize);
 
   virtual ~delayed_queue ();
   
@@ -54,7 +54,7 @@ public:
   std::size_t size() const;
   std::size_t dropped() const;
 
-  bool work() const { return false;}
+  static bool work() { return false;}
 private:
   bool check_(function_t drop);
 

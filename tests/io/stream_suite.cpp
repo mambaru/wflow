@@ -88,7 +88,7 @@ public:
   typedef data_ptr input_t;
   typedef data_ptr output_t;
 
-  stream(::iow::asio::io_service& io)
+  explicit stream(::iow::asio::io_service& io)
     : service(io) 
   {}
   

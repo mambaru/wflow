@@ -42,7 +42,7 @@ public:
   typedef std::weak_ptr<bool> wflag_type;
   typedef std::map< timer_id_t, std::shared_ptr<bool> > id_map;
 
-  timer_manager( queue_ptr queue );
+  explicit timer_manager( queue_ptr queue );
 
   // timers
   

@@ -16,7 +16,7 @@ public:
   typedef std::shared_ptr<acceptor_type> acceptor_ptr;
   typedef typename acceptor_type::descriptor_type descriptor_type;
   
-  server(io_service_type& io)
+  explicit server(io_service_type& io)
     : super( std::move( descriptor_type(io) ) )
   {}
   

@@ -16,7 +16,7 @@ class multi_client: public multi_base<Client>
 public:
   typedef typename super::io_service_type io_service_type;
   
-  multi_client(io_service_type& io)
+  explicit multi_client(io_service_type& io)
     : super(io)
   {}
   

@@ -11,15 +11,17 @@ workflow::~workflow()
 }
 
 workflow::workflow(workflow_options opt )
+  : _id( opt.id )
+  , _delay_ms(opt.post_delay_ms)
+  , _impl( std::make_shared<task_manager>(opt.maxsize, opt.threads, opt.use_io_service) )
+  , _workflow_ptr(opt.workflow_ptr)
 {
-  _id = opt.id;
-  _workflow_ptr = opt.workflow_ptr;
-  _impl = std::make_shared<task_manager>(opt.maxsize, opt.threads, opt.use_io_service);
+  
   _impl->rate_limit( opt.rate_limit );
   _impl->set_startup( opt.startup_handler );
   _impl->set_finish( opt.finish_handler );
   _impl->set_statistics( opt.statistics_handler );
-  _delay_ms = opt.post_delay_ms;
+  
   this->create_wrn_timer_(opt);
 }
 
@@ -155,30 +157,30 @@ size_t workflow::dropped() const
 void workflow::create_wrn_timer_(const workflow_options& opt)
 {
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
-  size_t dropsave = 0;
   auto old_timer = _wrn_timer;
-    
+  size_t wrnsize = opt.wrnsize;
 
-  if ( ( opt.wrnsize == 0 && opt.maxsize==0) || opt.show_wrn_ms==0)
+  if ( ( wrnsize == 0 && opt.maxsize==0) || opt.show_wrn_ms==0)
   {
     // заглушка, чтобы не выскакивал
     _wrn_timer = wrkf.create_timer(std::chrono::seconds(3600), []{ return true;} );
   }
   else
   {
-    size_t wrnsize = opt.wrnsize;
+    auto dropsave = std::make_shared<size_t>(0);
+    
     bool debug = opt.debug;
     std::function<bool()> handler = opt.handler != nullptr
       ? opt.handler
-      : [this, wrnsize, dropsave, debug]() mutable ->bool 
+      : [this, wrnsize, dropsave, debug]()  ->bool 
       {
         auto dropped = this->_impl->dropped();
         auto size = this->_impl->size();
-        auto dropdiff = dropped - dropsave;
+        auto dropdiff = dropped - *dropsave;
         if ( dropdiff!=0 )
         {
           IOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropped << ", size " << size << ")" )
-          dropsave = dropped;
+          *dropsave = dropped;
         }
         else if ( size > wrnsize )
         {

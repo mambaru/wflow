@@ -128,11 +128,9 @@ void test_buff2(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
   }
   
   std::vector<std::string> vectres;
-  size_t count = 0;
   auto d = buf.detach();
   while ( d!=nullptr )
   {
-    ++count;
     t << is_true<assert>( !d->empty() ) << FAS_TESTING_FILE_LINE;
     t << stop;
     auto str = std::string(d->begin(), d->end());
@@ -247,7 +245,7 @@ void test_buff4(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
 
 
 template<typename T>
-void test_buff(T& t, read_buffer& buf, std::vector<std::string> reads, std::vector<std::string> chk)
+void test_buff(T& t, read_buffer& buf, const std::vector<std::string>& reads, const std::vector<std::string>& chk)
 {
   test_buff1(t, buf, reads, chk);
   test_buff2(t, buf, reads, chk);
