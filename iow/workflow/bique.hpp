@@ -68,10 +68,11 @@ private:
 private:
   std::atomic<bool> _dflag;
   std::atomic<bool> _mt_flag;
+  io_service_ptr _io;
   delayed_ptr _delayed;
   asio_ptr   _asio;
   asio_ptr   _asio_st;
-  io_service_ptr _io;
+  
 };
 
 }

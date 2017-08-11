@@ -54,7 +54,7 @@ public:
   std::size_t size() const;
   std::size_t dropped() const;
 
-  bool work() { return false;}
+  bool work() const { return false;}
 private:
   bool check_(function_t drop);
 
@@ -72,7 +72,7 @@ private:
 
   struct queue_cmp
   {
-    inline bool operator()( delayed_queue::event_t & e1, delayed_queue::event_t & e2 )
+    inline bool operator()( delayed_queue::event_t & e1, delayed_queue::event_t & e2 ) const
     {
       return e1.first > e2.first;
     }

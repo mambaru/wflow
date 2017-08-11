@@ -43,14 +43,14 @@ public:
   {
   }
   
-  logstream(const std::string& name, const std::string& type, log_writer writer)
+  logstream(const std::string& name, const std::string& type, const log_writer& writer)
     : _name(name)
     , _type(type)
     , writer_(writer)
   {
   }
 
-  logstream(std::string&& name, std::string&& type, log_writer writer)
+  logstream(std::string&& name, std::string&& type, const log_writer& writer)
     : _name( std::move(name) )
     , _type( std::move(type) )
     , writer_(writer)

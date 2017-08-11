@@ -3,10 +3,10 @@
 namespace iow {
 
 delayed_queue::delayed_queue(size_t maxsize)
-  : _maxsize(maxsize)
+  : _loop_exit(false)
+  , _maxsize(maxsize)
+  , _drop_count(0)
 {
-  _drop_count = 0;
-  _loop_exit = false;
 }
 
 delayed_queue::~delayed_queue ()

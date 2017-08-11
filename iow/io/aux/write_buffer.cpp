@@ -118,10 +118,8 @@ namespace iow{ namespace io{
 
   bool write_buffer::confirm(data_pair p)
   {
-    bool result = false;
-
     if ( _wait == 0 || _size < p.second ) 
-      return result;
+      return false;
 
     _wait = 0;
     _offset += p.second;
@@ -132,11 +130,8 @@ namespace iow{ namespace io{
       _offset = 0;
       free_( std::move(_list.front()) );
       _list.pop_front();
-      //std::cout << "capacity: " << this->capacity() << " size=" << this->size() <<  " list="<< _list.size() << " listcap=" << _list.capacity() <<  std::endl;
-      //ist.erase( _list.begin() );
     }
     
-    // TODO: убрал копирование для minbuf
     return true;
   }
 

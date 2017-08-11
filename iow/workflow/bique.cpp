@@ -9,24 +9,35 @@ bique::~bique()
   this->stop();
 }
 
+
+
 bique::bique( size_t maxsize, bool use_asio)
+  : _dflag(!use_asio)
+  , _mt_flag(true)
+  , _io( std::make_shared<io_service_type>() )
+  , _delayed( std::make_shared<delayed_queue>(maxsize) )
+  , _asio( std::make_shared<asio_queue>( *_io, maxsize) )
+  , _asio_st(nullptr)
 {
-  _dflag = !use_asio;
-  _io = std::make_shared<io_service_type>();
-  _asio = std::make_shared<asio_queue>( *_io, maxsize);
-  _delayed = std::make_shared<delayed_queue>(maxsize);
-  _asio_st = nullptr;
-  _mt_flag = true;
+  
 }
 
 bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
+  : _dflag(!use_asio)
+  , _mt_flag(true)
+  , _io( std::make_shared<io_service_type>() )
+  , _delayed( std::make_shared<delayed_queue>(maxsize) )
+  , _asio( std::make_shared<asio_queue>( *_io, maxsize) )
+  , _asio_st(std::make_shared<asio_queue>( io, maxsize) )
 {
+  //_asio = std::make_shared<asio_queue>( *_io, maxsize);
+  /*
   _dflag = !use_asio;
   _mt_flag = mt;
   _io = std::make_shared<io_service_type>();
   _asio = std::make_shared<asio_queue>( *_io, maxsize);
   _asio_st = std::make_shared<asio_queue>( io, maxsize);
-  _delayed = std::make_shared<delayed_queue>(maxsize);
+  _delayed = std::make_shared<delayed_queue>(maxsize);*/
 }
 
 bique::io_service_type::work bique::work() const

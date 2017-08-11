@@ -90,7 +90,7 @@ class read_lock
   
 public:
   
-  read_lock(Mutex &lck)
+  explicit read_lock(Mutex &lck)
     : _mutex(lck)
   {
     _mutex.lock_r();
