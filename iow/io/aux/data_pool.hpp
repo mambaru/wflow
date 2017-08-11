@@ -9,7 +9,7 @@
 
 namespace iow{ namespace io{
 
-/*  
+
 template<typename DataType, typename MutexType = std::mutex >
 class data_pool
 {
@@ -117,7 +117,7 @@ private:
   //mutable MutexType _mutex;
 };
 
-
+/*
 template<typename DataType, typename MutexType = std::mutex >
 class pool_map
 {

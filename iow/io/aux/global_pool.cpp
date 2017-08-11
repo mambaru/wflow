@@ -12,7 +12,7 @@ typedef std::shared_ptr<pool_type> pool_ptr;
 static pool_ptr static_pool;
 */
   
-void global_pool::initialize(data_map_options opt)
+void global_pool::initialize(data_map_options /*opt*/)
 {
   /*
   if ( static_pool == nullptr )
