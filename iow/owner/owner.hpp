@@ -58,9 +58,8 @@ public:
     ;
   }
   
-  static void enable_callback_check(bool val)
+  static void enable_callback_check(bool )
   {
-    _enable_callback_check = val;
   };
 
   // TODO: wrap_strong и wrap_strong2 строго на один вызов
@@ -69,7 +68,6 @@ public:
   // TODO:enable_callback_check(true) в конфиге core, флаг в глобале, устанавливаеться в domain_object
 
 private:
-  static std::atomic<bool> _enable_callback_check;
   mutable alive_type _alive;
 };
 
