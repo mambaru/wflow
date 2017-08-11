@@ -19,6 +19,7 @@ typedef ::iow::io::read_buffer  read_buffer;
 typedef ::iow::io::data_pool<data_type>  data_pool;
 
 
+void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bufsize, size_t minbuf, size_t maxbuf, bool use_pool);
 
 void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bufsize, size_t minbuf, size_t maxbuf, bool use_pool)
 {
@@ -33,21 +34,21 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
   read_buffer buf;
   if ( bufsize != 0 )
   {
-    read_buffer::options_type opt;
-    buf.get_options(opt);
-    opt.bufsize = bufsize;
-    opt.minbuf = minbuf;
-    opt.maxbuf = maxbuf;
-    opt.sep = "\r\n";
+    read_buffer::options_type rb_opt;
+    buf.get_options(rb_opt);
+    rb_opt.bufsize = bufsize;
+    rb_opt.minbuf = minbuf;
+    rb_opt.maxbuf = maxbuf;
+    rb_opt.sep = "\r\n";
     if ( use_pool )
     {
-      opt.create = std::bind( static_cast<data_ptr(data_pool::*)(size_t, size_t)>(&data_pool::create), std::ref(pool), std::placeholders::_1, std::placeholders::_2);
-      opt.free = std::bind(&data_pool::free, std::ref(pool), std::placeholders::_1);
+      rb_opt.create = std::bind( static_cast<data_ptr(data_pool::*)(size_t, size_t)>(&data_pool::create), std::ref(pool), std::placeholders::_1, std::placeholders::_2);
+      rb_opt.free = std::bind(&data_pool::free, std::ref(pool), std::placeholders::_1);
     }
-    buf.set_options(opt);
-    std::cout << "bufsize=" << opt.bufsize 
-              << ", minbuf=" << opt.bufsize 
-              << ", maxbuf=" << opt.maxbuf 
+    buf.set_options(rb_opt);
+    std::cout << "bufsize=" << rb_opt.bufsize 
+              << ", minbuf=" << rb_opt.bufsize 
+              << ", maxbuf=" << rb_opt.maxbuf 
               << std::endl;
     std::cout << "Размер пакета: " << packsize << " 'чтение' за раз: " << readsize << std::endl;
   }
@@ -71,19 +72,19 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
   size_t read_block = 0;
   for (size_t i=0; i < total; ++i )
   {
-    size_t pos = 0;
-    while ( pos < indata.size() )
+    read_buffer::diff_type pos = 0;
+    while ( static_cast<size_t>(pos) < indata.size() )
     {
       auto p = buf.next();
-      if (p.second + pos > indata.size())
-        p.second = indata.size() - pos;
+      if ( p.second + static_cast<size_t>(pos) > indata.size())
+        p.second = indata.size() - static_cast<size_t>(pos);
       if ( p.second > readsize )
         p.second = readsize;
       
       ++read_block;
       std::copy( 
         indata.begin() + pos, 
-        indata.begin() + pos + p.second,
+        indata.begin() + pos + static_cast<read_buffer::diff_type>(p.second),
         p.first
       );
       buf.confirm(p);
@@ -108,7 +109,7 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
         pool.free( std::move(d) );
         d = buf.detach();
       }
-      pos += p.second;
+      pos += static_cast<read_buffer::diff_type>(p.second);
     }
   }
   
@@ -121,8 +122,8 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
   std::cout << "reads blocks: " << read_block << std::endl;
   std::cout << "expected packs: " << pack_count * total << std::endl;
   std::cout << "parse packs: " << parse_pack << std::endl;
-  std::cout << "read rate: " << read_block*1000000 / span  << std::endl;
-  std::cout << "parse rate: " << parse_pack*1000000 / span  << std::endl;
+  std::cout << "read rate: " << read_block*1000000ul / static_cast<size_t>(span)  << std::endl;
+  std::cout << "parse rate: " << parse_pack*1000000ul / static_cast<size_t>(span)  << std::endl;
 }
 
 int main()

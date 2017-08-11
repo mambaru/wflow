@@ -57,7 +57,7 @@ struct ad_input_factory
   {
     if ( t.input.empty() )
       return nullptr;
-    return std::make_unique<data_type>(100);
+    return std::make_unique<data_type>(100ul);
   }
 };
 

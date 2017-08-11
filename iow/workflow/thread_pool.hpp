@@ -19,12 +19,12 @@ public:
   {
   }
   
-  bool reconfigure(int threads)
+  bool reconfigure(size_t threads)
   {
     return super::reconfigure(_service, threads);
   }
     
-  void start(int threads)
+  void start(size_t threads)
   {
     super::start(_service, threads);
   }

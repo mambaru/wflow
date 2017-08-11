@@ -524,7 +524,7 @@ UNIT(bug_test, "Ошибка склеивания с мусором")
 }
 
 
-BEGIN_SUITE(read_buffer, "read_buffer suite")
+BEGIN_SUITE(read_buffers, "read_buffer suite")
   /*ADD_UNIT(basic_test)
   ADD_UNIT(basic_sep0)
   ADD_UNIT(basic_sep1)
@@ -533,8 +533,8 @@ BEGIN_SUITE(read_buffer, "read_buffer suite")
   ADD_UNIT(empty_test)
   */
   ADD_UNIT(bug_test)
-END_SUITE(read_buffer)
+END_SUITE(read_buffers)
 
 BEGIN_TEST
-  RUN_SUITE(read_buffer)
+  RUN_SUITE(read_buffers)
 END_TEST

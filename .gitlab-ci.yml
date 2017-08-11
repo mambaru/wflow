@@ -1,0 +1,14 @@
+wjson:
+  only:
+#    - master
+#    - devel
+  script:
+    - ./.ci/getlib faslib master
+    - ./.ci/getlib wjson master
+    - mkdir build
+    - cd build
+    - cmake -I ./faslib -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON ..
+    - cmake --build .
+    - ctest --output-on-failure
+    - cd ..
+    - ./.ci/cppcheck.sh

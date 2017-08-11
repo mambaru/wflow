@@ -10,6 +10,7 @@
 
 iow::asio::io_service io_service; 
 std::atomic<int> connect_count;
+void server();
 void server()
 {
   typedef ::iow::ip::tcp::server::server<> tcp_server;

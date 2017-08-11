@@ -19,6 +19,7 @@ public:
   typedef read_buffer_options options_type;
   typedef value_type* value_ptr;
   typedef std::unique_ptr<value_type[]> sep_ptr;
+  typedef std::ptrdiff_t diff_type;
   typedef std::pair<value_ptr, size_t> data_pair;
   typedef std::function<data_ptr(size_t, size_t)> create_fun;
   typedef std::function<void(data_ptr)> free_fun;
@@ -66,7 +67,7 @@ public:
   
 private:
 
-  static constexpr size_t npos();
+  static constexpr diff_type npos();
 
   data_ptr create_(size_t size, size_t maxbuf) const noexcept;
 
@@ -126,18 +127,18 @@ private:
   free_fun _free = nullptr;
 
   size_t  _size = 0;
-  size_t  _offset = 0;  // Смещение в первом буфере
-  size_t  _readbuf = -1; // -1 - если не ожидает подтверждения
-  size_t  _readpos = -1;
+  size_t _offset = 0;  // Смещение в первом буфере
+  size_t _readbuf = ~0ul; // -1 - если не ожидает подтверждения
+  size_t _readpos = ~0ul;
   
   // Номер буфера, с которого продолжить парсинг
   //   при _buffers.empty() равен 0, но в это случае поиск не производится
-  size_t  _parsebuf = 0;
+  size_t _parsebuf = 0;
   // Позиция в буфере, с которого продолжить парсинг
   // Может быть равен _buffers[_parsebuf]->size() для _buffers.size()-1==_parsebuf
   //   в этом случае корректируется при следующем next(), если выделяеться новый буфер
   //   и поиск до confirm() недоступен
-  size_t  _parsepos = 0;
+  size_t _parsepos = 0;
 
   buffer_list   _buffers;
 };

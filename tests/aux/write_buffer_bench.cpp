@@ -4,11 +4,13 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
-
 typedef std::vector<char> data_type;
 typedef ::iow::io::write_buffer  write_buffer;
 typedef ::iow::io::data_ptr data_ptr;
+
+void attach(write_buffer& buf, size_t count);
+void proccess(write_buffer& buf);
+void run(size_t total, size_t count, size_t bufsize, size_t minbuf, size_t maxbuf);
 
 int fd = -1;
 
@@ -57,7 +59,7 @@ void run(size_t total, size_t count, size_t bufsize, size_t minbuf, size_t maxbu
   auto finish = std::chrono::high_resolution_clock::now();
   
   auto span = std::chrono::duration_cast<std::chrono::microseconds>( finish - start).count();
-  auto rate = total*count*1000000 / span ;
+  auto rate = static_cast<long>( total*count*1000000ul ) / span ;
   
   std::cout << "run " << span << "mks " << rate << "persec" << std::endl;
 }

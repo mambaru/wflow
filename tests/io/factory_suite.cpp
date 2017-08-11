@@ -34,6 +34,7 @@ static const size_t SIZE = 512;
 std::mutex mutex;
 typedef std::vector<char> data_type;
 
+void thread1();
 void thread1()
 {
   bar1.wait();
@@ -46,6 +47,7 @@ void thread1()
   std::cout << std::endl <<  tem << std::endl;
 }
 
+void thread2();
 void thread2()
 {
   bar2.wait();

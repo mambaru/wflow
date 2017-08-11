@@ -84,13 +84,13 @@ public:
         {
           for (;;)
           {
-            auto start = std::chrono::steady_clock::now();
+            auto start_ts = std::chrono::steady_clock::now();
             size_t handlers = io->run_one(ec);
             if ( ec || handlers == 0 )
               break;
 
-            auto finish = std::chrono::steady_clock::now();
-            auto span = finish - start ;
+            auto finish_ts = std::chrono::steady_clock::now();
+            auto span = finish_ts - start_ts ;
             if ( tstat != nullptr )
               tstat( thread_id, handlers, span );
           }

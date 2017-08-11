@@ -18,10 +18,14 @@ int foo::ctor = 0;
 int foo::cctor = 0;
 int foo::mctor = 0;
 
+int inc(int i);
+int dec(int i);
+
 int inc(int i)
 {
   return i+1;
 }
+
 
 int dec(int i)
 {
@@ -65,7 +69,7 @@ UNIT(owner, "")
   t << equal<expect>(val, 1) << FAS_TESTING_FILE_LINE;
   
   foo f;
-  auto test3 = own.wrap([f](int val)->int { return val + 1;}, nullptr);
+  auto test3 = own.wrap([f](int v)->int { return v + 1;}, nullptr);
   val = test3(1);
   t << equal<expect>(val, 2) << FAS_TESTING_FILE_LINE;
   t << equal<expect>(foo::ctor, 1) << FAS_TESTING_FILE_LINE;
@@ -76,7 +80,7 @@ UNIT(owner, "")
   t << equal<expect>(val, 0) << FAS_TESTING_FILE_LINE;
 
 
-  auto test4 = own.wrap([f](int val)->int { return val + 1;}, [f](int val)->int { return val - 1;});
+  auto test4 = own.wrap([f](int v)->int { return v + 1;}, [f](int v)->int { return v - 1;});
   val = test4(2);
   t << equal<expect>(val, 3) << FAS_TESTING_FILE_LINE;
   own.reset();
@@ -99,7 +103,7 @@ UNIT(owner, "")
   val = test5(2);
   t << equal<expect>(val, 1) << FAS_TESTING_FILE_LINE;
 
-  auto test6 = own.wrap([f](int val)->int { return val + 1;}, nullptr);
+  auto test6 = own.wrap([f](int v)->int { return v + 1;}, nullptr);
   auto test7 = test6;
   val = test7(2);
   t << equal<expect>(val, 3) << FAS_TESTING_FILE_LINE;

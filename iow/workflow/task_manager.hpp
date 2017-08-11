@@ -30,11 +30,11 @@ public:
 
   //task_manager( io_service_type& io, size_t queue_maxsize );
   
-  task_manager( size_t queue_maxsize, int threads, bool use_asio );
+  task_manager( size_t queue_maxsize, size_t threads, bool use_asio );
   
-  task_manager( io_service_type& io, size_t queue_maxsize, int threads, bool use_asio /*= false*/  );
+  task_manager( io_service_type& io, size_t queue_maxsize, size_t threads, bool use_asio /*= false*/  );
 
-  void reconfigure(size_t queue_maxsize, int threads, bool use_asio /*= false*/ );
+  void reconfigure(size_t queue_maxsize, size_t threads, bool use_asio /*= false*/ );
   
   void rate_limit(size_t rps);
   void set_startup( startup_handler handler );
@@ -69,7 +69,7 @@ public:
   */
 
 private:
-  std::atomic<int> _threads;
+  std::atomic<size_t> _threads;
   std::shared_ptr<queue_type> _queue;
   std::shared_ptr<timer_type> _timer;
   std::shared_ptr<pool_type>  _pool;

@@ -23,7 +23,7 @@ struct aspect_stream : fas::aspect<
     ::iow::io::basic::aspect< std::recursive_mutex >::advice_list
 >{};
 
-typedef ::iow::io::descriptor::holder<aspect_stream> stream_holder;
+typedef ::iow::io::descriptor::holder<aspect_stream> stream_holder_t;
 
 
 UNIT(stream_holder_unit, "")
@@ -39,8 +39,8 @@ UNIT(stream_holder_unit, "")
   descriptor_type d1(service, f1[0]);
   descriptor_type d2(service, f2[1]);
   
-  auto h1 = std::make_shared<stream_holder>(std::move(d1));
-  auto h2 = std::make_shared<stream_holder>(std::move(d2));
+  auto h1 = std::make_shared<stream_holder_t>(std::move(d1));
+  auto h2 = std::make_shared<stream_holder_t>(std::move(d2));
   const char* instr = "Hello world!\r\nBuy!";
   t << message("write...");
   res1 = write(f1[1], instr, std::strlen(instr) );

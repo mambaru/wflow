@@ -18,7 +18,7 @@ public:
 };
 
 
-task_manager::task_manager( size_t queue_maxsize, int threads, bool use_asio )
+task_manager::task_manager( size_t queue_maxsize, size_t threads, bool use_asio )
   : _threads(threads)
 {
   _queue = std::make_shared<queue_type>(queue_maxsize, use_asio);
@@ -26,7 +26,7 @@ task_manager::task_manager( size_t queue_maxsize, int threads, bool use_asio )
   _pool = std::make_shared<pool_type>(_queue);
 }
   
-task_manager::task_manager( io_service_type& io, size_t queue_maxsize, int threads, bool use_asio /*= false*/  )
+task_manager::task_manager( io_service_type& io, size_t queue_maxsize, size_t threads, bool use_asio /*= false*/  )
   : _threads(threads)
 {
   _queue = std::make_shared<queue_type>(io, queue_maxsize, use_asio, threads!=0  );
@@ -34,7 +34,7 @@ task_manager::task_manager( io_service_type& io, size_t queue_maxsize, int threa
   _pool = std::make_shared<pool_type>(_queue);
 }
 
-void task_manager::reconfigure(size_t queue_maxsize, int threads, bool use_asio /*= false*/ )
+void task_manager::reconfigure(size_t queue_maxsize, size_t threads, bool use_asio /*= false*/ )
 {
   _threads = threads;
   _pool->reconfigure(_threads);

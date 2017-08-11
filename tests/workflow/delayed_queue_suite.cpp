@@ -31,6 +31,7 @@ UNIT(delayed_queue3, "")
 
 UNIT(delayed_queue4, "")
 {
+  using namespace ::fas::testing;
   ::iow::delayed_queue dq(0);
   delayed_unit4(t, dq);
 }

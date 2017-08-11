@@ -17,6 +17,7 @@ struct test_response
 
 class test_class
 {
+public:
   void method( test_request::ptr, test_response::handler handler)
   {
     handler( std::make_unique<test_response>() );

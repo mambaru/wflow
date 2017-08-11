@@ -99,12 +99,14 @@ inline void delayed_unit4(T& t, Q& dq)
 {
   using namespace ::fas::testing;
   using namespace ::std::chrono;
+  t << message("DEBUG: unit start");
   std::vector<time_t> times(10);
   high_resolution_clock::time_point start;
-  for (int i = 0; i < 10 ; ++i)
+  for (size_t i = 0; i < 10 ; ++i)
   {
-    
-    dq.delayed_post( milliseconds(50*(i+1)),[&t, &start, &times, i](){
+    // пуляем с задержкой 50, 100, 150 ... милисекунд
+    dq.delayed_post( milliseconds(50*(i+1)),[&t, &start, &times, i]()
+    {
       time_t& ms = times[i];
       ms = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
       //t << message("ready! id=") << std::this_thread::get_id() << " ms=" << ms << " sleep " << (500-ms + 50);
@@ -124,16 +126,16 @@ inline void delayed_unit4(T& t, Q& dq)
       dq.run();
     } ).detach();
   }
-  
+  std::this_thread::sleep_for( milliseconds(5) );
   start = high_resolution_clock::now();
   notify = true;
   cv.notify_all();
   std::this_thread::sleep_for( milliseconds(650) );
   dq.stop();
   std::this_thread::sleep_for( milliseconds(10) );
-  for (int i = 0; i < 10 ; ++i)
+  for (size_t i = 0; i < 10 ; ++i)
   {
-    time_t res = 50*(i+1) - times[i];
+    time_t res = static_cast<time_t>(50*(i+1)) - times[i] - 5;
     t << is_true<expect>( std::abs(res) < 2 ) << " time error ( " << 50*(i+1) << "-" << times[i] << " > 1 )" ;
   }
 }

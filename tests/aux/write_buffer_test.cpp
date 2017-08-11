@@ -21,6 +21,8 @@ struct data_line_test_options: iow::io::write_buffer_options
   size_t data_count;
 };
 
+data_line_test_options getopt(size_t bufsize, size_t maxbuf, size_t minbuf, bool  first_as_is, size_t data_size, size_t data_count);
+
 data_line_test_options getopt(
   size_t bufsize,
   size_t maxbuf, 
@@ -321,6 +323,7 @@ BEGIN_SUITE(aux,"aux suite")
   ADD_ADVICE(_init_line_, init_line)
 END_SUITE(aux)
 
+::fas::testing::suite_counts fas_my_suite_run(int , char*[]);
 ::fas::testing::suite_counts fas_my_suite_run(int , char*[])
 {
   data_line_test_options optlist[]={

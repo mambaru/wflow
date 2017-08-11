@@ -208,8 +208,8 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
             count += handlers;
             if ( count >= pthis->_rate_limit )
             {
-              auto now = std::chrono::system_clock::now();
-              auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( now - start ).count();
+              auto ts_now = std::chrono::system_clock::now();
+              auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( ts_now - start ).count();
               if ( tm_ms < 1000 )
                 std::this_thread::sleep_for( std::chrono::milliseconds(1000-tm_ms)  );
               count = 0;
