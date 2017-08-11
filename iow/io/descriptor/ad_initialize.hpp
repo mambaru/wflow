@@ -15,7 +15,7 @@ template<typename TgInitialize, bool MakeOutgoingHandler>
 struct ad_initialize
 {
   template<typename T, typename O>
-  void operator()(T& t, O&& opt) 
+  void operator()(T& t, O&& opt)  const
   {
     typedef typename T::aspect::template advice_cast< _context_>::type context_type;
     context_type& cntx = t.get_aspect().template get<_context_>();
@@ -48,7 +48,7 @@ struct ad_initialize
 private:
 
   template<typename T, typename Cntx> 
-  void make_output_(T& t, Cntx& cntx, fas::true_ )
+  static void make_output_(T& t, Cntx& cntx, fas::true_ )
   {
     io_id_t io_id = t.get_id_(t);
     typedef Cntx context_type;
@@ -98,7 +98,7 @@ private:
   }
 
   template<typename T, typename Cntx>
-  void make_output_(T& /*t*/, Cntx& /*cntx*/, fas::false_ )
+  static void make_output_(T& /*t*/, Cntx& /*cntx*/, fas::false_ )
   {
   }
 

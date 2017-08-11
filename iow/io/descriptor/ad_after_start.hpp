@@ -12,7 +12,7 @@ namespace iow{ namespace io{ namespace descriptor{
 struct ad_after_start
 {
   template<typename T>
-  void operator()(T& t)
+  void operator()(T& t)  const
   {
     auto& cntx = t.get_aspect().template get< _context_ >();
     if ( cntx.startup_handler )

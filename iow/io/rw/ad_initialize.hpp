@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace rw{
 struct ad_initialize
 {
   template<typename T, typename O>
-  void operator()(T& t, O opt)
+  void operator()(T& t, O opt) const
   {
     opt.reader.create = global_pool::get_create();
     opt.reader.free = global_pool::get_free();

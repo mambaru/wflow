@@ -10,7 +10,7 @@ struct ad_async_read_some1
 {
   typedef std::function<void(::iow::system::error_code, std::size_t)> user_handler;
   template<typename T, typename P, typename H>
-  void operator()(T& t, P p, H&& handler)
+  void operator()(T& t, P p, H&& handler) const
   {
     using namespace std::placeholders;
     t.descriptor().async_read_some(

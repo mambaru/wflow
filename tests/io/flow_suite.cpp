@@ -17,7 +17,7 @@ struct _handler_;
 struct ad_handler
 {
   template<typename T>
-  void operator()(T& t, typename T::input_t d)
+  void operator()(T& t, typename T::input_t d) const
   {
     t.result += std::string(d->begin(), d->end());
   }
@@ -26,7 +26,7 @@ struct ad_handler
 struct ad_some
 {
   template<typename T>
-  void operator()(T& t, typename T::input_t d)
+  void operator()(T& t, typename T::input_t d) const
   {
     if ( t.input.empty() )
       return;
@@ -45,7 +45,7 @@ struct ad_some
 struct ad_factory
 {
   template<typename T>
-  typename T::input_t operator()(T& t)
+  typename T::input_t operator()(T& t) const
   {
     if ( t.input.empty() )
       return nullptr;

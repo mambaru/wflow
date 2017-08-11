@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace descriptor{
 struct ad_input_handler
 {
   template<typename T, typename D>
-  void operator()(T& t, D d)
+  void operator()(T& t, D d) const
   {
     const auto& cntx = t.get_aspect().template get<_context_>();
 

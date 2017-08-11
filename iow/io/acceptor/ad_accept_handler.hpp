@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace acceptor{
 struct ad_accept_handler
 {
   template<typename T, typename P>
-  void operator()(T& t, P p, const ::iow::system::error_code& ec)
+  void operator()(T& t, P p, const ::iow::system::error_code& ec) const
   {
 
     if ( !ec )

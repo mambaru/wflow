@@ -15,7 +15,7 @@ struct ad_wrap
   typedef std::function<void()> strand_wrapper;
 
   template<typename T, typename F>
-  auto operator()(T& t, F&& f)
+  auto operator()(T& t, F&& f) const
     -> typename T::template result_of< ::iow::io::_wrap_, strand_wrapper >::type
   {
     auto& context = t.get_aspect().template get<_context_>();

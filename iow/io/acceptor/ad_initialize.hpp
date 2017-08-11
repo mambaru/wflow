@@ -8,7 +8,7 @@ namespace iow{ namespace io{ namespace acceptor{
 struct ad_initialize
 {
   template<typename T, typename O>
-  void operator()(T& t, const O& opt)
+  void operator()(T& t, const O& opt) const
   {
     //t.get_aspect().template get<_context_>().connection_options = opt.connection;
     

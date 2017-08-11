@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace writer{ namespace data{
 struct ad_attach
 {
   template<typename T, typename D>
-  void operator()(T& t, D d)
+  void operator()(T& t, D d) const
   {
     auto &buf = t.get_aspect().template get<_write_buffer_>();
     buf.attach(std::move(d));

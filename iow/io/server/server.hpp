@@ -21,12 +21,14 @@ public:
   {}
   
   template<typename Opt>
+  // cppcheck-suppress functionStatic
   void start(Opt opt)
   {
     super::origin()->listen(opt);
     super::start(opt);
   }
 
+  // cppcheck-suppress functionStatic
   void stop()
   {
     super::stop();

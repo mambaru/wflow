@@ -14,7 +14,7 @@ struct ad_make_handler
   typedef std::function<void(::iow::system::error_code, std::size_t, user_handler) > handler_type;
   
   template<typename T, typename P>
-  handler_type operator()(T& t, const P& p) 
+  handler_type operator()(T& t, const P& p)  const
   {
     std::weak_ptr<T> wthis = t.shared_from_this();
     return t.wrap([wthis, p]( ::iow::system::error_code ec , std::size_t bytes_transferred, user_handler handler )

@@ -12,7 +12,7 @@ namespace iow{ namespace io{ namespace reader{ namespace data{
 struct ad_next
 {
   template<typename T>
-  std::pair<char*, size_t> operator()(T& t)
+  std::pair<char*, size_t> operator()(T& t) const
   {
     // Проверить размер 
     auto& buf = t.get_aspect().template get<_read_buffer_>();

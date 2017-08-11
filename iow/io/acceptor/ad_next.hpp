@@ -16,7 +16,7 @@ struct ad_next
   };
   
   template<typename T>
-  auto operator()(T& t)
+  auto operator()(T& t)  const
     -> typename get_type<T>::connection_ptr
   {
     return t.get_aspect().template get<_context_>().manager->create( t.descriptor().get_io_service() );

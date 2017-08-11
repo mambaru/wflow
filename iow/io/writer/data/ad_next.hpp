@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace writer{ namespace data{
 struct ad_next
 {
   template<typename T>
-  std::pair<const char*, size_t> operator()(T& t)
+  std::pair<const char*, size_t> operator()(T& t) const
   {
     return t.get_aspect().template get<_write_buffer_>().next();
   }

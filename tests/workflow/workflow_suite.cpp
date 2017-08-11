@@ -2,6 +2,7 @@
 #include <iow/workflow/task_manager.hpp>
 #include <iow/workflow/bique.hpp>
 #include <iow/workflow/workflow.hpp>
+#include <iow/logger/global_log.hpp>
 #include <chrono>
 
 UNIT(workflow1, "")
@@ -48,6 +49,7 @@ UNIT(workflow2, "")
   ::iow::workflow wfl(io, opt);
   ::iow::workflow* pw = &wfl;
 
+  wfl.manager(); // for cppcheck
   bool ready = false;
   opt.maxsize = 5; // + handler timer
   opt.use_io_service = true;
@@ -94,6 +96,9 @@ UNIT(requester1, "")
 {
   using namespace ::fas::testing;
   using namespace std::chrono;
+  // log for cppcheck 
+  iow::init_log(iow::log_writer() );
+  iow::log_status();
   auto f = std::make_shared<foo>();
   iow::asio::io_service ios;
   iow::workflow_options wo;

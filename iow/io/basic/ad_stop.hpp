@@ -8,7 +8,7 @@ namespace iow{ namespace io{ namespace basic{
 struct ad_stop
 {
   template<typename T>
-  void operator()(T& t)
+  void operator()(T& t) const
   {
     t.get_aspect().template gete<_before_stop_>()(t);
     t.get_aspect().template get<_reset_>()(t);

@@ -324,6 +324,7 @@ BEGIN_SUITE(aux,"aux suite")
 END_SUITE(aux)
 
 ::fas::testing::suite_counts fas_my_suite_run(int , char*[]);
+// cppcheck-suppress unusedFunction
 ::fas::testing::suite_counts fas_my_suite_run(int , char*[])
 {
   data_line_test_options optlist[]={
@@ -354,6 +355,6 @@ END_SUITE(aux)
 
 
 BEGIN_TEST
-  //RUN_SUITE(aux)
+  RUN_SUITE(aux)
   RUN_SUITE(my)
 END_TEST

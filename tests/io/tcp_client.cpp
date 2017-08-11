@@ -8,7 +8,7 @@
 #include <mutex>
 #include <memory>
 
-iow::asio::io_service io_service; 
+iow::asio::io_service g_io_service; 
 std::atomic<int> connect_count;
 void server();
 void server()
@@ -16,7 +16,7 @@ void server()
   typedef ::iow::ip::tcp::server::server<> tcp_server;
   typedef ::iow::ip::tcp::server::options<> options;
   
-  auto acceptor = std::make_shared<tcp_server>( io_service  );
+  auto acceptor = std::make_shared<tcp_server>( g_io_service  );
   options opt;
   opt.addr = "0.0.0.0";
   opt.port = "12345";
@@ -24,7 +24,7 @@ void server()
   std::cout << "server start..." << std::endl;
   acceptor->start(opt);
   std::cout << "server run..." << std::endl;
-  io_service.run();
+  g_io_service.run();
   std::cout << "server done" << std::endl;
 }
 
@@ -36,7 +36,7 @@ int main()
   typedef ::iow::ip::tcp::client::client<> client_type;
   typedef ::iow::ip::tcp::client::options options_type;
   
-  auto tcp_client = std::make_shared<client_type>(io_service);
+  auto tcp_client = std::make_shared<client_type>(g_io_service);
   
   
   options_type opt;
@@ -47,11 +47,11 @@ int main()
     --connect_count;
     if ( connect_count==0 ) 
     {
-      io_service.post([]()
+      g_io_service.post([]()
       {
         std::cout << "stop io ..." << std::endl; 
         sleep(1);
-        io_service.stop();
+        g_io_service.stop();
         std::cout << "stop io ... ready" << std::endl; 
       }); 
     }
@@ -59,7 +59,7 @@ int main()
   opt.addr = "0.0.0.0";
   opt.port = "12345";
   opt.reconnect_timeout_ms = 1000;
-  auto workflow = std::make_shared< iow::workflow>(io_service);
+  auto workflow = std::make_shared< iow::workflow>(g_io_service);
   opt.args.workflow = workflow;
   opt.connection.input_handler=[](iow::io::data_ptr, iow::io::io_id_t, ::iow::io::output_handler_t)
   {
@@ -78,7 +78,7 @@ int main()
   sleep(4);
   
   std::cout << "client main run..." << std::endl;
-  io_service.run();
+  g_io_service.run();
   if ( connect_count != 0 ) 
   {
     std::cout << "TEST FAIL" << std::endl;

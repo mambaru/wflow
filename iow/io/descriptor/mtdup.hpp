@@ -40,7 +40,7 @@ public:
   }
   
   template<typename Handler>
-  auto wrap(Handler&& h)
+  auto wrap(Handler&& h) const
     -> typename holder_type::template result_of<_wrap_, Handler>::type
   {
     return std::move( _origin->wrap( std::forward<Handler>(h)) );
@@ -111,7 +111,7 @@ public:
   }
 
   template<typename Opt>
-  void reconfigure(Opt&& opt)
+  void reconfigure(Opt&& )  const
   {
     std::lock_guard<mutex_type> lk(_mutex);
     std::abort();

@@ -21,13 +21,17 @@ public:
   {}
   
   template<typename Opt>
+  // cppcheck-suppress functionConst
+  // cppcheck-suppress functionStatic
   void start(Opt opt)
   {
     super::start(std::move(opt), threads_(opt) );
   }
 
   template<typename Opt>
-  void reconfigure(Opt opt, size_t count)
+  // cppcheck-suppress functionConst
+  // cppcheck-suppress functionStatic
+  void reconfigure(Opt opt, size_t )
   {
     super::reconfigure(std::move(opt), threads_(opt) );
   }
@@ -35,7 +39,7 @@ public:
 private: 
   
   template<typename Opt>
-  size_t threads_(Opt& opt) const 
+  static size_t threads_(Opt& opt) 
   {
     return opt.threads==0 ? 1 : opt.threads;
   }

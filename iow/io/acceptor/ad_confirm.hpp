@@ -10,7 +10,7 @@ namespace iow{ namespace io{ namespace acceptor{
 struct ad_confirm
 {
   template<typename T, typename P>
-  void operator()(T& t, P p)
+  void operator()(T& t, P p) const
   {
     const auto& context = t.get_aspect().template get<_context_>();
     if ( context.max_connections == 0 || context.manager->size() < static_cast<size_t>(context.max_connections)  )

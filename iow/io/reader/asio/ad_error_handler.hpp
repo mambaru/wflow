@@ -14,7 +14,7 @@ namespace iow{ namespace io{ namespace reader{ namespace asio{
 struct ad_error_handler
 {
   template<typename T, typename P>
-  void operator()(T& t, P p, const ::iow::system::error_code& ec)
+  void operator()(T& t, P p, const ::iow::system::error_code& ec) const
   {
     t.get_aspect().template get< ::iow::io::reader::_rollback_>()(t, std::move(p));
     if ( ec == iow::system::errc::operation_would_block )

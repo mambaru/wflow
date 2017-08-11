@@ -110,10 +110,10 @@ namespace iow{ namespace io{
   {
     if ( !this->ready() )
       return data_pair();
-    auto size = this->cur_size_();
+    auto s = this->cur_size_();
     auto ptr  = this->cur_ptr_();
-    _wait = size;
-    return data_pair( ptr, size );
+    _wait = s;
+    return data_pair( ptr, s );
   }
 
   bool write_buffer::confirm(data_pair p)
@@ -143,16 +143,16 @@ namespace iow{ namespace io{
   }
   
 
-  data_ptr write_buffer::create_(size_t size, size_t maxbuf) const
+  data_ptr write_buffer::create_(size_t bufsize, size_t maxbuf) const
   {
     if ( _create!=nullptr )
-      return _create(size, maxbuf);
-    return std::make_unique<data_type>(size);
+      return _create(bufsize, maxbuf);
+    return std::make_unique<data_type>(bufsize);
   }
 
-  data_ptr write_buffer::create_(size_t size) const
+  data_ptr write_buffer::create_(size_t bufsize) const
   {
-    return this->create_(size, _bufsize);
+    return this->create_(bufsize, _bufsize);
   }
 
   data_ptr write_buffer::create_() const
@@ -173,13 +173,13 @@ namespace iow{ namespace io{
 
   size_t write_buffer::cur_size_() const
   {
-    size_t size = _list.front()->size() - _offset;
+    size_t cursize = _list.front()->size() - _offset;
     bool first_as_is = _first_as_is && _offset==0;
-    if ( !first_as_is && size > _maxbuf )
+    if ( !first_as_is && cursize > _maxbuf )
     {
-      size = _maxbuf;
+      cursize = _maxbuf;
     }
-    return size;
+    return cursize;
   }
 
 }}

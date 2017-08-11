@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace strand{
 struct ad_initialize
 {
   template<typename T, typename Opt>
-  void operator()(T& t, Opt&& opt)
+  void operator()(T& t, Opt&& opt) const
   {
     typedef typename T::aspect::template advice_cast<_context_>::type context_type;
     typedef typename context_type::counter_type counter_type;

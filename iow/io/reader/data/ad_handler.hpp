@@ -8,7 +8,7 @@ namespace iow{ namespace io{ namespace reader{ namespace data{
 struct ad_handler
 {
   template<typename T>
-  void operator()(T& t)
+  void operator()(T& t) const
   {
     auto& buf = t.get_aspect().template get<_read_buffer_>();
     while (auto d = buf.detach() )

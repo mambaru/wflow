@@ -19,7 +19,7 @@ typedef std::unique_ptr<data_type> data_ptr;
 struct ad_read_some
 {
   template<typename T>
-  void operator()(T& t, typename T::input_t d)
+  void operator()(T& t, typename T::input_t d) const
   {
     if ( t.input.empty() )
       return;
@@ -38,7 +38,7 @@ struct ad_read_some
 struct ad_write_some
 {
   template<typename T, typename P>
-  void operator()(T& t, P p/*, size_t size*/)
+  void operator()(T& t, P p/*, size_t size*/) const
   {
     if ( p.first == nullptr )
       return;
@@ -53,7 +53,7 @@ struct ad_write_some
 struct ad_input_factory
 {
   template<typename T>
-  typename T::input_t operator()(T& t)
+  typename T::input_t operator()(T& t) const
   {
     if ( t.input.empty() )
       return nullptr;
@@ -64,9 +64,9 @@ struct ad_input_factory
 struct ad_entry
 {
   template<typename T>
-  void operator()(T& , typename T::output_t d)
+  void operator()(T& , typename T::output_t d) 
   {
-    data = std::move(d);
+    this->data = std::move(d);
   }
   data_ptr data;
 };
@@ -74,7 +74,7 @@ struct ad_entry
 struct ad_can_write
 {
   template<typename T, typename P>
-  bool operator()(T& , P /*p*/)
+  bool operator()(T& , P /*p*/) const
   {
     return true;
   }
@@ -83,7 +83,7 @@ struct ad_can_write
 struct ad_free
 {
   template<typename T>
-  void operator()(T& , typename T::output_t )
+  void operator()(T& , typename T::output_t ) const
   {
   }
 };
@@ -91,7 +91,7 @@ struct ad_free
 struct ad_confirm
 {
   template<typename T, typename D>
-  void operator()(T& t, D /*, size_t*/ )
+  void operator()(T& t, D /*, size_t*/ ) const
   {
     auto &d = t.get_aspect().template get< ::iow::io::writer::_attach_ >().data;
     d.reset();
@@ -102,7 +102,7 @@ struct ad_confirm
 struct ad_next
 {
   template<typename T>
-  std::pair<const char*, size_t> operator()(T& t)
+  std::pair<const char*, size_t> operator()(T& t) const
   {
     auto &d = t.get_aspect().template get< ::iow::io::writer::_attach_ >().data;
     if ( d == nullptr )

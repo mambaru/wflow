@@ -7,7 +7,7 @@ namespace iow{ namespace io{ namespace descriptor{
 struct ad_before_stop
 {
   template<typename T>
-  void operator()(T& t)
+  void operator()(T& t) const
   {
     auto& cntx = t.get_aspect().template get< _context_ >();
     if ( cntx.shutdown_handler )

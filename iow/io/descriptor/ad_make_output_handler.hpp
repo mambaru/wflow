@@ -16,7 +16,7 @@ struct ad_make_output_handler
   };
 
   template<typename T>
-  auto operator()(T& t) 
+  auto operator()(T& t)  const
     -> typename context<T>::output_handler_t
   {
     //typedef typename context<T>::type context_type;

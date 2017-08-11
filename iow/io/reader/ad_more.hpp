@@ -7,7 +7,7 @@ namespace iow{ namespace io{ namespace reader{
 struct ad_more
 {
   template<typename T>
-  void operator()(T& t)
+  void operator()(T& t) const
   {
     if ( t.get_aspect().template get< ::iow::io::basic::_context_>().status )
     {

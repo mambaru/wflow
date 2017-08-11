@@ -17,7 +17,7 @@ namespace iow{ namespace io{ namespace writer{ namespace data{
 struct ad_can_write
 {
   template<typename T, typename P>
-  bool operator()(T& , P p)
+  bool operator()(T& , P p) const
   {
     return p.second!=0 && p.first!=nullptr;
   }

@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace acceptor{
 struct ad_listen
 {
   template<typename T, typename Opt>
-  void operator()(T& t, const Opt& opt)
+  void operator()(T& t, const Opt& opt) const
   {
     const auto endpoint = t.get_aspect().template get<_sync_resolver_>()(t, opt);
 

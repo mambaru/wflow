@@ -67,7 +67,7 @@ public:
   
 private:
 
-  static constexpr diff_type npos();
+  //static constexpr diff_type npos();
 
   data_ptr create_(size_t size, size_t maxbuf) const noexcept;
 
@@ -89,7 +89,7 @@ private:
   /***************************** detach helper ******************************/
   /**************************************************************************/
 
-  size_t last_buff_() const;
+//  size_t last_buff_() const;
 
   const_iterator begin_(size_t pos) const;
 

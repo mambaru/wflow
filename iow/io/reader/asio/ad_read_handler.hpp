@@ -14,7 +14,7 @@ namespace iow{ namespace io{ namespace reader{ namespace asio{
 struct ad_read_handler
 {
   template<typename T, typename P>
-  void operator()(T& t, P p, ::iow::system::error_code ec , std::size_t bytes_transferred)
+  void operator()(T& t, P p, ::iow::system::error_code ec , std::size_t bytes_transferred) const
   {
     if ( !ec )
     {

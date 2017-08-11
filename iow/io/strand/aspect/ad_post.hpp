@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace strand{
 struct ad_post
 {
   template<typename T, typename F>
-  bool operator()(T& t,F&& f)
+  bool operator()(T& t, F&& f) const
   {
     auto& context = t.get_aspect().template get<_context_>();
     //auto func = t.get_aspect().template get<_wrap_>()(t, std::forward<F>(f) );

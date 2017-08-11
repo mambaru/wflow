@@ -10,7 +10,7 @@ namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
 struct ad_async_write_some
 {
   template<typename T, typename P, typename H>
-  void operator()(T& t, P p, H&& handler)
+  void operator()(T& t, P p, H&& handler) const
   {
     using namespace std::placeholders;
     auto ep = t.get_aspect().template get<_current_endpoint_>();

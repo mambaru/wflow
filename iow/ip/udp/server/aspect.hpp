@@ -18,7 +18,7 @@ struct _sync_resolver_;
 struct ad_sync_resolver
 {
   template<typename T, typename Opt>
-  ::iow::asio::ip::udp::endpoint operator()(T& t, const Opt& opt)
+  ::iow::asio::ip::udp::endpoint operator()(T& t, const Opt& opt) const
   {
     ::iow::asio::ip::udp::resolver resolver( t.descriptor().get_io_service() );
     ::iow::asio::ip::udp::endpoint endpoint = *resolver.resolve({
@@ -33,7 +33,7 @@ struct ad_sync_resolver
 struct ad_open
 {
   template<typename T, typename Opt>
-  void operator()(T& t, const Opt& opt)
+  void operator()(T& t, const Opt& opt) const
   {
     const auto endpoint = t.get_aspect().template get<_sync_resolver_>()(t, opt);
 

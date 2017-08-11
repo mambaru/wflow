@@ -154,22 +154,22 @@ namespace iow{ namespace io{
     return std::move(resbuf);
   }
 
-  constexpr read_buffer::diff_type read_buffer::npos()
+  /*constexpr read_buffer::diff_type read_buffer::npos()
   {
     return -1;
     // return ~0ul;
-  }
+  }*/
 
-  data_ptr read_buffer::create_(size_t size, size_t maxbuf) const noexcept
+  data_ptr read_buffer::create_(size_t bufsize, size_t maxbuf) const noexcept
   {
     if ( _create!=nullptr )
     {
-      return _create(size, maxbuf);
+      return _create(bufsize, maxbuf);
     }
 
     try
     {
-      return std::make_unique<data_type>(size);
+      return std::make_unique<data_type>(bufsize);
     }
     catch(const std::bad_alloc& )
     {
@@ -177,9 +177,9 @@ namespace iow{ namespace io{
     }
   }
 
-  data_ptr read_buffer::create_(size_t size) const noexcept
+  data_ptr read_buffer::create_(size_t bufsize) const noexcept
   {
-    return this->create_(size, _bufsize);
+    return this->create_(bufsize, _bufsize);
   }
 
   data_ptr read_buffer::create_() const noexcept
@@ -225,7 +225,7 @@ namespace iow{ namespace io{
   /***************************** detach helper ******************************/
   /**************************************************************************/
 
-  size_t read_buffer::last_buff_() const
+  /*size_t read_buffer::last_buff_() const
   {
     if ( _readbuf==~0ul || (_readpos > 0ul && _readpos!=~0ul) )
     {
@@ -237,6 +237,7 @@ namespace iow{ namespace io{
     }
     return ~0ul;
   }
+  */
 
   read_buffer::const_iterator read_buffer::begin_(size_t pos) const
   {
@@ -516,8 +517,8 @@ namespace iow{ namespace io{
     }
     else
     {
-      size_t size = p.second - _offset;
-      result = create_(p.second - _offset, size*2 < _maxbuf ? size*2 : size);
+      size_t bufsize = p.second - _offset;
+      result = create_(p.second - _offset, bufsize*2 < _maxbuf ? bufsize*2 : bufsize);
       std::copy(
         _buffers[0]->begin() + static_cast<std::ptrdiff_t>(_offset),
         _buffers[0]->begin() + static_cast<std::ptrdiff_t>(p.second),

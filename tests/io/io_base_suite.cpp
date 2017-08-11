@@ -8,7 +8,7 @@ struct _start_;
 struct ad_start
 {
   template<typename T>
-  void operator() (T& t) 
+  void operator() (T& t)  const
   {
     t.virt();
     t.started = true;
@@ -19,7 +19,7 @@ struct _init_;
 struct ad_init
 {
   template<typename T>
-  void operator() (T& t, int val)
+  void operator() (T& t, int val) const
   {
     t.value = val;
     t.virt();
@@ -30,7 +30,7 @@ struct _stop_;
 struct ad_stop
 {
   template<typename T>
-  void operator() (T& t) 
+  void operator() (T& t)  const
   {
     t.started = false;
     t.virt();
@@ -41,7 +41,7 @@ struct _reset_;
 struct ad_reset
 {
   template<typename T>
-  void operator() (T& t) 
+  void operator() (T& t)  const
   {
     ++t.resetval;
     t.virt();

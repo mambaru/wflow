@@ -32,8 +32,8 @@ int dec(int i)
   return i-1;
 }
 
-struct finc{ int operator()(int val){ return val+1;}};
-struct fdec{ int operator()(int dec){ return dec-1;}};
+struct finc{ int operator()(int val) const { return val+1;}};
+struct fdec{ int operator()(int dec) const { return dec-1;}};
 
 template<typename Handle>
 void rec(Handle&& h, int i)

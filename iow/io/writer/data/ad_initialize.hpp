@@ -7,7 +7,7 @@ namespace iow{ namespace io{ namespace writer{ namespace data{
 struct ad_initialize
 {
   template<typename T, typename O>
-  void operator()(T& t, const O& opt)
+  void operator()(T& t, const O& opt) const
   {
     t.get_aspect().template get<_write_buffer_>().set_options(opt);
   }

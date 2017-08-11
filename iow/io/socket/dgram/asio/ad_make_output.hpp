@@ -10,7 +10,7 @@ namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
 struct ad_make_output
 {
   template<typename T>
-  auto operator()(T& t) -> output_handler_t
+  auto operator()(T& t) -> output_handler_t const
   {
     auto pep = t.get_aspect().template get<_current_endpoint_>();
     std::weak_ptr<T> wthis = t.shared_from_this();

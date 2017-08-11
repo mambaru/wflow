@@ -9,7 +9,7 @@ namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
 struct ad_async_read_some
 {
   template<typename T, typename P, typename H>
-  void operator()(T& t, P p, H&& handler)
+  void operator()(T& t, P p, H&& handler) const
   {
     using namespace std::placeholders;
     using endpoint_ptr = typename T::aspect::template advice_cast<_current_endpoint_>::type;

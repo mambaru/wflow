@@ -22,7 +22,7 @@ typedef std::unique_ptr<data_type> data_ptr;
 struct ad_read_some
 {
   template<typename T, typename D>
-  void operator()(T& t, D d)
+  void operator()(T& t, D d) const
   {
     if ( t.input.empty() )
       return;
@@ -47,7 +47,7 @@ struct ad_read_some
 struct ad_write_some
 {
   template<typename T, typename P>
-  void operator()(T& t, P p)
+  void operator()(T& t, P p) const
   {
     if ( p.first == nullptr )
       return;

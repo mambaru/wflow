@@ -8,7 +8,7 @@ namespace iow{ namespace io{ namespace basic{
 struct ad_create_id
 {
   template<typename T>
-  void operator()(T& t)
+  void operator()(T& t) const
   {
     typedef typename T::aspect::template advice_cast<_context_>::type context_type;
     typedef typename context_type::io_id_type io_id_type;

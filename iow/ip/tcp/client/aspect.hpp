@@ -12,7 +12,7 @@ namespace iow{ namespace ip{ namespace tcp{ namespace client{
 struct ad_sync_resolver
 {
   template<typename T, typename Opt>
-  ::iow::asio::ip::tcp::endpoint operator()(T& t, const Opt& opt)
+  ::iow::asio::ip::tcp::endpoint operator()(T& t, const Opt& opt) const
   {
     ::iow::system::error_code ec;
     ::iow::asio::ip::tcp::resolver resolver( t.descriptor().get_io_service() );
