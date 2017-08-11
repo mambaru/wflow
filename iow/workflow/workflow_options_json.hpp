@@ -22,7 +22,7 @@ struct workflow_options_json
       ::wjson::member< n_wrnsize, workflow_options, size_t, &workflow_options::wrnsize >,
       ::wjson::member< n_maxsize, workflow_options, size_t, &workflow_options::maxsize >,
       ::wjson::member< n_show_wrn_ms, workflow_options, time_t, &workflow_options::show_wrn_ms >,
-      ::wjson::member< n_threads, workflow_options, int,  &workflow_options::threads >,
+      ::wjson::member< n_threads, workflow_options, size_t,  &workflow_options::threads >,
       // 
       // ::wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >,
       ::wjson::member< n_debug, workflow_options, bool, &workflow_options::debug >
@@ -62,7 +62,7 @@ struct workflow_options_basic_json
   typedef ::wjson::object<
     workflow_options,
     ::wjson::member_list<
-      ::wjson::member< n_threads, workflow_options, int,  &workflow_options::threads >/*,
+      ::wjson::member< n_threads, workflow_options, size_t,  &workflow_options::threads >/*,
       ::wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >*/
     >,
     ::wjson::strict_mode

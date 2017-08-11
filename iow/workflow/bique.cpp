@@ -24,7 +24,7 @@ bique::bique( size_t maxsize, bool use_asio)
 
 bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
   : _dflag(!use_asio)
-  , _mt_flag(true)
+  , _mt_flag(mt)
   , _io( std::make_shared<io_service_type>() )
   , _delayed( std::make_shared<delayed_queue>(maxsize) )
   , _asio( std::make_shared<asio_queue>( *_io, maxsize) )
