@@ -79,7 +79,7 @@ class stream
       ::iow::io::basic::aspect<std::recursive_mutex>::advice_list,
       ::iow::io::rw::aspect::advice_list,
       fas::type< ::iow::io::_options_type_, fas::empty_type >,
-      fas::alias< ::iow::io::reader::data::_incoming_, ::iow::io::writer::_output_>,
+      fas::alias< ::iow::io::reader::data::_input_, ::iow::io::writer::_output_>,
       fas::group< ::iow::io::_initialize_, ::iow::io::rw::_initialize_>
     > >
 {

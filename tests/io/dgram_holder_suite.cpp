@@ -47,7 +47,7 @@ UNIT(dgram_holder_unit, "")
   options_type opt;
   opt.reader.sep="";
   opt.writer.sep="";
-  opt.incoming_handler = [&]( iow::io::data_ptr d, size_t, options_type::outgoing_handler_type)
+  opt.input_handler = [&]( iow::io::data_ptr d, size_t, options_type::output_handler_type)
   {
     server->get_aspect().get< ::iow::io::writer::_output_>()( *server, std::move(d) );
   };

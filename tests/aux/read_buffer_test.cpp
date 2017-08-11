@@ -77,12 +77,12 @@ void test_buff1(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
 {
   using namespace fas::testing;
   t << message("test_buff1");
-  std::string incoming;
+  std::string input;
   std::string result;
   std::vector<std::string> vectres;
   for (auto& s: reads)
   {
-    incoming+= s;
+    input+= s;
     auto p = buf.next();
     t << is_true<assert>(s.size() <= p.second) << FAS_TESTING_FILE_LINE;
     t << stop;
@@ -102,7 +102,7 @@ void test_buff1(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
       d = buf.detach();
     }
   }
-  t << equal<expect>(incoming, result) << incoming << "!=" << result << FAS_TESTING_FILE_LINE;
+  t << equal<expect>(input, result) << input << "!=" << result << FAS_TESTING_FILE_LINE;
   if ( !chk.empty() )
     t << equal<expect>(chk, vectres) << FAS_TESTING_FILE_LINE;
 }
@@ -112,11 +112,11 @@ void test_buff2(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
 {
   using namespace fas::testing;
   t << message("test_buff2");
-  std::string incoming;
+  std::string input;
   std::string result;
   for (auto& s: reads)
   {
-    incoming+= s;
+    input+= s;
     auto p = buf.next();
     t << is_true<assert>(s.size() <= p.second) << FAS_TESTING_FILE_LINE;
     t << stop;
@@ -141,7 +141,7 @@ void test_buff2(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
     d = buf.detach();
   }
 
-  t << equal<expect>(incoming, result) << incoming << "!=" << result << FAS_TESTING_FILE_LINE;
+  t << equal<expect>(input, result) << input << "!=" << result << FAS_TESTING_FILE_LINE;
   if ( !chk.empty() )
   {
     options opt;
@@ -182,14 +182,14 @@ void test_buff3(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
 {
   using namespace fas::testing;
   t << message("test_buff3");
-  std::string incoming;
+  std::string input;
   std::string result;
   std::vector<std::string> vectres;
   for (auto& s: reads)
   {
     // t << message("read:   ") << s ;
     // t << message("-1-");
-    incoming+= s;
+    input+= s;
     auto p = buf.next();
     t << is_true<assert>(s.size() <= p.second) << s.size() << " > " << p.second << FAS_TESTING_FILE_LINE;
     t << stop;
@@ -202,7 +202,7 @@ void test_buff3(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
     t << stop;
   }
   do_detach(t, buf, vectres, result);
-  t << equal<expect>(incoming, result) << incoming << "!=" << result << FAS_TESTING_FILE_LINE;
+  t << equal<expect>(input, result) << input << "!=" << result << FAS_TESTING_FILE_LINE;
   if ( !chk.empty() )
     t << equal<expect>(chk, vectres) << FAS_TESTING_FILE_LINE;
 }
@@ -212,13 +212,13 @@ void test_buff4(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
 {
   using namespace fas::testing;
   t << message("test_buff4");
-  std::string incoming;
+  std::string input;
   std::string result;
   std::vector<std::string> vectres;
   auto p = buf.next();
   for (auto& s: reads)
   {
-    incoming += s;
+    input += s;
     t << is_true<assert>(s.size() <= p.second) << s.size() << " > " << p.second << FAS_TESTING_FILE_LINE;
     t << stop;
     //std::strcpy( p.first, s.c_str());
@@ -238,7 +238,7 @@ void test_buff4(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
   t << stop;
   
   do_detach(t, buf, vectres, result);
-  t << equal<expect>(incoming, result) << incoming << "!=" << result << FAS_TESTING_FILE_LINE;
+  t << equal<expect>(input, result) << input << "!=" << result << FAS_TESTING_FILE_LINE;
   if ( !chk.empty() )
     t << equal<expect>(chk, vectres) << FAS_TESTING_FILE_LINE;
   t << equal<assert, size_t>(buf.size(), 0) << "buf.size()==" << buf.size() << FAS_TESTING_FILE_LINE;
@@ -284,7 +284,7 @@ void test_buff0(T& t, read_buffer& buf, std::vector<std::string> reads, std::vec
   t << stop;
   
   do_detach(t, buf, vectres, result);
-  t << equal<expect>(incoming, result) << incoming << "!=" << result << FAS_TESTING_FILE_LINE;
+  t << equal<expect>(input, result) << input << "!=" << result << FAS_TESTING_FILE_LINE;
   if ( !chk.empty() )
     t << equal<expect>(chk, vectres) << FAS_TESTING_FILE_LINE;
   t << equal<assert, size_t>(buf.size(), 0) << "buf.size()==" << buf.size() << FAS_TESTING_FILE_LINE;

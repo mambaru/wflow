@@ -7,10 +7,10 @@
 namespace iow{ namespace io{ namespace socket{ namespace dgram{ namespace asio{
 
 
-struct ad_make_outgoing
+struct ad_make_output
 {
   template<typename T>
-  auto operator()(T& t) -> outgoing_handler_t
+  auto operator()(T& t) -> output_handler_t
   {
     auto pep = t.get_aspect().template get<_current_endpoint_>();
     std::weak_ptr<T> wthis = t.shared_from_this();
@@ -20,7 +20,7 @@ struct ad_make_outgoing
       {
         std::lock_guard<typename T::mutex_type> lk( pthis->mutex() );
         pthis->get_aspect().template get<_current_endpoint_>() = pep;
-        pthis->get_aspect().template get< ::iow::io::descriptor::_outgoing_ >()( *pthis, std::move(d)  );
+        pthis->get_aspect().template get< ::iow::io::descriptor::_output_ >()( *pthis, std::move(d)  );
       }
     }, nullptr);
   }

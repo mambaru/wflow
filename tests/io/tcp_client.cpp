@@ -60,7 +60,7 @@ int main()
   opt.reconnect_timeout_ms = 1000;
   auto workflow = std::make_shared< iow::workflow>(io_service);
   opt.args.workflow = workflow;
-  opt.connection.incoming_handler=[](iow::io::data_ptr, iow::io::io_id_t, ::iow::io::outgoing_handler_t)
+  opt.connection.input_handler=[](iow::io::data_ptr, iow::io::io_id_t, ::iow::io::output_handler_t)
   {
   };
   opt.connection.fatal_handler = [](int code, std::string msg )
