@@ -94,11 +94,12 @@ struct init_line
 UNIT(init_test, "")
 {
   using namespace fas::testing;
+  auto test_opt = std::make_shared<data_line_test_options>();
+  t.get_aspect().template get<_test_options_>() = test_opt;
   t.get_aspect().template get<_init_line_>()(t);
 
   auto& data_line = t.get_aspect().template get<_data_line_>();
   typedef typename std::remove_reference<decltype(data_line)>::type data_line_t;
-  auto test_opt = t.get_aspect().template get<_test_options_>();
   data_line.set_options(*test_opt);
   typename data_line_t::options_type dl_opt;
   data_line.get_options(dl_opt);

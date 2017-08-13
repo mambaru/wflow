@@ -35,13 +35,18 @@ UNIT(workflow1, "")
     }, nullptr);
   }
   sleep(1);
+  std::cout << "stop..." << std::endl;
   queue.stop();
+  std::cout << "stop!" << std::endl;
   t << equal< assert,int >( counter, 7 ) << "counter 7!=" << counter ;
+    std::cout << "stop!2" << std::endl;
+
   
 }
 
 UNIT(workflow2, "")
 {
+    std::cout << "workflow2" << std::endl;
   using namespace ::fas::testing;
   ::iow::asio::io_service io;  
   ::iow::asio::io_service::work wrk(io);

@@ -156,11 +156,11 @@ int main()
     {
       auto p = buf.next();
       auto itr = beg;
-      size_t dist = static_cast<size_t>( std::distance(beg, end) );
-      if ( dist > p.second ) { itr += static_cast< read_buffer::diff_type>(p.second); }
+      size_t dist = std::distance(beg, end);
+      if ( dist > p.second ) { itr += p.second; }
       else { itr = end; }
       std::copy(beg, itr, p.first);
-      p.second = static_cast<size_t>( std::distance(beg, itr) );
+      p.second = std::distance(beg, itr);
       buf.confirm(p);
       beg = itr;
     }

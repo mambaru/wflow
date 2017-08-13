@@ -72,7 +72,7 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
   size_t read_block = 0;
   for (size_t i=0; i < total; ++i )
   {
-    read_buffer::diff_type pos = 0;
+    std::ptrdiff_t pos = 0;
     while ( static_cast<size_t>(pos) < indata.size() )
     {
       auto p = buf.next();
@@ -84,7 +84,7 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
       ++read_block;
       std::copy( 
         indata.begin() + pos, 
-        indata.begin() + pos + static_cast<read_buffer::diff_type>(p.second),
+        indata.begin() + pos + static_cast< std::ptrdiff_t >(p.second),
         p.first
       );
       buf.confirm(p);
@@ -109,7 +109,7 @@ void run(size_t packsize, size_t readsize, size_t total, size_t count, size_t bu
         pool.free( std::move(d) );
         d = buf.detach();
       }
-      pos += static_cast<read_buffer::diff_type>(p.second);
+      pos += static_cast<std::ptrdiff_t>(p.second);
     }
   }
   
