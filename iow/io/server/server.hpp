@@ -3,12 +3,15 @@
 #include <iow/io/descriptor/mtdup.hpp>
 
 namespace iow{ namespace io{ namespace server{
-  
+
+template<typename Acceptor>
+using server_base = ::iow::io::descriptor::mtdup<Acceptor>;
+
 template<typename Acceptor>
 class server
-  : private ::iow::io::descriptor::mtdup<Acceptor>
+  : private server_base<Acceptor>
 {
-  typedef ::iow::io::descriptor::mtdup<Acceptor> super;
+  typedef server_base<Acceptor> super;
   
 public: 
   typedef typename super::io_service_type io_service_type;

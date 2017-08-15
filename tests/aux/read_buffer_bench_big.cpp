@@ -156,11 +156,11 @@ int main()
     {
       auto p = buf.next();
       auto itr = beg;
-      size_t dist = std::distance(beg, end);
-      if ( dist > p.second ) { itr += p.second; }
+      std::ptrdiff_t dist = std::distance(beg, end);
+      if ( size_t(dist) > p.second ) { itr += std::ptrdiff_t(p.second); }
       else { itr = end; }
       std::copy(beg, itr, p.first);
-      p.second = std::distance(beg, itr);
+      p.second = size_t( std::distance(beg, itr) );
       buf.confirm(p);
       beg = itr;
     }

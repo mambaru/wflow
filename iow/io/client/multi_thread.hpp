@@ -11,7 +11,8 @@ namespace iow{ namespace io{ namespace client{
 template<typename Client>
 class multi_thread: public multi_base<Client>
 {
-  typedef multi_base<Client> super;
+  using super = multi_base<Client>;
+  //typedef multi_base<Client> super;
 
 public:
   typedef typename super::io_service_type io_service_type;
@@ -21,7 +22,6 @@ public:
   {}
   
   template<typename Opt>
-  // cppcheck-suppress functionConst
   // cppcheck-suppress functionStatic
   void start(Opt opt)
   {
@@ -29,7 +29,6 @@ public:
   }
 
   template<typename Opt>
-  // cppcheck-suppress functionConst
   // cppcheck-suppress functionStatic
   void reconfigure(Opt opt, size_t )
   {
