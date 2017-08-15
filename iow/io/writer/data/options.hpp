@@ -8,12 +8,7 @@ namespace iow{ namespace io{ namespace writer{ namespace data{
 struct options:
   ::iow::io::write_buffer_options
 {
-<<<<<<< HEAD
-  //!!! Вынести на более высокий уровень
-  //size_t maxsize1 = 0;
-=======
   // Вынести на более высокий уровень
->>>>>>> devel-0.6
   size_t wrnsize = 1024*1024;
 };
 
