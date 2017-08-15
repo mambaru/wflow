@@ -47,6 +47,12 @@ namespace iow{ namespace io{
 
     return result;
   }
+  
+  bool write_buffer::overflow() const noexcept
+  {
+    return (_maxsize!=0) && ( _size > _maxsize );
+  }
+
 
   bool write_buffer::ready() const
   {
@@ -98,12 +104,6 @@ namespace iow{ namespace io{
         _list.push_back( std::move(d) );
       }
     }
-  }
-
-  bool write_buffer::overflow() const noexcept
-  {
-    
-    return (_maxsize!=0) && ( this->capacity() > _maxsize );
   }
 
   write_buffer::data_pair write_buffer::next()
