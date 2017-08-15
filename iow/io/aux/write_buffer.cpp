@@ -47,6 +47,12 @@ namespace iow{ namespace io{
 
     return result;
   }
+  
+  bool write_buffer::overflow() const noexcept
+  {
+    return (_maxsize!=0) && ( _size > _maxsize );
+  }
+
 
   bool write_buffer::ready() const
   {
@@ -100,12 +106,6 @@ namespace iow{ namespace io{
     }
   }
 
-  bool write_buffer::overflow() const noexcept
-  {
-    
-    return (_maxsize!=0) && ( this->capacity() > _maxsize );
-  }
-
   write_buffer::data_pair write_buffer::next()
   {
     if ( !this->ready() )
@@ -132,11 +132,8 @@ namespace iow{ namespace io{
       _offset = 0;
       free_( std::move(_list.front()) );
       _list.pop_front();
-      //std::cout << "capacity: " << this->capacity() << " size=" << this->size() <<  " list="<< _list.size() << " listcap=" << _list.capacity() <<  std::endl;
-      //ist.erase( _list.begin() );
     }
     
-    // TODO: убрал копирование для minbuf
     return true;
   }
 
