@@ -19,7 +19,7 @@ struct write_buffer_options
   size_t bufsize = 8*1024;
   size_t maxbuf  = 8*1024; 
   size_t minbuf  = 0;
-  size_t maxsize  = 0; 
+  size_t maxsize1  = 0; 
   bool first_as_is = true; // Если maxbuff или minbuff != 0 и bufsize!=0
   
   create_fun create;

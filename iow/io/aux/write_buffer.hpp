@@ -118,7 +118,7 @@ private:
     _bufsize = opt.bufsize;
     _maxbuf = opt.maxbuf;
     _minbuf = opt.minbuf;
-    _maxsize= opt.maxsize;
+    _maxsize= opt.maxsize1;
     _first_as_is = opt.first_as_is;
 
     _create = opt.create;
