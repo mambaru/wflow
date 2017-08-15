@@ -44,40 +44,61 @@ UNIT(workflow1, "")
   
 }
 
-UNIT(workflow2, "")
+UNIT(workflow2, "5 сообщений, одно 'теряется' и одно остаеться в очереди")
 {
-    std::cout << "workflow2" << std::endl;
   using namespace ::fas::testing;
   ::iow::asio::io_service io;  
   ::iow::asio::io_service::work wrk(io);
   ::iow::workflow_options opt;
-  ::iow::workflow wfl(io, opt);
-  ::iow::workflow* pw = &wfl;
-
-  wfl.manager(); // for cppcheck
+  ::iow::workflow* pw;
+  
   bool ready = false;
+  std::atomic<int> counter(0);
+  std::atomic<int> dropped(0);
   opt.maxsize = 5; // + handler timer
   opt.use_io_service = true;
   opt.threads = 1;
-  opt.show_wrn_ms = 1000;
+  opt.control_ms = 1000;
   opt.id = "test";
-  opt.handler = [&pw, &ready, &io]()->bool 
+  opt.control_handler = [&pw, &ready, &counter, &io]()->bool 
   {
     if ( ready )
       return false;
-    ready = pw->queue_size() == 1;
+    if ( counter < 3 ) 
+      return true;
+    ready = true;
+    /*
+    if ( ready )
+      return false;
+    //ready = pw->queue_size() == 1;
     if ( !ready )
       return true;
+    */
     
     io.stop();
     return false;
   };
+  ::iow::workflow wfl(io, opt);
+  pw = &wfl;
   wfl.start();
+  wfl.manager(); // for cppcheck
+  
   for (int i =0 ; i < 5; i++)
-    wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [](){}, nullptr);
+    wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [&t, i, &counter](){
+      t << message("for 0..5 i=") << i;
+      t << flush;
+      ++counter;
+    }, [&dropped](){     
+      ++dropped;
+    } );
+  
   io.run();
+  /*while ( counter < 5)
+    io.run_one();
+    */
   t << is_true<expect>(ready) << FAS_TESTING_FILE_LINE;
   t << is_true<expect>(pw->dropped()==1) << FAS_TESTING_FILE_LINE;
+  t << is_true<expect>(dropped==1) << FAS_TESTING_FILE_LINE;
   t << is_true<expect>( pw->timer_count()==1 ) << FAS_TESTING_FILE_LINE;
   t << is_true<expect>( pw->queue_size()==1  ) << pw->queue_size() << " " << FAS_TESTING_FILE_LINE;
 }

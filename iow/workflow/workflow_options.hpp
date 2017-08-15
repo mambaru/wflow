@@ -18,14 +18,14 @@ struct workflow_options
 
   size_t maxsize = 1024*1024*128;
   size_t wrnsize = 1024*1024;
-  time_t show_wrn_ms = 1000;
+  time_t control_ms = 1000;
 
   time_t post_delay_ms = 0; // задержка в миллисекундах 
   size_t rate_limit = 0;    // ограничение скорости (в сообщениях в секунду)
 
   // для таймера проверки wrnsize
-  std::shared_ptr< ::iow::workflow> workflow_ptr;
-  std::function<bool()> handler = nullptr;
+  std::shared_ptr< ::iow::workflow> control_workflow_ptr;
+  std::function<bool()> control_handler = nullptr;
   
   typedef std::function<void(std::thread::id)> startup_handler_t;
   typedef std::function<void(std::thread::id)> finish_handler_t;

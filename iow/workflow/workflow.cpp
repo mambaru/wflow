@@ -14,7 +14,7 @@ workflow::workflow(workflow_options opt )
   : _id( opt.id )
   , _delay_ms(opt.post_delay_ms)
   , _impl( std::make_shared<task_manager>(opt.maxsize, opt.threads, opt.use_io_service) )
-  , _workflow_ptr(opt.workflow_ptr)
+  , _workflow_ptr(opt.control_workflow_ptr)
 {
   
   _impl->rate_limit( opt.rate_limit );
@@ -28,7 +28,7 @@ workflow::workflow(workflow_options opt )
 workflow::workflow(io_service_type& io, workflow_options opt)
 {
   _id = opt.id;
-  _workflow_ptr = opt.workflow_ptr;
+  _workflow_ptr = opt.control_workflow_ptr;
   _impl = std::make_shared<task_manager>(io, opt.maxsize, opt.threads, opt.use_io_service);
   _impl->rate_limit( opt.rate_limit );
   _impl->set_startup( opt.startup_handler );
@@ -46,7 +46,7 @@ void workflow::start()
 void workflow::reconfigure(workflow_options opt)
 {
   _id = opt.id;
-  _workflow_ptr = opt.workflow_ptr;
+  _workflow_ptr = opt.control_workflow_ptr;
   _impl->rate_limit( opt.rate_limit );
   _impl->set_startup( opt.startup_handler );
   _impl->set_finish( opt.finish_handler );
@@ -158,9 +158,7 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
 {
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
   auto old_timer = _wrn_timer;
-  size_t wrnsize = opt.wrnsize;
-
-  if ( ( wrnsize == 0 && opt.maxsize==0) || opt.show_wrn_ms==0)
+  if ( opt.control_ms==0)
   {
     // заглушка, чтобы не выскакивал
     _wrn_timer = wrkf.create_timer(std::chrono::seconds(3600), []{ return true;} );
@@ -168,11 +166,16 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
   else
   {
     auto dropsave = std::make_shared<size_t>(0);
-    
-    bool debug = opt.debug;
-    std::function<bool()> handler = opt.handler != nullptr
-      ? opt.handler
-      : [this, wrnsize, dropsave, debug]()  ->bool 
+    std::function<bool()> control_handler;
+    if (  opt.control_handler != nullptr )
+    {
+      control_handler = opt.control_handler;
+    }
+    else
+    {
+      size_t wrnsize = opt.wrnsize;
+      bool debug = opt.debug;
+      control_handler= [this, wrnsize, dropsave, debug]()  ->bool 
       {
         auto dropped = this->_impl->dropped();
         auto size = this->_impl->size();
@@ -192,7 +195,8 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
         }
         return true;
       };
-    _wrn_timer = wrkf.create_timer(std::chrono::milliseconds(opt.show_wrn_ms), handler );
+    }
+    _wrn_timer = wrkf.create_timer(std::chrono::milliseconds(opt.control_ms), control_handler );
   }
   wrkf.release_timer(old_timer);
 }
