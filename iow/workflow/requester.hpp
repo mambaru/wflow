@@ -55,6 +55,7 @@ private:
         }
         
         auto pres = std::make_shared< std::unique_ptr<Res> >( std::move(res) );
+
         pq->post([pres, wq, wi, mem_ptr, result_handler, timer_handler]()
         {
           if ( auto next_req = result_handler( std::move(*pres) ) )
