@@ -13,7 +13,7 @@ struct workflow_options_json
   // JSON_NAME(use_io_service)
   JSON_NAME(maxsize)
   JSON_NAME(wrnsize)
-  JSON_NAME(show_wrn_ms)
+  JSON_NAME(control_ms)
 
  
   typedef ::wjson::object<
@@ -21,7 +21,7 @@ struct workflow_options_json
     ::wjson::member_list<
       ::wjson::member< n_wrnsize, workflow_options, size_t, &workflow_options::wrnsize >,
       ::wjson::member< n_maxsize, workflow_options, size_t, &workflow_options::maxsize >,
-      ::wjson::member< n_show_wrn_ms, workflow_options, time_t, &workflow_options::show_wrn_ms >,
+      ::wjson::member< n_control_ms, workflow_options, time_t, &workflow_options::control_ms >,
       ::wjson::member< n_threads, workflow_options, size_t,  &workflow_options::threads >,
       // 
       // ::wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >,
