@@ -14,6 +14,10 @@ namespace iow{ namespace io{
 
 class read_buffer
 {
+  typedef std::vector<data_ptr> buffer_list;
+  typedef typename data_type::const_iterator const_iterator;
+  typedef std::pair<size_t, size_t> search_pair;
+
 public:
   typedef typename data_type::value_type value_type;
   typedef read_buffer_options options_type;
@@ -24,10 +28,6 @@ public:
   typedef std::function<data_ptr(size_t, size_t)> create_fun;
   typedef std::function<void(data_ptr)> free_fun;
   
-private:
-  typedef std::vector<data_ptr> buffer_list;
-  typedef typename data_type::const_iterator const_iterator;
-  typedef std::pair<size_t, size_t> search_pair;
 
 public:
 

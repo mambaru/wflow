@@ -56,7 +56,6 @@ namespace iow{ namespace io{
   
   read_buffer::data_pair read_buffer::next()
   {
-    
     data_pair result(0,0);
 
     if ( this->waiting() )
@@ -202,7 +201,7 @@ namespace iow{ namespace io{
     auto ptr = create_();
     
     if ( ptr==nullptr )
-      return data_pair(nullptr, 0);
+      return data_pair(nullptr, -1);
 
     // Если закончили парсить на последнем буфере
     if ( !_buffers.empty() 

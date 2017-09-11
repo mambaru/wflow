@@ -8,7 +8,6 @@
 
 namespace iow{ namespace io{ namespace reader{ namespace data{
   
-//template<typename DataType>
 struct ad_next
 {
   template<typename T>
@@ -17,10 +16,17 @@ struct ad_next
     // Проверить размер 
     auto& buf = t.get_aspect().template get<_read_buffer_>();
     auto p = buf.next();
+
     if ( buf.overflow() )
     {
       buf.clear();
       IOW_LOG_ERROR("Read buffer overflow. The descriptor will be closed.");
+      t.get_aspect().template get< ::iow::io::_stop_>()(t);
+    }
+    else if ( p.first == nullptr )
+    {
+      buf.clear();
+      IOW_LOG_ERROR("Read buffer. Out of memory.");
       t.get_aspect().template get< ::iow::io::_stop_>()(t);
     }
     return std::move(p);
