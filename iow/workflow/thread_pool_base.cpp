@@ -109,8 +109,6 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
 {
   std::lock_guard< std::mutex > lk(_mutex);
   
-  std::cout << "bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads) " << std::endl;
-  std::cout << "threads " << threads << " current " << _threads.size()  << std::endl;
   if ( !_started )
     return false;
   
@@ -120,15 +118,11 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
   if ( threads > _threads.size() ) 
   {
     size_t diff = threads - _threads.size();
-    std::cout << "++++++++++" << std::endl;
     this->run_more_(s, diff);
-    std::cout << "++++++++++" << diff << std::endl;
-    std::cout << "++++++++++" << std::endl;
   }
   else
   {
     size_t oldsize = _threads.size();
-    std::cout << std::endl << std::endl << "oldsize=" << oldsize << " newsize=" << threads << std::endl;
     for ( size_t i = threads; i < _threads.size(); ++i)
       _threads[i].detach();
     _threads.resize(threads);

@@ -37,7 +37,6 @@ void global_pool::free(data_ptr )
   /*
   if ( static_pool == nullptr )
     return;
-  //std::cout << "free " << d->capacity() << std::endl;
   return static_pool->free( std::move(d) );
   */
 }

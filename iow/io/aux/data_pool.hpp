@@ -171,7 +171,6 @@ public:
     std::lock_guard<mutex_type> lk(_mutex);
     if ( maxbuf > _maxbuf )
     {
-      std::cout << "DEF" << std::endl;
       return _def.create(bufsize, maxbuf);
     }
     return _list.at( maxbuf/10 ).create(bufsize, maxbuf);
@@ -203,7 +202,6 @@ public:
   
     if ( bufsize > _maxbuf )
     {
-      std::cout << "no free" << std::endl;
       return;
     }
     
