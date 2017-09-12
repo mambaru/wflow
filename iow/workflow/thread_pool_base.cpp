@@ -6,6 +6,8 @@
 #include <iow/logger/logger.hpp>
 #include <sys/syscall.h>
 #include <sys/types.h>
+#include <chrono>
+
 
 namespace iow {
 
@@ -92,6 +94,7 @@ void thread_pool_base::stop()
   std::lock_guard< std::mutex > lk(_mutex);
 
   _flags.clear();
+  _works.clear();
 
   for (auto& t : _threads)
     t.join();
@@ -106,6 +109,8 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
 {
   std::lock_guard< std::mutex > lk(_mutex);
   
+  std::cout << "bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads) " << std::endl;
+  std::cout << "threads " << threads << " current " << _threads.size()  << std::endl;
   if ( !_started )
     return false;
   
@@ -115,15 +120,27 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
   if ( threads > _threads.size() ) 
   {
     size_t diff = threads - _threads.size();
+    std::cout << "++++++++++" << std::endl;
     this->run_more_(s, diff);
+    std::cout << "++++++++++" << diff << std::endl;
+    std::cout << "++++++++++" << std::endl;
   }
   else
   {
+    size_t oldsize = _threads.size();
+    std::cout << std::endl << std::endl << "oldsize=" << oldsize << " newsize=" << threads << std::endl;
     for ( size_t i = threads; i < _threads.size(); ++i)
       _threads[i].detach();
     _threads.resize(threads);
     _flags.resize(threads);
-    //_counters.resize(threads);
+    _works.resize(threads);
+    oldsize*=2;
+    for (;oldsize!=0; --oldsize )
+    {
+      s->post([oldsize](){ 
+        std::this_thread::sleep_for( std::chrono::seconds(1) );
+      }, nullptr);
+    }
   }
   return true;
 }
@@ -159,12 +176,14 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     std::weak_ptr<bool> wflag = pflag;
     std::weak_ptr<self> wthis = this->shared_from_this();
     _flags.push_back(pflag);
+    auto w = s->work();
+    _works.push_back([w](){});
     //auto& counter = _counters[prev_size + i];
     //counter = 0;
     _threads.push_back( std::thread( std::function<void()>( [wthis, s, wflag]()
     {
-      auto w = s->work();
-      nowarn(w);
+      //auto w = s->work();
+      //nowarn(w);
 
       thread_pool_base::startup_handler startup;
       thread_pool_base::finish_handler finish;
@@ -181,11 +200,14 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
       auto pthis = wthis.lock();
       if ( startup != nullptr )
         startup(thread_id);
-      if ( statistics == nullptr && pthis->_rate_limit == 0 )
+      
+      /*if ( statistics == nullptr && pthis->_rate_limit == 0 )
       {
+        // Невозможна реконфигурация (поток не завершает работу)
         s->run();
       }
-      else { 
+      else */
+      { 
         size_t count = 0;
         for (;;)
         {

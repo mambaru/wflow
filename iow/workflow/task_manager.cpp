@@ -38,7 +38,7 @@ void task_manager::reconfigure(size_t queue_maxsize, size_t threads, bool use_as
 {
   _threads = threads;
   _pool->reconfigure(_threads);
-  _queue->reconfigure(queue_maxsize, use_asio, threads!=0/* threads==0 || use_asio*/ );
+  _queue->reconfigure(queue_maxsize, use_asio, threads!=0 );
 }
   
 void task_manager::rate_limit(size_t rps) 

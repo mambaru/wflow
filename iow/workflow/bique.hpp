@@ -15,6 +15,7 @@ class bique
   typedef std::shared_ptr<asio_queue> asio_ptr;
 public:
   typedef ::iow::asio::io_service io_service_type;
+  typedef io_service_type::work work_type;
   typedef std::shared_ptr<io_service_type> io_service_ptr;
   typedef std::function<void()>                               function_t;
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
