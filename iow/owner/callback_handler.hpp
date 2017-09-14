@@ -9,53 +9,35 @@
 #include <iow/logger/logger.hpp>
 #include <utility>
 #include <memory>
-
+#include <atomic>
 
 namespace iow{
 
-template<typename R, typename ... Args>
+template<typename H>
 struct callback_handler
 {
-  typedef std::function< R(Args...) > function_t;
-  typedef std::weak_ptr<int> weak_type;
+  typedef std::function<void()> double_call_fun_t;
+  typedef std::function<void()> no_call_fun_t;
+  
+  typedef std::shared_ptr< std::atomic_flag > ready_ptr;
 
   callback_handler() = default;
+  callback_handler(const callback_handler&) = default;
+  callback_handler(callback_handler&&) = default;
+  callback_handler& operator=(const callback_handler&) = default;
+  callback_handler& operator=(callback_handler&&) = default;
 
-  callback_handler(function_t&& h, function_t&& nh,  const weak_type& alive)
-    : _handler(  std::forward<function_t>(h) )
-    , _alt_handler(  std::forward<function_t>(nh) )
-    , _alive(alive)
+  ~callback_handler()
   {
+    if ( _ready!=nullptr && !_ready->test_and_set() && _no_call!=nullptr)
+      _no_call();
   }
   
-  R operator()(Args&&... args)
-  {
-    if ( auto p = _alive.lock() )
-    {
-      return _handler(std::forward<Args>(args)...);
-    }
-    
-    return _alt_handler!=nullptr
-           ? _alt_handler(std::forward<Args>(args)...)
-           : R();
-
-  }
-private:
-  function_t _handler;
-  function_t _alt_handler;
-  weak_type _alive;
-};
-
-template<typename H>
-struct owner_handler< H, std::nullptr_t >
-{
-  typedef std::weak_ptr<int> weak_type;
-
-  owner_handler() = default;
-
-  owner_handler(H&& h, std::nullptr_t, const weak_type& alive)
+  callback_handler(H&& h, ready_ptr ready, double_call_fun_t dc, no_call_fun_t nc)
     : _handler(  std::forward<H>(h) )
-    , _alive(alive)
+    , _ready(ready)
+    , _double_call(dc)
+    , _no_call(nc)
   {
   }
   
@@ -63,15 +45,18 @@ struct owner_handler< H, std::nullptr_t >
   auto operator()(Args&&... args)
     ->  typename std::result_of< H(Args&&...) >::type
   {
-    if ( auto p = _alive.lock() )
-    {
+    if ( !_ready->test_and_set() )
       return _handler(std::forward<Args>(args)...);
-    }
+    else if (_double_call!=nullptr)
+      _double_call();
     return typename std::result_of< H(Args&&...) >::type();
   }
+  
 private:
   H _handler;
-  weak_type _alive;
+  ready_ptr _ready;
+  double_call_fun_t _double_call;
+  no_call_fun_t _no_call;
 };
 
 }
