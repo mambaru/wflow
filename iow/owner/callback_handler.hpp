@@ -13,34 +13,36 @@
 
 namespace iow{
 
-template<typename H, typename NA >
-struct owner_handler
+template<typename R, typename ... Args>
+struct callback_handler
 {
+  typedef std::function< R(Args...) > function_t;
   typedef std::weak_ptr<int> weak_type;
 
-  owner_handler() = default;
+  callback_handler() = default;
 
-  owner_handler(H&& h, NA&& nh,  const weak_type& alive)
-    : _handler(  std::forward<H>(h) )
-    , _alt_handler(  std::forward<NA>(nh) )
+  callback_handler(function_t&& h, function_t&& nh,  const weak_type& alive)
+    : _handler(  std::forward<function_t>(h) )
+    , _alt_handler(  std::forward<function_t>(nh) )
     , _alive(alive)
   {
   }
   
-  template <class... Args>
-  auto operator()(Args&&... args)
-    ->  typename std::result_of< H(Args&&...) >::type
+  R operator()(Args&&... args)
   {
     if ( auto p = _alive.lock() )
     {
       return _handler(std::forward<Args>(args)...);
     }
     
-    return _alt_handler(std::forward<Args>(args)...);
+    return _alt_handler!=nullptr
+           ? _alt_handler(std::forward<Args>(args)...)
+           : R();
+
   }
 private:
-  H _handler;
-  NA _alt_handler;
+  function_t _handler;
+  function_t _alt_handler;
   weak_type _alive;
 };
 

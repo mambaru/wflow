@@ -37,7 +37,46 @@ public:
   {
     _alive = std::make_shared<int>(*_alive + 1);
   }
-  
+
+  /*
+  template<typename ...Args>
+  owner_handler< 
+    std::function<void(Args...)>, 
+    std::function<void(Args...)>
+  >
+  wrap(std::function<void(Args...)>&& h, std::function<void(Args...)>&& nh) const
+  {
+    return 
+      owner_handler<
+        std::function<void(Args...)>, 
+        std::function<void(Args...)>
+      >(
+          std::forward<std::function<void(Args...)>>(h),
+          std::forward<std::function<void(Args...)>>(nh),
+          std::weak_ptr<int>(_alive)
+       )
+    ;
+  }
+
+    template<typename ...Args>
+  owner_handler< 
+    std::function<void(Args...)>, 
+    std::nullptr_t
+  >
+  wrap(std::function<void(Args...)>&& h, std::nullptr_t) const
+  {
+    return 
+      owner_handler<
+        std::function<void(Args...)>, 
+        std::nullptr_t
+      >(
+          std::forward<std::function<void(Args...)>>(h),
+          std::nullptr_t(),
+          std::weak_ptr<int>(_alive)
+       )
+    ;
+  }
+ */
 
   template<typename Handler, typename AltHandler>
   owner_handler< 
@@ -58,8 +97,15 @@ public:
     ;
   }
   
-  static void enable_callback_check(bool )
+  template<typename R, typename ... Args>
+  std::function<R(Args...)> callback( std::function<R(Args...)>, std::function<R(Args...)> )
   {
+    return nullptr;
+  }
+
+  void set_callback_check(std::function<void()> value)
+  {
+    _callback_check = value;
   };
 
   // TODO: wrap_strong и wrap_strong2 строго на один вызов
@@ -68,6 +114,7 @@ public:
   // TODO:enable_callback_check(true) в конфиге core, флаг в глобале, устанавливаеться в domain_object
 
 private:
+  std::function<void()> _callback_check;
   mutable alive_type _alive;
 };
 
