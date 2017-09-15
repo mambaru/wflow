@@ -29,7 +29,7 @@ struct callback_handler
 
   ~callback_handler()
   {
-    if ( _ready!=nullptr && !_ready->test_and_set() && _no_call!=nullptr)
+    if ( _ready!=nullptr && _ready.use_count()==1 && _no_call!=nullptr && !_ready->test_and_set() )
       _no_call();
   }
   
