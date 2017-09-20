@@ -7,7 +7,7 @@ namespace iow{ namespace ip{ namespace tcp{ namespace acceptor{
   
 template<
   typename ConnectionType = ::iow::ip::tcp::acceptor::connection, 
-  typename ConnectionOptions = ::iow::ip::tcp::connection::options 
+  typename ConnectionOptions = ::iow::ip::tcp::connection::options
 >
 using options =  ::iow::io::acceptor::options< ConnectionType, ConnectionOptions>;
 

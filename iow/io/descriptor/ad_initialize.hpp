@@ -42,6 +42,18 @@ struct ad_initialize
     iow::asio::socket_base::non_blocking_io non_blocking_io(opt.nonblocking);
     t.descriptor().io_control(non_blocking_io);
 
+    if ( opt.receive_buffer_size != 0 )
+    {
+      boost::asio::socket_base::receive_buffer_size option(opt.receive_buffer_size);
+      t.descriptor().set_option(option);
+    }
+
+    if ( opt.send_buffer_size != 0 )
+    {
+      boost::asio::socket_base::send_buffer_size option(opt.send_buffer_size);
+      t.descriptor().set_option(option);
+    }
+
     t.get_aspect().template get< TgInitialize >()( t, std::forward<O>(opt) );
   }
 

@@ -10,6 +10,7 @@ struct options:
   ::iow::io::descriptor::options<context>,
   ::iow::io::rw::options
 {
+  typedef ::iow::io::descriptor::options<context> descriptor_options_type;
 };
 
 }}}}

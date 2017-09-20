@@ -15,6 +15,8 @@ public:
   typedef typename context_type::fatal_handler_type     fatal_handler_type;
 
   bool nonblocking = true; 
+  size_t receive_buffer_size = 0;
+  size_t send_buffer_size = 0;
   output_handler_type output_handler;
   input_handler_type input_handler;
   startup_handler_type  startup_handler;
