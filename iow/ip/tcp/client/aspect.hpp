@@ -16,12 +16,24 @@ struct ad_sync_resolver
   {
     ::iow::system::error_code ec;
     ::iow::asio::ip::tcp::resolver resolver( t.descriptor().get_io_service() );
-    ::iow::asio::ip::tcp::endpoint endpoint = *resolver.resolve({
+    
+    auto reitr = resolver.resolve({opt.addr, opt.port}, ec);
+    if ( ec )
+    {
+      IOW_LOG_ERROR("Client Reslove: " << ec.message())
+      return ::iow::asio::ip::tcp::endpoint();
+    }
+    ::iow::asio::ip::tcp::endpoint endpoint = *reitr;
+    IOW_LOG_MESSAGE("Client Reslove: " << opt.addr << ":" << opt.port << " " << ec.message())
+    return endpoint;
+
+    /*::iow::asio::ip::tcp::endpoint endpoint = *resolver.resolve({
       opt.addr, 
       opt.port
     }, ec);
     IOW_LOG_MESSAGE("Client Reslove: " << opt.addr << ":" << opt.port << " " << ec.message())
     return endpoint;
+    */
   }
 };
 
