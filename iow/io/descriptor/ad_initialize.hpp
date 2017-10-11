@@ -45,13 +45,31 @@ struct ad_initialize
     if ( opt.receive_buffer_size != 0 )
     {
       boost::asio::socket_base::receive_buffer_size option(opt.receive_buffer_size);
-      t.descriptor().set_option(option);
+      boost::system::error_code ec;
+      t.descriptor().set_option(option, ec);
+      if ( ec )
+      {
+        IOW_LOG_FATAL("socket::set_option receive_buffer_size=" << opt.receive_buffer_size << " error: " << ec.message() );
+      }
+      else
+      {
+        IOW_LOG_MESSAGE("socket::set_option receive_buffer_size=" << opt.receive_buffer_size );
+      }
     }
 
     if ( opt.send_buffer_size != 0 )
     {
       boost::asio::socket_base::send_buffer_size option(opt.send_buffer_size);
-      t.descriptor().set_option(option);
+      boost::system::error_code ec;
+      t.descriptor().set_option(option, ec);
+      if ( ec )
+      {
+        IOW_LOG_FATAL("socket::set_option send_buffer_size=" << opt.send_buffer_size << " error: " << ec.message() );
+      }
+      else
+      {
+        IOW_LOG_MESSAGE("socket::set_option send_buffer_size=" << opt.send_buffer_size );
+      }
     }
 
     t.get_aspect().template get< TgInitialize >()( t, std::forward<O>(opt) );
