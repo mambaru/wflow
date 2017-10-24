@@ -14,8 +14,7 @@ struct options_json
   JSON_NAME(threads)
   typedef ::wjson::object<
     options,
-    ::wjson::member_list<
-      //::wjson::base< ::iow::io::rw::options_json >,
+    wjson::member_list<
       wjson::base< ::iow::io::socket::dgram::options_json >,
       wjson::member<n_threads, options, int, &options::threads>,
       wjson::member< n_addr, options, std::string, &options::addr>,
