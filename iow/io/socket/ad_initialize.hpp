@@ -31,7 +31,7 @@ struct ad_initialize
     t.get_aspect().template get< ::iow::io::rw::_initialize_ >()(t, opt);
   }
   
-  void show(const boost::system::error_code& ec, const char* name, size_t value)
+  void show(const boost::system::error_code& ec, const char* name, size_t value) const
   {
     if ( ec )
     {

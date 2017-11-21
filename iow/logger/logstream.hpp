@@ -50,7 +50,6 @@ public:
   {
     _name = std::move(ll._name);
     _type = std::move(ll._type);
-    _ss = std::move(ll._ss);
     writer_ = std::move(ll.writer_);
     return *this;
   }
