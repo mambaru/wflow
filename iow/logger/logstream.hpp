@@ -41,7 +41,7 @@ public:
   logstream(logstream&& ll)
     : _name(std::move(ll._name))
     , _type(std::move(ll._type))
-    , _ss(ll._ss.str())
+    , _ss()
     , writer_(std::move(ll.writer_))
   {
   }
@@ -50,6 +50,7 @@ public:
   {
     _name = std::move(ll._name);
     _type = std::move(ll._type);
+    _ss.clear();
     writer_ = std::move(ll.writer_);
     return *this;
   }
