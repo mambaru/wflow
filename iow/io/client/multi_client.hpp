@@ -21,14 +21,12 @@ public:
   {}
   
   template<typename Opt>
-  // cppcheck-suppress functionStatic
   void start(Opt opt)
   {
     multi_base<Client>::start(std::move(opt), opt.connect_count);
   }
 
   template<typename Opt>
-  // cppcheck-suppress functionStatic
   void reconfigure(Opt opt, size_t count)
   {
     multi_base<Client>::reconfigure(std::move(opt), opt.connect_count);

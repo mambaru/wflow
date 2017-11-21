@@ -22,14 +22,12 @@ public:
   {}
   
   template<typename Opt>
-  // cppcheck-suppress functionStatic
   void start(Opt opt)
   {
     super::start(std::move(opt), threads_(opt) );
   }
 
   template<typename Opt>
-  // cppcheck-suppress functionStatic
   void reconfigure(Opt opt, size_t )
   {
     super::reconfigure(std::move(opt), threads_(opt) );
