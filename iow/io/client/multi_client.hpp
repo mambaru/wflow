@@ -27,7 +27,7 @@ public:
   }
 
   template<typename Opt>
-  void reconfigure(Opt opt, size_t count)
+  void reconfigure(Opt opt)
   {
     multi_base<Client>::reconfigure(std::move(opt), opt.connect_count);
   }

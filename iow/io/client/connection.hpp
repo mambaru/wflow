@@ -24,7 +24,7 @@ struct ad_connect
       {
         if (!ec)
         {
-          IOW_LOG_END("Client connected to " << popt->addr << ":" << popt->port << " " << ec.message() )
+          IOW_LOG_END("Client connected to '" << popt->addr << ":" << popt->port << "' " << ec.message() )
           if ( popt->args.connect_handler )
           {
             popt->args.connect_handler();
@@ -42,7 +42,7 @@ struct ad_connect
     }, nullptr);
 
 
-    IOW_LOG_BEGIN("Client connect to " << opt.addr << ":" << opt.port << " ..." )
+    IOW_LOG_BEGIN("Client connect to '" << opt.addr << ":" << opt.port << "' ..." )
     if ( opt.async_connect )
     {
       t.descriptor().async_connect(endpoint, handler);
