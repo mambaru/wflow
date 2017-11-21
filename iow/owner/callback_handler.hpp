@@ -33,7 +33,7 @@ struct callback_handler
       _no_call();
   }
   
-  callback_handler(H&& h, ready_ptr ready, double_call_fun_t dc, no_call_fun_t nc)
+  callback_handler(H&& h, const ready_ptr& ready, const double_call_fun_t& dc, const no_call_fun_t& nc)
     : _handler(  std::forward<H>(h) )
     , _ready(ready)
     , _double_call(dc)

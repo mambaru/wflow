@@ -325,7 +325,7 @@ BEGIN_SUITE(aux,"aux suite")
 END_SUITE(aux)
 
 ::fas::testing::suite_counts fas_my_suite_run(int , char*[]);
-::fas::testing::suite_counts fas_my_suite_run(int , char*[])
+::fas::testing::suite_counts fas_my_suite_run(int argc, char* argv[])
 {
   data_line_test_options optlist[]={
   //       bufsize maxbuf minbuf first_as_is data_size data_count
@@ -347,7 +347,7 @@ END_SUITE(aux)
   for (size_t i =0 ; i < std::extent< decltype(optlist) >::value; i++)
   {
     *opt=optlist[i];
-    as.run();
+    as.run(argc, argv);
     sc += as.counts();
   }
   return sc;

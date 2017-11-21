@@ -2,7 +2,7 @@
 #include <iow/ip/udp/server/server.hpp>
 int main()
 {
-  typedef iow::ip::udp::server::server<> server_type;
+  typedef iow::ip::udp::server::server server_type;
   typedef iow::ip::udp::server::options options_type;
   options_type opt;
   opt.threads = 3;

@@ -35,13 +35,26 @@ public:
     }
   }
   
-  logstream(const logstream& ll)
+  logstream(const logstream& ll) = delete;
+  logstream& operator = (logstream& ll) = delete;
+  
+  logstream(logstream&& ll)
     : _name(std::move(ll._name))
     , _type(std::move(ll._type))
     , _ss(ll._ss.str())
     , writer_(std::move(ll.writer_))
   {
   }
+
+  logstream& operator = (logstream&& ll)
+  {
+    _name = std::move(ll._name);
+    _type = std::move(ll._type);
+    _ss = std::move(ll._ss);
+    writer_ = std::move(ll.writer_);
+    return *this;
+  }
+
   
   logstream(const std::string& name, const std::string& type, const log_writer& writer)
     : _name(name)

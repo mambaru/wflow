@@ -1,2 +1,0 @@
-syntaxError:/home/migashko/prj/wjrpc/tests/engine_suite.cpp:128
-syntaxError:/home/migashko/prj/wjrpc/tests/method_suite.cpp:118

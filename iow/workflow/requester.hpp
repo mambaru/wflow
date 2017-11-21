@@ -11,7 +11,7 @@ public:
   typedef std::function<void(bool)> handler_callback;
 
   template< typename Req, typename Res, typename Q, typename I, typename MemFun, typename Handler >
-  static auto make(std::shared_ptr<Q> q, std::shared_ptr<I> i, MemFun mem_fun, Handler result_handler ) 
+  static auto make(const std::shared_ptr<Q>& q, const std::shared_ptr<I>& i, MemFun mem_fun, Handler result_handler ) 
     -> std::function<void( handler_callback)>
   {
     std::weak_ptr<Q> wq = q;

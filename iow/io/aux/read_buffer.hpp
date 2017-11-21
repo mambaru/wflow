@@ -69,9 +69,9 @@ private:
 
   //static constexpr diff_type npos();
 
-  data_ptr create_(size_t size, size_t maxbuf) const noexcept;
+  data_ptr create_(size_t bufsize, size_t maxbuf) const noexcept;
 
-  data_ptr create_(size_t size) const noexcept;
+  data_ptr create_(size_t bufsize) const noexcept;
 
   data_ptr create_() const noexcept;
 

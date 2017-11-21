@@ -20,7 +20,7 @@ public:
 
 
   template<typename Q, typename Handler>
-  static std::function<void()> make( std::shared_ptr<Q> pq, duration_t delay, Handler handler, bool expires_after, wflag_type wflag )
+  static std::function<void()> make( const std::shared_ptr<Q>& pq, duration_t delay, Handler handler, bool expires_after, wflag_type wflag )
   {
     std::weak_ptr<Q> wq = pq;
     return common_timer::create_handler_(wq, delay, expires_after, std::move(handler), wflag);

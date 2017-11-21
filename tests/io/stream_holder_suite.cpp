@@ -13,10 +13,24 @@ typedef std::vector<char> data_type;
 typedef iow::asio::posix::stream_descriptor descriptor_type;
 typedef iow::io::socket::stream::options options_type;
 
+/*
+struct ad_initialize
+{
+  template<typename T, typename O>
+  void operator()(T& t, O&& opt)  const
+  {
+    t.get_aspect().template get< ::iow::io::rw::_initialize_ >()(t, opt);
+  }
+};
+*/
+
 struct aspect_stream : fas::aspect<
     fas::type< ::iow::io::descriptor::_descriptor_type_, descriptor_type >,
     fas::type< ::iow::io::_options_type_, options_type >,
+    fas::alias< ::iow::io::socket::stream::_initialize_, ::iow::io::rw::_initialize_>,
     ::iow::io::socket::stream::aspect,
+    // Заглужка descriptor_type не поддерживает set_options
+    
     ::iow::io::reader::asio::aspect,
     ::iow::io::writer::asio::aspect,
     ::iow::io::rw::aspect,

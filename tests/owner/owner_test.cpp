@@ -231,7 +231,7 @@ UNIT(callback1, "")
   t << equal<expect>(dcount, 1) << FAS_FL;
   t << equal<expect>(ncount, 0) << FAS_FL;
   {
-    auto cb2 = own.callback([&count](){count++;});
+    auto cb3 = own.callback([&count](){count++;});
   }
   t << equal<expect>(count, 2) << FAS_FL;
   t << equal<expect>(dcount, 1) << FAS_FL;

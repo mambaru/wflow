@@ -86,13 +86,13 @@ public:
     ;
   }
 
-  void set_double_call_handler(double_call_fun_t dc)
+  void set_double_call_handler(const double_call_fun_t& dc)
   {
     std::lock_guard<mutex_type> lk(_mutex);
     _double_call = dc;
   };
 
-  void set_no_call_handler(no_call_fun_t nc)
+  void set_no_call_handler(const no_call_fun_t& nc)
   {
     std::lock_guard<mutex_type> lk(_mutex);
     _no_call = nc;

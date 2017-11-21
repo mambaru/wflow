@@ -67,9 +67,9 @@ private:
   
   void addsep_( data_type& d, bool reserve );
 
-  data_ptr create_(size_t size, size_t maxbuf) const;
+  data_ptr create_(size_t bufsize, size_t maxbuf) const;
 
-  data_ptr create_(size_t size) const;
+  data_ptr create_(size_t bufsize) const;
 
   data_ptr create_() const;
 

@@ -26,7 +26,7 @@ public:
     
   }
   
-  void attach(io_id_type id, holder_ptr h)
+  void attach(io_id_type id, const holder_ptr& h)
   {
     _holders[id] = h;
   }
