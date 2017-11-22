@@ -17,7 +17,7 @@ struct ad_initialize
       boost::asio::socket_base::receive_buffer_size option(opt.receive_buffer_size);
       boost::system::error_code ec;
       t.descriptor().set_option(option, ec);
-      this->show(ec, "receive_buffer_size", opt.receive_buffer_size);
+      this->check(ec, "receive_buffer_size", opt.receive_buffer_size);
     }
 
     if ( opt.send_buffer_size != 0 )
@@ -25,13 +25,13 @@ struct ad_initialize
       boost::asio::socket_base::send_buffer_size option(opt.send_buffer_size);
       boost::system::error_code ec;
       t.descriptor().set_option(option, ec);
-      this->show(ec, "send_buffer_size", opt.send_buffer_size);
+      this->check(ec, "send_buffer_size", opt.send_buffer_size);
     }
     
     t.get_aspect().template get< ::iow::io::rw::_initialize_ >()(t, opt);
   }
   
-  void show(const boost::system::error_code& ec, const char* name, size_t value) const
+  static void check(const boost::system::error_code& ec, const char* name, size_t value)
   {
     if ( ec )
     {

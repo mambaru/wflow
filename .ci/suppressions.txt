@@ -1,0 +1,4 @@
+missingInclude:./iow/boost.hpp:20
+duplicateBranch:./iow/io/socket/ad_initialize.hpp:36
+knownConditionTrueFalse:./tests/workflow/workflow_suite.cpp:65
+unusedFunction:./tests/aux/write_buffer_test.cpp:328
