@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iow/io/writer/data/tags.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <memory>
 
 namespace iow{ namespace io{ namespace writer{ namespace data{

@@ -3,7 +3,7 @@
 #include <memory>
 #include <iow/asio.hpp>
 #include <iow/io/rw/tags.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 
 namespace iow{ namespace io{ namespace socket{
 

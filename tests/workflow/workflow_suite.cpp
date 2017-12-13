@@ -2,7 +2,6 @@
 #include <iow/workflow/task_manager.hpp>
 #include <iow/workflow/bique.hpp>
 #include <iow/workflow/workflow.hpp>
-#include <iow/logger/global_log.hpp>
 #include <chrono>
 
 UNIT(workflow1, "")
@@ -67,14 +66,6 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
     if ( counter < 3 ) 
       return true;
     ready = true;
-    /*
-    if ( ready )
-      return false;
-    //ready = pw->queue_size() == 1;
-    if ( !ready )
-      return true;
-    */
-    
     io.stop();
     return false;
   };
@@ -122,9 +113,6 @@ UNIT(requester1, "")
 {
   using namespace ::fas::testing;
   using namespace std::chrono;
-  // log for cppcheck 
-  iow::init_log(iow::log_writer() );
-  iow::log_status();
   auto f = std::make_shared<foo>();
   iow::asio::io_service ios;
   iow::workflow_options wo;

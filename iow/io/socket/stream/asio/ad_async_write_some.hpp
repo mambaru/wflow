@@ -2,7 +2,7 @@
 
 #include <iow/asio.hpp>
 #include <utility>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <iow/io/types.hpp>
 namespace iow{ namespace io{ namespace socket{ namespace stream{ namespace asio{
 

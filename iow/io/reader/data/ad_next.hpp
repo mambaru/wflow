@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iow/io/reader/data/tags.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 
 #include <utility>
 #include <memory>

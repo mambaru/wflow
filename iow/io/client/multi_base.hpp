@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iow/logger/logger.hpp>
 #include <mutex>
 #include <memory>
 #include <vector>

@@ -1,10 +1,12 @@
 #pragma once
+
+#include <iow/logger.hpp>
 #include <memory>
 #include <mutex>
 #include <list>
 #include <thread>
 #include <cstdlib>
-#include <iow/logger/logger.hpp>
+
 
 namespace iow{ namespace io{ namespace descriptor{
 
@@ -16,10 +18,6 @@ class thread
 {
 public:
   typedef Holder holder_type;
-  /*typedef typename holder_type::data_ptr data_ptr;
-  typedef typename holder_type::io_id_type io_id_type;
-  typedef typename holder_type::descriptor_type descriptor_type;
-  */
   typedef std::shared_ptr<holder_type> holder_ptr;
   typedef std::thread thread_type;
   typedef std::mutex mutex_type;

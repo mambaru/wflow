@@ -1,6 +1,6 @@
 #include "asio_queue.hpp"
 
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <iow/system.hpp>
 #include <iow/boost.hpp>
 

@@ -2,7 +2,7 @@
 
 #include <fas/aop.hpp>
 
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <iow/io/client/connection.hpp>
 #include <iow/workflow/workflow.hpp>
 

@@ -2,7 +2,7 @@
 
 #include <iow/io/reader/tags.hpp>
 #include <iow/system.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 
 namespace iow{ namespace io{ namespace acceptor{
 

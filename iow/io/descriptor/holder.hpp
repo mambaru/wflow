@@ -2,6 +2,7 @@
 #include <iow/io/io_base.hpp>
 #include <iow/io/descriptor/tags.hpp>
 #include <unistd.h>
+#include <functional>
 
 namespace iow{ namespace io{ namespace descriptor{
 

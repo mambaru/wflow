@@ -2,7 +2,7 @@
 
 /*#include <iow/io/client/multi_client.hpp>*/
 #include <iow/io/descriptor/thread.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 
 namespace iow{ namespace io{ namespace client{
 

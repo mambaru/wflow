@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <iow/io/writer/tags.hpp>
 
 namespace iow{ namespace io{ namespace writer{

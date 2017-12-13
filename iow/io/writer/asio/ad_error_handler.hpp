@@ -3,7 +3,7 @@
 #include <string>
 #include <iow/system.hpp>
 #include <iow/io/writer/tags.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 
 namespace iow{ namespace io{ namespace writer{ namespace asio{
 

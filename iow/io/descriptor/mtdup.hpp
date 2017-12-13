@@ -7,7 +7,7 @@
 #include <chrono>
 
 #include <iow/io/basic/tags.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <iow/asio.hpp>
 #include <iow/system.hpp>
 

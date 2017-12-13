@@ -3,7 +3,7 @@
 #include <iow/workflow/asio_queue.hpp>
 #include <iow/workflow/delayed_queue.hpp>
 #include <iow/workflow/bique.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 
 
 namespace iow{

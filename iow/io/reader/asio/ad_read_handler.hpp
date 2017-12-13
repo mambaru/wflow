@@ -4,7 +4,7 @@
 #include <iow/io/reader/tags.hpp>
 #include <iow/io/basic/tags.hpp>
 
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <iow/system.hpp>
 #include <iow/asio.hpp>
 

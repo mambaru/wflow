@@ -4,7 +4,7 @@
 
 #include <fas/aop.hpp>
 #include <fas/integral/bool_.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 #include <iow/asio.hpp>
 #include <thread>
 

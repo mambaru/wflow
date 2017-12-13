@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <iow/logger/logger.hpp>
 #include <utility>
 #include <memory>
 #include <atomic>
+#include <functional>
 
 namespace iow{
 

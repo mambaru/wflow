@@ -2,7 +2,7 @@
 
 #include <iow/io/basic/tags.hpp>
 #include <iow/io/types.hpp>
-#include <iow/logger/logger.hpp>
+#include <iow/logger.hpp>
 
 namespace iow{ namespace io{ namespace basic{
 
