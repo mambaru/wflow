@@ -39,8 +39,11 @@ struct ad_initialize
       };
     }
 
-    iow::asio::socket_base::non_blocking_io non_blocking_io(opt.nonblocking);
-    t.descriptor().io_control(non_blocking_io);
+    /*
+    iow::asio::socket_base::non_blocking non_blocking(opt.nonblocking);
+    t.descriptor().io_control(non_blocking);
+    */
+    t.descriptor().non_blocking(opt.nonblocking);
 
     /*
     if ( opt.receive_buffer_size != 0 )
