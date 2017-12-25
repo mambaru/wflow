@@ -26,18 +26,6 @@ if ( "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}" )
   include_directories(../wjson)
 endif()
 
-find_package(wlog HINTS ${CMAKE_SOURCE_DIR}/wlog/build ${CMAKE_SOURCE_DIR}/../wlog/build)
-
-if (TARGET wlog)
-  message(STATUS "TARGET wlog")
-elseif (wlog_FOUND)
-  message(STATUS "wlog_FOUND WLOG_INCLUDE_DIR=${WLOG_INCLUDE_DIR}")
-  include_directories(${WLOG_INCLUDE_DIR})
-else()
-  add_definitions(-DIOW_DISABLE_LOG)
-endif ()
-
-
 include_directories(.)
 
 add_library(
@@ -56,24 +44,9 @@ add_library(
   iow/workflow/thread_pool_base.cpp
 )
 
-if (TARGET wlog)
-  message(STATUS "TARGET wlog")
-  target_link_libraries(iow wlog ${Boost_LIBRARIES})
-elseif (wlog_FOUND)
-  message(STATUS "wlog_LIBRARIES=${WLOG_LIBRARIES} in ${WLOG_LIBRARY_DIRS}")
-  link_directories(${WLOG_LIBRARY_DIRS})
-  target_link_libraries(iow ${WLOG_LIBRARIES} ${Boost_LIBRARIES})
-else()
-  message(STATUS "NOT wlog_LIBRARIES=${WLOG_LIBRARIES}")
-  target_link_libraries(iow ${Boost_LIBRARIES})
-endif()
-
-
-#link_directories(${CMAKE_SOURCE_DIR}/../wlog/build)
-#target_link_libraries(iow ${wlog_LIBRARIES} ${Boost_LIBRARIES})
-
 if ( BUILD_TESTING )
   enable_testing()
+  add_definitions(-DIOW_DISABLE_LOG)
   add_subdirectory(tests)
 endif()
 

@@ -8,5 +8,5 @@ set( SUITE_LIST
 )
 
 add_executable( workflow_test ${FAS_TESTING_CPP} workflow_test.cpp ${SUITE_LIST} )
-target_link_libraries(workflow_test iow ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries(workflow_test iow ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
 add_test( NAME workflow_test COMMAND workflow_test WORKING_DIRECTORY ${IOW_TEST_DIR} )
