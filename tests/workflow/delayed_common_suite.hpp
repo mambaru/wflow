@@ -16,11 +16,14 @@ inline void delayed_unit1(T& t, Q& dq)
   using namespace ::fas::testing;
   using namespace ::std::chrono;
   
-  high_resolution_clock::time_point start = high_resolution_clock::now();
-  high_resolution_clock::time_point finish = start;
+  system_clock::time_point start = system_clock::now();
+  system_clock::time_point finish = start;
   dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
-    finish = high_resolution_clock::now();
-  }, nullptr);
+    t << message("delayed_post READY!");
+    finish = system_clock::now();
+  }, [&t](){
+    t << fail("delayed_post FAIL!");
+  });
   dq.run_one();
   time_t ms = duration_cast<milliseconds>(finish-start).count();
   t << message("time: ") << ms;

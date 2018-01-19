@@ -127,9 +127,9 @@ bool asio_queue::check_(function_t drop)
 template<typename TP>
 asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
 {
-  //typedef std::chrono::microseconds duration_t; 
-  typedef duration_t::rep rep_t; 
-  rep_t d = std::chrono::duration_cast<duration_t>(tp.time_since_epoch()).count(); 
+  typedef std::chrono::microseconds microseconds; 
+  typedef microseconds::rep rep_t; 
+  rep_t d = std::chrono::duration_cast<microseconds>(tp.time_since_epoch()).count(); 
   rep_t sec = d/1000000; 
   rep_t mksec = d%1000000; 
   ::boost::posix_time::ptime ptime = 
