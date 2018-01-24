@@ -44,6 +44,8 @@ add_library(
   iow/workflow/thread_pool_base.cpp
 )
 
+target_link_libraries(iow ${CMAKE_THREAD_LIBS_INIT}  ${Boost_LIBRARIES})
+
 if ( BUILD_TESTING )
   enable_testing()
   add_definitions(-DIOW_DISABLE_LOG)
