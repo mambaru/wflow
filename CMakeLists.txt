@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(iow)
+project(wflow)
 
 if ( "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}" )
   INCLUDE(FindThreads)
   SET(CMAKE_CXX_FLAGS       "${CXX_FLAGS} -std=c++11 -ftemplate-backtrace-limit=0")
   SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -ggdb -DNDEBUG -march=core2 ") 
-  SET(CMAKE_C_FLAGS_DEBUG "-O0 -ggdb ")
+  SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb ")
   if (PARANOID_WARNING)
     if(UNIX)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align \
@@ -15,39 +15,35 @@ if ( "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}" )
                          -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual \
                          -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo \
                          -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror")
-      # -Wlogical-op -Wnoexcept -Wstrict-null-sentinel 
     endif()
   endif ()
-
-  set(FASLIB_DIR "${CMAKE_SOURCE_DIR}/../faslib")
-  set(FAS_TESTING_CPP "${FASLIB_DIR}/fas/testing/testing.cpp")
+  add_definitions(-DWFLOW_DISABLE_LOG=ON)
   find_package(Boost COMPONENTS system date_time REQUIRED)
-  include_directories(../faslib)
-  include_directories(../wjson)
 endif()
 
 include_directories(.)
+include_directories(../wlog)
 
 add_library(
-  iow
-  iow/io/aux/read_buffer.cpp
-  iow/io/aux/write_buffer.cpp
-  iow/io/aux/global_pool.cpp
-  iow/workflow/workflow.cpp
-  iow/workflow/delayed_queue.cpp
-  iow/workflow/asio_queue.cpp
-  iow/workflow/bique.cpp
-  iow/workflow/timer.cpp
-  iow/workflow/task_manager.cpp
-  iow/workflow/timer_manager_base.cpp
-  iow/workflow/timer_manager.cpp
-  iow/workflow/thread_pool_base.cpp
+  wflow
+  wflow/workflow.cpp
+  wflow/delayed_queue.cpp
+  wflow/asio_queue.cpp
+  wflow/bique.cpp
+  wflow/timer.cpp
+  wflow/task_manager.cpp
+  wflow/timer_manager_base.cpp
+  wflow/timer_manager.cpp
+  wflow/thread_pool_base.cpp
 )
 
-target_link_libraries(iow ${CMAKE_THREAD_LIBS_INIT}  ${Boost_LIBRARIES})
+target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT}  ${Boost_LIBRARIES})
 
 if ( BUILD_TESTING )
   enable_testing()
+  set(FASLIB_DIR "${CMAKE_SOURCE_DIR}/../faslib")
+  set(FAS_TESTING_CPP "${FASLIB_DIR}/fas/testing/testing.cpp")
+  include_directories(../faslib)
   add_definitions(-DIOW_DISABLE_LOG)
   add_subdirectory(tests)
 endif()
