@@ -4,7 +4,7 @@
 #include <wflow/asio.hpp>
 #include <thread>
 
-namespace iow{
+namespace wflow{
 
 class bique;
 
@@ -18,7 +18,7 @@ public:
   typedef std::function<void()>                               function_t;
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
   typedef time_point_t::duration                              duration_t;
-  typedef ::iow::asio::io_service io_service_type;
+  typedef ::wflow::asio::io_service io_service_type;
   typedef timer_manager<queue_type> timer_type;
   
   typedef std::function<void(std::thread::id)> startup_handler;

@@ -6,15 +6,15 @@
 #include <atomic>
 #include <chrono>
 
-namespace iow{
+namespace wflow{
   
 class asio_queue
   : public std::enable_shared_from_this<asio_queue >
 {
   typedef asio_queue self;
-  typedef ::iow::asio::deadline_timer timer_type;
+  typedef ::wflow::asio::deadline_timer timer_type;
   typedef std::shared_ptr<timer_type> timer_ptr;
-  typedef ::iow::asio::io_service io_service_type;
+  typedef ::wflow::asio::io_service io_service_type;
   typedef std::mutex mutex_type;
 public:
   typedef std::function<void()>                               function_t;
@@ -67,5 +67,5 @@ private:
   std::atomic<size_t> _drop_count;
 };
 
-} // iow
+} // wflow
 

@@ -7,7 +7,7 @@
 #include <memory>
 #include <functional>
 
-namespace iow {
+namespace wflow {
 
 class bique;
 class asio_queue;

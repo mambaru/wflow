@@ -13,7 +13,7 @@
 #include <chrono>
 #include <mutex>
 
-namespace iow{
+namespace wflow{
 
 template<typename Queue>
 class timer_manager

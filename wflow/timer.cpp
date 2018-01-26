@@ -4,7 +4,7 @@
 #include "delayed_queue.hpp"
 #include "common_timer.hpp"
 
-namespace iow{
+namespace wflow{
 
 std::function<void()> timer::make( std::shared_ptr<bique> pq,        duration_t delay, handler h, bool expires_after, wflag_type wflag )
 {

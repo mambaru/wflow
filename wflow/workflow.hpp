@@ -7,12 +7,12 @@
 #include <chrono>
 
 
-namespace iow{
+namespace wflow{
 
 class workflow
 {
 public:
-  typedef ::iow::asio::io_service io_service_type;
+  typedef ::wflow::asio::io_service io_service_type;
   typedef std::function< void() > post_handler;
 
   typedef std::function<bool()> timer_handler;

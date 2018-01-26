@@ -1,6 +1,6 @@
 #include "delayed_queue.hpp"
 
-namespace iow {
+namespace wflow {
 
 delayed_queue::delayed_queue(size_t maxsize)
   : _loop_exit(false)

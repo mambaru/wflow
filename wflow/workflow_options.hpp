@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 
-namespace iow{
+namespace wflow{
 
 class workflow;
 
@@ -24,7 +24,7 @@ struct workflow_options
   size_t rate_limit = 0;    // ограничение скорости (в сообщениях в секунду)
 
   // для таймера проверки wrnsize
-  std::shared_ptr< ::iow::workflow> control_workflow_ptr;
+  std::shared_ptr< ::wflow::workflow> control_workflow_ptr;
   std::function<bool()> control_handler = nullptr;
   
   typedef std::function<void(std::thread::id)> startup_handler_t;

@@ -9,9 +9,9 @@ UNIT(workflow1, "")
 {
   using namespace ::fas::testing;
   
-  ::iow::asio::io_service io;
+  ::wflow::asio::io_service io;
 
-  ::iow::task_manager queue(io, 0, 3, false);
+  ::wflow::task_manager queue(io, 0, 3, false);
   queue.start();
   std::atomic<int> counter(0);
   queue.post([&t, &counter](){
@@ -47,10 +47,10 @@ UNIT(workflow1, "")
 UNIT(workflow2, "5 сообщений, одно 'теряется' и одно остаеться в очереди")
 {
   using namespace ::fas::testing;
-  ::iow::asio::io_service io;  
-  ::iow::asio::io_service::work wrk(io);
-  ::iow::workflow_options opt;
-  ::iow::workflow* pw;
+  ::wflow::asio::io_service io;  
+  ::wflow::asio::io_service::work wrk(io);
+  ::wflow::workflow_options opt;
+  ::wflow::workflow* pw;
   
   bool ready = false;
   std::atomic<int> counter(0);
@@ -70,7 +70,7 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
     io.stop();
     return false;
   };
-  ::iow::workflow wfl(io, opt);
+  ::wflow::workflow wfl(io, opt);
   pw = &wfl;
   wfl.start();
   wfl.manager(); // for cppcheck
@@ -115,11 +115,11 @@ UNIT(requester1, "")
   using namespace ::fas::testing;
   using namespace std::chrono;
   auto f = std::make_shared<foo>();
-  iow::asio::io_service ios;
-  iow::workflow_options wo;
+  wflow::asio::io_service ios;
+  wflow::workflow_options wo;
   wo.threads = 0;
-  iow::workflow flw(ios, wo);
-  iow::workflow::timer_id_t id;
+  wflow::workflow flw(ios, wo);
+  wflow::workflow::timer_id_t id;
   auto start = high_resolution_clock::now();
   auto finish = start;
   id = flw.create_requester< foo::request, foo::response >(

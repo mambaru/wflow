@@ -42,7 +42,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/asio/time_traits.hpp>
 
-namespace iow{ namespace boost{
+namespace wflow{ namespace boost{
 
 // Прочие сущности буста
 using namespace boost;

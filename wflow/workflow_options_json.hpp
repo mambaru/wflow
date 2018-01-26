@@ -1,10 +1,10 @@
 #pragma once 
 
-//#include <iow/workflow/queue_options_json.hpp>
-#include <iow/workflow/workflow_options.hpp>
+//#include <wflow/workflow/queue_options_json.hpp>
+#include <wflow/workflow/workflow_options.hpp>
 #include <wfc/json.hpp>
 
-namespace iow {
+namespace wflow {
   
 struct workflow_options_json
 {

@@ -29,9 +29,9 @@ public:
 UNIT(timer_manager1, "")
 {
   using namespace ::fas::testing;
-  iow::asio::io_service io;
-  auto pq = std::make_shared< ::iow::asio_queue >(io, 0);
-  auto tm = std::make_shared< ::iow::timer_manager< ::iow::asio_queue > >( pq );
+  wflow::asio::io_service io;
+  auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
+  auto tm = std::make_shared< ::wflow::timer_manager< ::wflow::asio_queue > >( pq );
   std::atomic<int> counter(0);
   tm->create( std::chrono::milliseconds(200), [&counter, &t]()
   {
@@ -65,9 +65,9 @@ UNIT(timer_manager2, "")
 {
   using namespace ::fas::testing;
   using namespace ::std::chrono;
-  iow::asio::io_service io;
-  auto pq = std::make_shared< ::iow::asio_queue >(io, 0);
-  auto tm = std::make_shared< ::iow::timer_manager< ::iow::asio_queue > >( pq );
+  wflow::asio::io_service io;
+  auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
+  auto tm = std::make_shared< ::wflow::timer_manager< ::wflow::asio_queue > >( pq );
 
   auto start = high_resolution_clock::now();
   auto finish = start;
@@ -87,9 +87,9 @@ UNIT(timer_manager3, "")
 {
   using namespace ::fas::testing;
   using namespace ::std::chrono;
-  iow::asio::io_service io;
-  auto pq = std::make_shared< ::iow::asio_queue >(io, 0);
-  auto tm = std::make_shared< ::iow::timer_manager< ::iow::asio_queue > >( pq );
+  wflow::asio::io_service io;
+  auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
+  auto tm = std::make_shared< ::wflow::timer_manager< ::wflow::asio_queue > >( pq );
 
   auto start = high_resolution_clock::now();
   auto finish = start;

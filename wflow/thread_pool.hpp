@@ -2,7 +2,7 @@
 
 #include <wflow/thread_pool_base.hpp>
 
-namespace iow {
+namespace wflow {
 
 template<typename Service >
 class thread_pool

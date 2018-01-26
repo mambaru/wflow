@@ -2,7 +2,7 @@
 #include "asio_queue.hpp"
 #include "delayed_queue.hpp"
 
-namespace iow{
+namespace wflow{
  
 bique::~bique()
 {

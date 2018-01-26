@@ -4,7 +4,7 @@
 #include <functional>
 #include <chrono>
 
-namespace iow{
+namespace wflow{
   
 class delayed_queue;
 class asio_queue;
@@ -14,7 +14,7 @@ class bique
   typedef std::shared_ptr<delayed_queue> delayed_ptr;
   typedef std::shared_ptr<asio_queue> asio_ptr;
 public:
-  typedef ::iow::asio::io_service io_service_type;
+  typedef ::wflow::asio::io_service io_service_type;
   typedef io_service_type::work work_type;
   typedef std::shared_ptr<io_service_type> io_service_ptr;
   typedef std::function<void()>                               function_t;

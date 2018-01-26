@@ -2,7 +2,7 @@
 #include "system.hpp"
 #include "boost.hpp"
 
-namespace iow{
+namespace wflow{
   
 asio_queue::asio_queue(io_service_type& io, const size_t maxsize)
   : _io(io)
@@ -31,19 +31,19 @@ const asio_queue::io_service_type& asio_queue::get_io_service() const
   
 std::size_t asio_queue::run()
 {
-  ::iow::system::error_code ec;
+  ::wflow::system::error_code ec;
   return _io.run(ec);
 }
   
 std::size_t asio_queue::run_one()
 {
-  ::iow::system::error_code ec;
+  ::wflow::system::error_code ec;
   return _io.run_one(ec);
 }
   
 std::size_t asio_queue::poll_one()
 {
-  ::iow::system::error_code ec;
+  ::wflow::system::error_code ec;
   return _io.poll_one(ec);
 }
 
@@ -84,7 +84,7 @@ bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
   auto ptimer = this->create_timer_( tp );
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_counter;
-  ptimer->async_wait([f, ptimer, wthis]( const ::iow::system::error_code& )
+  ptimer->async_wait([f, ptimer, wthis]( const ::wflow::system::error_code& )
   {
     if (auto pthis = wthis.lock() )
     {
@@ -144,5 +144,5 @@ asio_queue::io_service_type::work asio_queue::work() const
   return io_service_type::work(_io);
 }
 
-} // iow
+} // wflow
 

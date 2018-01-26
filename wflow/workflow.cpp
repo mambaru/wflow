@@ -2,7 +2,7 @@
 #include "bique.hpp"
 #include "logger.hpp"
 
-namespace iow{
+namespace wflow{
   
 
 workflow::~workflow()
