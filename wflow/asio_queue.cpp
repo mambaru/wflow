@@ -17,6 +17,7 @@ void asio_queue::set_maxsize(size_t maxsize)
   _maxsize = maxsize;
 }
 
+/*
 asio_queue::io_service_type& asio_queue::get_io_service() 
 { 
   return _io;
@@ -26,6 +27,7 @@ const asio_queue::io_service_type& asio_queue::get_io_service() const
 {
   return _io;
 }
+*/
   
 std::size_t asio_queue::run()
 {

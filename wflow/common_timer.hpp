@@ -20,44 +20,44 @@ public:
 
 
   template<typename Q, typename Handler>
-  static std::function<void()> make( const std::shared_ptr<Q>& pq, duration_t delay, Handler handler, bool expires_after, wflag_type wflag )
+  static std::function<void()> make( const std::shared_ptr<Q>& pq, duration_t delay, Handler h, bool expires_after, wflag_type wflag )
   {
     std::weak_ptr<Q> wq = pq;
-    return common_timer::create_handler_(wq, delay, expires_after, std::move(handler), wflag);
+    return create_handler_(wq, delay, expires_after, std::move(h), wflag);
   }
 
 private:
 
   template<typename Q, typename Handler>
-  static std::function<void()> create_handler_(std::weak_ptr<Q> wq, duration_t delay, bool expires_after, Handler handler, wflag_type wflag)
+  static std::function<void()> create_handler_(std::weak_ptr<Q> wq, duration_t delay, bool expires_after, Handler h, wflag_type wflag)
   {
-    return [wq, delay, expires_after, handler, wflag]()
+    return [wq, delay, expires_after, h, wflag]()
     {
       if ( expires_after )
       {
-        common_timer::expires_after_(wq, delay, std::move(handler), wflag );
+        common_timer::expires_after_(wq, delay, std::move(h), wflag );
       }
       else
       {
-        common_timer::expires_before_(wq, delay, std::move(handler), wflag );
+        common_timer::expires_before_(wq, delay, std::move(h), wflag );
       }
     };
   }
 
   template<typename Q>
-  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, handler handler, wflag_type wflag)
+  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, handler h, wflag_type wflag)
   {
     auto pflag = wflag.lock();
     if ( pflag == nullptr )
       return;
 
-    if ( *pflag==false || handler() )
+    if ( *pflag==false || h() )
     {
       if ( auto pq = wq.lock() )
       {
-        pq->delayed_post(delay, [wq, delay, handler, wflag]()
+        pq->delayed_post(delay, [wq, delay, h, wflag]()
           {
-            common_timer::expires_after_(wq, delay, std::move(handler), wflag );
+            common_timer::expires_after_(wq, delay, std::move(h), wflag );
           }, 
           nullptr /*nullptr*/
         );
@@ -66,20 +66,20 @@ private:
   }
 
   template<typename Q>
-  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, const async_handler& handler, wflag_type wflag)
+  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, const async_handler& h, wflag_type wflag)
   {
     auto pflag = wflag.lock();
     if ( pflag == nullptr )
       return;
 
-    auto post_handler = [wq, delay, handler, wflag]()
+    auto post_handler = [wq, delay, h, wflag]()
     {
-      common_timer::expires_after_(wq, delay, std::move(handler), wflag );
+      common_timer::expires_after_(wq, delay, std::move(h), wflag );
     };
     
     if ( *pflag )
     {
-      handler( [wq, delay, handler, wflag, post_handler](bool ready)
+      h( [wq, delay, h, wflag, post_handler](bool ready)
       {
         if ( !ready )
           return;
@@ -100,7 +100,7 @@ private:
   }
 
   template<typename Q>
-  static void expires_before_(std::weak_ptr<Q> wq, duration_t delay, handler handler, wflag_type wflag)
+  static void expires_before_(std::weak_ptr<Q> wq, duration_t delay, handler h, wflag_type wflag)
   {
     auto pflag = wflag.lock();
     if ( pflag == nullptr )
@@ -113,23 +113,23 @@ private:
     std::shared_ptr<bool> pres = std::make_shared<bool>(true); /// ???
     std::weak_ptr<bool> wres = pres;
     
-    pq->delayed_post(delay, [wq, delay, handler, wflag, wres]()
+    pq->delayed_post(delay, [wq, delay, h, wflag, wres]()
       {
         if ( wres.lock() == nullptr )
           return;
-        common_timer::expires_before_(wq, delay, std::move(handler), wflag );
+        common_timer::expires_before_(wq, delay, std::move(h), wflag );
       },
       nullptr /*drop*/
     );
     
-    if ( *pflag==false || !handler() )
+    if ( *pflag==false || !h() )
     {
       pres.reset();
     }
   }
 
   template<typename Q>
-  static void expires_before_(std::weak_ptr<Q> wq, duration_t delay, async_handler handler, wflag_type wflag)
+  static void expires_before_(std::weak_ptr<Q> wq, duration_t delay, async_handler h, wflag_type wflag)
   {
     auto pflag = wflag.lock();
     if ( pflag == nullptr )
@@ -142,19 +142,19 @@ private:
     std::shared_ptr<bool> pres = std::make_shared<bool>(true);
     std::weak_ptr<bool> wres = pres;
 
-    pq->delayed_post(delay, [wq, delay, handler, wflag, wres]()
+    pq->delayed_post(delay, [wq, delay, h, wflag, wres]()
       {
         if ( wres.lock() == nullptr )
           return;
         
-        common_timer::expires_before_(wq, delay, std::move(handler), wflag );
+        common_timer::expires_before_(wq, delay, std::move(h), wflag );
       }
       , nullptr /*drop*/
     );
     
     if ( *pflag==true )
     {
-      handler( [wres](bool ready) mutable
+      h( [wres](bool ready) mutable
       {
         if (!ready)
           wres.reset();

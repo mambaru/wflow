@@ -52,7 +52,7 @@ public:
 
 protected:
   template<typename Q, typename Handler>
-  timer_id_t create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler handler, bool expires_after);
+  timer_id_t create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler h, bool expires_after);
   mutable mutex_type _mutex;
 
 private:

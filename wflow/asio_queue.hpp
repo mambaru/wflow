@@ -29,9 +29,9 @@ public:
   
   void set_maxsize(size_t maxsize);
 
-  io_service_type& get_io_service();
+  /*io_service_type& get_io_service();*/
   
-  const io_service_type& get_io_service() const;
+  /*const io_service_type& get_io_service() const;*/
   
   std::size_t run();
   

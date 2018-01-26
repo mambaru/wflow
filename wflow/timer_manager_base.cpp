@@ -50,7 +50,7 @@ size_t timer_manager_base::size() const
 
 template<typename Q, typename Handler>
 timer_manager_base::timer_id_t
-  timer_manager_base::create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler handler, bool expires_after)
+  timer_manager_base::create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler h, bool expires_after)
 {
   if ( delay.count() == 0 )
     delay = std::chrono::hours(24);
@@ -62,9 +62,9 @@ timer_manager_base::timer_id_t
     WFLOW_LOG_FATAL("timer_manager_base::create_: обработчик таймера выброшен из очереди из-за перереполнения")
   };
   if ( start_time!=time_point_t() )
-    pq->post_at( start_time, timer::make(pq, delay, std::move(handler), expires_after, wflag), drop );
+    pq->post_at( start_time, timer::make(pq, delay, std::move(h), expires_after, wflag), drop );
   else
-    pq->post( timer::make(pq, delay, std::move(handler), expires_after, wflag), drop );
+    pq->post( timer::make(pq, delay, std::move(h), expires_after, wflag), drop );
   return id;
 }
 
