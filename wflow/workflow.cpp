@@ -159,12 +159,14 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
 {
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
   auto old_timer = _wrn_timer;
+  /*
   if ( opt.control_ms==0)
   {
     // заглушка, чтобы не выскакивал
     _wrn_timer = wrkf.create_timer(std::chrono::seconds(3600), []{ return true;} );
   }
-  else
+  else*/
+  if ( opt.control_ms!=0 )
   {
     auto dropsave = std::make_shared<size_t>(0);
     std::function<bool()> control_handler;

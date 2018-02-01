@@ -16,9 +16,9 @@ struct workflow_options
   bool debug = false;
   size_t  threads = 0;
 
-  size_t maxsize = 1024*1024*128;
-  size_t wrnsize = 1024*1024;
-  time_t control_ms = 1000;
+  size_t maxsize = 512;
+  size_t wrnsize = 64;
+  time_t control_ms = 0;
 
   time_t post_delay_ms = 0; // задержка в миллисекундах 
   size_t rate_limit = 0;    // ограничение скорости (в сообщениях в секунду)
