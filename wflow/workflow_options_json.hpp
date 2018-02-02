@@ -1,7 +1,6 @@
 #pragma once 
 
-//#include <wflow/workflow/queue_options_json.hpp>
-#include <wflow/workflow/workflow_options.hpp>
+#include <wflow/workflow_options.hpp>
 #include <wfc/json.hpp>
 
 namespace wflow {
