@@ -17,7 +17,7 @@ int main()
   std::mutex m;
   auto show = [&counter, &m](int value) 
   {
-    usleep( std::rand() % 1000 );
+    usleep( static_cast<useconds_t>(std::rand() % 1000) );
     std::lock_guard<std::mutex> lk(m);
     --counter;
     std::cout << "post " << value << " thread_id: " << std::this_thread::get_id() << std::endl; 
