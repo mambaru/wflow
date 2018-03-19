@@ -17,7 +17,6 @@ workflow::workflow(workflow_options opt )
   , _impl( std::make_shared<task_manager>(opt.maxsize, opt.threads, opt.use_io_service) )
   , _workflow_ptr(opt.control_workflow_ptr)
 {
-  
   _impl->rate_limit( opt.rate_limit );
   _impl->set_startup( opt.startup_handler );
   _impl->set_finish( opt.finish_handler );
