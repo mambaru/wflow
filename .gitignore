@@ -4,7 +4,6 @@
 .cproject
 .project
 *.o
-*.cmake
 */debug
 */release
 */build
