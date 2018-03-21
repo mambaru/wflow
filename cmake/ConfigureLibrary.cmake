@@ -17,12 +17,15 @@ MACRO(CONFIGURE_LIBRARY HEADER_NAME HEADER_PATHS LIBRARY_NAME LIBRAY_PATHS)
 
     # Header file found
     IF(HAVE_INCLUDE_${LIBRARY_NAME})
-      if ( LIBRAY_PATHS )
+      message(STATUS ">>>1 Header file found ${LIBRAY_PATHS}")
+      IF ( LIBRAY_PATHS )
+        message(STATUS ">>> Header file found ${LIBRAY_PATHS}")
         MESSAGE(STATUS "Header file ${HEADER_NAME} found in: ${HAVE_INCLUDE_${LIBRARY_NAME}}")
         INCLUDE_DIRECTORIES(${HAVE_INCLUDE_${LIBRARY_NAME}})
 
         STRING(REGEX MATCHALL "([^ ]+)" S_LIBRARY_PATHS ${LIBRAY_PATHS})
         FOREACH(TMP_LIBRARY ${S_LIBRARY_PATHS})
+            message(STATUS ">>> in : ${TMP_LIBRARY}")
             FIND_LIBRARY(HAVE_${LIBRARY_NAME}
                          NAMES ${LIBRARY_NAME}
                          PATHS ${TMP_LIBRARY}

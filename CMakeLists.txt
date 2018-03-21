@@ -3,7 +3,7 @@ project(wflow)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(AUX)
-
+find_package(Boost REQUIRED system )
 set(
   source_list
   wflow/workflow.cpp
@@ -15,7 +15,6 @@ set(
   wflow/timer_manager_base.cpp
   wflow/timer_manager.cpp
   wflow/thread_pool_base.cpp
-  wflow/load.cpp
 )
 
 if (NOT WFLOW_DISABLE_JSON)
@@ -23,7 +22,12 @@ if (NOT WFLOW_DISABLE_JSON)
 endif()
 
 add_library(wflow ${source_list})
-target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT}  ${Boost_LIBRARIES})
+
+if (NOT WFLOW_DISABLE_LOG)
+  target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT}  ${Boost_LIBRARIES} )
+elseif() 
+  target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT}  ${Boost_LIBRARIES} )
+endif()
 
 include_directories(.)
 
