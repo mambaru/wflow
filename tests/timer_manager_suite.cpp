@@ -98,7 +98,7 @@ UNIT(timer_manager3, "")
     finish = high_resolution_clock::now();
     t << message("tick1");
     return false;
-  }, false );
+  }, wflow::expires_at::before );
   io.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
   t << equal<expect>(interval, 0) << FAS_FL;

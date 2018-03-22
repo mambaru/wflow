@@ -6,34 +6,34 @@
 
 namespace wflow{
 
-std::function<void()> timer::make( std::shared_ptr<bique> pq,        duration_t delay, handler h, bool expires_after, wflag_type wflag )
+std::function<void()> timer::make( std::shared_ptr<bique> pq,        duration_t delay, handler h, expires_at expires, wflag_type wflag )
 {
-  return common_timer::make(pq, delay, std::move(h), expires_after, wflag);
+  return common_timer::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer::make( std::shared_ptr<asio_queue> pq,   duration_t delay, handler h, bool expires_after, wflag_type wflag )
+std::function<void()> timer::make( std::shared_ptr<asio_queue> pq,   duration_t delay, handler h, expires_at expires, wflag_type wflag )
 {
-  return common_timer::make(pq, delay, std::move(h), expires_after, wflag);
+  return common_timer::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer::make( std::shared_ptr<delayed_queue> pq, duration_t delay, handler h, bool expires_after, wflag_type wflag )
+std::function<void()> timer::make( std::shared_ptr<delayed_queue> pq, duration_t delay, handler h, expires_at expires, wflag_type wflag )
 {
-  return common_timer::make(pq, delay, std::move(h), expires_after, wflag);
+  return common_timer::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer::make( std::shared_ptr<bique> pq,        duration_t delay, async_handler h, bool expires_after, wflag_type wflag )
+std::function<void()> timer::make( std::shared_ptr<bique> pq,        duration_t delay, async_handler h, expires_at expires, wflag_type wflag )
 {
-  return common_timer::make(pq, delay, std::move(h), expires_after, wflag);
+  return common_timer::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer::make( std::shared_ptr<asio_queue> pq,   duration_t delay, async_handler h, bool expires_after, wflag_type wflag )
+std::function<void()> timer::make( std::shared_ptr<asio_queue> pq,   duration_t delay, async_handler h, expires_at expires, wflag_type wflag )
 {
-  return common_timer::make(pq, delay, std::move(h), expires_after, wflag);
+  return common_timer::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer::make( std::shared_ptr<delayed_queue> pq, duration_t delay, async_handler h, bool expires_after, wflag_type wflag )
+std::function<void()> timer::make( std::shared_ptr<delayed_queue> pq, duration_t delay, async_handler h, expires_at expires, wflag_type wflag )
 {
-  return common_timer::make(pq, delay, std::move(h), expires_after, wflag);
+  return common_timer::make(pq, delay, std::move(h), expires, wflag);
 }
 
 bool timer::today_from_string(const std::string& strtime, time_point_t& result)

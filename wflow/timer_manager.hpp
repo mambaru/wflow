@@ -41,27 +41,27 @@ public:
 
   // timers
   
-  timer_id_t create( duration_t delay, handler h, bool expires_after = true);
+  timer_id_t create( duration_t delay, handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create( duration_t delay, async_handler h, bool expires_after = true);
+  timer_id_t create( duration_t delay, async_handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create(duration_t start_delay, duration_t delay, handler h, bool expires_after = true);
+  timer_id_t create(duration_t start_delay, duration_t delay, handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create(duration_t start_delay, duration_t delay, async_handler h, bool expires_after = true);
+  timer_id_t create(duration_t start_delay, duration_t delay, async_handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create(time_point_t start_time, duration_t delay, handler h, bool expires_after = true);
+  timer_id_t create(time_point_t start_time, duration_t delay, handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create(time_point_t start_time, duration_t delay, async_handler h, bool expires_after = true);
+  timer_id_t create(time_point_t start_time, duration_t delay, async_handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create(const std::string& start_time, duration_t delay, handler h, bool expires_after = true);
+  timer_id_t create(const std::string& start_time, duration_t delay, handler h, expires_at expires  = expires_at::after);
 
-  timer_id_t create(const std::string& start_time, duration_t delay, async_handler h, bool expires_after = true);
+  timer_id_t create(const std::string& start_time, duration_t delay, async_handler h, expires_at expires  = expires_at::after);
 
   /// Evry 24 hours
   
-  timer_id_t create(std::string start_time, handler h, bool expires_after = true);
+  timer_id_t create(std::string start_time, handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create(std::string start_time, async_handler h, bool expires_after = true);
+  timer_id_t create(std::string start_time, async_handler h, expires_at expires = expires_at::after);
 
   // reqesters 
   
@@ -109,10 +109,10 @@ private:
   }
 
   template<typename Handler>
-  timer_id_t create_(time_point_t start_time, duration_t delay, Handler h, bool expires_after);
+  timer_id_t create_(time_point_t start_time, duration_t delay, Handler h, expires_at expires);
 
   template<typename Handler>
-  timer_id_t create_(const std::string& start_time, duration_t delay, Handler h, bool expires_after);
+  timer_id_t create_(const std::string& start_time, duration_t delay, Handler h, expires_at expires);
 
 private:
 

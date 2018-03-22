@@ -30,9 +30,10 @@ CONFIGURE_LIBRARY( wlog/wlog.hpp "${cur_dirs} \
                                 /usr/include/wlog\
                                 /usr/local/include/wlog" 
                   wlog 
-                                "/usr/lib /usr/local/lib /usr/lib64 ${PROJECT_BINARY_DIR}/wlog \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/../wlog/build \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/wlog/build" 
+                                "/usr/lib /usr/local/lib /usr/lib64 \
+                                 ${PROJECT_BINARY_DIR}/wlog/build \
+                                 ${CMAKE_CURRENT_SOURCE_DIR}/../wlog/build \
+                                 ${CMAKE_CURRENT_SOURCE_DIR}/wlog/build" 
                   )
 
 #if ( NOT HAVE_INCLUDE_faslib )
@@ -112,15 +113,13 @@ endif( NOT WJSON_DIR )
 if ( NOT WLOG_DIR )
   if ( HAVE_INCLUDE_wlog )
     set(WLOG_DIR "${HAVE_INCLUDE_wlog}")
-    set(WLOG_LIB_DIR "${HAVE_wlog}")
+    set(WLOG_LIBDIR "${HAVE_BINARY_wlog}")
   else()
     execute_process(COMMAND git clone https://github.com/mambaru/wlog.git WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
     execute_process(COMMAND make static WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wlog")
     execute_process(COMMAND make shared WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wlog")
-    #execute_process(COMMAND mkdir -p build WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wlog")
-    #execute_process(COMMAND cmake .. WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wlog/build")
     set(WLOG_DIR "${PROJECT_BINARY_DIR}/wlog")
-    set(WLOG_LIB_DIR "${PROJECT_BINARY_DIR}/wlog/build")
+    set(WLOG_LIBDIR "${PROJECT_BINARY_DIR}/wlog/build")
   endif()
 endif( NOT WLOG_DIR )
 
@@ -131,5 +130,4 @@ include_directories(${FASLIB_DIR})
 include_directories(${WJSON_DIR})
 include_directories(${WLOG_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-message(STATUS "---------------------- WLOG_LIB_DIR : ${WLOG_LIB_DIR}")
-link_directories(${WLOG_LIB_DIR})
+link_directories(${WLOG_LIBDIR})

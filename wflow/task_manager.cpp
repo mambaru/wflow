@@ -117,7 +117,23 @@ std::size_t task_manager::poll_one()
 {
   return _queue->poll_one();
 }
+
+void task_manager::safe_post( function_t f)
+{
+  _queue->safe_post(std::move(f));
+}
   
+void task_manager::safe_post_at(time_point_t tp, function_t f)
+{
+  _queue->safe_post_at( tp, std::move(f));
+}
+
+void task_manager::safe_delayed_post(duration_t duration, function_t f)
+{
+  _queue->safe_delayed_post(duration, std::move(f));
+}
+ 
+ 
 bool task_manager::post( function_t f, function_t drop )
 {
   return _queue->post(std::move(f), std::move(drop) );
@@ -133,9 +149,19 @@ bool task_manager::delayed_post(duration_t duration, function_t f, function_t dr
   return _queue->delayed_post(duration, std::move(f), std::move(drop));
 }
   
-std::size_t task_manager::size() const
+std::size_t task_manager::full_size() const
 {
-  return _queue->size();
+  return _queue->full_size();
+}
+
+std::size_t task_manager::safe_size() const
+{
+  return _queue->safe_size();
+}
+
+std::size_t task_manager::unsafe_size() const
+{
+  return _queue->unsafe_size();
 }
 
 std::size_t task_manager::dropped() const

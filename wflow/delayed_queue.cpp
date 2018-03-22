@@ -4,6 +4,8 @@ namespace wflow {
 
 delayed_queue::delayed_queue(size_t maxsize)
   : _loop_exit(false)
+  , _counter(0)
+  , _safe_counter(0)
   , _maxsize(maxsize)
   , _drop_count(0)
 {
@@ -65,31 +67,101 @@ void delayed_queue::stop()
       _delayed_que.pop();
   }
 }
+
+void delayed_queue::safe_post( function_t f)
+{
+  std::lock_guard<mutex_t> lock( _mutex );
   
+  std::weak_ptr<self> wthis = this->shared_from_this();
+  ++_safe_counter;
+  _que.push( [wthis, f]()
+  {
+    if (auto pthis = wthis.lock() )
+    {
+      --pthis->_safe_counter;
+      f();
+    }
+  } );
+
+  _cond_var.notify_one();
+}
+
 bool delayed_queue::post( function_t f, function_t drop )
 {
   std::lock_guard<mutex_t> lock( _mutex );
   if ( !this->check_(std::move(drop)) )
     return false;
 
-  _que.push( std::move( f ) );
+  // _que.push( std::move( f ) );
+  std::weak_ptr<self> wthis = this->shared_from_this();
+  ++_counter;
+  _que.push( [wthis, f]()
+  {
+    if (auto pthis = wthis.lock() )
+    {
+      --pthis->_counter;
+      f();
+    }
+  } );
+
   _cond_var.notify_one();
   return true;
 }
-  
+
+void delayed_queue::safe_post_at(time_point_t time_point, function_t f)
+{
+  std::lock_guard<mutex_t> lock( _mutex );
+  std::weak_ptr<self> wthis = this->shared_from_this();
+  ++_safe_counter;
+  this->push_at_( time_point, [wthis, f]()
+  {
+    if (auto pthis = wthis.lock() )
+    {
+      --pthis->_safe_counter;
+      f();
+    }
+  } );
+
+  _cond_var.notify_one();
+}
+
 bool delayed_queue::post_at(time_point_t time_point, function_t f, function_t drop)
 {
   std::lock_guard<mutex_t> lock( _mutex );
   if ( !this->check_(std::move(drop)) )
     return false;
 
-  this->push_at_( std::move(time_point), std::move(f) ); 
+  //this->push_at_( std::move(time_point), std::move(f) ); 
+  std::weak_ptr<self> wthis = this->shared_from_this();
+  ++_counter;
+  this->push_at_( time_point, [wthis, f]()
+  {
+    if (auto pthis = wthis.lock() )
+    {
+      --pthis->_counter;
+      f();
+    }
+  } );
+
   _cond_var.notify_one();
   return true;
 }
 
+void delayed_queue::safe_delayed_post(duration_t duration, function_t f)
+{  
+  if ( 0 == duration.count() )
+    this->safe_post( f);
+  else
+    this->safe_post_at( std::chrono::system_clock::now() + duration, f);
+}
+
 bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t drop)
 {  
+  if ( 0 == duration.count() )
+    return this->post( f, drop);
+  else
+    return this->post_at( std::chrono::system_clock::now() + duration, f, drop);
+  /*
   std::lock_guard<mutex_t> lock( _mutex );
   if ( !this->check_( std::move(drop) ) )
     return false;
@@ -97,20 +169,29 @@ bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t d
   if ( 0 == duration.count() )
     _que.push( std::move( f ) );
   else
-    this->push_at_( std::move( std::chrono::system_clock::now() + duration), std::move(f) );
+    this->push_at_( std::chrono::system_clock::now() + duration, std::move(f) );
   _cond_var.notify_one();
   return true;
+  */
 }
-  
-std::size_t delayed_queue::size() const
+
+std::size_t delayed_queue::unsafe_size() const
 {
-  std::lock_guard<mutex_t> lck( _mutex );
-  return this->size_();
+  return _counter;
+}
+
+std::size_t delayed_queue::safe_size() const
+{
+  return _safe_counter;
+}
+
+std::size_t delayed_queue::full_size() const
+{
+  return _safe_counter + _counter;
 }
 
 std::size_t delayed_queue::dropped() const
 {
-  std::lock_guard<mutex_t> lck( _mutex );
   return _drop_count;
 }
 

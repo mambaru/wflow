@@ -50,7 +50,7 @@ size_t timer_manager_base::size() const
 
 template<typename Q, typename Handler>
 timer_manager_base::timer_id_t
-  timer_manager_base::create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler h, bool expires_after)
+  timer_manager_base::create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler h, expires_at expires)
 {
   if ( delay.count() == 0 )
     delay = std::chrono::hours(24);
@@ -62,47 +62,47 @@ timer_manager_base::timer_id_t
     WFLOW_LOG_FATAL("timer_manager_base::create_: обработчик таймера выброшен из очереди из-за перереполнения")
   };
   if ( start_time!=time_point_t() )
-    pq->post_at( start_time, timer::make(pq, delay, std::move(h), expires_after, wflag), drop );
+    pq->post_at( start_time, timer::make(pq, delay, std::move(h), expires, wflag), drop );
   else
-    pq->post( timer::make(pq, delay, std::move(h), expires_after, wflag), drop );
+    pq->post( timer::make(pq, delay, std::move(h), expires, wflag), drop );
   return id;
 }
 
 
-timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, handler h, bool expires_after)
+timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires)
 {
   std::lock_guard< mutex_type > lk(_mutex);
-  return this->create_(pq, start_time, delay, std::move(h), expires_after);
+  return this->create_(pq, start_time, delay, std::move(h), expires);
 }
 
-timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, async_handler h, bool expires_after)
+timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires)
 {
   std::lock_guard< mutex_type > lk(_mutex);
-  return this->create_(pq, start_time, delay, std::move(h), expires_after);
+  return this->create_(pq, start_time, delay, std::move(h), expires);
 }
 
-timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, handler h, bool expires_after)
+timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires)
 {
   std::lock_guard< mutex_type > lk(_mutex);
-  return this->create_(pq, start_time, delay, std::move(h), expires_after);
+  return this->create_(pq, start_time, delay, std::move(h), expires);
 }
 
-timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, bool expires_after)
+timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires)
 {
   std::lock_guard< mutex_type > lk(_mutex);
-  return this->create_(pq, start_time, delay, std::move(h), expires_after);
+  return this->create_(pq, start_time, delay, std::move(h), expires);
 }
 
-timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, handler h, bool expires_after)
+timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires)
 {
   std::lock_guard< mutex_type > lk(_mutex);
-  return this->create_(pq, start_time, delay, std::move(h), expires_after);
+  return this->create_(pq, start_time, delay, std::move(h), expires);
 }
 
-timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, bool expires_after)
+timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires)
 {
   std::lock_guard< mutex_type > lk(_mutex);
-  return this->create_(pq, start_time, delay, std::move(h), expires_after);
+  return this->create_(pq, start_time, delay, std::move(h), expires);
 }
 
 }

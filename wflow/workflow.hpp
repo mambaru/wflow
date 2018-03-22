@@ -1,6 +1,7 @@
 #pragma once
 
 #include <wflow/workflow_options.hpp>
+#include <wflow/expires_at.hpp>
 #include <wflow/task_manager.hpp>
 #include <wflow/bique.hpp>
 #include <wflow/asio.hpp>
@@ -45,25 +46,30 @@ public:
   bool release_timer( timer_id_t id );
 
   size_t timer_count() const;
-  size_t queue_size() const;
+  size_t full_size() const;
+  size_t safe_size() const;
+  size_t unsafe_size() const;
   size_t dropped() const;
 
+  void safe_post(post_handler handler);
+  void safe_post(time_point_t, post_handler handler);
+  void safe_post(duration_t,   post_handler handler);
 
   bool post(post_handler handler, post_handler drop);
   bool post(time_point_t, post_handler handler, post_handler drop);
   bool post(duration_t,   post_handler handler, post_handler drop);
 
-  timer_id_t create_timer(duration_t, timer_handler, bool = true);
-  timer_id_t create_async_timer(duration_t, async_timer_handler, bool = true);
+  timer_id_t create_timer(duration_t, timer_handler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(duration_t, async_timer_handler, expires_at expires = expires_at::after);
 
-  timer_id_t create_timer(duration_t, duration_t, timer_handler, bool = true);
-  timer_id_t create_async_timer(duration_t, duration_t, async_timer_handler, bool = true);
+  timer_id_t create_timer(duration_t, duration_t, timer_handler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(duration_t, duration_t, async_timer_handler, expires_at expires = expires_at::after);
 
-  timer_id_t create_timer(time_point_t, duration_t, timer_handler, bool = true);
-  timer_id_t create_async_timer(time_point_t, duration_t, async_timer_handler, bool = true);
+  timer_id_t create_timer(time_point_t, duration_t, timer_handler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(time_point_t, duration_t, async_timer_handler, expires_at expires = expires_at::after);
 
-  timer_id_t create_timer(std::string, duration_t, timer_handler, bool = true);
-  timer_id_t create_async_timer(std::string, duration_t, async_timer_handler, bool = true);
+  timer_id_t create_timer(std::string, duration_t, timer_handler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(std::string, duration_t, async_timer_handler, expires_at expires = expires_at::after);
   
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   timer_id_t create_requester( duration_t d, std::shared_ptr<I> i, MemFun mem_fun, Handler handler )

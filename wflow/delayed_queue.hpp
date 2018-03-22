@@ -7,14 +7,16 @@
 #include <mutex>
 #include <condition_variable>
 #include <functional>
+#include <memory>
 
 
 namespace wflow {
 
 class delayed_queue
+  : public std::enable_shared_from_this<delayed_queue >
 {
   struct queue_cmp;
-
+  typedef delayed_queue self;
 public:
 
   typedef std::function<void()>                               function_t;
@@ -44,6 +46,12 @@ public:
   std::size_t poll_one();
 
   void stop();
+
+  void safe_post( function_t f );
+  
+  void safe_post_at(time_point_t time_point, function_t f);
+
+  void safe_delayed_post(duration_t duration, function_t f);
   
   bool post( function_t f, function_t drop );
   
@@ -51,7 +59,9 @@ public:
 
   bool delayed_post(duration_t duration, function_t f, function_t drop);
   
-  std::size_t size() const;
+  std::size_t safe_size() const;
+  std::size_t unsafe_size() const;
+  std::size_t full_size() const;
   std::size_t dropped() const;
 
   static bool work() { return false;}
@@ -86,8 +96,11 @@ private:
   delayed_queue_t          _delayed_que;
   std::atomic<bool>        _loop_exit;
 
-  size_t                   _maxsize = 0;
-  size_t                   _drop_count = 0;
+  std::atomic<size_t> _counter;
+  std::atomic<size_t> _safe_counter;
+
+  std::atomic<size_t> _maxsize;
+  std::atomic<size_t> _drop_count;
 }; // delayed_queue
 }
 

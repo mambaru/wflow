@@ -88,11 +88,11 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
   /*while ( counter < 5)
     io.run_one();
     */
-  t << is_true<expect>(ready) << FAS_TESTING_FILE_LINE;
-  t << is_true<expect>(pw->dropped()==1) << FAS_TESTING_FILE_LINE;
-  t << is_true<expect>(dropped==1) << FAS_TESTING_FILE_LINE;
-  t << is_true<expect>( pw->timer_count()==1 ) << FAS_TESTING_FILE_LINE;
-  t << is_true<expect>( pw->queue_size()==1  ) << pw->queue_size() << " " << FAS_TESTING_FILE_LINE;
+  t << is_true<expect>(ready) << FAS_FL;
+  t << equal<expect>(pw->dropped(), 1) << FAS_FL;
+  t << equal<expect>(dropped, 1) << FAS_FL;
+  t << equal<expect>( pw->timer_count(), 1 ) << FAS_FL;
+  t << equal<expect>( pw->unsafe_size(), 1  ) << FAS_FL;
 }
 
 struct foo

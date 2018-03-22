@@ -1,6 +1,6 @@
 #pragma once
 
-//#include <wflow/owner/owner.hpp>
+#include <wflow/expires_at.hpp>
 #include <functional>
 #include <chrono>
 #include <memory>
@@ -38,21 +38,21 @@ public:
 
   size_t size() const;
 
-  timer_id_t create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, handler h, bool expires_after);
+  timer_id_t create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires);
 
-  timer_id_t create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, async_handler h, bool expires_after);
+  timer_id_t create( std::shared_ptr<bique> pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires);
 
-  timer_id_t create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, handler h, bool expires_after);
+  timer_id_t create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires);
 
-  timer_id_t create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, bool expires_after);
+  timer_id_t create( std::shared_ptr<delayed_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires);
 
-  timer_id_t create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, handler h, bool expires_after);
+  timer_id_t create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires);
 
-  timer_id_t create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, bool expires_after);
+  timer_id_t create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires);
 
 protected:
   template<typename Q, typename Handler>
-  timer_id_t create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler h, bool expires_after);
+  timer_id_t create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler h, expires_at expires);
   mutable mutex_type _mutex;
 
 private:

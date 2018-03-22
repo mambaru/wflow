@@ -3,6 +3,7 @@
 #include <wflow/asio.hpp>
 #include <functional>
 #include <chrono>
+#include <atomic>
 
 namespace wflow{
   
@@ -41,13 +42,23 @@ public:
 
   void stop();
 
+  
+  void safe_post( function_t f);
+
+  void safe_post_at(time_point_t tp, function_t f);
+
+  void safe_delayed_post(duration_t duration, function_t f);
+  
+
   bool post( function_t f, function_t drop );
 
   bool post_at(time_point_t tp, function_t f, function_t drop);
 
   bool delayed_post(duration_t duration, function_t f, function_t drop);
   
-  std::size_t size() const;
+  std::size_t full_size() const;
+  std::size_t safe_size() const;
+  std::size_t unsafe_size() const;
   
   std::size_t dropped() const;
   

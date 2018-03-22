@@ -1,6 +1,7 @@
 #include "asio_queue.hpp"
 #include "system.hpp"
 #include "boost.hpp"
+#include <memory>
 
 namespace wflow{
   
@@ -8,6 +9,7 @@ asio_queue::asio_queue(io_service_type& io, const size_t maxsize)
   : _io(io)
 {
   _counter = 0;
+  _safe_counter = 0;
   _drop_count = 0;
   _maxsize = maxsize;
 }
@@ -57,6 +59,20 @@ void asio_queue::stop()
   _io.stop();
 }
 
+void asio_queue::safe_post( function_t f)
+{
+  std::weak_ptr<self> wthis = this->shared_from_this();
+  ++_safe_counter;
+  _io.post( [wthis, f]()
+  {
+    if (auto pthis = wthis.lock() )
+    {
+      --pthis->_safe_counter;
+      f();
+    }
+  } );
+}
+
 bool asio_queue::post( function_t f, function_t drop )
 {
   if ( !this->check_(std::move(drop)) )
@@ -74,12 +90,31 @@ bool asio_queue::post( function_t f, function_t drop )
   return true;
 }
 
+void asio_queue::safe_post_at(time_point_t tp, function_t f)
+{
+  if ( tp <= time_point_t::clock::now() )
+    return this->safe_post( std::move(f) );
+
+  auto ptimer = this->create_timer_( tp );
+  std::weak_ptr<self> wthis = this->shared_from_this();
+  ++_safe_counter;
+  ptimer->async_wait([f, ptimer, wthis]( const ::wflow::system::error_code& )
+  {
+    if (auto pthis = wthis.lock() )
+    {
+      --pthis->_safe_counter;
+      f();
+    }
+  });
+}
+
 bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
 {
-  if ( !this->check_(std::move(drop)) )
-    return false;
   if ( tp <= time_point_t::clock::now() )
     return this->post( std::move(f), std::move(drop) );
+
+  if ( !this->check_(std::move(drop)) )
+    return false;
 
   auto ptimer = this->create_timer_( tp );
   std::weak_ptr<self> wthis = this->shared_from_this();
@@ -94,15 +129,30 @@ bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
   });
   return true;
 }
-  
+
+void asio_queue::safe_delayed_post(duration_t duration, function_t f)
+{
+  this->safe_post_at( std::chrono::system_clock::now() + duration, std::move(f));
+}
+
 bool asio_queue::delayed_post(duration_t duration, function_t f, function_t drop)
 {
-  return this->post_at( std::move( std::chrono::system_clock::now() + duration  ), std::move(f), std::move(drop) );
+  return this->post_at( std::chrono::system_clock::now() + duration, std::move(f), std::move(drop) );
 }
-  
-std::size_t asio_queue::size() const
+
+std::size_t asio_queue::unsafe_size() const
 {
   return _counter;
+}
+
+std::size_t asio_queue::safe_size() const
+{
+  return _safe_counter;
+}
+
+std::size_t asio_queue::full_size() const
+{
+  return _safe_counter + _counter;
 }
 
 std::size_t asio_queue::dropped() const

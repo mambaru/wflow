@@ -71,6 +71,14 @@ std::shared_ptr< workflow::timer_type> workflow::get_timer() const
   return _impl->timer();
 }
 
+void workflow::safe_post(post_handler handler)
+{
+  if ( _delay_ms == 0)
+    _impl->safe_post( std::move(handler) );
+  else
+    this->safe_post( std::chrono::milliseconds(_delay_ms), std::move(handler) );
+}
+
 bool workflow::post(post_handler handler, post_handler drop)
 {
   if ( _delay_ms == 0)
@@ -79,9 +87,19 @@ bool workflow::post(post_handler handler, post_handler drop)
     return this->post( std::chrono::milliseconds(_delay_ms), std::move(handler), std::move(drop) );
 }
 
+void workflow::safe_post(time_point_t tp, post_handler handler)
+{
+  _impl->safe_post_at( tp, std::move(handler) );
+}
+
 bool workflow::post(time_point_t tp, post_handler handler, post_handler drop)
 {
   return _impl->post_at( tp, std::move(handler), std::move(drop) );
+}
+
+void workflow::safe_post(duration_t d,   post_handler handler)
+{
+  return _impl->safe_delayed_post(d, std::move(handler));
 }
 
 bool workflow::post(duration_t d,   post_handler handler, post_handler drop)
@@ -89,44 +107,44 @@ bool workflow::post(duration_t d,   post_handler handler, post_handler drop)
   return _impl->delayed_post(d, std::move(handler), std::move(drop) );
 }
 
-workflow::timer_id_t workflow::create_timer(duration_t d, timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_timer(duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(d, std::move(handler), expires_after );
+  return _impl->timer()->create(d, std::move(handler), expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(duration_t d, async_timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_async_timer(duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(d, std::move(handler), expires_after );
+  return _impl->timer()->create(d, std::move(handler), expires );
 }
 
-workflow::timer_id_t workflow::create_timer(duration_t sd, duration_t d, timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_timer(duration_t sd, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create( sd, d, std::move(handler), expires_after );
+  return _impl->timer()->create( sd, d, std::move(handler), expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(duration_t sd, duration_t d, async_timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_async_timer(duration_t sd, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create( sd, d, std::move(handler), expires_after );
+  return _impl->timer()->create( sd, d, std::move(handler), expires );
 }
 
-workflow::timer_id_t workflow::create_timer(time_point_t tp, duration_t d, timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_timer(time_point_t tp, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires_after );
+  return _impl->timer()->create(tp, d, std::move(handler), expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(time_point_t tp, duration_t d, async_timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_async_timer(time_point_t tp, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires_after );
+  return _impl->timer()->create(tp, d, std::move(handler), expires );
 }
 
-workflow::timer_id_t workflow::create_timer(std::string tp, duration_t d, timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_timer(std::string tp, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires_after );
+  return _impl->timer()->create(tp, d, std::move(handler), expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(std::string tp, duration_t d, async_timer_handler handler, bool expires_after)
+workflow::timer_id_t workflow::create_async_timer(std::string tp, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires_after );
+  return _impl->timer()->create(tp, d, std::move(handler), expires );
 }
 
 std::shared_ptr<bool> workflow::detach_timer(timer_id_t id)
@@ -144,9 +162,19 @@ size_t workflow::timer_count() const
   return _impl->timer()->size();
 }
 
-size_t workflow::queue_size() const
+size_t workflow::full_size() const
 {
-  return _impl->size();
+  return _impl->full_size();
+}
+
+size_t workflow::safe_size() const
+{
+  return _impl->safe_size();
+}
+
+size_t workflow::unsafe_size() const
+{
+  return _impl->unsafe_size();
 }
 
 size_t workflow::dropped() const
@@ -180,7 +208,7 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
       control_handler= [this, wrnsize, dropsave, debug]()  ->bool 
       {
         auto dropped = this->_impl->dropped();
-        auto size = this->_impl->size();
+        auto size = this->_impl->full_size(); // TODO: сделать unsafe и safe
         auto dropdiff = dropped - *dropsave;
         if ( dropdiff!=0 )
         {

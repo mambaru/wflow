@@ -1,7 +1,9 @@
 #pragma once
 
+#include <wflow/expires_at.hpp>
 #include <memory>
 #include <chrono>
+
 
 namespace wflow{
 
@@ -20,32 +22,32 @@ public:
 
 
   template<typename Q, typename Handler>
-  static std::function<void()> make( const std::shared_ptr<Q>& pq, duration_t delay, Handler h, bool expires_after, wflag_type wflag )
+  static std::function<void()> make( const std::shared_ptr<Q>& pq, duration_t delay, const Handler& h, expires_at expires, wflag_type wflag )
   {
     std::weak_ptr<Q> wq = pq;
-    return create_handler_(wq, delay, expires_after, std::move(h), wflag);
+    return create_handler_(wq, delay, expires, std::move(h), wflag);
   }
 
 private:
 
   template<typename Q, typename Handler>
-  static std::function<void()> create_handler_(std::weak_ptr<Q> wq, duration_t delay, bool expires_after, Handler h, wflag_type wflag)
+  static std::function<void()> create_handler_(std::weak_ptr<Q> wq, duration_t delay, expires_at expires, const Handler& h, wflag_type wflag)
   {
-    return [wq, delay, expires_after, h, wflag]()
+    return [wq, delay, expires, h, wflag]()
     {
-      if ( expires_after )
+      if ( expires == expires_at::after )
       {
-        common_timer::expires_after_(wq, delay, std::move(h), wflag );
+        common_timer::expires_after_(wq, delay, h, wflag );
       }
       else
       {
-        common_timer::expires_before_(wq, delay, std::move(h), wflag );
+        common_timer::expires_before_(wq, delay, h, wflag );
       }
     };
   }
 
   template<typename Q>
-  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, handler h, wflag_type wflag)
+  static void expires_after_(std::weak_ptr<Q> wq, duration_t delay, const handler& h, wflag_type wflag)
   {
     auto pflag = wflag.lock();
     if ( pflag == nullptr )
@@ -55,11 +57,10 @@ private:
     {
       if ( auto pq = wq.lock() )
       {
-        pq->delayed_post(delay, [wq, delay, h, wflag]()
+        pq->safe_delayed_post(delay, [wq, delay, h, wflag]()
           {
-            common_timer::expires_after_(wq, delay, std::move(h), wflag );
-          }, 
-          nullptr /*nullptr*/
+            common_timer::expires_after_(wq, delay, h, wflag );
+          }
         );
       }
     }
@@ -86,7 +87,7 @@ private:
         
         if ( auto pq = wq.lock() )
         {
-          pq->delayed_post(delay, post_handler, nullptr /*drop*/);
+          pq->safe_delayed_post(delay, post_handler);
         }
       });
     }
@@ -94,13 +95,13 @@ private:
     {
       if ( auto pq = wq.lock() )
       {
-        pq->delayed_post(delay, post_handler, nullptr /*drop*/);
+        pq->safe_delayed_post(delay, post_handler);
       }
     }
   }
 
   template<typename Q>
-  static void expires_before_(std::weak_ptr<Q> wq, duration_t delay, handler h, wflag_type wflag)
+  static void expires_before_(std::weak_ptr<Q> wq, duration_t delay, const handler& h, wflag_type wflag)
   {
     auto pflag = wflag.lock();
     if ( pflag == nullptr )
@@ -110,16 +111,17 @@ private:
     if ( pq == nullptr )
       return;
 
-    std::shared_ptr<bool> pres = std::make_shared<bool>(true); /// ???
+    // Сначала delayed_post, потом вызов обработчика
+    // pres - для отмены, если обработчика вернул false
+    std::shared_ptr<bool> pres = std::make_shared<bool>(true);
     std::weak_ptr<bool> wres = pres;
     
-    pq->delayed_post(delay, [wq, delay, h, wflag, wres]()
+    pq->safe_delayed_post(delay, [wq, delay, h, wflag, wres]()
       {
         if ( wres.lock() == nullptr )
           return;
-        common_timer::expires_before_(wq, delay, std::move(h), wflag );
-      },
-      nullptr /*drop*/
+        common_timer::expires_before_(wq, delay, h, wflag );
+      }
     );
     
     if ( *pflag==false || !h() )
@@ -142,14 +144,13 @@ private:
     std::shared_ptr<bool> pres = std::make_shared<bool>(true);
     std::weak_ptr<bool> wres = pres;
 
-    pq->delayed_post(delay, [wq, delay, h, wflag, wres]()
+    pq->safe_delayed_post(delay, [wq, delay, h, wflag, wres]()
       {
         if ( wres.lock() == nullptr )
           return;
         
         common_timer::expires_before_(wq, delay, std::move(h), wflag );
       }
-      , nullptr /*drop*/
     );
     
     if ( *pflag==true )

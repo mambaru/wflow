@@ -30,14 +30,6 @@ bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
   , _asio( std::make_shared<asio_queue>( *_io, maxsize) )
   , _asio_st(std::make_shared<asio_queue>( io, maxsize) )
 {
-  //_asio = std::make_shared<asio_queue>( *_io, maxsize);
-  /*
-  _dflag = !use_asio;
-  _mt_flag = mt;
-  _io = std::make_shared<io_service_type>();
-  _asio = std::make_shared<asio_queue>( *_io, maxsize);
-  _asio_st = std::make_shared<asio_queue>( io, maxsize);
-  _delayed = std::make_shared<delayed_queue>(maxsize);*/
 }
 
 bique::io_service_type::work bique::work() const
@@ -85,6 +77,23 @@ void bique::stop()
   _asio->stop();
 }
 
+
+void bique::safe_post( function_t f )
+{
+  return this->invoke_( &delayed_queue::safe_post, &asio_queue::safe_post, f);
+}
+
+void bique::safe_post_at(time_point_t tp, function_t f)
+{
+  return this->invoke_( &delayed_queue::safe_post_at, &asio_queue::safe_post_at, tp, f);
+}
+
+void bique::safe_delayed_post(duration_t duration, function_t f)
+{
+  return this->invoke_( &delayed_queue::safe_delayed_post, &asio_queue::safe_delayed_post, duration, f);
+}
+
+
 bool bique::post( function_t f, function_t drop )
 {
   return this->invoke_( &delayed_queue::post, &asio_queue::post, std::move(f), std::move(drop) );
@@ -100,9 +109,19 @@ bool bique::delayed_post(duration_t duration, function_t f, function_t drop)
   return this->invoke_( &delayed_queue::delayed_post, &asio_queue::delayed_post, duration, std::move(f), std::move(drop));
 }
 
-std::size_t bique::size() const
+std::size_t bique::full_size() const
 {
-  return this->invoke_( &delayed_queue::size, &asio_queue::size);
+  return this->invoke_( &delayed_queue::full_size, &asio_queue::full_size);
+}
+
+std::size_t bique::safe_size() const
+{
+  return this->invoke_( &delayed_queue::safe_size, &asio_queue::safe_size);
+}
+
+std::size_t bique::unsafe_size() const
+{
+  return this->invoke_( &delayed_queue::unsafe_size, &asio_queue::unsafe_size);
 }
 
 std::size_t bique::dropped() const
