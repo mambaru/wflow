@@ -44,7 +44,6 @@
 
 namespace wflow{ namespace boost{
 
-// Прочие сущности буста
 using namespace boost;
 
 }}

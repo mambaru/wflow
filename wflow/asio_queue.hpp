@@ -57,6 +57,7 @@ public:
   std::size_t dropped() const;
   
   io_service_type::work work() const;
+  
 private:
   
   bool check_(function_t drop);

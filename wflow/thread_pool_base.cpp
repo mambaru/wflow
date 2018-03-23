@@ -66,27 +66,6 @@ void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads)
   this->start_(s, threads); 
 }
 
-/*
-size_t thread_pool_base::get_size( ) const
-{
-  std::lock_guard< std::mutex > lk(_mutex);
-  return this->_threads.size();
-}
-size_t thread_pool_base::get_counter( size_t thread) const
-{
-  std::lock_guard< std::mutex > lk(_mutex);
-  if ( thread >= _counters.size() )
-    return 0;
-  return _counters[thread];
-}
-
-std::vector< int > thread_pool_base::get_ids() const
-{
-  std::lock_guard< std::mutex > lk(_mutex);
-  return _threads_ids;
-}
-*/
-
 // только после _service->stop();
 void thread_pool_base::stop()
 {
@@ -155,29 +134,30 @@ void thread_pool_base::start_(std::shared_ptr<S> s, size_t threads)
 }
 
 
+/*
 template<typename T>
 static void nowarn(T&){}
+*/
 template<typename S>
 void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
 {
   size_t prev_size = _threads.size();
   _threads.reserve( prev_size + threads);
-  //_counters.resize( prev_size + threads );
   for (size_t i = 0 ; i < threads; ++i)
   {
     thread_flag pflag = std::make_shared<bool>(true);
-    std::weak_ptr<bool> wflag = pflag;
-    std::weak_ptr<self> wthis = this->shared_from_this();
     _flags.push_back(pflag);
     auto w = s->work();
     _works.push_back([w](){});
-    //auto& counter = _counters[prev_size + i];
-    //counter = 0;
-    _threads.push_back( std::thread( std::function<void()>( [wthis, s, wflag]()
-    {
-      //auto w = s->work();
-      //nowarn(w);
+    _threads.push_back( this->create_thread_(s, pflag) );
+  }
+}
 
+template<typename S>
+std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_ptr<bool> wflag )
+{
+  std::weak_ptr<self> wthis = this->shared_from_this();
+  return std::thread([wthis, s, wflag](){
       thread_pool_base::startup_handler startup;
       thread_pool_base::finish_handler finish;
       thread_pool_base::statistics_handler statistics;
@@ -187,57 +167,48 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
         startup = pthis->_startup;
         finish = pthis->_finish;
         statistics = pthis->_statistics;
-        //pthis->add_id( syscall(SYS_gettid) );
       }
       std::thread::id thread_id = std::this_thread::get_id();
       auto pthis = wthis.lock();
       if ( startup != nullptr )
         startup(thread_id);
       
-      /*if ( statistics == nullptr && pthis->_rate_limit == 0 )
+      size_t count = 0;
+      for (;;)
       {
-        // Невозможна реконфигурация (поток не завершает работу)
-        s->run();
-      }
-      else */
-      { 
-        size_t count = 0;
-        for (;;)
+        auto start = std::chrono::steady_clock::now();
+        size_t handlers = s->run_one();
+        if (  handlers == 0 )
+          break;
+        if ( wflag.lock() == nullptr)
+          break;
+
+        if ( statistics != nullptr || pthis->_rate_limit != 0 )
         {
-          auto start = std::chrono::system_clock::now();
-          size_t handlers = s->run_one();
-          if (  handlers == 0 )
-            break;
-          if ( wflag.lock() == nullptr)
-            break;
+          auto now = std::chrono::steady_clock::now();
+          auto span = now - start ;
+          if ( statistics != nullptr )
+            statistics( thread_id, handlers, span );
 
-          //counter += handlers;
-          if ( statistics != nullptr || pthis->_rate_limit != 0 )
+          if ( pthis->_rate_limit != 0 )
           {
-            auto now = std::chrono::system_clock::now();
-            auto span = now - start ;
-            if ( statistics != nullptr )
-              statistics( thread_id, handlers, span );
-
-            if ( pthis->_rate_limit != 0 )
+            count += handlers;
+            if ( count >= pthis->_rate_limit )
             {
-              count += handlers;
-              if ( count >= pthis->_rate_limit )
-              {
-                auto ts_now = std::chrono::system_clock::now();
-                auto tm_ms = std::chrono::duration_cast< std::chrono::milliseconds >( ts_now - start ).count();
-                if ( tm_ms < 1000 )
-                  std::this_thread::sleep_for( std::chrono::milliseconds(1000-tm_ms)  );
-                count = 0;
-              }
+              auto ts_now = std::chrono::steady_clock::now();
+              auto tm_mks = std::chrono::duration_cast< std::chrono::microseconds >( ts_now - start ).count();
+              if ( tm_mks < 1000000 )
+                std::this_thread::sleep_for( std::chrono::microseconds(1000000-tm_mks)  );
+              count = 0;
             }
           }
         }
+
       }
       if ( finish != nullptr )
-        finish(thread_id);
-    })));
-  }
+        finish(thread_id);    
+  });
 }
+
 
 }

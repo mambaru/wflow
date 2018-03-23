@@ -39,13 +39,8 @@ public:
   void start(std::shared_ptr<asio_queue> s, size_t threads);
   void start(std::shared_ptr<delayed_queue> s, size_t threads);
 
-  // только после _service->stop();
   void stop();
 
-  /*size_t get_size( ) const;
-  size_t get_counter( size_t thread ) const;
-  std::vector< int > get_ids() const;
-  */
 private: 
   void add_id(int id) ;
 
@@ -57,6 +52,9 @@ private:
 
   template<typename S>
   void run_more_(std::shared_ptr<S> s, size_t threads);
+  
+  template<typename S>
+  std::thread create_thread_( std::shared_ptr<S> s, std::weak_ptr<bool> wflag );
 
 private:
   bool _started;

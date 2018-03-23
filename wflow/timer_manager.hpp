@@ -68,8 +68,6 @@ public:
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   timer_id_t create( duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
-    // в отличие от таймера, первый вызов немедленно 
-    // TODO: Не работает
     return this->create( std::chrono::milliseconds(0), d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
   }
 
