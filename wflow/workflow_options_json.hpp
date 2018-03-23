@@ -2,6 +2,7 @@
 
 #include <wflow/workflow_options.hpp>
 #include <wjson/json.hpp>
+#include <wjson/name.hpp>
 
 namespace wflow {
   
