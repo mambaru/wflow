@@ -58,13 +58,10 @@ timer_manager_base::timer_id_t
   std::shared_ptr<bool> pflag = std::make_shared<bool>(true);
   std::weak_ptr<bool> wflag = pflag;
   _id_map.insert( std::make_pair(id, pflag) );
-  auto drop = [](){
-    WFLOW_LOG_FATAL("timer_manager_base::create_: обработчик таймера выброшен из очереди из-за перереполнения")
-  };
   if ( start_time!=time_point_t() )
-    pq->post_at( start_time, timer::make(pq, delay, std::move(h), expires, wflag), drop );
+    pq->safe_post_at( start_time, timer::make(pq, delay, std::move(h), expires, wflag) );
   else
-    pq->post( timer::make(pq, delay, std::move(h), expires, wflag), drop );
+    pq->safe_post( timer::make(pq, delay, std::move(h), expires, wflag));
   return id;
 }
 
