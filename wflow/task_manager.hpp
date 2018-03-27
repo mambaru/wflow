@@ -71,17 +71,17 @@ public:
   std::size_t dropped() const;
   std::shared_ptr<timer_type> timer() const;
   
-  /*
-  size_t get_threads( ) const;
-  size_t get_counter( size_t thread ) const;
-  std::vector< int > get_ids() const;
-  */
-
+  
 private:
   std::atomic<size_t> _threads;
   std::shared_ptr<queue_type> _queue;
   std::shared_ptr<timer_type> _timer;
   std::shared_ptr<pool_type>  _pool;
+  
+  std::atomic<size_t> _rate_limit;
+  std::atomic<time_t> _start_interval;
+  std::atomic<size_t> _interval_count;
+  
 };
 
 }

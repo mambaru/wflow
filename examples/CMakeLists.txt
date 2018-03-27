@@ -10,3 +10,5 @@ target_link_libraries(example2 wflow )
 add_executable( example3 example3.cpp )
 target_link_libraries(example3 wflow )
 
+add_executable( example4 example4.cpp )
+target_link_libraries(example4 wflow )

@@ -144,9 +144,37 @@ UNIT(requester1, "")
 
 }
 
+UNIT(rate_limit, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  wflow::asio::io_service ios;
+  wflow::workflow_options wo;
+  wo.threads = 0;
+  wo.rate_limit = 100;
+  wflow::workflow flw(ios, wo);
+  flw.start();
+
+  auto start = high_resolution_clock::now();
+  auto finish = start;
+  
+  size_t counter = 0;
+  for (int i = 0; i != 200; i++)
+    flw.post([&](){++counter;});
+  ios.run();
+  finish = high_resolution_clock::now();
+  t << equal<expect>(counter, 200) << FAS_FL;
+  t << equal<expect>(2000, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
+}
+
+
+
+
 BEGIN_SUITE(workflow, "")
   ADD_UNIT(workflow1)
   ADD_UNIT(workflow2)
   ADD_UNIT(requester1)
+  ADD_UNIT(rate_limit)
 END_SUITE(workflow)
 

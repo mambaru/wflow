@@ -3,6 +3,7 @@
 #include "bique.hpp"
 #include "thread_pool.hpp"
 #include "asio.hpp"
+#include <chrono>
 
 namespace wflow{
 
@@ -43,8 +44,9 @@ void task_manager::reconfigure(size_t queue_maxsize, size_t threads, bool use_as
   
 void task_manager::rate_limit(size_t rps) 
 {
-  if ( _pool!=nullptr) 
-    _pool->rate_limit(rps);
+  _rate_limit = rps;
+  /*if ( _pool!=nullptr) 
+    _pool->rate_limit(rps);*/
 }
 
 void task_manager::set_startup( startup_handler handler )
@@ -116,7 +118,38 @@ void task_manager::safe_delayed_post(duration_t duration, function_t f)
  
 bool task_manager::post( function_t f )
 {
-  return _queue->post(std::move(f) );
+  using namespace std::chrono;
+  typedef time_point< steady_clock, nanoseconds > steady_point_t;
+  time_t nanospan = 0;
+  if ( _rate_limit == 0 )
+  {
+    return _queue->post(std::move(f) );
+  }
+  else if (_start_interval == 0)
+  {
+    _start_interval = duration_cast<nanoseconds>( steady_clock::now() - steady_point_t() ).count();
+    ++_interval_count;
+  }
+  else
+  {
+    time_t now = duration_cast<nanoseconds>( steady_clock::now() - steady_point_t() ).count();
+    nanospan = now - _start_interval;
+    if ( nanospan > 1000000000  )
+    {
+      _start_interval = now;
+      _interval_count = 1;
+    }
+    else
+      ++_interval_count;
+  }
+  
+  if ( _interval_count <= _rate_limit )
+    return _queue->post(std::move(f) );
+  else
+    return this->delayed_post(
+              nanoseconds((_interval_count*1000000000)/_rate_limit), 
+              [this, f](){this->post(f);}
+            );
 }
   
 bool task_manager::post_at(time_point_t tp, function_t f)
