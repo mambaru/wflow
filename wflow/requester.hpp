@@ -56,7 +56,7 @@ private:
         
         auto pres = std::make_shared< std::unique_ptr<Res> >( std::move(res) );
 
-        pq->post([pres, wq, wi, mem_ptr, result_handler, timer_handler]()
+        auto status = pq->post([pres, wq, wi, mem_ptr, result_handler, timer_handler]()
         {
           if ( auto next_req = result_handler( std::move(*pres) ) )
           {
@@ -66,10 +66,10 @@ private:
           {
             timer_handler(true);
           }
-        },
-        // в случае переполнения очереди
-        [timer_handler](){ timer_handler(true);}
-        );
+        });
+        
+        if ( !status )
+          timer_handler(true);
       }
     };
     (i.get()->*mem_ptr)( std::move(req), callback );

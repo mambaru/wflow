@@ -61,9 +61,9 @@ void asio_queue::safe_post( function_t f)
   } );
 }
 
-bool asio_queue::post( function_t f, function_t drop )
+bool asio_queue::post( function_t f )
 {
-  if ( !this->check_(std::move(drop)) )
+  if ( !this->check_() )
     return false;  
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_counter;
@@ -96,12 +96,12 @@ void asio_queue::safe_post_at(time_point_t tp, function_t f)
   });
 }
 
-bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
+bool asio_queue::post_at(time_point_t tp, function_t f)
 {
   if ( tp <= time_point_t::clock::now() )
-    return this->post( std::move(f), std::move(drop) );
+    return this->post( std::move(f) );
 
-  if ( !this->check_(std::move(drop)) )
+  if ( !this->check_() )
     return false;
 
   auto ptimer = this->create_timer_( tp );
@@ -123,9 +123,9 @@ void asio_queue::safe_delayed_post(duration_t duration, function_t f)
   this->safe_post_at( std::chrono::system_clock::now() + duration, std::move(f));
 }
 
-bool asio_queue::delayed_post(duration_t duration, function_t f, function_t drop)
+bool asio_queue::delayed_post(duration_t duration, function_t f)
 {
-  return this->post_at( std::chrono::system_clock::now() + duration, std::move(f), std::move(drop) );
+  return this->post_at( std::chrono::system_clock::now() + duration, std::move(f) );
 }
 
 std::size_t asio_queue::unsafe_size() const
@@ -152,15 +152,13 @@ std::size_t asio_queue::dropped() const
 // ----------------------------------------
 // ----------------------------------------
   
-bool asio_queue::check_(function_t drop)
+bool asio_queue::check_()
 {
   if ( _maxsize == 0 )
     return true;
   if ( _counter < _maxsize )
     return true;
   ++_drop_count;
-  if ( drop != nullptr)
-    drop();
   return false;
 }
 

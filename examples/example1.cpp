@@ -32,10 +32,10 @@ int main()
     }
   );
   
-  wf.post( std::chrono::nanoseconds(1000000000),[](){ std::cout << "after 1 seconds " << std::endl; }, nullptr);
-  wf.post( std::chrono::milliseconds(2000),     [](){ std::cout << "after 2 seconds " << std::endl; }, nullptr);
-  wf.post( std::chrono::seconds(3),             [](){ std::cout << "after 3 seconds " << std::endl; }, nullptr);
-  wf.post( std::chrono::microseconds(4000000),  [](){ std::cout << "after 4 seconds " << std::endl; }, nullptr);
-  wf.post( [](){ std::cout << "first message " << std::endl; }, nullptr);
+  wf.post( std::chrono::nanoseconds(1000000000),[](){ std::cout << "after 1 seconds " << std::endl; });
+  wf.post( std::chrono::milliseconds(2000),     [](){ std::cout << "after 2 seconds " << std::endl; });
+  wf.post( std::chrono::seconds(3),             [](){ std::cout << "after 3 seconds " << std::endl; });
+  wf.post( std::chrono::microseconds(4000000),  [](){ std::cout << "after 4 seconds " << std::endl; });
+  wf.post( [](){ std::cout << "first message " << std::endl; } );
   ios.run();
 }

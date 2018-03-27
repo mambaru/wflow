@@ -24,8 +24,9 @@ int main()
   wflow::workflow wf(ios, opt);
 
   auto show = [](int value) { std::cout << "post " << value << std::endl; };
-  auto drop = [](int value) { std::cout << "drop " << value << std::endl; };
+  
   for (int i = 0; i < 10; ++i)
-    wf.post( std::bind(show, i), std::bind(drop, i) );
+    if ( !wf.post( std::bind(show, i) ) )
+      std::cout << "drop " << i << std::endl;
   ios.run();
 }

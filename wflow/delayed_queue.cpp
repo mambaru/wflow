@@ -86,10 +86,10 @@ void delayed_queue::safe_post( function_t f)
   _cond_var.notify_one();
 }
 
-bool delayed_queue::post( function_t f, function_t drop )
+bool delayed_queue::post( function_t f )
 {
   std::lock_guard<mutex_t> lock( _mutex );
-  if ( !this->check_(std::move(drop)) )
+  if ( !this->check_() )
     return false;
 
   // _que.push( std::move( f ) );
@@ -125,10 +125,10 @@ void delayed_queue::safe_post_at(time_point_t time_point, function_t f)
   _cond_var.notify_one();
 }
 
-bool delayed_queue::post_at(time_point_t time_point, function_t f, function_t drop)
+bool delayed_queue::post_at(time_point_t time_point, function_t f)
 {
   std::lock_guard<mutex_t> lock( _mutex );
-  if ( !this->check_(std::move(drop)) )
+  if ( !this->check_() )
     return false;
 
   //this->push_at_( std::move(time_point), std::move(f) ); 
@@ -155,24 +155,12 @@ void delayed_queue::safe_delayed_post(duration_t duration, function_t f)
     this->safe_post_at( std::chrono::system_clock::now() + duration, f);
 }
 
-bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t drop)
+bool delayed_queue::delayed_post(duration_t duration, function_t f)
 {  
   if ( 0 == duration.count() )
-    return this->post( f, drop);
+    return this->post( f );
   else
-    return this->post_at( std::chrono::system_clock::now() + duration, f, drop);
-  /*
-  std::lock_guard<mutex_t> lock( _mutex );
-  if ( !this->check_( std::move(drop) ) )
-    return false;
-
-  if ( 0 == duration.count() )
-    _que.push( std::move( f ) );
-  else
-    this->push_at_( std::chrono::system_clock::now() + duration, std::move(f) );
-  _cond_var.notify_one();
-  return true;
-  */
+    return this->post_at( std::chrono::system_clock::now() + duration, f);
 }
 
 std::size_t delayed_queue::unsafe_size() const
@@ -196,15 +184,13 @@ std::size_t delayed_queue::dropped() const
 }
 
 //private:
-bool delayed_queue::check_(function_t drop)
+bool delayed_queue::check_()
 {
   if ( _maxsize == 0 )
     return true;
   if ( this->size_() < _maxsize )
     return true;
   ++_drop_count;
-  if (drop!=nullptr)
-    drop();
   return false;
 }
 

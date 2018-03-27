@@ -83,26 +83,6 @@ void task_manager::stop()
   _queue->reset();
 }
 
-/*
-
-size_t task_manager::get_threads( ) const
-{
-  return _pool==nullptr ? 0 : _pool->get_size();
-}
-
-size_t task_manager::get_counter( size_t thread ) const
-{
-  return _pool==nullptr ? 0 : _pool->get_counter( thread );
-}
-
-std::vector< int > task_manager::get_ids() const
-{
-  return _pool==nullptr 
-    ? std::vector<int>()
-    : _pool->get_ids();
-}
-*/
-
 std::size_t task_manager::run()
 {
   return _queue->run();
@@ -134,19 +114,19 @@ void task_manager::safe_delayed_post(duration_t duration, function_t f)
 }
  
  
-bool task_manager::post( function_t f, function_t drop )
+bool task_manager::post( function_t f )
 {
-  return _queue->post(std::move(f), std::move(drop) );
+  return _queue->post(std::move(f) );
 }
   
-bool task_manager::post_at(time_point_t tp, function_t f, function_t drop)
+bool task_manager::post_at(time_point_t tp, function_t f)
 {
-  return _queue->post_at( tp, std::move(f), std::move(drop));
+  return _queue->post_at( tp, std::move(f));
 }
 
-bool task_manager::delayed_post(duration_t duration, function_t f, function_t drop)
+bool task_manager::delayed_post(duration_t duration, function_t f)
 {
-  return _queue->delayed_post(duration, std::move(f), std::move(drop));
+  return _queue->delayed_post(duration, std::move(f));
 }
   
 std::size_t task_manager::full_size() const

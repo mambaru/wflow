@@ -17,7 +17,7 @@ UNIT(workflow1, "")
   queue.post([&t, &counter](){
     ++counter;
     t << message("post");
-  }, nullptr);
+  });
   queue.timer()->create(std::chrono::milliseconds(400), [&t, &counter](){
     ++counter;
     t << message("timer 400ms");
@@ -26,13 +26,13 @@ UNIT(workflow1, "")
   queue.delayed_post( std::chrono::milliseconds(600), [&t, &counter](){
     ++counter;
     t << message("delayed post 600ms");
-  }, nullptr);
+  });
   for (int i =0 ; i < 3 ; ++i)
   {
     queue.delayed_post( std::chrono::milliseconds(300 + i*300), [&t, &counter, i](){
       ++counter;
       t << message("delayed post ") << 300 + i*300 << "ms";
-    }, nullptr);
+    });
   }
   sleep(1);
   std::cout << "stop..." << std::endl;
@@ -55,7 +55,7 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
   bool ready = false;
   std::atomic<int> counter(0);
   std::atomic<int> dropped(0);
-  opt.maxsize = 5; // + handler timer
+  opt.maxsize = 4; 
   opt.use_io_service = true;
   opt.threads = 1;
   opt.control_ms = 1000;
@@ -76,23 +76,27 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
   wfl.manager(); // for cppcheck
   
   for (int i =0 ; i < 5; i++)
-    wfl.post( std::chrono::milliseconds(i*1000 + 1000),  [&t, i, &counter](){
-      t << message("for 0..5 i=") << i;
-      t << flush;
-      ++counter;
-    }, [&dropped](){     
+  {
+    auto postres = wfl.post(
+      std::chrono::milliseconds(i*1000 + 1000),  
+      [&t, i, &counter]()
+      {
+        t << message("for 0..5 i=") << i;
+        t << flush;
+        ++counter;
+      }
+    );
+    if (!postres)
       ++dropped;
-    } );
+  }
   
   io.run();
-  /*while ( counter < 5)
-    io.run_one();
-    */
+  
   t << is_true<expect>(ready) << FAS_FL;
-  t << equal<expect>(pw->dropped(), 1) << FAS_FL;
-  t << equal<expect>(dropped, 1) << FAS_FL;
-  t << equal<expect>( pw->timer_count(), 1 ) << FAS_FL;
-  t << equal<expect>( pw->unsafe_size(), 1  ) << FAS_FL;
+  t << equal<expect, size_t>(pw->dropped(), 1) << FAS_FL;
+  t << equal<expect, size_t>(dropped, 1) << FAS_FL;
+  t << equal<expect, size_t>(pw->timer_count(), 1) << FAS_FL;
+  t << equal<expect, size_t>(pw->unsafe_size(), 1) << FAS_FL;
 }
 
 struct foo

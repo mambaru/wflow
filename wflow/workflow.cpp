@@ -79,12 +79,12 @@ void workflow::safe_post(post_handler handler)
     this->safe_post( std::chrono::milliseconds(_delay_ms), std::move(handler) );
 }
 
-bool workflow::post(post_handler handler, post_handler drop)
+bool workflow::post(post_handler handler)
 {
   if ( _delay_ms == 0)
-    return _impl->post( std::move(handler), std::move(drop) );
+    return _impl->post( std::move(handler) );
   else
-    return this->post( std::chrono::milliseconds(_delay_ms), std::move(handler), std::move(drop) );
+    return this->post( std::chrono::milliseconds(_delay_ms), std::move(handler));
 }
 
 void workflow::safe_post(time_point_t tp, post_handler handler)
@@ -92,9 +92,9 @@ void workflow::safe_post(time_point_t tp, post_handler handler)
   _impl->safe_post_at( tp, std::move(handler) );
 }
 
-bool workflow::post(time_point_t tp, post_handler handler, post_handler drop)
+bool workflow::post(time_point_t tp, post_handler handler)
 {
-  return _impl->post_at( tp, std::move(handler), std::move(drop) );
+  return _impl->post_at( tp, std::move(handler));
 }
 
 void workflow::safe_post(duration_t d,   post_handler handler)
@@ -102,9 +102,9 @@ void workflow::safe_post(duration_t d,   post_handler handler)
   return _impl->safe_delayed_post(d, std::move(handler));
 }
 
-bool workflow::post(duration_t d,   post_handler handler, post_handler drop)
+bool workflow::post(duration_t d,   post_handler handler)
 {
-  return _impl->delayed_post(d, std::move(handler), std::move(drop) );
+  return _impl->delayed_post(d, std::move(handler));
 }
 
 workflow::timer_id_t workflow::create_timer(duration_t d, timer_handler handler, expires_at expires)
@@ -186,13 +186,7 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
 {
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
   auto old_timer = _wrn_timer;
-  /*
-  if ( opt.control_ms==0)
-  {
-    // заглушка, чтобы не выскакивал
-    _wrn_timer = wrkf.create_timer(std::chrono::seconds(3600), []{ return true;} );
-  }
-  else*/
+  
   if ( opt.control_ms!=0 )
   {
     auto dropsave = std::make_shared<size_t>(0);
@@ -208,7 +202,7 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
       control_handler= [this, wrnsize, dropsave, debug]()  ->bool 
       {
         auto dropped = this->_impl->dropped();
-        auto size = this->_impl->full_size(); // TODO: сделать unsafe и safe
+        auto size = this->_impl->full_size();
         auto dropdiff = dropped - *dropsave;
         if ( dropdiff!=0 )
         {

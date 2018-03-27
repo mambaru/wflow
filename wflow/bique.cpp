@@ -94,19 +94,19 @@ void bique::safe_delayed_post(duration_t duration, function_t f)
 }
 
 
-bool bique::post( function_t f, function_t drop )
+bool bique::post( function_t f )
 {
-  return this->invoke_( &delayed_queue::post, &asio_queue::post, std::move(f), std::move(drop) );
+  return this->invoke_( &delayed_queue::post, &asio_queue::post, std::move(f) );
 }
 
-bool bique::post_at(time_point_t tp, function_t f, function_t drop)
+bool bique::post_at(time_point_t tp, function_t f)
 {
-  return this->invoke_( &delayed_queue::post_at, &asio_queue::post_at, tp, std::move(f), std::move(drop));
+  return this->invoke_( &delayed_queue::post_at, &asio_queue::post_at, tp, std::move(f));
 }
 
-bool bique::delayed_post(duration_t duration, function_t f, function_t drop)
+bool bique::delayed_post(duration_t duration, function_t f)
 {
-  return this->invoke_( &delayed_queue::delayed_post, &asio_queue::delayed_post, duration, std::move(f), std::move(drop));
+  return this->invoke_( &delayed_queue::delayed_post, &asio_queue::delayed_post, duration, std::move(f));
 }
 
 std::size_t bique::full_size() const

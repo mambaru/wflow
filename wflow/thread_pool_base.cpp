@@ -111,7 +111,7 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
     {
       s->post([oldsize](){ 
         std::this_thread::sleep_for( std::chrono::seconds(1) );
-      }, nullptr);
+      });
     }
   }
   return true;

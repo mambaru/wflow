@@ -18,12 +18,13 @@ inline void delayed_unit1(T& t, Q& dq)
   
   system_clock::time_point start = system_clock::now();
   system_clock::time_point finish = start;
-  dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
+  auto res = dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
     t << message("delayed_post READY!");
     finish = system_clock::now();
-  }, [&t](){
-    t << fail("delayed_post FAIL!");
   });
+  if (!res)
+    t << fail("delayed_post FAIL!");
+  
   dq.run_one();
   time_t ms = duration_cast<milliseconds>(finish-start).count();
   t << message("time: ") << ms;
@@ -42,11 +43,11 @@ inline void delayed_unit2(T& t, Q& dq)
   dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
     finish = high_resolution_clock::now();
     t << message("ready delayed_post");
-  }, nullptr);
+  });
   dq.post([&t, &finish](){
     finish = high_resolution_clock::now();
     t << message("ready post");
-  }, nullptr);
+  });
   t << message("run_one: ") << dq.run_one();
   t << message("run_one: ") << dq.run_one();
   time_t ms = duration_cast<milliseconds>(finish-start).count();
@@ -67,13 +68,13 @@ inline void delayed_unit3(T& t, Q& dq)
   auto start = high_resolution_clock::now();
   for (int i=0 ; i < 5; ++i)
   {
-    dq.post([&count](){ ++count; }, nullptr);
+    dq.post([&count](){ ++count; });
     time_t& tm = time_chk[i];
     dq.delayed_post(milliseconds(time_ms[i]), [i, start, &count, &tm]()
     { 
       ++count; 
       tm = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
-    }, nullptr);
+    });
   }
   t << message( "start thread... ") << count;
   
@@ -112,9 +113,7 @@ inline void delayed_unit4(T& t, Q& dq)
     {
       time_t& ms = times[i];
       ms = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
-      //t << message("ready! id=") << std::this_thread::get_id() << " ms=" << ms << " sleep " << (500-ms + 50);
-      //std::this_thread::sleep_for( milliseconds(500-ms+50) );
-    }, nullptr );
+    });
   }
   
   std::condition_variable cv;

@@ -55,9 +55,9 @@ public:
   void safe_post(time_point_t, post_handler handler);
   void safe_post(duration_t,   post_handler handler);
 
-  bool post(post_handler handler, post_handler drop);
-  bool post(time_point_t, post_handler handler, post_handler drop);
-  bool post(duration_t,   post_handler handler, post_handler drop);
+  bool post(post_handler handler);
+  bool post(time_point_t, post_handler handler);
+  bool post(duration_t,   post_handler handler);
 
   timer_id_t create_timer(duration_t, timer_handler, expires_at expires = expires_at::after);
   timer_id_t create_async_timer(duration_t, async_timer_handler, expires_at expires = expires_at::after);

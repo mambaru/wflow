@@ -23,7 +23,7 @@ int main()
     std::cout << "post " << value << " thread_id: " << std::this_thread::get_id() << std::endl; 
   };
   for (int i = 0; i < 100; ++i)
-    wf.post( std::bind(show, i), nullptr );
+    wf.post( std::bind(show, i));
   for(;;)
   {
     {
