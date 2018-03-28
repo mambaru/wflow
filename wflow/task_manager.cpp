@@ -116,7 +116,7 @@ void task_manager::safe_delayed_post(duration_t duration, function_t f)
 }
  
  
-bool task_manager::post( function_t f )
+bool task_manager::post( function_t f, function_t drop )
 {
   using namespace std::chrono;
   typedef time_point< steady_clock, nanoseconds > steady_point_t;

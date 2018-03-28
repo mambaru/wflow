@@ -59,7 +59,7 @@ public:
 
   void safe_delayed_post(duration_t duration, function_t f);
   
-  bool post( function_t f);
+  bool post(function_t f, function_t drop);
   
   bool post_at(time_point_t tp, function_t f);
 

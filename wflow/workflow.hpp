@@ -15,6 +15,7 @@ class workflow
 public:
   typedef ::wflow::asio::io_service io_service_type;
   typedef std::function< void() > post_handler;
+  typedef std::function< void() > drop_handler;
 
   typedef std::function<bool()> timer_handler;
   typedef std::function<void(bool)> callback_timer_handler;
@@ -56,8 +57,10 @@ public:
   void safe_post(duration_t,   post_handler handler);
 
   bool post(post_handler handler);
+  bool post(post_handler handler, drop_handler drop);
   bool post(time_point_t, post_handler handler);
   bool post(duration_t,   post_handler handler);
+  
 
   timer_id_t create_timer(duration_t, timer_handler, expires_at expires = expires_at::after);
   timer_id_t create_async_timer(duration_t, async_timer_handler, expires_at expires = expires_at::after);
