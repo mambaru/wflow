@@ -1,7 +1,7 @@
 #pragma once
 
 #include <fas/testing.hpp>
-#include <wflow/delayed_queue.hpp>
+#include <wflow/queue/delayed_queue.hpp>
 #include <chrono>
 #include <atomic>
 #include <thread>
@@ -21,7 +21,7 @@ inline void delayed_unit1(T& t, Q& dq)
   auto res = dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
     t << message("delayed_post READY!");
     finish = system_clock::now();
-  });
+  }, nullptr);
   if (!res)
     t << fail("delayed_post FAIL!");
   
@@ -43,11 +43,11 @@ inline void delayed_unit2(T& t, Q& dq)
   dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
     finish = high_resolution_clock::now();
     t << message("ready delayed_post");
-  });
+  }, nullptr);
   dq.post([&t, &finish](){
     finish = high_resolution_clock::now();
     t << message("ready post");
-  });
+  }, nullptr);
   t << message("run_one: ") << dq.run_one();
   t << message("run_one: ") << dq.run_one();
   time_t ms = duration_cast<milliseconds>(finish-start).count();
@@ -68,13 +68,13 @@ inline void delayed_unit3(T& t, Q& dq)
   auto start = high_resolution_clock::now();
   for (int i=0 ; i < 5; ++i)
   {
-    dq.post([&count](){ ++count; });
+    dq.post([&count](){ ++count; }, nullptr);
     time_t& tm = time_chk[i];
     dq.delayed_post(milliseconds(time_ms[i]), [i, start, &count, &tm]()
     { 
       ++count; 
       tm = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
-    });
+    }, nullptr);
   }
   t << message( "start thread... ") << count;
   
@@ -94,7 +94,7 @@ inline void delayed_unit3(T& t, Q& dq)
   t << equal<expect, int>(count, 10) << "count=" << count << " should be 10";
   for (int i=0 ; i < 5; ++i)
   {
-    t << equal<expect>(time_ms[i], time_chk[i]) << "delay fail. ms=" << time_chk[i] << " should be " << time_ms[i];
+    t << equal<expect>(time_ms[i]/10, time_chk[i]/10) << "delay fail. ms=" << time_chk[i] << " should be " << time_ms[i];
   }
 }
 
@@ -113,7 +113,7 @@ inline void delayed_unit4(T& t, Q& dq)
     {
       time_t& ms = times[i];
       ms = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
-    });
+    }, nullptr);
   }
   
   std::condition_variable cv;

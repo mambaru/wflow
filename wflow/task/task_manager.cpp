@@ -1,8 +1,9 @@
-#include "task_manager.hpp"
-#include "timer_manager.hpp"
-#include "bique.hpp"
-#include "thread_pool.hpp"
-#include "asio.hpp"
+#include <wflow/task/task_manager.hpp>
+#include <wflow/task/thread_pool.hpp>
+#include <wflow/timer/timer_manager.hpp>
+#include <wflow/queue/bique.hpp>
+
+#include <wflow/system/asio.hpp>
 #include <chrono>
 
 namespace wflow{
@@ -22,17 +23,23 @@ public:
 task_manager::task_manager( size_t queue_maxsize, size_t threads, bool use_asio )
   : _threads(threads)
   , _queue( std::make_shared<queue_type>(queue_maxsize, use_asio) )
-  , _timer( std::make_shared<timer_manager<queue_type> >(_queue) )
+  , _timer( std::make_shared<timer_type >(_queue) )
   , _pool( std::make_shared<pool_type>(_queue) )
+  , _rate_limit(0)
+  , _start_interval(0)
+  , _interval_count(0)
 {
 }
   
 task_manager::task_manager( io_service_type& io, size_t queue_maxsize, size_t threads, bool use_asio /*= false*/  )
   : _threads(threads)
+  , _queue( std::make_shared<queue_type>(io, queue_maxsize, use_asio, threads!=0) )
+  , _timer( std::make_shared<timer_type >(_queue) )
+  , _pool( std::make_shared<pool_type>(_queue) )
+  , _rate_limit(0)
+  , _start_interval(0)
+  , _interval_count(0)
 {
-  _queue = std::make_shared<queue_type>(io, queue_maxsize, use_asio, threads!=0  );
-  _timer = std::make_shared<timer_type>(_queue);
-  _pool = std::make_shared<pool_type>(_queue);
 }
 
 void task_manager::reconfigure(size_t queue_maxsize, size_t threads, bool use_asio /*= false*/ )
@@ -78,10 +85,15 @@ void task_manager::start()
 
 void task_manager::stop()
 {
-  _timer->clear();
   _queue->stop();
   if ( _pool!=nullptr) 
     _pool->stop();
+
+}
+
+void task_manager::reset()
+{
+  _timer->clear();
   _queue->reset();
 }
 
@@ -102,20 +114,19 @@ std::size_t task_manager::poll_one()
 
 void task_manager::safe_post( function_t f)
 {
-  _queue->safe_post(std::move(f));
+  _queue->safe_post(f);
 }
   
 void task_manager::safe_post_at(time_point_t tp, function_t f)
 {
-  _queue->safe_post_at( tp, std::move(f));
+  _queue->safe_post_at( tp, f);
 }
 
 void task_manager::safe_delayed_post(duration_t duration, function_t f)
 {
-  _queue->safe_delayed_post(duration, std::move(f));
+  _queue->safe_delayed_post(duration, f);
 }
- 
- 
+
 bool task_manager::post( function_t f, function_t drop )
 {
   using namespace std::chrono;
@@ -123,7 +134,7 @@ bool task_manager::post( function_t f, function_t drop )
   time_t nanospan = 0;
   if ( _rate_limit == 0 )
   {
-    return _queue->post(std::move(f) );
+    return _queue->post(f, drop );
   }
   else if (_start_interval == 0)
   {
@@ -144,22 +155,51 @@ bool task_manager::post( function_t f, function_t drop )
   }
   
   if ( _interval_count <= _rate_limit )
-    return _queue->post(std::move(f) );
-  else
-    return this->delayed_post(
-              nanoseconds((_interval_count*1000000000)/_rate_limit), 
-              [this, f](){this->post(f);}
-            );
+    return _queue->post(f, drop);
+  
+  this->safe_delayed_post(
+    nanoseconds((_interval_count*1000000000)/_rate_limit), 
+    [this, f, drop]()
+    {
+      this->post(f, drop);
+    }
+  );
+
+  return true;
 }
   
-bool task_manager::post_at(time_point_t tp, function_t f)
+bool task_manager::post_at(time_point_t tp, function_t f, function_t drop)
 {
-  return _queue->post_at( tp, std::move(f));
+  this->safe_post_at(tp, std::bind(&task_manager::post, this, f, drop) );
+  /*
+  this->safe_post_at(tp, [this, f, drop]()
+  {
+    this->post(f, drop);
+    
+  });
+  */
+  return true;
+  //return _queue->post_at( tp, f, drop);
 }
 
-bool task_manager::delayed_post(duration_t duration, function_t f)
+bool task_manager::delayed_post(duration_t duration, function_t f, function_t drop)
 {
-  return _queue->delayed_post(duration, std::move(f));
+  this->safe_delayed_post(duration, std::bind(&task_manager::post, this, f, drop) );
+  return true;
+  /*
+  auto pres = std::make_shared<bool>(true);
+  std::weak_ptr<bool> wres = pres;
+  this->safe_delayed_post(duration, [this, f, drop, wres]()
+  {
+    bool res = this->post(f, drop);
+    if (auto pr = wres.lock() )
+    {
+      *pr = res;
+    }
+  });
+  return *pres;*/
+
+  /*return _queue->delayed_post(duration, f, drop);*/
 }
   
 std::size_t task_manager::full_size() const

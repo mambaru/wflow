@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <functional>
+#include <wflow/queue/bique.hpp>
 
 namespace wflow{
 
@@ -56,20 +57,24 @@ private:
         
         auto pres = std::make_shared< std::unique_ptr<Res> >( std::move(res) );
 
-        auto status = pq->post([pres, wq, wi, mem_ptr, result_handler, timer_handler]()
-        {
-          if ( auto next_req = result_handler( std::move(*pres) ) )
+        pq->post(
+          [pres, wq, wi, mem_ptr, result_handler, timer_handler]()
           {
-            send_request_<Res>( wq, std::move(next_req), wi, mem_ptr, std::move(result_handler), timer_handler );
-          }
-          else
+            if ( auto next_req = result_handler( std::move(*pres) ) )
+            {
+              send_request_<Res>( wq, std::move(next_req), wi, mem_ptr, std::move(result_handler), timer_handler );
+            }
+            else
+            {
+              timer_handler(true);
+            }
+          }, 
+          // drop from queue
+          [timer_handler]()
           {
+            // service unavailable
             timer_handler(true);
-          }
-        });
-        
-        if ( !status )
-          timer_handler(true);
+          });
       }
     };
     (i.get()->*mem_ptr)( std::move(req), callback );

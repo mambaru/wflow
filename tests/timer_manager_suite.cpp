@@ -1,9 +1,8 @@
 #include <fas/testing.hpp>
-#include <wflow/timer_manager.hpp>
-#include <wflow/delayed_queue.hpp>
-#include <wflow/asio_queue.hpp>
-#include <wflow/memory.hpp>
-#include <memory>
+#include <wflow/timer/timer_manager.hpp>
+#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/asio_queue.hpp>
+#include <wflow/system/memory.hpp>
 
 struct test_request
 {

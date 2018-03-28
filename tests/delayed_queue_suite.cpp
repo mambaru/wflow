@@ -1,7 +1,6 @@
 #include <fas/testing.hpp>
-#include <wflow/delayed_queue.hpp>
-#include <wflow/asio_queue.hpp>
-#include <wflow/asio.hpp>
+#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/asio_queue.hpp>
 #include <chrono>
 #include <atomic>
 #include <thread>

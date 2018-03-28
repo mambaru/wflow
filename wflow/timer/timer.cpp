@@ -1,8 +1,10 @@
 #include "timer.hpp"
-#include "bique.hpp"
-#include "asio_queue.hpp"
-#include "delayed_queue.hpp"
 #include "common_timer.hpp"
+
+#include <wflow/queue/bique.hpp>
+#include <wflow/queue/asio_queue.hpp>
+#include <wflow/queue/delayed_queue.hpp>
+
 
 namespace wflow{
 

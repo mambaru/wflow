@@ -1,0 +1,4 @@
+knownConditionTrueFalse:./examples/example3.cpp:29
+knownConditionTrueFalse:./tests/workflow_suite.cpp:76
+syntaxError:./wflow/timer/timer_manager.cpp:113
+unusedFunction:./wflow/json/load.cpp:60

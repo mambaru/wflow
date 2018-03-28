@@ -1,6 +1,6 @@
 #pragma once
 
-#include <wflow/asio.hpp>
+#include <wflow/system/asio.hpp>
 #include <mutex>
 #include <memory>
 #include <atomic>
@@ -45,11 +45,11 @@ public:
   
   void safe_delayed_post(duration_t duration, function_t f);
   
-  bool post( function_t f);
+  bool post( function_t f, function_t drop );
  
-  bool post_at(time_point_t tp, function_t f);
+  bool post_at(time_point_t tp, function_t f, function_t drop);
   
-  bool delayed_post(duration_t duration, function_t f);
+  bool delayed_post(duration_t duration, function_t f, function_t drop);
 
   std::size_t full_size() const;
   std::size_t unsafe_size() const;
@@ -60,7 +60,7 @@ public:
   
 private:
   
-  bool check_();
+  bool check_(function_t drop);
   
   template<typename TP>
   timer_ptr create_timer_(TP tp);

@@ -1,8 +1,9 @@
-
 #include "thread_pool_base.hpp"
-#include <wflow/delayed_queue.hpp>
-#include <wflow/bique.hpp>
-#include <wflow/asio_queue.hpp>
+
+#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/bique.hpp>
+#include <wflow/queue/asio_queue.hpp>
+
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <chrono>
@@ -109,7 +110,7 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
     oldsize*=2;
     for (;oldsize!=0; --oldsize )
     {
-      s->post([oldsize](){ 
+      s->safe_post([oldsize](){ 
         std::this_thread::sleep_for( std::chrono::seconds(1) );
       });
     }

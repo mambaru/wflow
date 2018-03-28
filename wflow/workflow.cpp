@@ -1,6 +1,7 @@
 #include "workflow.hpp"
-#include "bique.hpp"
 #include "logger.hpp"
+
+#include <wflow/queue/bique.hpp>
 
 namespace wflow{
   
@@ -15,26 +16,26 @@ workflow::workflow(workflow_options opt )
   : _id( opt.id )
   , _delay_ms(opt.post_delay_ms)
   , _impl( std::make_shared<task_manager>(opt.maxsize, opt.threads, opt.use_io_service) )
-  , _workflow_ptr(opt.control_workflow_ptr)
+  , _workflow_ptr(opt.control_workflow)
 {
-  _impl->rate_limit( opt.rate_limit );
-  _impl->set_startup( opt.startup_handler );
-  _impl->set_finish( opt.finish_handler );
-  _impl->set_statistics( opt.statistics_handler );
-  
-  this->create_wrn_timer_(opt);
+  this->initialize_(opt);
 }
 
 workflow::workflow(io_service_type& io, workflow_options opt)
+  : _id( opt.id )
+  , _delay_ms(opt.post_delay_ms)
+  , _impl( std::make_shared<task_manager>(io, opt.maxsize, opt.threads, opt.use_io_service) )
+  , _workflow_ptr(opt.control_workflow)
 {
-  _id = opt.id;
-  _workflow_ptr = opt.control_workflow_ptr;
-  _impl = std::make_shared<task_manager>(io, opt.maxsize, opt.threads, opt.use_io_service);
+  this->initialize_(opt);
+}
+
+void workflow::initialize_(const workflow_options& opt)
+{
   _impl->rate_limit( opt.rate_limit );
   _impl->set_startup( opt.startup_handler );
   _impl->set_finish( opt.finish_handler );
   _impl->set_statistics( opt.statistics_handler );
-  _delay_ms = opt.post_delay_ms;
   this->create_wrn_timer_(opt);
 }
 
@@ -46,7 +47,7 @@ void workflow::start()
 void workflow::reconfigure(workflow_options opt)
 {
   _id = opt.id;
-  _workflow_ptr = opt.control_workflow_ptr;
+  _workflow_ptr = opt.control_workflow;
   _impl->rate_limit( opt.rate_limit );
   _impl->set_startup( opt.startup_handler );
   _impl->set_finish( opt.finish_handler );
@@ -54,6 +55,11 @@ void workflow::reconfigure(workflow_options opt)
   _impl->reconfigure(opt.maxsize, opt.threads, opt.use_io_service);
   _delay_ms = opt.post_delay_ms;
   this->create_wrn_timer_(opt);
+}
+
+void workflow::clear()
+{
+  _impl->reset();
 }
 
 void workflow::stop()
@@ -74,78 +80,89 @@ std::shared_ptr< workflow::timer_type> workflow::get_timer() const
 void workflow::safe_post(post_handler handler)
 {
   if ( _delay_ms == 0)
-    _impl->safe_post( std::move(handler) );
+    _impl->safe_post( handler );
   else
-    this->safe_post( std::chrono::milliseconds(_delay_ms), std::move(handler) );
+    this->safe_post( std::chrono::milliseconds(_delay_ms), handler );
 }
 
-bool workflow::post(post_handler handler)
+bool workflow::post(post_handler handler, drop_handler drop)
 {
   if ( _delay_ms == 0)
-    return _impl->post( std::move(handler) );
+    return _impl->post( handler, drop );
   else
-    return this->post( std::chrono::milliseconds(_delay_ms), std::move(handler));
+    return this->post( std::chrono::milliseconds(_delay_ms), handler, drop);
 }
 
 void workflow::safe_post(time_point_t tp, post_handler handler)
 {
-  _impl->safe_post_at( tp, std::move(handler) );
+  _impl->safe_post_at( tp, handler );
 }
 
-bool workflow::post(time_point_t tp, post_handler handler)
+bool workflow::post(time_point_t tp, post_handler handler, drop_handler drop)
 {
-  return _impl->post_at( tp, std::move(handler));
+  return _impl->post_at( tp, handler, drop);
 }
 
 void workflow::safe_post(duration_t d,   post_handler handler)
 {
-  return _impl->safe_delayed_post(d, std::move(handler));
+  return _impl->safe_delayed_post(d, handler);
 }
 
-bool workflow::post(duration_t d,   post_handler handler)
+bool workflow::post(duration_t d,   post_handler handler, drop_handler drop)
 {
-  return _impl->delayed_post(d, std::move(handler));
+  return _impl->delayed_post(d, handler, drop);
 }
 
 workflow::timer_id_t workflow::create_timer(duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(d, std::move(handler), expires );
+  return _impl->timer()->create(d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(d, std::move(handler), expires );
+  return _impl->timer()->create(d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(duration_t sd, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create( sd, d, std::move(handler), expires );
+  return _impl->timer()->create( sd, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(duration_t sd, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create( sd, d, std::move(handler), expires );
+  return _impl->timer()->create( sd, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(time_point_t tp, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires );
+  return _impl->timer()->create(tp, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(time_point_t tp, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires );
+  return _impl->timer()->create(tp, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(std::string tp, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires );
+  return _impl->timer()->create(tp, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(std::string tp, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, std::move(handler), expires );
+  return _impl->timer()->create(tp, d, handler, expires );
 }
+
+workflow::timer_id_t workflow::create_timer(std::string tp, timer_handler handler, expires_at expires)
+{
+  return _impl->timer()->create(tp, handler, expires );
+}
+
+workflow::timer_id_t workflow::create_async_timer(std::string tp, async_timer_handler handler, expires_at expires)
+{
+  return _impl->timer()->create(tp, handler, expires );
+}
+
 
 std::shared_ptr<bool> workflow::detach_timer(timer_id_t id)
 {

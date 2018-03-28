@@ -1,7 +1,7 @@
 #pragma once
 
-#include <wflow/timer_manager.hpp>
-#include <wflow/asio.hpp>
+#include <wflow/timer/timer_manager.hpp>
+#include <wflow/system/asio.hpp>
 #include <thread>
 #include <atomic>
 
@@ -42,10 +42,9 @@ public:
   void set_finish( finish_handler handler );
   void set_statistics( statistics_handler handler );
 
-  
   void start();
-
   void stop();
+  void reset();
 
   std::size_t run();
   
@@ -61,9 +60,9 @@ public:
   
   bool post(function_t f, function_t drop);
   
-  bool post_at(time_point_t tp, function_t f);
+  bool post_at(time_point_t tp, function_t f, function_t drop);
 
-  bool delayed_post(duration_t duration, function_t f);
+  bool delayed_post(duration_t duration, function_t f, function_t drop);
   
   std::size_t full_size() const;
   std::size_t safe_size() const;

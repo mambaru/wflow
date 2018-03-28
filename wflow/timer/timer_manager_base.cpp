@@ -1,9 +1,9 @@
 #include "timer_manager_base.hpp"
 #include "timer.hpp"
-#include "asio_queue.hpp"
-#include "delayed_queue.hpp"
-#include "bique.hpp"
-#include "logger.hpp"
+#include <wflow/queue/asio_queue.hpp>
+#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/bique.hpp>
+#include <wflow/logger.hpp>
 
 
 namespace wflow{

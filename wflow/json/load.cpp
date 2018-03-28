@@ -5,10 +5,10 @@
 //
 
 
-#include "load.hpp"
+#include "../load.hpp"
+#include "workflow_options_json.hpp"
 #include <wjson/json.hpp>
 #include <wjson/strerror.hpp>
-#include <wflow/workflow_options_json.hpp>
 #include <fstream>
 
 namespace wflow{

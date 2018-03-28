@@ -9,8 +9,6 @@ bique::~bique()
   this->stop();
 }
 
-
-
 bique::bique( size_t maxsize, bool use_asio)
   : _dflag(!use_asio)
   , _mt_flag(true)
@@ -19,7 +17,6 @@ bique::bique( size_t maxsize, bool use_asio)
   , _asio( std::make_shared<asio_queue>( *_io, maxsize) )
   , _asio_st(nullptr)
 {
-  
 }
 
 bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
@@ -47,7 +44,6 @@ void bique::reconfigure(size_t maxsize, bool use_asio, bool mt )
   _asio->set_maxsize(maxsize);
   if( _asio_st ) 
     _asio_st->set_maxsize(maxsize);
-  
 }
 
 void bique::reset()
@@ -77,7 +73,6 @@ void bique::stop()
   _asio->stop();
 }
 
-
 void bique::safe_post( function_t f )
 {
   return this->invoke_( &delayed_queue::safe_post, &asio_queue::safe_post, f);
@@ -93,20 +88,19 @@ void bique::safe_delayed_post(duration_t duration, function_t f)
   return this->invoke_( &delayed_queue::safe_delayed_post, &asio_queue::safe_delayed_post, duration, f);
 }
 
-
-bool bique::post( function_t f )
+bool bique::post( function_t f, function_t drop )
 {
-  return this->invoke_( &delayed_queue::post, &asio_queue::post, std::move(f) );
+  return this->invoke_( &delayed_queue::post, &asio_queue::post, std::move(f), std::move(drop) );
 }
 
-bool bique::post_at(time_point_t tp, function_t f)
+bool bique::post_at(time_point_t tp, function_t f, function_t drop)
 {
-  return this->invoke_( &delayed_queue::post_at, &asio_queue::post_at, tp, std::move(f));
+  return this->invoke_( &delayed_queue::post_at, &asio_queue::post_at, tp, std::move(f), std::move(drop));
 }
 
-bool bique::delayed_post(duration_t duration, function_t f)
+bool bique::delayed_post(duration_t duration, function_t f, function_t drop)
 {
-  return this->invoke_( &delayed_queue::delayed_post, &asio_queue::delayed_post, duration, std::move(f));
+  return this->invoke_( &delayed_queue::delayed_post, &asio_queue::delayed_post, duration, std::move(f), std::move(drop));
 }
 
 std::size_t bique::full_size() const
@@ -128,7 +122,6 @@ std::size_t bique::dropped() const
 {
   return this->invoke_( &delayed_queue::dropped, &asio_queue::dropped);
 }
-//private:
   
 template<typename R, typename... Args>
 R bique::invoke_( 

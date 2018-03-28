@@ -3,8 +3,6 @@
 #include <iostream>
 #include <chrono>
 
-/** Output:
-  */
 
 int main()
 {
@@ -13,7 +11,7 @@ int main()
   opt.threads = 5;
   wflow::workflow wf(ios, opt);
   wf.start();
-  int counter = 100;
+  volatile int counter = 100;
   std::mutex m;
   auto show = [&counter, &m](int value) 
   {

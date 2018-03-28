@@ -32,7 +32,7 @@ struct workflow_options
   bool debug = false;
   
   // для таймера проверки wrnsize
-  std::shared_ptr<workflow> control_workflow_ptr;
+  std::shared_ptr<workflow> control_workflow;
   std::function<bool()> control_handler = nullptr;
   
   typedef std::function<void(std::thread::id)> startup_handler_t;
