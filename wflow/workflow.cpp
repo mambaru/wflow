@@ -1,7 +1,6 @@
-#include "workflow.hpp"
 #include "logger.hpp"
-
 #include <wflow/queue/bique.hpp>
+#include "workflow.hpp"
 
 namespace wflow{
   
