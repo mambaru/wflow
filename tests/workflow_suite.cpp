@@ -176,7 +176,12 @@ UNIT(requester1, "")
   id = flw.create_requester< foo::request, foo::response >(
     milliseconds(0),
     milliseconds(1000), 
-    f, &foo::method,
+    /*f, &foo::method,*/
+    [f](foo::request::ptr req, foo::response::handler callback)
+    {
+      f->method(std::move(req), callback);
+      return true;
+    },
     [&id, &ios, &finish]( foo::response::ptr ) -> foo::request::ptr
     {
       std::cout << std::endl << id << std::endl;

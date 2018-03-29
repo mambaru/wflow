@@ -27,11 +27,18 @@ int main()
   
   wf.create_requester<request, response>(
     std::chrono::seconds(1),
-    f, 
-    &foo::method,
+    [f](std::unique_ptr<request> req, std::function< void(std::unique_ptr<response>) > callback)
+    {
+      f->method(std::move(req), callback);
+      return true;
+    },
     [](std::unique_ptr<response> resp) -> std::unique_ptr<request>
     {
-      return resp == nullptr ? std::make_unique<request>() : nullptr;
+      
+      if ( resp == nullptr )
+        return std::make_unique<request>();
+      
+      return nullptr;
     }
   );
   ios.run();

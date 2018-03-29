@@ -6,22 +6,27 @@
 #include <mutex>
 #include <memory>
 
-struct request{ int param = 0; };
-struct response{ int result = 0; };
-
-/*struct ifoo
+struct request
 {
-  virtual void method( std::unique_ptr<request>,  std::function< void(std::unique_ptr<response>) > ) = 0;
-};*/
+  int param = 0; 
+  typedef std::unique_ptr<request> ptr;
+};
 
-class foo/*: public ifoo*/
+struct response
+{
+  int result = 0; 
+  typedef std::unique_ptr<response> ptr;
+  typedef std::function< void(ptr) > handler;
+};
+
+class foo
 {
 public:
   foo(wflow::workflow& w)
     : _workflow(w)
   {}
   
-  void method( std::unique_ptr<request> req,  std::function< void(std::unique_ptr<response>) > callback) 
+  void method( request::ptr req,  response::handler callback) 
   {
     if ( req->param == 5 && _flag)
     {
@@ -57,12 +62,17 @@ int main()
   boost::asio::io_service ios;
   wflow::workflow wf(ios);
   auto f = std::make_shared<foo>(wf);
-  
+  int callcount = 0;
   wf.create_requester<request, response>(
     std::chrono::seconds(1),
-    f, 
-    &foo::method,
-    [](std::unique_ptr<response> resp) -> std::unique_ptr<request>
+    [f, &callcount](request::ptr req, response::handler callback)
+    {
+      if ( callcount == 5 )
+        return false;
+      f->method(std::move(req), callback);
+      return true;
+    },
+    [&callcount](response::ptr resp) -> request::ptr
     {
       if ( resp == nullptr )
       {
@@ -71,7 +81,7 @@ int main()
       }
       else if ( resp->result != 10)
       {
-        std::cout << "create request N" << resp->result << std::endl;
+        std::cout << "create request N" << callcount << "." << resp->result << std::endl;
         auto req = std::make_unique<request>();
         req->param = resp->result;
         return req;
@@ -79,6 +89,7 @@ int main()
       else
       {
         std::cout << "STOP create request" << std::endl;
+        ++callcount;
         return nullptr;
       }
     }

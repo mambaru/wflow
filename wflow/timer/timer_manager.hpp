@@ -25,8 +25,8 @@ public:
   typedef Queue queue_type;
   typedef std::shared_ptr<queue_type> queue_ptr;
   typedef std::function<bool()> handler;
-  typedef std::function<void(bool)> handler_callback;
-  typedef std::function<void(handler_callback)> async_handler;
+  typedef std::function<void(bool)> timer_callback;
+  typedef std::function<void(timer_callback)> async_handler;
 
   typedef std::chrono::system_clock         clock_t;
   typedef std::chrono::time_point<clock_t>  time_point_t;
@@ -64,7 +64,59 @@ public:
   timer_id_t create(std::string start_time, async_handler h, expires_at expires = expires_at::after);
 
   // reqesters 
-  
+
+  template< typename Req, typename Res>
+  timer_id_t create( 
+    duration_t d, 
+    typename requester::sender_t<Req, Res>::type sender, 
+    typename requester::generator_t<Req, Res>::type generator
+  )
+  {
+    return this->create( std::chrono::milliseconds(0), d, this->make_reqester_<Req, Res>( sender, generator));
+  }
+
+  template< typename Req, typename Res>
+  timer_id_t create( 
+    duration_t sd, 
+    duration_t d, 
+    typename requester::sender_t<Req, Res>::type sender, 
+    typename requester::generator_t<Req, Res>::type generator 
+  )
+  {
+    return this->create(sd, d, this->make_reqester_<Req, Res>(sender, generator));
+  }
+
+  template< typename Req, typename Res >
+  timer_id_t create(
+    time_point_t st,
+    duration_t d, 
+    typename requester::sender_t<Req, Res>::type sender, 
+    typename requester::generator_t<Req, Res>::type generator)
+  {
+    return this->create(st, d, this->make_reqester_<Req, Res>(sender, generator));
+  }
+
+  template< typename Req, typename Res>
+  timer_id_t create( 
+    std::string st, 
+    duration_t d, 
+    typename requester::sender_t<Req, Res>::type sender, 
+    typename requester::generator_t<Req, Res>::type generator
+  )
+  {
+    return this->create(st, d, this->make_reqester_<Req, Res>(sender, generator));
+  }
+
+  template< typename Req, typename Res >
+  timer_id_t create( 
+    std::string st, 
+    typename requester::sender_t<Req, Res>::type sender, 
+    typename requester::generator_t<Req, Res>::type generator
+  )
+  {
+    return this->create(st, this->make_reqester_<Req, Res>(sender, generator));
+  }  
+  /*
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   timer_id_t create( duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
   {
@@ -94,17 +146,28 @@ public:
   {
     return this->create(st, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
   }
+  */
 
   /// //////////////
 
 private:
 
+  template<typename Req, typename Res>
+  auto make_reqester_(
+    typename requester::sender_t<Req, Res>::type sender,
+    typename requester::generator_t<Req, Res>::type generator
+  ) -> std::function<void(timer_callback)>
+  {
+    return requester::make<Req, Res>( this->_queue, sender,  generator);
+  }
+  /*
   template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
   auto make_reqester_( std::shared_ptr<I> i, MemFun mem_fun, Handler result_handler ) 
     -> std::function<void( handler_callback)>
   {
     return requester::make<Req, Res>( this->_queue, i, std::move(mem_fun), std::move(result_handler) );
   }
+  */
 
   template<typename Handler>
   timer_id_t create_(time_point_t start_time, duration_t delay, Handler h, expires_at expires);
