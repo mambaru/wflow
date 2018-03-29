@@ -6,10 +6,9 @@
 
 int main()
 {
-  boost::asio::io_service ios;
   wflow::workflow_options opt;
   opt.threads = 5;
-  wflow::workflow wf(ios, opt);
+  wflow::workflow wf(opt);
   wf.start();
   volatile int counter = 100;
   std::mutex m;

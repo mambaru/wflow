@@ -54,13 +54,11 @@ struct workflow_options_advance_json
 struct workflow_options_basic_json
 {
   JSON_NAME(threads)
-  JSON_NAME(use_io_service)
- 
+
   typedef wjson::object<
     workflow_options,
     wjson::member_list<
-      wjson::member< n_threads, workflow_options, size_t,  &workflow_options::threads >/*,
-      wjson::member< n_use_io_service, workflow_options, bool, &workflow_options::use_io_service >*/
+      wjson::member< n_threads, workflow_options, size_t,  &workflow_options::threads >
     >,
     wjson::strict_mode
   > type;

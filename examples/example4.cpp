@@ -2,6 +2,7 @@
 #include <wflow/logger.hpp>
 #include <iostream>
 #include <chrono>
+#include <mutex>
 
 /** Output:
   */
@@ -15,17 +16,19 @@ int main()
   wflow::workflow wf(ios, opt);
   wf.start();
   int counter = 100;
-  
+  std::mutex m;
   for (int i = 0; i < 100; ++i)
   {
-    wf.post( [&ios, i, &counter](){
-      std::cout << i << std::endl;
+    wf.post( [&, i](){
+      std::lock_guard<std::mutex> lk(m);
+      std::cout << i << " counter=" << counter << std::endl;
+      
       if ( --counter == 0 )
         ios.stop();
     });
   }
   
-  boost::asio::io_service::work wrk(ios);
+  //boost::asio::io_service::work wrk(ios);
   ios.run();
-  wf.stop();
+//  wf.stop();
 }

@@ -8,8 +8,12 @@ UNIT(workflow1, "")
 {
   using namespace ::fas::testing;
   t << flush;
-  ::wflow::asio::io_service io;
-  ::wflow::task_manager queue(io, 0, 3, false);
+  wflow::asio::io_service io;
+  wflow::workflow_options opt;
+  opt.maxsize = 3;
+  opt.threads = 1;
+  opt.use_asio = false;
+  wflow::task_manager queue(io, opt);
   queue.start();
   std::mutex m;
   int counter = 0;
@@ -47,7 +51,7 @@ UNIT(workflow1, "")
   t << flush;
   t << message("sleep...");
   t << flush;
-  sleep(1);
+  sleep(2);
   t << message("flush...");
   t << flush;
   queue.stop();
@@ -170,7 +174,9 @@ UNIT(requester1, "")
   auto start = high_resolution_clock::now();
   auto finish = start;
   id = flw.create_requester< foo::request, foo::response >(
-    milliseconds(0), milliseconds(1000), f, &foo::method,
+    milliseconds(0),
+    milliseconds(1000), 
+    f, &foo::method,
     [&id, &ios, &finish]( foo::response::ptr ) -> foo::request::ptr
     {
       std::cout << std::endl << id << std::endl;

@@ -11,19 +11,19 @@ workflow::~workflow()
   _impl = nullptr;
 }
 
-workflow::workflow(workflow_options opt )
+workflow::workflow(const workflow_options& opt )
   : _id( opt.id )
   , _delay_ms(opt.post_delay_ms)
-  , _impl( std::make_shared<task_manager>(opt.maxsize, opt.threads, opt.use_io_service) )
+  , _impl( std::make_shared<task_manager>(opt) )
   , _workflow_ptr(opt.control_workflow)
 {
   this->initialize_(opt);
 }
 
-workflow::workflow(io_service_type& io, workflow_options opt)
+workflow::workflow(io_service_type& io, const workflow_options& opt)
   : _id( opt.id )
   , _delay_ms(opt.post_delay_ms)
-  , _impl( std::make_shared<task_manager>(io, opt.maxsize, opt.threads, opt.use_io_service) )
+  , _impl( std::make_shared<task_manager>(io, opt) )
   , _workflow_ptr(opt.control_workflow)
 {
   this->initialize_(opt);
@@ -43,17 +43,19 @@ void workflow::start()
   _impl->start();
 }
 
-void workflow::reconfigure(workflow_options opt)
+bool workflow::reconfigure(const workflow_options& opt)
 {
+  if ( !_impl->reconfigure(opt) )
+    return false;
   _id = opt.id;
   _workflow_ptr = opt.control_workflow;
   _impl->rate_limit( opt.rate_limit );
   _impl->set_startup( opt.startup_handler );
   _impl->set_finish( opt.finish_handler );
   _impl->set_statistics( opt.statistics_handler );
-  _impl->reconfigure(opt.maxsize, opt.threads, opt.use_io_service);
   _delay_ms = opt.post_delay_ms;
   this->create_wrn_timer_(opt);
+  return true;
 }
 
 void workflow::clear()
@@ -78,10 +80,7 @@ std::shared_ptr< workflow::timer_type> workflow::get_timer() const
 
 void workflow::safe_post(post_handler handler)
 {
-  if ( _delay_ms == 0)
-    _impl->safe_post( handler );
-  else
-    this->safe_post( std::chrono::milliseconds(_delay_ms), handler );
+  _impl->safe_post( handler );
 }
 
 bool workflow::post(post_handler handler, drop_handler drop)

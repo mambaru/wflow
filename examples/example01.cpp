@@ -9,15 +9,15 @@ int main()
   wflow::workflow wf(ios);
   
   // Простое задание 
-  wf.safe_post( [](){ std::cout << "Simple safe post  " << std::endl; } );
+  wf.post( [](){ std::cout << "Simple unsafe post  " << std::endl; } );
   
   // Отложенное задание 
-  wf.safe_post( std::chrono::seconds(4), [](){ std::cout << "Safe post after delay 4 second " << std::endl; } );
+  wf.post( std::chrono::seconds(4), [](){ std::cout << "Safe unpost after delay 4 second " << std::endl; } );
   
   // Задание на конкретный момент времени 
   auto tp = std::chrono::system_clock::now();
   tp += std::chrono::seconds(2);
-  wf.safe_post( tp, [](){ std::cout << "Safe post in time point" << std::endl; } );
+  wf.post( tp, [](){ std::cout << "Safe unpost in time point" << std::endl; } );
   
   // Ожидаем выполнение всех заданий 
   ios.run();

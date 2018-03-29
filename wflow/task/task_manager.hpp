@@ -2,6 +2,8 @@
 
 #include <wflow/timer/timer_manager.hpp>
 #include <wflow/system/asio.hpp>
+#include <wflow/workflow_options.hpp>
+
 #include <thread>
 #include <atomic>
 
@@ -31,11 +33,11 @@ public:
 
   //task_manager( io_service_type& io, size_t queue_maxsize );
   
-  task_manager( size_t queue_maxsize, size_t threads, bool use_asio );
+  task_manager( const workflow_options& opt );
   
-  task_manager( io_service_type& io, size_t queue_maxsize, size_t threads, bool use_asio /*= false*/  );
+  task_manager( io_service_type& io, const workflow_options& opt );
 
-  void reconfigure(size_t queue_maxsize, size_t threads, bool use_asio /*= false*/ );
+  bool reconfigure( const workflow_options& opt );
   
   void rate_limit(size_t rps);
   void set_startup( startup_handler handler );
@@ -73,6 +75,7 @@ public:
   
 private:
   std::atomic<size_t> _threads;
+  std::atomic<bool> _can_reconfigured;
   std::shared_ptr<queue_type> _queue;
   std::shared_ptr<timer_type> _timer;
   std::shared_ptr<pool_type>  _pool;

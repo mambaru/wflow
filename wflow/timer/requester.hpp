@@ -13,7 +13,7 @@ public:
 
   template< typename Req, typename Res, typename Q, typename I, typename MemFun, typename Handler >
   static auto make(const std::shared_ptr<Q>& q, const std::shared_ptr<I>& i, MemFun mem_fun, Handler result_handler ) 
-    -> std::function<void( handler_callback)>
+    -> std::function<void(handler_callback)>
   {
     std::weak_ptr<Q> wq = q;
     std::weak_ptr<I> wi = i;

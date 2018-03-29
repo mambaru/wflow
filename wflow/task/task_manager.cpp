@@ -20,33 +20,38 @@ public:
 };
 
 
-task_manager::task_manager( size_t queue_maxsize, size_t threads, bool use_asio )
-  : _threads(threads)
-  , _queue( std::make_shared<queue_type>(queue_maxsize, use_asio) )
+task_manager::task_manager( const workflow_options& opt  )
+  : _threads(opt.threads)
+  , _can_reconfigured(opt.use_asio)
+  , _queue( std::make_shared<queue_type>(opt.maxsize, opt.use_asio) )
   , _timer( std::make_shared<timer_type >(_queue) )
   , _pool( std::make_shared<pool_type>(_queue) )
-  , _rate_limit(0)
+  , _rate_limit(opt.rate_limit)
   , _start_interval(0)
   , _interval_count(0)
 {
 }
   
-task_manager::task_manager( io_service_type& io, size_t queue_maxsize, size_t threads, bool use_asio /*= false*/  )
-  : _threads(threads)
-  , _queue( std::make_shared<queue_type>(io, queue_maxsize, use_asio, threads!=0) )
+task_manager::task_manager( io_service_type& io, const workflow_options& opt  )
+  : _threads(opt.threads)
+  , _can_reconfigured(opt.use_asio)
+  , _queue( std::make_shared<queue_type>(io, opt.maxsize, opt.use_asio, opt.threads!=0) )
   , _timer( std::make_shared<timer_type >(_queue) )
   , _pool( std::make_shared<pool_type>(_queue) )
-  , _rate_limit(0)
+  , _rate_limit(opt.rate_limit)
   , _start_interval(0)
   , _interval_count(0)
 {
 }
 
-void task_manager::reconfigure(size_t queue_maxsize, size_t threads, bool use_asio /*= false*/ )
+bool task_manager::reconfigure(const workflow_options& opt  )
 {
-  _threads = threads;
-  _pool->reconfigure(_threads);
-  _queue->reconfigure(queue_maxsize, use_asio, threads!=0 );
+  if ( !_can_reconfigured || !opt.use_asio )
+    return false;
+  _queue->reconfigure(opt.maxsize, opt.use_asio, opt.threads!=0 );
+  _pool->reconfigure(opt.threads);
+  _threads = opt.threads;
+  return true;
 }
   
 void task_manager::rate_limit(size_t rps) 

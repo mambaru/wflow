@@ -30,8 +30,6 @@ public:
   
   void reconfigure( size_t maxsize, bool use_asio, bool mt );
   
-  //void reconfigure(size_t maxsize, bool use_asio );
-
   void reset();
 
   std::size_t run();
@@ -41,14 +39,12 @@ public:
   std::size_t poll_one();
 
   void stop();
-
   
   void safe_post( function_t f);
 
   void safe_post_at(time_point_t tp, function_t f);
 
   void safe_delayed_post(duration_t duration, function_t f);
-  
 
   bool post( function_t f, function_t drop );
 
