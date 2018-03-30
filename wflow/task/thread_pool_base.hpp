@@ -6,6 +6,7 @@
 #include <atomic>
 #include <memory>
 #include <functional>
+#include <wflow/system/asio.hpp>
 
 namespace wflow {
 
@@ -19,6 +20,11 @@ class thread_pool_base
 public:
   typedef thread_pool_base self;
   typedef std::shared_ptr<bool> thread_flag;
+/*  typedef ::wflow::asio::io_service io_service_type;
+  typedef io_service_type::work work_type;
+  typedef std::unique_ptr<work_type> work_ptr;
+  */
+
   typedef std::vector<thread_flag> flag_list;
   typedef std::function<void(std::thread::id)> startup_handler;
   typedef std::function<void(std::thread::id)> finish_handler;
@@ -62,7 +68,8 @@ private:
   mutable std::mutex _mutex;
   mutable std::vector< std::thread > _threads;
   std::vector< thread_flag > _flags;
-  std::vector< std::function<void()> > _works;
+  std::function<void()> _work;
+  //std::vector< std::function<void()> > _works;
   
   startup_handler _startup;
   finish_handler _finish;

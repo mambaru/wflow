@@ -17,6 +17,7 @@ class bique
 public:
   typedef ::wflow::asio::io_service io_service_type;
   typedef io_service_type::work work_type;
+  typedef std::unique_ptr<work_type> work_ptr;
   typedef std::shared_ptr<io_service_type> io_service_ptr;
   typedef std::function<void()>                               function_t;
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
@@ -58,7 +59,7 @@ public:
   
   std::size_t dropped() const;
   
-  io_service_type::work work() const;
+  work_type work() const;
 private:
   
   template<typename R, typename... Args>

@@ -9,12 +9,14 @@
 struct request
 {
   int param = 0; 
+  /* исключительно для удобства*/
   typedef std::unique_ptr<request> ptr;
 };
 
 struct response
 {
   int result = 0; 
+  /* исключительно для удобства*/
   typedef std::unique_ptr<response> ptr;
   typedef std::function< void(ptr) > handler;
 };

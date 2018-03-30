@@ -14,62 +14,118 @@ namespace wflow{
  */
 
 /**
- * @brief Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки.
- * @details *workflow* можно рассматривать как надстройку над boost::asio::io_service. Существуют четыре группы заданий:
- * * Защищенные задания 
- * * Незащищенные задания 
- * * Обычные таймеры
- * * Асинхронные таймеры
- * * Опросники (requester)
- * 
- * ## Защищенные задания ( workflow::safe_post )
- * 
- * Обработчик защищенного задания гарантированно не будут выкинут из очереди, даже при ее переполнении. Таймеры также используют этот вид заданий. 
- * Отложенные защищенные задания выполняються в момент срабатывания таймера, в отличие от незащищенных, которые в этот момент только отправят задание 
- * в общую очередь на обработку. Кроме того защищенные задания игнорируют общие ограничения по задержке и скорости обработки, которые задаються в конфигурации.
- * 
- * В общем случае, если нет необходимости использовать опциональные ограничения, то рекомендуется использовать этот вид заданий, т.к. нет дополнительных накладных расходов. 
- * Однако в нагруженных системах рекомендуется использовать отдельные wflow::workflow для тамеров и основного потока заданий, чтобы большое количество заданий не мешало отрабатывать 
- * таймерам во время. Т.к. отложеные задание также используют таймеры, в опциях можно передать указатель на wflow::workflow специально для этих целей. См. \ref example0.cpp
- * 
- * ## Незащищенные задания ( workflow::post )
- * Этот тип заданий может быть выкинут из очереди заданий (с возможностью вызова альтернативного обработчика), а также на очередь таких заданий можно наложить ограничения 
- * на скорость обработки и/или установить задержку. Если указать альтернативный обработчик при отправке задания в очередь, то он сработает в случае переполнения очереди, если 
- * основной обработчик был выкинут из очереди. \ref example1.cpp Если workflow::post возвращает false, то однозначно заданию нет места в очереди, и альтернативный обработчик 
- * был выполнен, если true -  * то задание было поставленно в очередь, но не факт, что будет выполненно. 
- * 
- * Если не задано ограничений на размер очереди (по умолчанию), то задания не будут выкидываться из очерди, но отработка отложеных заданий и/или при ограничении скорости обработки
- * отличается. В то время как у защищенного отложенного задания тамер устанавливается на время выполнения обработчика задания, то у незащенного задания - на время отправки в общую 
- * очередь. Т.е. задание на отправку в очередь, в заданное время, будет выполненно, но не факт, что успешно, если очередь будет переполненна. \ref example2.cpp 
- * 
- * Незащищенные задания имеет смысл использовать на высоких на грузках, когда есть вероятность того, что система не будет справляться с потоком заданий, чтобы не допустить 
- * разбухания очереди workflow_options::maxsize. Например в сетевых приложениях, через незащищенную очередь пропускают все запросы клиентов. Это может быть удобно, также, 
- * для тестирования, например искуственно увеличив время ответа workflow_options::post_delay_ms или ограничив пропускную способность workflow_options::rate_limit
- * 
- * ## Обычные таймеры (workflow::create_timer)
- * При создании таймера задается функция (обработчик таймера workflow::timer_handler) которая выполняеться с заданым интервалом времени. Обработчик таймера должен возвращать true, 
- * если тамер еще актуален и false - если он больше не нужен. По мимо интервала выполнения, можно передать флаг определяющий, как будет отсчитываться следующий момен времени вызова 
- * обработчика: с начала или после выполнения. Также можно задать время первого выполнения. Напремер "через 10 секунд и далее каждую секунду" \ref exampleX.cpp или в пять утра 
- * и далее каждые 6 часов. Как уже было сказано, при больших нагрузках (например в сетевых приложениях) не рекомендуется использовать таймеры в общем wflow::workflow (ну или наоборот, 
- * для потока запросов создать отдельный wflow::workflow)
- * 
- * ## Асинхронные таймеры (workflow::create_asyn_timer)
- * Отличаеться от обычного таймера тем, что в обработчик таймера workflow::async_timer_handler пердается функция обратного вызова workflow::callback_timer_handler, которую он должен 
- * вызвать, чтобы сигнализировать о том, что обработка завершена и что делать далее: завершить работу таймера или продолжить. Используется если в обработчике таймера нужно выполнить 
- * асинхронную операцию, например сделать запрос на удаленный сервер.
- * 
- * ## Опросники (requester)
- * Вид асинхронных таймеров 
- * 
- * ```cpp
- * struct request{...};
- * struct response{...};
- * class ifoo
- * {
- *   virtual void method( std::unique_ptr<request> req, std::function<void(std::unique_ptr<response>) >) = 0;
- * }
- * ```
- * 
+   @brief Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки.
+   @details *workflow* можно рассматривать как надстройку над boost::asio::io_service. Существуют четыре группы заданий:
+   * Защищенные задания 
+   * Незащищенные задания 
+   * Обычные таймеры
+   * Асинхронные таймеры
+   * Опросники (requester)
+   
+   ## Защищенные задания ( workflow::safe_post )
+   
+   Обработчик защищенного задания гарантированно не будут выкинут из очереди, даже при ее переполнении. Таймеры также используют этот вид заданий. 
+   Отложенные защищенные задания выполняються в момент срабатывания таймера, в отличие от незащищенных, которые в этот момент только отправят задание 
+   в общую очередь на обработку. Кроме того защищенные задания игнорируют общие ограничения по задержке и скорости обработки, которые задаються в конфигурации.
+```cpp
+boost::asio::io_service ios;
+wflow::workflow wf(ios);
+    
+//// Простое задание 
+wf.safe_post( [](){ std::cout << "Simple safe post  " << std::endl; } );
+    
+//// Отложенное задание 
+wf.safe_post( std::chrono::seconds(4), [](){ std::cout << "Safe post after delay 4 second " << std::endl; } );
+``` 
+   В общем случае, если нет необходимости использовать опциональные ограничения, то рекомендуется использовать этот вид заданий, т.к. нет дополнительных накладных расходов. 
+   Однако в нагруженных системах рекомендуется использовать отдельные wflow::workflow для тамеров и основного потока заданий, чтобы большое количество заданий не мешало отрабатывать 
+   таймерам во время. Т.к. отложеные задание также используют таймеры, в опциях можно передать указатель на wflow::workflow специально для этих целей. См. \ref example0.cpp
+
+   ## Незащищенные задания ( workflow::post )
+   Этот тип заданий может быть выкинут из очереди заданий (с возможностью вызова альтернативного обработчика), а также на очередь таких заданий можно наложить ограничения 
+   на скорость обработки и/или установить задержку. Если указать альтернативный обработчик при отправке задания в очередь, то он сработает в случае переполнения очереди, если 
+   основной обработчик был выкинут из очереди. \ref example1.cpp Если workflow::post возвращает false, то однозначно заданию нет места в очереди, и альтернативный обработчик 
+   был выполнен, если true -  * то задание было поставленно в очередь, но не факт, что будет выполненно.
+```cpp
+boost::asio::io_service ios;
+wflow::workflow wf(ios);
+  
+//// Простое задание 
+wf.post( [](){ std::cout << "Simple unsafe post  " << std::endl; } );
+  
+//// Отложенное задание 
+wf.post( std::chrono::seconds(4), [](){ std::cout << "Safe unpost after delay 4 second " << std::endl; } );
+``` 
+   Если не задано ограничений на размер очереди (по умолчанию), то задания не будут выкидываться из очерди, но отработка отложеных заданий и/или при ограничении скорости обработки
+   отличается. В то время как у защищенного отложенного задания тамер устанавливается на время выполнения обработчика задания, то у незащенного задания - на время отправки в общую 
+   очередь. Т.е. задание на отправку в очередь, в заданное время, будет выполненно, но не факт, что успешно, если очередь будет переполненна. \ref example2.cpp 
+   
+   Незащищенные задания имеет смысл использовать на высоких на грузках, когда есть вероятность того, что система не будет справляться с потоком заданий, чтобы не допустить 
+   разбухания очереди workflow_options::maxsize. Например в сетевых приложениях, через незащищенную очередь пропускают все запросы клиентов. Это может быть удобно, также, 
+   для тестирования, например искуственно увеличив время ответа workflow_options::post_delay_ms или ограничив пропускную способность workflow_options::rate_limit
+   
+   ## Обычные таймеры (workflow::create_timer)
+   При создании таймера задается функция (обработчик таймера workflow::timer_handler) которая выполняеться с заданым интервалом времени. Обработчик таймера должен возвращать true, 
+   если тамер еще актуален и false - если он больше не нужен. По мимо интервала выполнения, можно передать флаг определяющий, как будет отсчитываться следующий момен времени вызова 
+   обработчика: с начала или после выполнения. Также можно задать время первого выполнения. Напремер "через 10 секунд и далее каждую секунду" \ref exampleX.cpp или в пять утра 
+   и далее каждые 6 часов. Как уже было сказано, при больших нагрузках (например в сетевых приложениях) не рекомендуется использовать таймеры в общем wflow::workflow (ну или наоборот, 
+   для потока запросов создать отдельный wflow::workflow)
+   
+   ## Асинхронные таймеры (workflow::create_asyn_timer)
+   Отличаеться от обычного таймера тем, что в обработчик таймера workflow::async_timer_handler пердается функция обратного вызова workflow::callback_timer_handler, которую он должен 
+   вызвать, чтобы сигнализировать о том, что обработка завершена и что делать далее: завершить работу таймера или продолжить. Используется если в обработчике таймера нужно выполнить 
+   асинхронную операцию, например сделать запрос на удаленный сервер.
+   
+   ## Опросники (requester)
+   Вид асинхронных таймеров, предназначеных для создания последовательности запросов на основе пришедших ответов. Типичные примеры это переодическое обновление данных из БД или другого
+   сервиса с помощью нескольких запросов, реализация репликации и пр. Для реализации потребуются структуры запроса и ответа, обработчики отправителя и генератора запросов.
+   
+   Запросом и ответом может быть любой тип, но предпочтительно использовать структуры с определеннными типами для удобства использования:
+```cpp
+struct request
+{
+  ...
+////исключительно для удобства
+  typedef std::unique_ptr<request> ptr;
+};
+  
+struct response
+{
+  ...
+  ////исключительно для удобства
+  typedef std::unique_ptr<response> ptr;
+  typedef std::function< void(ptr) > handler;
+};
+```
+   На вход генератора приходит ответ от предыдущего запроса, на основе которого он может создать следующий запрос. При первом запросе передается nullptr, а для того чтобы обозначить 
+   конец последовательности опроса генератор также возвращает nullptr. В примере простой случай, когда последовательность из одного запроса: 
+```cpp
+request::ptr generator(response::ptr resp)
+{
+  if ( resp == nullptr )
+    return std::make_unique<request>();
+  return nullptr;
+}
+```
+   Далее, сгенерированый запрос передается отправителю, который должен с ним что-то сделать и отправить ответ через callback-функцию в любой момент времени (как правило асинхронно).
+   В примере просто формируем ответ через тот же workflow с задержкой:
+```cpp
+wflow::workflow wf(ios);
+bool sender(request::ptr, response::handler callback)
+{
+  wf.post(std::chrono::milliseconds(500), [callback]()
+  {
+    callback(std::make_unique<response>());
+  });
+  return true;
+}
+```
+   Отправитель возвращает true, аналогично обработчику таймера, сообщая что таймер должен продолжать работать. Создание опросника, анологично созданию асинхронных таймеров:
+```cpp
+wf.create_requester<request, response>(std::chrono::seconds(1), sender, generator );
+```
+   В данном примере \ref exampleX.cpp генерируется последовательность из одного запроса с переодичностью в одну секунду. При более длинных последовательностьях последующий запрос 
+   передается немедленно после получения ответа до тех пор пока генератар не вернет nullptr и только после этого наступает заданная пауза. Более сложный пример см. \ref exampleX.cpp 
  */
 class workflow
 {
@@ -141,7 +197,16 @@ public:
    */
   bool reconfigure(const workflow_options& opt);
   
+  /**
+   * @brief Сброс всех очередей
+   */
   void clear();
+  
+  /**
+   * @brief Получить идентификатор workflow
+   * @details Это произвольная строка, может использоваться при логировании 
+   */
+  const std::string& get_id() const;
 
   /**
    * @brief Остановка потоков в многопоточном режиме.
@@ -276,18 +341,18 @@ public:
 
   /** 
    * @brief Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
-   * @param tp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
    * @param duration интервал таймера 
    * @param handler обработчик таймера std::function<bool()>, который должен возвращать true, если таймер должен продолжать работать и false - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    * 
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_timer(std::string tp, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
+  timer_id_t create_timer(std::string stp, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
   
   /**
    * @brief Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
-   * @param tp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
    * @param duration интервал таймера 
    * @param ahandler обработчик таймера std::function<void(callback_timer_handler)>, который должен вызвать callback_timer_handler(true), 
    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
@@ -296,21 +361,22 @@ public:
    * 
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_async_timer(std::string tp, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(std::string stp, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
 
 
-  /** Создает таймер, обработчик которого выполняется раз в сутки начиная с определенного момента времени
-   * @param tp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+  /** 
+   * @brief Создает таймер, обработчик которого выполняется раз в сутки начиная с определенного момента времени
+   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
    * @param handler обработчик таймера std::function<bool()>, который должен возвращать true, если таймер должен продолжать работать 
    * и false - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_timer(std::string tp, timer_handler handler, expires_at expires = expires_at::after);
+  timer_id_t create_timer(std::string stp, timer_handler handler, expires_at expires = expires_at::after);
   
   /**
-   * Создает асинхронный таймер, обработчик которого выполняется раз в сутки с определенного момента времени
-   * @param tp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+   * @brief Создает асинхронный таймер, обработчик которого выполняется раз в сутки с определенного момента времени
+   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
    * @param ahandler обработчик таймера std::function<void(callback_timer_handler)>, который должен вызвать callback_timer_handler(true), 
    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера 
@@ -318,7 +384,7 @@ public:
    * 
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_async_timer(std::string tp, async_timer_handler ahandler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(std::string stp, async_timer_handler ahandler, expires_at expires = expires_at::after);
 
   /**
    * @brief Остановить таймер и освободить ресурсы
@@ -353,14 +419,23 @@ public:
   size_t dropped() const;
   
   /** 
-   * @brief рекомендуется
-   * @tparam Req тип запроса 
-   * @tparam Res тип ответа
+   * @brief Создает опросник с заданным интервалом
+   * @tparam Req запрос
+   * @tparam Res ответ
    * @param duration интервал опроса 
-   * @param sender
-   * @param generator генератор запросов
+   * @param sender отправитель запросов 
+   * @param generator генератор запросов 
    * 
-   * оыралывора лывралы
+   * ```cpp
+   * 
+   * //// Типы sender и generator
+   * typedef std::unique_ptr<Req> req_ptr;
+   * typedef std::unique_ptr<Res> res_ptr;
+   * typedef std::function<void(res_ptr)> callback;
+   * typedef std::function< bool(req_ptr, callback) > sender_type;
+   * typedef std::function< req_ptr(res_ptr) > sender_type;
+   * ```
+   * @see Концепция опросников
    */
   template< typename Req, typename Res>
   timer_id_t create_requester( 
@@ -372,49 +447,126 @@ public:
     return this->get_timer()->create<Req, Res>( duration, sender, generator);
   }
 
+  /** 
+   * @brief Создает опросник, который начинает выполняться с заданной периодичностью через определенный интервал времени 
+   * @tparam Req запрос
+   * @tparam Res ответ
+   * @param start_duration интервал времени, через который запустить опросник
+   * @param duration интервал опроса 
+   * @param sender отправитель запросов 
+   * @param generator генератор запросов 
+   * 
+   * ```cpp
+   * 
+   * //// Типы sender и generator
+   * typedef std::unique_ptr<Req> req_ptr;
+   * typedef std::unique_ptr<Res> res_ptr;
+   * typedef std::function<void(res_ptr)> callback;
+   * typedef std::function< bool(req_ptr, callback) > sender_type;
+   * typedef std::function< req_ptr(res_ptr) > sender_type;
+   * ```
+   * @see Концепция опросников
+   */
   template< typename Req, typename Res>
   timer_id_t create_requester( 
-    duration_t sd, 
-    duration_t d,
+    duration_t start_duration, 
+    duration_t duration,
     typename requester::sender_t<Req, Res>::type sender, 
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>( sd, d, sender, generator );
+    return this->get_timer()->create<Req, Res>( start_duration, duration, sender, generator );
   }
 
+  /** 
+   * @brief Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени
+   * @tparam Req запрос
+   * @tparam Res ответ
+   * @param tp интервал времени, через который запустить опросник
+   * @param duration интервал опроса 
+   * @param sender отправитель запросов 
+   * @param generator генератор запросов 
+   * 
+   * ```cpp
+   * 
+   * //// Типы sender и generator
+   * typedef std::unique_ptr<Req> req_ptr;
+   * typedef std::unique_ptr<Res> res_ptr;
+   * typedef std::function<void(res_ptr)> callback;
+   * typedef std::function< bool(req_ptr, callback) > sender_type;
+   * typedef std::function< req_ptr(res_ptr) > sender_type;
+   * ```
+   * @see Концепция опросников
+   */
   template< typename Req, typename Res>
   timer_id_t create_requester( 
     time_point_t tp, 
+    duration_t duration,
+    typename requester::sender_t<Req, Res>::type sender, 
+    typename requester::generator_t<Req, Res>::type generator
+  )
+  {
+    return this->get_timer()->create<Req, Res>( tp, duration, sender, generator );
+  }
+
+  /** 
+   * @brief Создает опросник с заданным интервалом
+   * @tparam Req запрос
+   * @tparam Res ответ
+   * @param stp момент времени, начиная с которого запустить опросник (строка в формате "22:00:00")
+   * @param duration интервал опроса 
+   * @param sender отправитель запросов 
+   * @param generator генератор запросов 
+   * 
+   * ```cpp
+   * 
+   * //// Типы sender и generator
+   * typedef std::unique_ptr<Req> req_ptr;
+   * typedef std::unique_ptr<Res> res_ptr;
+   * typedef std::function<void(res_ptr)> callback;
+   * typedef std::function< bool(req_ptr, callback) > sender_type;
+   * typedef std::function< req_ptr(res_ptr) > sender_type;
+   * ```
+   * @see Концепция опросников
+   */
+  template< typename Req, typename Res>
+  timer_id_t create_requester( 
+    std::string stp, 
     duration_t d,
     typename requester::sender_t<Req, Res>::type sender, 
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>( tp, d, sender, generator );
+    return this->get_timer()->create<Req, Res>(stp, d, sender, generator);
   }
 
-  
+  /** 
+   * @brief Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени
+   * @tparam Req запрос
+   * @tparam Res ответ
+   * @param stp момент времени, начиная с которого запустить опросник (строка в формате "22:00:00")
+   * @param sender отправитель запросов 
+   * @param generator генератор запросов 
+   * 
+   * ```cpp
+   * 
+   * //// Типы sender и generator
+   * typedef std::unique_ptr<Req> req_ptr;
+   * typedef std::unique_ptr<Res> res_ptr;
+   * typedef std::function<void(res_ptr)> callback;
+   * typedef std::function< bool(req_ptr, callback) > sender_type;
+   * typedef std::function< req_ptr(res_ptr) > sender_type;
+   * ```
+   * @see Концепция опросников
+   */
   template< typename Req, typename Res>
   timer_id_t create_requester( 
-    std::string st, 
-    duration_t d,
+    std::string stp, 
     typename requester::sender_t<Req, Res>::type sender, 
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>(st, d, sender, generator);
-  }
-
-  
-  template< typename Req, typename Res>
-  timer_id_t create_requester( 
-    std::string st, 
-    typename requester::sender_t<Req, Res>::type sender, 
-    typename requester::generator_t<Req, Res>::type generator
-  )
-  {
-    return this->get_timer()->create<Req, Res>(st, sender, generator);
+    return this->get_timer()->create<Req, Res>(stp, sender, generator);
   }
 
   std::shared_ptr<task_manager> manager() const;

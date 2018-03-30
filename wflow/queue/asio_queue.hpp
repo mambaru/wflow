@@ -15,6 +15,8 @@ class asio_queue
   typedef ::wflow::asio::deadline_timer timer_type;
   typedef std::shared_ptr<timer_type> timer_ptr;
   typedef ::wflow::asio::io_service io_service_type;
+  typedef io_service_type::work work_type;
+  typedef std::unique_ptr<work_type> work_ptr;
   typedef std::mutex mutex_type;
 public:
   typedef std::function<void()>                               function_t;
@@ -56,7 +58,7 @@ public:
   std::size_t safe_size() const;
   std::size_t dropped() const;
   
-  io_service_type::work work() const;
+  work_type work() const;
   
 private:
   

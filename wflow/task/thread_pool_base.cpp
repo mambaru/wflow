@@ -8,7 +8,6 @@
 #include <sys/types.h>
 #include <chrono>
 
-
 namespace wflow {
 
 thread_pool_base::thread_pool_base()
@@ -73,7 +72,8 @@ void thread_pool_base::stop()
   std::lock_guard< std::mutex > lk(_mutex);
 
   _flags.clear();
-  _works.clear();
+  //_works.clear();
+  _work=nullptr;
 
   for (auto& t : _threads)
     t.join();
@@ -96,27 +96,28 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
   
   if ( threads > _threads.size() ) 
   {
+    // При серии реконфигураций N->0->N потоков, сбрасываем io_service для нового запуска 
+    if ( _threads.empty() )
+      s->reset();
     size_t diff = threads - _threads.size();
     this->run_more_(s, diff);
   }
   else
   {
-    if ( threads == 0 )
-      threads = 1;
-    
     size_t oldsize = _threads.size();
     for ( size_t i = threads; i < _threads.size(); ++i)
       _threads[i].detach();
     _threads.resize(threads);
     _flags.resize(threads);
-    _works.resize(threads);
+    if ( threads == 0 )
+      _work=nullptr;
+    //_works.resize(threads);
     oldsize*=2;
     for (;oldsize!=0; --oldsize )
     {
       // Даем прочухаться потокам и завершить работу
-      s->safe_post([oldsize](){ 
-        std::this_thread::sleep_for( std::chrono::seconds(1) );
-      });
+      s->safe_post([](){});
+      std::this_thread::sleep_for( std::chrono::milliseconds(1) );
     }
   }
   return true;
@@ -148,10 +149,23 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
   {
     thread_flag pflag = std::make_shared<bool>(true);
     _flags.push_back(pflag);
-    auto w = s->work();
-    _works.push_back([w](){});
+    if ( _work==nullptr )
+    {
+      auto w = s->work();
+      _work=[w](){};
+    }
+      //_work = s->work();
+    
+    /*auto w = s->work();
+    _works.push_back([w](){});*/
     _threads.push_back( this->create_thread_(s, pflag) );
   }
+}
+
+
+namespace{
+template<typename T>
+inline void nothing(const T& ){}
 }
 
 template<typename S>
@@ -182,6 +196,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
         size_t handlers = s->run_one();
         if (  handlers == 0 )
           break;
+
         if ( wflag.lock() == nullptr)
           break;
 
@@ -194,8 +209,10 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
         }
 
       }
+
       if ( finish != nullptr )
         finish(thread_id);    
+      
     });
 }
 

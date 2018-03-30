@@ -6,40 +6,47 @@
 #include <mutex>
 #include <memory>
 
-struct request{ };
-struct response{ };
-
-class foo
+struct request
 {
-public:
-  void method( std::unique_ptr<request>,  std::function< void(std::unique_ptr<response>) > callback) 
-  {
-    std::cout << "foo::method" << std::endl;
-    callback( std::make_unique<response>() );
-  }
+  typedef std::unique_ptr<request> ptr;
+  typedef std::function< void(ptr) > handler;
 };
+
+struct response
+{
+  typedef std::unique_ptr<response> ptr;
+  typedef std::function< void(ptr) > handler;
+};
+
+inline bool sender(request::ptr, response::handler callback);
+inline request::ptr generator(response::ptr resp);
+
+boost::asio::io_service ios;
+wflow::workflow wf(ios);
+
+bool sender(request::ptr, response::handler callback)
+{
+  wf.post(std::chrono::milliseconds(500), [callback]()
+  {
+    std::cout << "response ready" << std::endl;
+    callback(std::make_unique<response>());
+  });
+  return true;
+}
+
+request::ptr generator(response::ptr resp)
+{
+  if ( resp == nullptr )
+  {
+    std::cout << "generate first" << std::endl;
+    return std::make_unique<request>();
+  }
+  std::cout << "generate finish flag" << std::endl;
+  return nullptr;
+}
 
 int main()
 {
-  boost::asio::io_service ios;
-  wflow::workflow wf(ios);
-  auto f = std::make_shared<foo>();
-  
-  wf.create_requester<request, response>(
-    std::chrono::seconds(1),
-    [f](std::unique_ptr<request> req, std::function< void(std::unique_ptr<response>) > callback)
-    {
-      f->method(std::move(req), callback);
-      return true;
-    },
-    [](std::unique_ptr<response> resp) -> std::unique_ptr<request>
-    {
-      
-      if ( resp == nullptr )
-        return std::make_unique<request>();
-      
-      return nullptr;
-    }
-  );
+  wf.create_requester<request, response>(std::chrono::seconds(1), sender, generator );
   ios.run();
 }

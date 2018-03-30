@@ -2,6 +2,7 @@
 #include "asio_queue.hpp"
 #include "delayed_queue.hpp"
 
+
 namespace wflow{
  
 bique::~bique()
@@ -29,7 +30,7 @@ bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
 {
 }
 
-bique::io_service_type::work bique::work() const
+bique::work_type bique::work() const
 {
   return _mt_flag
     ? _asio->work()

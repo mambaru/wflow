@@ -58,6 +58,11 @@ bool workflow::reconfigure(const workflow_options& opt)
   return true;
 }
 
+const std::string& workflow::get_id() const
+{
+  return _id;
+}
+
 void workflow::clear()
 {
   _impl->reset();

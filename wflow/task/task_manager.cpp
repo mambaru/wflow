@@ -50,6 +50,8 @@ bool task_manager::reconfigure(const workflow_options& opt  )
     return false;
   _queue->reconfigure(opt.maxsize, opt.use_asio, opt.threads!=0 );
   _pool->reconfigure(opt.threads);
+  /*if ( _threads == 0 )
+    _queue->reset();*/
   _threads = opt.threads;
   return true;
 }

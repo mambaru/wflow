@@ -28,7 +28,8 @@ std::size_t asio_queue::run()
 std::size_t asio_queue::run_one()
 {
   ::wflow::system::error_code ec;
-  return _io.run_one(ec);
+  std::size_t count = _io.run_one(ec);
+  return count;
 }
   
 std::size_t asio_queue::poll_one()
@@ -179,9 +180,10 @@ asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
   return std::make_shared<timer_type>( this->_io, ptime);
 }
 
-asio_queue::io_service_type::work asio_queue::work() const
+asio_queue::work_type asio_queue::work() const
 {
-  return io_service_type::work(_io);
+  return work_type(_io);
+  //return std::make_unique<work_type>(_io);
 }
 
 } // wflow
