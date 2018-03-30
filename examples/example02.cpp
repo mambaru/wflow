@@ -2,18 +2,19 @@
 #include <iostream>
 #include <chrono>
 
-/* Output:
-      Run!
-      job №5 is drop
-      job №6 is drop
-      job №7 is drop
-      job №8 is drop
-      job №9 is drop
-      job №0 is done
-      job №1 is done
-      job №2 is done
-      job №3 is done
-      job №4 is done
+/**
+ * Output:
+    Run!
+    drop 5
+    drop 6
+    drop 7
+    drop 8
+    drop 9
+    post 0
+    post 1
+    post 2
+    post 3
+    post 4
 */
 int main()
 {
@@ -26,8 +27,8 @@ int main()
   {
     wf.post( 
       std::chrono::nanoseconds(1), 
-      [i](){ std::cout << "job №" << i << " is done" << std::endl; },
-      [i](){ std::cout << "job №" << i << " is drop" << std::endl; } 
+      [i](){ std::cout << "post " << i << std::endl; },
+      [i](){ std::cout << "drop " << i << std::endl; } 
     );
   }
   

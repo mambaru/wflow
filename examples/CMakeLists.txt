@@ -31,5 +31,11 @@ target_link_libraries(exampleR2 wflow )
 add_executable( exampleR3 exampleR3.cpp )
 target_link_libraries(exampleR3 wflow )
 
+add_executable( exampleR4 exampleR4.cpp )
+target_link_libraries(exampleR4 wflow )
+
+add_executable( exampleR5 exampleR5.cpp )
+target_link_libraries(exampleR5 wflow )
+
 add_executable( exampleR exampleR.cpp )
 target_link_libraries(exampleR wflow )

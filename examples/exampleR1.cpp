@@ -9,43 +9,45 @@
 int main()
 {
   std::cout << "main thread " << std::this_thread::get_id() << std::endl; 
-  int count = 0;
+  int time_counter = 0;
   wflow::asio::io_service ios;
-   wflow::asio::io_service::work wrk(ios);
   wflow::workflow_options opt;
   opt.threads = 3;
   wflow::workflow wf(ios, opt);
   wf.start();
-  size_t trash =0;
-  std::thread([&count, &wf, &trash](){
-    for (;count < 60; ++trash)
+  size_t post_counter =0;
+  std::thread([&time_counter, &wf, &post_counter](){
+    for (;time_counter < 60; ++post_counter)
       wf.post([](){});
   }).detach();
   wf.create_timer(
     std::chrono::milliseconds(100), 
-    [&count, &wf, &opt, &ios](){ 
-      std::cout << count << " " << std::this_thread::get_id() << std::endl; 
-      ++count;
-      if ( count == 20 )
+    [&time_counter, &wf, &opt, &ios](){ 
+      std::cout << time_counter << " " << std::this_thread::get_id() << std::endl; 
+      ++time_counter;
+      if ( time_counter == 20 )
       {
         opt.threads = 0;
         wf.reconfigure(opt);
         std::cout << "---------------------" << std::endl; 
       }
-      else if ( count == 40 )
+      else if ( time_counter == 40 )
       {
         opt.threads = 6;
         wf.reconfigure(opt);
         std::cout << "---------------------" << std::endl; 
       }
-      else if ( count == 60)
+      else if ( time_counter == 60)
       {
         std::cout << "---------------------" << std::endl; 
         ios.stop();
       }
       
-      return count < 60;
+      return time_counter < 60;
     });
+  
+  wflow::asio::io_service::work wrk(ios);
   ios.run();
-  std::cout << trash << std::endl;
+  
+  std::cout << post_counter << std::endl;
 }

@@ -6,6 +6,7 @@
 #include <mutex>
 #include <memory>
 
+namespace {
 struct request
 {
   typedef std::unique_ptr<request> ptr;
@@ -44,6 +45,8 @@ request::ptr generator(response::ptr resp)
   std::cout << "generate finish flag" << std::endl;
   return nullptr;
 }
+
+} 
 
 int main()
 {

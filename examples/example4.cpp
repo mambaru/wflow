@@ -11,13 +11,13 @@ int main()
 {
   boost::asio::io_service ios;
   wflow::workflow_options opt;
-  opt.threads = 0;
+  opt.threads = 5;
   opt.rate_limit = 10;
   wflow::workflow wf(ios, opt);
   wf.start();
-  int counter = 100;
+  int counter = 1000;
   std::mutex m;
-  for (int i = 0; i < 100; ++i)
+  for (int i = 0; i < 1000; ++i)
   {
     wf.post( [&, i](){
       std::lock_guard<std::mutex> lk(m);
@@ -28,7 +28,6 @@ int main()
     });
   }
   
-  //boost::asio::io_service::work wrk(ios);
+  boost::asio::io_service::work wrk(ios);
   ios.run();
-//  wf.stop();
 }
