@@ -13,25 +13,30 @@ get_property(cur_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIR
 include(ConfigureLibrary)
 CONFIGURE_LIBRARY( fas/aop.hpp "${cur_dirs} \
                                 ${CMAKE_CURRENT_SOURCE_DIR}/../faslib \
+                                ${CMAKE_SOURCE_DIR}/../faslib \
                                 ${PROJECT_BINARY_DIR}/faslib \
-                                /usr/include/faslib\
+                                /usr/include/faslib \
                                 /usr/local/include/faslib" 
                   faslib "" )
 CONFIGURE_LIBRARY( wjson/json.hpp "${cur_dirs} \
                                 ${CMAKE_CURRENT_SOURCE_DIR}/../wjson \
+                                ${CMAKE_SOURCE_DIR}/../wjson \
                                 ${PROJECT_BINARY_DIR}/wjson \
-                                /usr/include/wjson\
+                                /usr/include/wjson \
                                 /usr/local/include/wjson" 
                   wjson "" )
 
 CONFIGURE_LIBRARY( wlog/wlog.hpp "${cur_dirs} \
                                 ${CMAKE_CURRENT_SOURCE_DIR}/../wlog \
+                                ${CMAKE_SOURCE_DIR}/../wlog \
                                 ${PROJECT_BINARY_DIR}/wlog \
-                                /usr/include/wlog\
+                                /usr/include/wlog \
                                 /usr/local/include/wlog" 
                   wlog 
                                 "/usr/lib /usr/local/lib /usr/lib64 \
                                  ${PROJECT_BINARY_DIR}/wlog/build \
+                                 ${CMAKE_SOURCE_DIR}/../wlog/build \
+                                 ${CMAKE_SOURCE_DIR}/wlog/build \
                                  ${CMAKE_CURRENT_SOURCE_DIR}/../wlog/build \
                                  ${CMAKE_CURRENT_SOURCE_DIR}/wlog/build" 
                   )
@@ -59,7 +64,6 @@ if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__STRICT_ANSI__")
   endif()
 
-
   if ( PARANOID_WARNING )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -ftemplate-depth=1400 -Wcast-align -Winvalid-pch -pedantic-errors  -Wformat-nonliteral")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcomment -Wconversion -Wformat-security -Wimport  -Wchar-subscripts")
@@ -72,7 +76,7 @@ if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunreachable-code -Wunused -Wunused-function -Wunused-label -Wunused-parameter -Wunused-value")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wredundant-decls -Wshadow=global -Wsign-conversion -Wsign-promo")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wstrict-overflow=2 -Wswitch -Wswitch-default -Wundef -Werror")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
       # -Wunsafe-loop-optimizations

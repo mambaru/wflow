@@ -221,13 +221,13 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
       bool debug = opt.debug;
       control_handler= [this, wrnsize, dropsave, debug]()  ->bool 
       {
-        auto dropped = this->_impl->dropped();
+        auto dropcount = this->_impl->dropped();
         auto size = this->_impl->full_size();
-        auto dropdiff = dropped - *dropsave;
+        auto dropdiff = dropcount - *dropsave;
         if ( dropdiff!=0 )
         {
-          WFLOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropped << ", size " << size << ")" )
-          *dropsave = dropped;
+          WFLOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropcount << ", size " << size << ")" )
+          *dropsave = dropcount;
         }
         else if ( size > wrnsize )
         {
@@ -235,7 +235,7 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
         } 
         else if ( debug )
         {
-          WFLOW_LOG_MESSAGE("Workflow '" << this->_id << "' debug: total dropped " << dropped << ", queue size " << size)
+          WFLOW_LOG_MESSAGE("Workflow '" << this->_id << "' debug: total dropped " << dropcount << ", queue size " << size)
         }
         return true;
       };
