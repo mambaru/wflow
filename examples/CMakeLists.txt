@@ -1,41 +1,41 @@
-add_executable( example0 example0.cpp )
-target_link_libraries(example0 wflow )
-
 add_executable( example01 example01.cpp )
 target_link_libraries(example01 wflow )
 
 add_executable( example02 example02.cpp )
 target_link_libraries(example02 wflow )
 
-add_executable( example1 example1.cpp )
-target_link_libraries(example1 wflow )
+add_executable( example03 example03.cpp )
+target_link_libraries(example03 wflow )
 
-add_executable( example2 example2.cpp )
-target_link_libraries(example2 wflow )
+add_executable( example04 example04.cpp )
+target_link_libraries(example04 wflow )
 
-add_executable( example3 example3.cpp )
-target_link_libraries(example3 wflow )
+add_executable( example05 example05.cpp )
+target_link_libraries(example05 wflow )
 
-add_executable( example4 example4.cpp )
-target_link_libraries(example4 wflow )
+add_executable( example06 example06.cpp )
+target_link_libraries(example06 wflow )
 
-add_executable( exampleR0 exampleR0.cpp )
-target_link_libraries(exampleR0 wflow )
+add_executable( example07 example07.cpp )
+target_link_libraries(example07 wflow )
 
-add_executable( exampleR1 exampleR1.cpp )
-target_link_libraries(exampleR1 wflow )
+add_executable( example08 example08.cpp )
+target_link_libraries(example08 wflow )
 
-add_executable( exampleR2 exampleR2.cpp )
-target_link_libraries(exampleR2 wflow )
+add_executable( example09 example09.cpp )
+target_link_libraries(example09 wflow )
 
-add_executable( exampleR3 exampleR3.cpp )
-target_link_libraries(exampleR3 wflow )
+add_executable( example10 example10.cpp )
+target_link_libraries(example10 wflow )
 
-add_executable( exampleR4 exampleR4.cpp )
-target_link_libraries(exampleR4 wflow )
+add_executable( example11 example11.cpp )
+target_link_libraries(example11 wflow )
 
-add_executable( exampleR5 exampleR5.cpp )
-target_link_libraries(exampleR5 wflow )
+add_executable( example12 example12.cpp )
+target_link_libraries(example12 wflow )
 
-add_executable( exampleR exampleR.cpp )
-target_link_libraries(exampleR wflow )
+add_executable( example13 example13.cpp )
+target_link_libraries(example13 wflow )
+
+add_executable( example14 example14.cpp )
+target_link_libraries(example14 wflow )
