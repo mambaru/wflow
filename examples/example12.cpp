@@ -2,11 +2,14 @@
 #include <iostream>
 #include <chrono>
 
+/**
+ * @example example12.cpp
+ * @brief Пример того, как решить проблему с задержкой таймкра из примера /ref example11.cpp
+ * @details Для этого используем отдельный wflow::workflow для таймеров
+ */
 
 
 /**
- * Пример того, как забивается очередь и таймер не срабатывает вовремя
-  
    It was expected 2 seconds, but waited 2 seconds
    real    0m4.004s
    user    0m0.000s

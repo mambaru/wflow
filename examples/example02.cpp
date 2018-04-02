@@ -2,7 +2,11 @@
 #include <iostream>
 #include <chrono>
 
-
+/**
+ * @example example02.cpp
+ * @brief Простые примеры незащищенных заданий в однопоточном режиме
+ * @remark Ожидание выполнения всех заданий с помощью io_service::run работает только в однопоточном режиме
+ */
 int main()
 {
   boost::asio::io_service ios;

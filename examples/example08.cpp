@@ -6,6 +6,13 @@
 #include <mutex>
 #include <memory>
 
+/**
+ * @example example08.cpp
+ * @brief Пример динамической реконфигурации
+ * @details В этом примере ограничение по таймеру два раза реконфигурируем wflow::workflow, одновременно с этим, с отдельного потока,
+ * максимально загружаем его пустыми заданиями. 
+ */
+
 int main()
 {
   std::cout << "main thread " << std::this_thread::get_id() << std::endl; 

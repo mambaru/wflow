@@ -7,6 +7,7 @@
 #include <memory>
 
 namespace {
+  
 struct request
 {
   typedef std::unique_ptr<request> ptr;

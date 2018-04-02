@@ -3,6 +3,10 @@
 #include <iostream>
 #include <chrono>
 
+/**
+ * @example example05.cpp
+ * @brief Еще пример таймера и различных заданий 
+ */
 
 /** Output:
   * first message

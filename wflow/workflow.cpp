@@ -4,7 +4,6 @@
 
 namespace wflow{
   
-
 workflow::~workflow()
 {
   this->stop();
@@ -244,5 +243,26 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
   }
   wrkf.release_timer(old_timer);
 }
-  
+
 }
+
+/**
+ * @example example01.cpp
+ * @brief Простые примеры защищенных заданий в однопоточном режиме
+ * @remark Ожидание выполнения всех заданий с помощью io_service::run работает только в однопоточном режиме
+ */
+
+/**
+ * @example example02.cpp
+ * @brief Простые примеры незащищенных заданий в однопоточном режиме
+ * @remark Ожидание выполнения всех заданий с помощью io_service::run работает только в однопоточном режиме
+ */
+
+/**
+ * @example example03.cpp
+ * @brief Пример ограничения размера очереди
+ * @remark В этом примере при превышении размера, задания не ставятся в очередь, а сразу вызывается drop-обработчик до запуска io_service::run()
+ */
+
+
+
