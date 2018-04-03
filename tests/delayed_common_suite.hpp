@@ -1,7 +1,7 @@
 #pragma once
 
 #include <fas/testing.hpp>
-#include <wflow/delayed_queue.hpp>
+#include <wflow/queue/delayed_queue.hpp>
 #include <chrono>
 #include <atomic>
 #include <thread>
@@ -18,12 +18,13 @@ inline void delayed_unit1(T& t, Q& dq)
   
   system_clock::time_point start = system_clock::now();
   system_clock::time_point finish = start;
-  dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
+  auto res = dq.delayed_post( milliseconds(DELAY_MS), [&t, &finish](){
     t << message("delayed_post READY!");
     finish = system_clock::now();
-  }, [&t](){
+  }, nullptr);
+  if (!res)
     t << fail("delayed_post FAIL!");
-  });
+  
   dq.run_one();
   time_t ms = duration_cast<milliseconds>(finish-start).count();
   t << message("time: ") << ms;
@@ -93,7 +94,7 @@ inline void delayed_unit3(T& t, Q& dq)
   t << equal<expect, int>(count, 10) << "count=" << count << " should be 10";
   for (int i=0 ; i < 5; ++i)
   {
-    t << equal<expect>(time_ms[i], time_chk[i]) << "delay fail. ms=" << time_chk[i] << " should be " << time_ms[i];
+    t << equal<expect>(time_ms[i]/10, time_chk[i]/10) << "delay fail. ms=" << time_chk[i] << " should be " << time_ms[i];
   }
 }
 
@@ -112,9 +113,7 @@ inline void delayed_unit4(T& t, Q& dq)
     {
       time_t& ms = times[i];
       ms = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
-      //t << message("ready! id=") << std::this_thread::get_id() << " ms=" << ms << " sleep " << (500-ms + 50);
-      //std::this_thread::sleep_for( milliseconds(500-ms+50) );
-    }, nullptr );
+    }, nullptr);
   }
   
   std::condition_variable cv;
