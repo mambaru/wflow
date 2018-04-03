@@ -6,6 +6,7 @@ remove_source_branch=false
 
 [[ $HOST =~ ^https?://[^/]+ ]] && HOST="${BASH_REMATCH[0]}/api/v4/projects/"
 
+echo "PRIVATE-TOKEN:${PRIVATE_TOKEN}"
 TARGET_BRANCH=`curl --silent "${HOST}${CI_PROJECT_ID}" --header "PRIVATE-TOKEN:${PRIVATE_TOKEN}" | python3 -c "import sys, json; print(json.load(sys.stdin)['default_branch'])"`;
 
 # The description of our new MR, we want to remove the branch after the MR has
