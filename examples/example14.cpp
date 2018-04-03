@@ -6,17 +6,60 @@
 #include <mutex>
 #include <memory>
 
+/**
+ * @example example14.cpp
+ * @brief Более сложный пример requester'в.
+ * @details В этом примере каждая вторая последовательность из десяти вызовов прерывается на пятом сообщении и начинается сначала.
+ * После отработки пяти успешных последовательностей завершаем работу.
+ */
+
+/* Output:
+create FIRST request                                                                                                                                                         
+foo::method 0                                                                                                                                                                
+create request N0.1                                                                                                                                                          
+foo::method 1                                                                                                                                                                
+create request N0.2                                                                                                                                                          
+foo::method 2                                                                                                                                                                
+create request N0.3                                                                                                                                                          
+foo::method 3                                                                                                                                                                
+create request N0.4                                                                                                                                                          
+foo::method 4                                                                                                                                                                
+create request N0.5                                                                                                                                                          
+foo::method FAIL                                                                                                                                                             
+create FIRST request                                                                                                                                                         
+foo::method 0                                                                                                                                                                
+create request N0.1                                                                                                                                                          
+foo::method 1                                                                                                                                                                
+create request N0.2                                                                                                                                                          
+foo::method 2                                                                                                                                                                
+create request N0.3                                                                                                                                                          
+foo::method 3                                                                                                                                                                
+create request N0.4                                                                                                                                                          
+foo::method 4                                                                                                                                                                
+create request N0.5                                                                                                                                                          
+foo::method 5                                                                                                                                                                
+create request N0.6                                                                                                                                                          
+foo::method 6                                                                                                                                                                
+create request N0.7                                                                                                                                                          
+foo::method 7                                                                                                                                                                
+create request N0.8                                                                                                                                                          
+foo::method 8                                                                                                                                                                
+create request N0.9                                                                                                                                                          
+foo::method 9                                                                                                                                                                
+STOP create request                                                                                                                                                          
+ */
+
 struct request
 {
   int param = 0; 
-  /* исключительно для удобства*/
+  // исключительно для удобства
   typedef std::unique_ptr<request> ptr;
 };
 
 struct response
 {
   int result = 0; 
-  /* исключительно для удобства*/
+  // исключительно для удобства
   typedef std::unique_ptr<response> ptr;
   typedef std::function< void(ptr) > handler;
 };
@@ -32,6 +75,7 @@ public:
   {
     if ( req->param == 5 && _flag)
     {
+      // Эмуляция ошибки на пятом запросе каждой второй последовательности 
       std::cout << "foo::method FAIL" << std::endl;
       _flag = false;
       callback(nullptr);
@@ -69,6 +113,7 @@ int main()
     std::chrono::seconds(1),
     [f, &callcount](request::ptr req, response::handler callback)
     {
+      // После отработки пяти успешных последовательностей завершаем работу.
       if ( callcount == 5 )
         return false;
       f->method(std::move(req), callback);

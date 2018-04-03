@@ -39,3 +39,8 @@ target_link_libraries(example13 wflow )
 
 add_executable( example14 example14.cpp )
 target_link_libraries(example14 wflow )
+
+if (NOT WFLOW_DISABLE_JSON)
+  add_executable( example15 example15.cpp )
+  target_link_libraries(example15 wflow )
+endif()

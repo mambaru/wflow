@@ -4,10 +4,9 @@
 
 /**
  * @example example12.cpp
- * @brief Пример того, как решить проблему с задержкой таймкра из примера /ref example11.cpp
- * @details Для этого используем отдельный wflow::workflow для таймеров
+ * @brief Пример того, как решить проблему с задержкой таймера из примера /ref example11.cpp.
+ * @details Для этого используем отдельный wflow::workflow для таймеров.
  */
-
 
 /**
    It was expected 2 seconds, but waited 2 seconds

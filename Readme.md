@@ -1,47 +1,80 @@
 Библиотека на базе boost::asio::io_service для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами. 
 
+# Сборка и установка
+
+```bash
+make shared && sudo make install
+make static && sudo make install
+```
+Если установлен doxygen то в папке `/doc/html` будет документация.
+
+Для сборки примеров и тестов, а также чтобы отключить поддержку JSON-конфигурации и/или логирования :
+
+```bash
+git clone https://github.com/mambaru/wlog.git
+mkdir wlog/build
+cd wlog/build
+cmake ..
+# Для сборки примеров и тестов
+cmake -DBUILD_TESTING=ON ..
+# Если поддержка JSON не требуется 
+#   cmake -DWLOG_DISABLE_JSON=ON ..
+# Если поддержка логирования не требуется 
+#   cmake -DWFLOW_DISABLE_LOG=ON ..
+cmake --build make
+ctest 
+```
+Для компиляции с поддержкой JSON-конфигурации потребуются библиотеки faslib, wjson, wlog, которые система сборки автоматически клонирует 
+в директорию сборки, если не найдет их в ОС или на том же уровне файловой системы.
+
+# Некоторые примеры
+
+Все примеры с описанием в `examples`.
+
 Гарантированное выполнение заданий:
 ```cpp
+int main()
+{
   boost::asio::io_service ios;
   wflow::workflow wf(ios);
 
-  // простая отправка задания (аналогично ios.post(), если не установлен post_delay_ms в опциях )
+  // Простое задание 
   wf.safe_post( [](){ std::cout << "Simple safe post  " << std::endl; } );
 
-  // выполнение задания через 4 секунды ( post_delay_ms в опциях игнорируется )
+  // Отложенное задание 
   wf.safe_post( std::chrono::seconds(4), [](){ std::cout << "Safe post after delay 4 second " << std::endl; } );
 
-  // выполнение задания в указанное время ( delay_ms в опциях игнорируется )
-  auto now = std::chrono::system_clock::now();
-  now += std::chrono::seconds(2);
-  wf.safe_post( now, [](){ std::cout << "Safe post in time point" << std::endl; } );
+  // Задание на конкретный момент времени 
+  auto tp = std::chrono::system_clock::now();
+  tp += std::chrono::seconds(2);
+  wf.safe_post( tp, [](){ std::cout << "Safe post in time point" << std::endl; } );
 
+  // Ожидаем выполнение всех заданий 
   ios.run();
+}
 ```
 
-По умолчанию, для методов post размер очереди ограничен 512. При превышении размера, часть сообщений будет сбрасываться:
+Пример ограничения размера очереди:
 ```cpp
+int main()
+{
   boost::asio::io_service ios;
-  wflow::workflow wf(ios);
+  wflow::workflow_options opt;
+  opt.maxsize = 5;
+  wflow::workflow wf(ios, opt);
 
-  // простая отправка задания с контролем размера очереди, без drop-обработчика 
-  if ( !wf.post( [](){ std::cout << "Simple unsafe post" << std::endl; }, nullptr ) )
-    std::cout << "ERROR: queue overflow!!!" << std::endl;
+  for (int i = 0; i < 10; ++i)
+  {
+    wf.post( 
+      [i](){ std::cout << "post " << i << std::endl; },
+      [i](){ std::cout << "drop " << i << std::endl; } 
+    );
+  }
 
-  // Если не установлено ограние rate_limit, то при переполнении drop-обработчик выполнениться синхронно 
-  wf.post( 
-    [](){ std::cout << "Simple unsafe post" << std::endl;},
-    [](){ std::cout << "ERROR: queue overflow!!!" << std::endl;} 
-  );
-
-  // Для отложенных заданий, drop-обработчик выполнениться в момент постановки в очередь, если она переполненна 
-  wf.post(
-    std::chrono::seconds(4), 
-    [](){ std::cout << "Simple unsafe post" << std::endl;},
-    [](){ std::cout << "ERROR: queue overflow!!!" << std::endl;} 
-  );
-
+  std::cout << "Run!" << std::endl;
+  // Ожидаем выполнение всех заданий 
   ios.run();
+}
 ```
 
 Различные варианты таймеров:
@@ -92,5 +125,24 @@
   ios.run();
 ```
 
-По мимо максимального размера очереди, можно также указать размер, при достижении которого, workflow будет отправлять сообщения в лог. 
-Чтобы не забивать логи, можно указать интервал проверки или задать собственный обработчик.
+Пример тестирования пропускной способности (порядка 3 млн в секунду) см. example9 и example10
+```cpp
+  wflow::asio::io_service ios;
+  wflow::asio::io_service::work wrk(ios);
+  wflow::workflow_options opt;
+  opt.threads = 1;
+  wflow::workflow wf(ios, opt);
+  wf.start();
+  std::atomic<bool> run(true);
+  size_t counter = 0;
+
+  std::thread t([&run, &wf, &counter](){
+    for (;run; ++counter)
+      wf.post([](){});
+  });
+
+  wf.safe_post( std::chrono::seconds(10), [&ios, &run](){ ios.stop(); run = false;});
+  ios.run();
+  t.join();
+  std::cout << counter/10 << std::endl;
+```
