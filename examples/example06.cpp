@@ -9,6 +9,7 @@
  * @details В этом примере, в обработчике немного засыпаем, блокируя поток, чтобы подключились другие потоки и получить красивый вывод.
  */
 
+namespace {
 void task(int value);
 
 volatile int counter = 100;
@@ -20,6 +21,7 @@ void task(int value)
   std::lock_guard<std::mutex> lk(m);
   --counter;
   std::cout << "post " << value << " thread_id: " << std::this_thread::get_id() << std::endl; 
+}
 }
 
 int main()
