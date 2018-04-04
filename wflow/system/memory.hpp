@@ -29,8 +29,6 @@ namespace _dmu_{
 
 } 
 
-
-
 namespace std{
     template<class T, class... Args>
         typename _dmu_::_Unique_if<T>::_Single_object

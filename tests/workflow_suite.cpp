@@ -181,7 +181,7 @@ UNIT(requester1, "")
       f->method(std::move(req), callback);
       return true;
     },
-    [&id, &ios, &finish]( foo::response::ptr ) -> foo::request::ptr
+    [&ios, &finish]( foo::response::ptr ) -> foo::request::ptr
     {
       finish = high_resolution_clock::now();
       ios.stop();
