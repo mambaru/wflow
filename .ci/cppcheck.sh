@@ -1,5 +1,5 @@
 #!/bin/bash
-script_name=$(realpath $0)
+script_name=$(readlink -e $0)
 script_dir=$(dirname $script_name)
 prj_dir=$(dirname $script_dir)
 

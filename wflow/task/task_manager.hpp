@@ -29,11 +29,8 @@ public:
   
   typedef std::chrono::time_point<std::chrono::steady_clock>::duration statistics_duration;
   typedef std::function<void(std::thread::id, size_t count, statistics_duration)> statistics_handler;
-
-
-  //task_manager( io_service_type& io, size_t queue_maxsize );
   
-  task_manager( const workflow_options& opt );
+  explicit task_manager( const workflow_options& opt );
   
   task_manager( io_service_type& io, const workflow_options& opt );
 
