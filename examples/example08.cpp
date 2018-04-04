@@ -15,7 +15,7 @@
 int main()
 {
   std::cout << "main thread " << std::this_thread::get_id() << std::endl; 
-  int time_counter = 0;
+  volatile int time_counter = 0;
   wflow::asio::io_service ios;
   wflow::workflow_options opt;
   opt.threads = 3;

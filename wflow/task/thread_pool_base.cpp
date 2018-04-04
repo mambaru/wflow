@@ -10,6 +10,11 @@
 
 namespace wflow {
 
+namespace{
+template<typename T>
+inline void nothing(const T& ){}
+}
+
 thread_pool_base::thread_pool_base()
   : _started(false)
   , _rate_limit(0)
@@ -152,20 +157,10 @@ void thread_pool_base::run_more_(std::shared_ptr<S> s, size_t threads)
     if ( _work==nullptr )
     {
       auto w = s->work();
-      _work=[w](){};
+      _work=[w](){ nothing(w);};
     }
-      //_work = s->work();
-    
-    /*auto w = s->work();
-    _works.push_back([w](){});*/
     _threads.push_back( this->create_thread_(s, pflag) );
   }
-}
-
-
-namespace{
-template<typename T>
-inline void nothing(const T& ){}
 }
 
 template<typename S>
