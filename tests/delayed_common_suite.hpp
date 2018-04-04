@@ -70,7 +70,7 @@ inline void delayed_unit3(T& t, Q& dq)
   {
     dq.post([&count](){ ++count; }, nullptr);
     time_t& tm = time_chk[i];
-    dq.delayed_post(milliseconds(time_ms[i]), [i, start, &count, &tm]()
+    dq.delayed_post(milliseconds(time_ms[i]), [start, &count, &tm]()
     { 
       ++count; 
       tm = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
@@ -109,7 +109,7 @@ inline void delayed_unit4(T& t, Q& dq)
   for (size_t i = 0; i < 10 ; ++i)
   {
     // пуляем с задержкой 50, 100, 150 ... милисекунд
-    dq.delayed_post( milliseconds(50*(i+1)),[&t, &start, &times, i]()
+    dq.delayed_post( milliseconds(50*(i+1)),[&start, &times, i]()
     {
       time_t& ms = times[i];
       ms = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
