@@ -219,10 +219,11 @@ UNIT(rate_limit, "")
   ios.run();
   finish = high_resolution_clock::now();
   t << equal<expect, size_t>(counter, 200) << FAS_FL;
-  t << equal<expect, size_t>(2000, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
+  t << equal<expect, size_t>(2, duration_cast<seconds>(finish - start).count()) << FAS_FL;
+  t << less<expect, size_t>(1900, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
+  t << greater<expect, size_t>(2100, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
+  
 }
-
-
 
 
 BEGIN_SUITE(workflow, "")

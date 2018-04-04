@@ -10,15 +10,13 @@ before_install:
   - sudo apt-get update -qq
 
 install: 
-  - sudo apt-get install -y valgrind 
+  - sudo apt-get install -y valgrind libboost-dev libboost-system-dev 
 
 compiler:
   - g++
   - clang++ 
 
 env:
-  - BUILD_TYPE=Debug STANDARD=98
-  - BUILD_TYPE=Release STANDARD=98
   - BUILD_TYPE=Debug STANDARD=11
   - BUILD_TYPE=Release STANDARD=11
   - BUILD_TYPE=Debug STANDARD=14
