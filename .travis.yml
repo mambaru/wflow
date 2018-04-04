@@ -10,7 +10,7 @@ before_install:
   - sudo apt-get update -qq
 
 install: 
-  - sudo apt-get install -y valgrind libboost-dev libboost-system-dev 
+  - sudo apt-get install -y valgrind libboost-dev libboost-system-dev doxygen
 
 compiler:
   - g++
@@ -41,3 +41,10 @@ script:
     - cmake .. -DBUILD_TESTING=ON -DPARANOID_WARNING=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_STANDARD=$STANDARD
     - cmake --build .
     - ctest --output-on-failure
+    - cd ..
+    - doxygen
+    - cd doc/html
+    - git init 
+    - git add .
+    - git commit -m "doxygen"
+    - git push git@github.com:mambaru/wflow.git master:gh-pages
