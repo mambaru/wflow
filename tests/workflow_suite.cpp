@@ -126,7 +126,7 @@ UNIT(workflow3, "control handler")
   {
     wfl.post(
       std::chrono::milliseconds(500*(i+1) ), 
-      [&t, i, &counter, &io]()
+      [&t, i, &counter]()
       {
         t << message("for 0..5 i=") << i;
         ++counter;
@@ -206,6 +206,7 @@ UNIT(rate_limit, "")
   wo.threads = 0;
   wo.rate_limit = 100;
   wflow::workflow flw(ios, wo);
+  flw.manager(); // cppcheck fix
   flw.start();
 
   auto start = high_resolution_clock::now();

@@ -67,7 +67,7 @@ struct response
 class foo
 {
 public:
-  foo(wflow::workflow& w)
+  explicit foo(wflow::workflow& w)
     : _workflow(w)
   {}
   
@@ -108,7 +108,7 @@ int main()
   boost::asio::io_service ios;
   wflow::workflow wf(ios);
   auto f = std::make_shared<foo>(wf);
-  int callcount = 0;
+  volatile int callcount = 0;
   wf.create_requester<request, response>(
     std::chrono::seconds(1),
     [f, &callcount](request::ptr req, response::handler callback)
