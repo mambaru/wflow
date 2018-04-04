@@ -109,7 +109,7 @@ UNIT(workflow3, "control handler")
   std::atomic<int> counter(0);
   std::atomic<int> dropped(0);
   opt.threads = 1;
-  opt.control_ms = 100;
+  opt.control_ms = 50;
   opt.control_handler = [&]()->bool{
     if ( counter == 3 )
     {
@@ -125,7 +125,7 @@ UNIT(workflow3, "control handler")
   for (int i =0 ; i < 5; i++)
   {
     wfl.post(
-      std::chrono::milliseconds(200*(i+1) ), 
+      std::chrono::milliseconds(500*(i+1) ), 
       [&t, i, &counter, &io]()
       {
         t << message("for 0..5 i=") << i;
@@ -176,7 +176,6 @@ UNIT(requester1, "")
   id = flw.create_requester< foo::request, foo::response >(
     milliseconds(0),
     milliseconds(1000), 
-    /*f, &foo::method,*/
     [f](foo::request::ptr req, foo::response::handler callback)
     {
       f->method(std::move(req), callback);
@@ -184,7 +183,6 @@ UNIT(requester1, "")
     },
     [&id, &ios, &finish]( foo::response::ptr ) -> foo::request::ptr
     {
-      std::cout << std::endl << id << std::endl;
       finish = high_resolution_clock::now();
       ios.stop();
       return std::make_unique<foo::request>();
