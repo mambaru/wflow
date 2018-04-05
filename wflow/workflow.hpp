@@ -146,7 +146,7 @@ public:
   /// Момент времени
   typedef std::chrono::time_point<clock_t>  time_point_t;
   /// Интервал времени
-  typedef time_point_t::duration            duration_t;
+  typedef std::chrono::time_point< std::chrono::steady_clock >::duration duration_t;
   /// Идентификатор таймера
   typedef int                               timer_id_t;
   

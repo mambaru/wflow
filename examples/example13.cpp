@@ -59,7 +59,7 @@ bool sender(request::ptr, response::handler callback)
   {
     std::cout << "response ready" << std::endl;
     // Отправляем ответ через 500 мс
-    callback(std::make_unique<response>());
+    callback( response::ptr(new response() ));
   });
   return true;
 }
@@ -70,7 +70,7 @@ request::ptr generator(response::ptr resp)
   if ( resp == nullptr )
   {
     std::cout << "generate first" << std::endl;
-    return std::make_unique<request>();
+    return request::ptr(new request() );
   }
   
   // Так как последовательность из одного вызова, то на resp!=nullptr возвращаем nullptr

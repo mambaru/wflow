@@ -20,7 +20,7 @@ public:
 
   typedef std::function<void()>                               function_t;
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
-  typedef time_point_t::duration                              duration_t;
+  typedef std::chrono::time_point<std::chrono::steady_clock>::duration                              duration_t;
   typedef ::wflow::asio::io_service io_service_type;
   typedef timer_manager<queue_type> timer_type;
   

@@ -21,7 +21,7 @@ public:
   typedef std::shared_ptr<io_service_type> io_service_ptr;
   typedef std::function<void()>                               function_t;
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
-  typedef time_point_t::duration                              duration_t;
+  typedef std::chrono::time_point<std::chrono::steady_clock>::duration duration_t;
   
   virtual ~bique();
  

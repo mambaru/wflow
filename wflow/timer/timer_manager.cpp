@@ -20,28 +20,28 @@ template<>                                                                      
 timer_manager<bique>::timer_id_t                                                                                                \
   timer_manager<bique>::create( duration_t delay, handler h, expires_at expires)                                                \
 {                                                                                                                               \
-  return this->create_( clock_t::now() + delay, delay, std::move(h), expires );                                           \
+  return this->create_( clock_t::now() + std::chrono::duration_cast<std::chrono::microseconds>(delay), delay, std::move(h), expires );                                           \
 }                                                                                                                               \
                                                                                                                                 \
 template<>                                                                                                                      \
 timer_manager<bique>::timer_id_t                                                                                                \
   timer_manager<bique>::create( duration_t delay, async_handler h, expires_at expires)                                          \
 {                                                                                                                               \
-  return this->create_( clock_t::now() + delay, delay, std::move(h), expires );                                           \
+  return this->create_( clock_t::now() + std::chrono::duration_cast<std::chrono::microseconds>(delay), delay, std::move(h), expires );                                           \
 }                                                                                                                               \
                                                                                                                                 \
 template<>                                                                                                                      \
 timer_manager<bique>::timer_id_t                                                                                                \
   timer_manager<bique>::create(duration_t start_delay, duration_t delay, handler h, expires_at expires)                         \
 {                                                                                                                               \
-  return this->create_( clock_t::now() + start_delay, delay, std::move(h), expires );                                     \
+  return this->create_( clock_t::now() + std::chrono::duration_cast<std::chrono::microseconds>(start_delay), delay, std::move(h), expires );                                     \
 }                                                                                                                               \
                                                                                                                                 \
 template<>                                                                                                                      \
 timer_manager<bique>::timer_id_t                                                                                                \
   timer_manager<bique>::create(duration_t start_delay, duration_t delay, async_handler h, expires_at expires)                   \
 {                                                                                                                               \
-  return this->create_( clock_t::now() + start_delay, delay, std::move(h), expires );                                     \
+  return this->create_( clock_t::now() + std::chrono::duration_cast<std::chrono::microseconds>(start_delay), delay, std::move(h), expires );                                     \
 }                                                                                                                               \
                                                                                                                                 \
 template<>                                                                                                                      \
@@ -102,7 +102,7 @@ timer_manager<bique>::timer_id_t                                                
   time_point_t tp = clock_t::now();                                                                                             \
   if ( !start_time.empty() )                                                                                                    \
   {                                                                                                                             \
-    tp += delay;                                                                                                                \
+    tp += std::chrono::duration_cast<std::chrono::microseconds>(delay);                                                                                                                \
     if ( !timer::today_from_string( start_time, tp ) )                                                                          \
     { }                                                                                                                         \
   }                                                                                                                             \

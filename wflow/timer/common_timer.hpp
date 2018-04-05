@@ -18,7 +18,7 @@ public:
 
   typedef std::chrono::system_clock         clock_t;
   typedef std::chrono::time_point<clock_t>  time_point_t;
-  typedef time_point_t::duration            duration_t;
+  typedef std::chrono::time_point< std::chrono::steady_clock >::duration duration_t;
 
 
   template<typename Q, typename Handler>

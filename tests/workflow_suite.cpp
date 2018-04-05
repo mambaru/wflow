@@ -1,8 +1,10 @@
+
 #include <fas/testing.hpp>
 #include <wflow/task/task_manager.hpp>
 #include <wflow/workflow.hpp>
 #include <wflow/system/memory.hpp>
 #include <chrono>
+#include <memory>
 
 UNIT(workflow1, "")
 {
@@ -109,7 +111,7 @@ UNIT(workflow3, "control handler")
   std::atomic<int> counter(0);
   std::atomic<int> dropped(0);
   opt.threads = 1;
-  opt.control_ms = 50;
+  opt.control_ms = 100;
   opt.control_handler = [&]()->bool{
     if ( counter == 3 )
     {
@@ -125,7 +127,7 @@ UNIT(workflow3, "control handler")
   for (int i =0 ; i < 5; i++)
   {
     wfl.post(
-      std::chrono::milliseconds(500*(i+1) ), 
+      std::chrono::milliseconds(2000*(i+1) ), 
       [&t, i, &counter]()
       {
         t << message("for 0..5 i=") << i;
@@ -138,6 +140,7 @@ UNIT(workflow3, "control handler")
   t << equal<expect, size_t>(wfl.timer_count(), 1) << FAS_FL;
   
   io.run();
+  wfl.stop();
 
   t << equal<expect, size_t>(counter, 3) << FAS_FL;
   t << equal<expect, size_t>(wfl.dropped(), 0) << FAS_FL;
@@ -185,6 +188,7 @@ UNIT(requester1, "")
     {
       finish = high_resolution_clock::now();
       ios.stop();
+      //return foo::request::ptr( new foo::request() );
       return std::make_unique<foo::request>();
     }
   );
@@ -221,6 +225,8 @@ UNIT(rate_limit, "")
   t << equal<expect, size_t>(2, duration_cast<seconds>(finish - start).count()) << FAS_FL;
   t << less<expect, size_t>(1900, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
   t << greater<expect, size_t>(2100, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
+  
+  t << message("CXX_STANDARD: ") << __cplusplus;
   
 }
 

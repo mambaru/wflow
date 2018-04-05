@@ -91,7 +91,7 @@ public:
       [preq, callback]()
       {
         std::cout << "foo::method " << preq->param << std::endl;
-        auto res = std::make_unique<response>();
+        response::ptr res(new response() );
         res->result = preq->param + 1;
         callback( std::move(res) );
       }
@@ -124,12 +124,12 @@ int main()
       if ( resp == nullptr )
       {
         std::cout << "create FIRST request "  << std::endl;
-        return std::make_unique<request>();
+        return request::ptr(new request() );
       }
       else if ( resp->result != 10)
       {
         std::cout << "create request N" << callcount << "." << resp->result << std::endl;
-        auto req = std::make_unique<request>();
+        request::ptr req(new request() );
         req->param = resp->result;
         return req;
       }
