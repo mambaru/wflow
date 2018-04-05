@@ -3,6 +3,7 @@
 #include <wflow/queue/delayed_queue.hpp>
 #include <wflow/queue/bique.hpp>
 #include <wflow/queue/asio_queue.hpp>
+#include <wflow/logger.hpp>
 
 #include <sys/syscall.h>
 #include <sys/types.h>
@@ -170,44 +171,52 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
   return 
     std::thread([wthis, s, wflag]()
     {
-      thread_pool_base::startup_handler startup;
-      thread_pool_base::finish_handler finish;
-      thread_pool_base::statistics_handler statistics;
-
-      if ( auto pthis = wthis.lock() )
+      try
       {
-        startup = pthis->_startup;
-        finish = pthis->_finish;
-        statistics = pthis->_statistics;
-      }
-      std::thread::id thread_id = std::this_thread::get_id();
-      auto pthis = wthis.lock();
-      if ( startup != nullptr )
-        startup(thread_id);
-      
-      for (;;)
-      {
-        auto beg = std::chrono::steady_clock::now();
-        size_t handlers = s->run_one();
-        if (  handlers == 0 )
-          break;
+        thread_pool_base::startup_handler startup;
+        thread_pool_base::finish_handler finish;
+        thread_pool_base::statistics_handler statistics;
 
-        if ( wflag.lock() == nullptr)
-          break;
-
-        if ( statistics != nullptr )
+        if ( auto pthis = wthis.lock() )
         {
-          auto now = std::chrono::steady_clock::now();
-          auto span = now - beg ;
-          if ( statistics != nullptr )
-            statistics( thread_id, handlers, span );
+          startup = pthis->_startup;
+          finish = pthis->_finish;
+          statistics = pthis->_statistics;
         }
+        std::thread::id thread_id = std::this_thread::get_id();
+        auto pthis = wthis.lock();
+        if ( startup != nullptr )
+          startup(thread_id);
+        
+        for (;;)
+        {
+          auto beg = std::chrono::steady_clock::now();
+          size_t handlers = s->run_one();
+          if (  handlers == 0 )
+            break;
 
+          if ( wflag.lock() == nullptr)
+            break;
+
+          if ( statistics != nullptr )
+          {
+            auto now = std::chrono::steady_clock::now();
+            auto span = now - beg ;
+            if ( statistics != nullptr )
+              statistics( thread_id, handlers, span );
+          }
+        }
+        if ( finish != nullptr )
+          finish(thread_id);    
       }
-
-      if ( finish != nullptr )
-        finish(thread_id);    
-      
+      catch(const std::exception& e)
+      {
+        WFLOW_LOG_FATAL("Exception in workflow thread: " << e.what() )
+      }
+      catch(...)
+      {
+        WFLOW_LOG_FATAL("Unhandled exception in workflow thread." )
+      }
     });
 }
 

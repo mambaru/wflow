@@ -9,7 +9,7 @@
 #include <memory>
 #include <utility>
 
-#if __cplusplus <= 201103
+#if __cplusplus <= 201103L
 #ifndef DEF_MAKE_UNIQUE
 #define DEF_MAKE_UNIQUE
 
@@ -28,8 +28,6 @@ namespace _dmu_{
     };
 
 } 
-
-
 
 namespace std{
     template<class T, class... Args>
