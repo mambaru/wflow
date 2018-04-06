@@ -1,2 +1,8 @@
-missingInclude:./wflow/boost.hpp:20
-knownConditionTrueFalse:./tests/workflow_suite.cpp:65
+knownConditionTrueFalse:./examples/example3.cpp:29
+syntaxError:./wflow/timer/timer_manager.cpp:113
+knownConditionTrueFalse:./examples/example08.cpp:26
+knownConditionTrueFalse:./examples/example08.cpp:34
+knownConditionTrueFalse:./examples/example08.cpp:40
+knownConditionTrueFalse:./examples/example08.cpp:46
+knownConditionTrueFalse:./examples/example08.cpp:52
+knownConditionTrueFalse:./examples/example14.cpp:117

@@ -1,9 +1,10 @@
-#include <fas/testing.hpp>
-#include <wflow/timer_manager.hpp>
-#include <wflow/delayed_queue.hpp>
-#include <wflow/asio_queue.hpp>
-#include <wflow/memory.hpp>
 #include <memory>
+#include <fas/testing.hpp>
+#include <wflow/timer/timer_manager.hpp>
+#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/asio_queue.hpp>
+#include <wflow/system/memory.hpp>
+
 
 struct test_request
 {
@@ -47,13 +48,20 @@ UNIT(timer_manager1, "")
   } );
   
   auto tc = std::make_shared<test_class>();
-  tm->create<test_request, test_response>( "", std::chrono::milliseconds(600), tc, &test_class::method, 
-              [&t, &counter]( test_response::ptr) -> test_request::ptr 
-              {
-                ++counter;
-                t << message("call1");
-                return std::make_unique<test_request>();
-              });
+  tm->create<test_request, test_response>( 
+    "", std::chrono::milliseconds(600), 
+    [tc](test_request::ptr req, test_response::handler callback)
+    {
+      tc->method(std::move(req), callback);
+      return true;
+    },
+    [&t, &counter]( test_response::ptr) -> test_request::ptr 
+    {
+      ++counter;
+      t << message("call1");
+      return test_request::ptr( new test_request() );
+    }
+  );
   
   for ( int i =0 ; i < 4; i++)
     io.run_one();
@@ -98,7 +106,7 @@ UNIT(timer_manager3, "")
     finish = high_resolution_clock::now();
     t << message("tick1");
     return false;
-  }, false );
+  }, wflow::expires_at::before );
   io.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
   t << equal<expect>(interval, 0) << FAS_FL;

@@ -4,7 +4,6 @@
 .cproject
 .project
 *.o
-*.cmake
 */debug
 */release
 */build
@@ -20,4 +19,8 @@ CMakeCache.txt
 *.kate-swp
 *build_info.h
 config.h
-Makefile
+doc
+faslib
+wjson
+wlog
+

@@ -1,5 +1,5 @@
 #include <fas/testing.hpp>
-#include <wflow/asio_queue.hpp>
+#include <wflow/queue/asio_queue.hpp>
 #include "delayed_common_suite.hpp"
 
 UNIT(asio_queue1, "")

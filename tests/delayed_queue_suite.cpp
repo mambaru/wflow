@@ -1,7 +1,6 @@
 #include <fas/testing.hpp>
-#include <wflow/delayed_queue.hpp>
-#include <wflow/asio_queue.hpp>
-#include <wflow/asio.hpp>
+#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/asio_queue.hpp>
 #include <chrono>
 #include <atomic>
 #include <thread>
@@ -12,28 +11,28 @@
 
 UNIT(delayed_queue1, "")
 {
-  ::wflow::delayed_queue dq(0);
-  delayed_unit1(t, dq);
+  auto dq = std::make_shared<wflow::delayed_queue>(0);
+  delayed_unit1(t, *dq);
 }
 
 
 UNIT(delayed_queue2, "")
 {
-  ::wflow::delayed_queue dq(0);
-  delayed_unit2(t, dq);
+  auto dq = std::make_shared<wflow::delayed_queue>(0);
+  delayed_unit2(t, *dq);
 }
 
 UNIT(delayed_queue3, "")
 {
-  ::wflow::delayed_queue dq(0);
-  delayed_unit3(t, dq);
+  auto dq = std::make_shared<wflow::delayed_queue>(0);
+  delayed_unit3(t, *dq);
 }
 
 UNIT(delayed_queue4, "")
 {
   using namespace ::fas::testing;
-  ::wflow::delayed_queue dq(0);
-  delayed_unit4(t, dq);
+  auto dq = std::make_shared<wflow::delayed_queue>(0);
+  delayed_unit4(t, *dq);
 }
 
 BEGIN_SUITE(delayed_queue, "")
