@@ -26,8 +26,8 @@ add_library(wflow ${source_list})
 
 if (NOT WFLOW_DISABLE_LOG)
   target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
-elseif() 
-  target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+else() 
+  target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
 
 include_directories(.)
