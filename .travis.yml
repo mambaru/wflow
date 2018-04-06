@@ -10,7 +10,7 @@ before_install:
   - sudo apt-get update -qq
 
 install: 
-  - sudo apt-get install -y valgrind libboost-dev libboost-system-dev doxygen
+  - sudo apt-get install -y libc++-dev libboost-dev libboost-system-dev valgrind doxygen
 
 compiler:
   - g++
@@ -39,7 +39,7 @@ script:
     - mkdir build
     - cd build
     - echo "CMAKE_CXX_STANDARD=$STANDARD"
-    - cmake .. -DBUILD_TESTING=ON -DPARANOID_WARNING=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_STANDARD=$STANDARD -DCMAKE_RULE_MESSAGES:BOOL=OFF -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+    - cmake .. -DBUILD_TESTING=ON -DPARANOID_WARNING=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_STANDARD=$STANDARD -DCMAKE_RULE_MESSAGES:BOOL=OFF -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCLANG_LIBPP="-stdlib=libc++"
     - cmake --build .
     - ctest --output-on-failure
 
