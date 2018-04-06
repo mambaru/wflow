@@ -22,7 +22,7 @@ public:
 
   typedef std::chrono::system_clock         clock_t;
   typedef std::chrono::time_point<clock_t>  time_point_t;
-  typedef time_point_t::duration            duration_t;
+  typedef std::chrono::time_point< std::chrono::steady_clock >::duration duration_t;
 
   static std::function<void()> make( std::shared_ptr<bique>         pq, duration_t delay, handler h, expires_at expires, wflag_type wflag );
   static std::function<void()> make( std::shared_ptr<asio_queue>    pq, duration_t delay, handler h, expires_at expires, wflag_type wflag );

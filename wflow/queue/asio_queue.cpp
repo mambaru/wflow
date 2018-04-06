@@ -121,12 +121,12 @@ bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
 
 void asio_queue::safe_delayed_post(duration_t duration, function_t f)
 {
-  this->safe_post_at( std::chrono::system_clock::now() + duration, std::move(f));
+  this->safe_post_at( std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::microseconds>(duration), std::move(f));
 }
 
 bool asio_queue::delayed_post(duration_t duration, function_t f, function_t drop)
 {
-  return this->post_at( std::chrono::system_clock::now() + duration, std::move(f), std::move(drop) );
+  return this->post_at( std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::microseconds>(duration), std::move(f), std::move(drop) );
 }
 
 std::size_t asio_queue::unsafe_size() const
@@ -183,7 +183,6 @@ asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
 asio_queue::work_type asio_queue::work() const
 {
   return work_type(_io);
-  //return std::make_unique<work_type>(_io);
 }
 
 } // wflow

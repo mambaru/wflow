@@ -134,7 +134,7 @@ inline void delayed_unit4(T& t, Q& dq)
   cv.notify_all();
   std::this_thread::sleep_for( milliseconds(650) );
   dq.stop();
-  std::this_thread::sleep_for( milliseconds(10) );
+  std::this_thread::sleep_for( milliseconds(100) );
   for (size_t i = 0; i < 10 ; ++i)
   {
     time_t res = static_cast<time_t>(50*(i+1)) - times[i] - 5;

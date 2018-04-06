@@ -6,7 +6,6 @@ prj_dir=$(dirname $script_dir)
 cp "$script_dir/suppressions.txt" "/tmp/suppressions.txt"
 sed -i -- "s#\:\.\/#\:$prj_dir\/#g" "/tmp/suppressions.txt"
 
-
 opt="--inconclusive --error-exitcode=1 --force --max-configs=128 \
 --quiet --enable=all --suppress=missingInclude --suppressions-list=/tmp/suppressions.txt \
 --template={id}:{file}:{line}:[{severity}]:{message} -I $prj_dir"

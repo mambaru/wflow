@@ -152,7 +152,7 @@ void delayed_queue::safe_delayed_post(duration_t duration, function_t f)
   if ( 0 == duration.count() )
     this->safe_post( f);
   else
-    this->safe_post_at( std::chrono::system_clock::now() + duration, f);
+    this->safe_post_at( std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::microseconds>(duration), f);
 }
 
 bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t drop)
@@ -160,7 +160,7 @@ bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t d
   if ( 0 == duration.count() )
     return this->post( f, drop);
   else
-    return this->post_at( std::chrono::system_clock::now() + duration, f, drop);
+    return this->post_at( std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::microseconds>(duration), f, drop);
   /*
   std::lock_guard<mutex_t> lock( _mutex );
   if ( !this->check_( std::move(drop) ) )

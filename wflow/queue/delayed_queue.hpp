@@ -21,7 +21,7 @@ public:
 
   typedef std::function<void()>                               function_t;
   typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
-  typedef time_point_t::duration                              duration_t;
+  typedef std::chrono::time_point<std::chrono::steady_clock>::duration duration_t;
   typedef std::pair<time_point_t, function_t>                 event_t;
   typedef std::condition_variable                             condition_variable_t;
   typedef std::mutex                                          mutex_t;

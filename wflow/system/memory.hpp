@@ -21,27 +21,26 @@
          #define COMPILER_SUPPORTS_MAKE_UNIQUE
       #endif
       #elif defined(__clang__)
-      // std::make_unique was added in clang 3.4, but not until Xcode 6.
-      // Annoyingly, Apple makes the clang version defines match the version
-      // of Xcode, not the version of clang.
-      #define CLANG_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
-      #if defined(__apple_build_version__) && CLANG_VERSION >= 60000 && __cplusplus > 201103L
-         #define COMPILER_SUPPORTS_MAKE_UNIQUE
-      #elif !defined(__apple_build_version__) && CLANG_VERSION >= 30400 && __cplusplus > 201103L
-         #define COMPILER_SUPPORTS_MAKE_UNIQUE
-      #endif
+        // std::make_unique was added in clang 3.4, but not until Xcode 6.
+        // Annoyingly, Apple makes the clang version defines match the version
+        // of Xcode, not the version of clang.
+        #define CLANG_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
+        #if defined(__apple_build_version__) && CLANG_VERSION >= 60000 && __cplusplus > 201103L && !defined _LIBCPP_VERSION
+          #define COMPILER_SUPPORTS_MAKE_UNIQUE
+        #elif !defined(__apple_build_version__) && CLANG_VERSION >= 30400 && __cplusplus > 201103L && !defined _LIBCPP_VERSION
+          #define COMPILER_SUPPORTS_MAKE_UNIQUE
+        #endif
       #elif defined(__GNUC__)
-      // std::make_unique was added in gcc 4.9, for standards versions greater
-      // than -std=c++11.
-      #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-      #if GCC_VERSION >= 40900 && __cplusplus > 201103L
-         #define COMPILER_SUPPORTS_MAKE_UNIQUE
+        // std::make_unique was added in gcc 4.9, for standards versions greater
+        // than -std=c++11.
+        #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+        #if GCC_VERSION >= 40900 && __cplusplus > 201103L
+          #define COMPILER_SUPPORTS_MAKE_UNIQUE
       #endif
    #endif
 #endif
 
 #ifndef COMPILER_SUPPORTS_MAKE_UNIQUE
-#define COMPILER_SUPPORTS_MAKE_UNIQUE
 
 namespace _dmu_{
 
