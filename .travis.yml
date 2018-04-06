@@ -32,15 +32,7 @@ matrix:
 script:
     - mkdir build
     - cd build
-    - echo "CMAKE_CXX_STANDARD=$STANDARD"
+    - echo "CMAKE_CXX_STANDARD=     $STANDARD"
     - cmake .. -DBUILD_TESTING=ON -DPARANOID_WARNING=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_STANDARD=$STANDARD -DCMAKE_RULE_MESSAGES:BOOL=OFF -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCLANG_LIBPP="-stdlib=libc++"
     - cmake --build .
     - ctest --output-on-failure
-
-after_success:
-    - doxygen
-    - cd doc/html
-    - git init 
-    - git add .
-    - git commit -m "doxygen"
-    - git push git@github.com:mambaru/wflow.git master:gh-pages
