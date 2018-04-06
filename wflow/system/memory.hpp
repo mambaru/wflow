@@ -25,9 +25,9 @@
         // Annoyingly, Apple makes the clang version defines match the version
         // of Xcode, not the version of clang.
         #define CLANG_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
-        #if defined(__apple_build_version__) && CLANG_VERSION >= 60000 && __cplusplus > 201103L
+        #if defined(__apple_build_version__) && CLANG_VERSION >= 60000 && __cplusplus > 201103L && !defined _LIBCPP_VERSION
           #define COMPILER_SUPPORTS_MAKE_UNIQUE
-        #elif !defined(__apple_build_version__) && CLANG_VERSION >= 30400 && __cplusplus >= 201402L
+        #elif !defined(__apple_build_version__) && CLANG_VERSION >= 30400 && __cplusplus > 201103L && !defined _LIBCPP_VERSION
           #define COMPILER_SUPPORTS_MAKE_UNIQUE
         #endif
       #elif defined(__GNUC__)

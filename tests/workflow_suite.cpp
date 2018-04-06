@@ -127,7 +127,7 @@ UNIT(workflow3, "control handler")
   for (int i =0 ; i < 5; i++)
   {
     wfl.post(
-      std::chrono::milliseconds(2000*(i+1) ), 
+      std::chrono::milliseconds(500*(i+1) ), 
       [&t, i, &counter]()
       {
         t << message("for 0..5 i=") << i;

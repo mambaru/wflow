@@ -6,8 +6,12 @@
 # Сборка и установка
 
 ```bash
-make shared && sudo make install
-make static && sudo make install
+Usage:
+        make help
+        make shared
+        make static
+        make all
+        make light
 ```
 Если установлен doxygen то в папке `/doc/html` будет документация.
 
@@ -20,15 +24,15 @@ cd wlog/build
 cmake ..
 # Для сборки примеров и тестов
 cmake -DBUILD_TESTING=ON ..
-# Если поддержка JSON не требуется 
-#   cmake -DWLOG_DISABLE_JSON=ON ..
+# Если поддержка JSON-конфигурации не требуется 
+#   cmake -DWFLOW_DISABLE_JSON=ON -DWLOG_DISABLE_JSON=ON ..
 # Если поддержка логирования не требуется 
 #   cmake -DWFLOW_DISABLE_LOG=ON ..
 cmake --build make
 ctest 
 ```
 Для компиляции с поддержкой JSON-конфигурации потребуются библиотеки faslib, wjson, wlog, которые система сборки автоматически клонирует 
-в директорию сборки, если не найдет их в ОС или на том же уровне файловой системы.
+в директорию проекта, если не найдет их в системе.
 
 # Некоторые примеры
 
