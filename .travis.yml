@@ -21,8 +21,6 @@ env:
   - BUILD_TYPE=Release STANDARD=11
   - BUILD_TYPE=Debug STANDARD=14
   - BUILD_TYPE=Release STANDARD=14
-  - BUILD_TYPE=Debug STANDARD=17
-  - BUILD_TYPE=Release STANDARD=17
 
 matrix:
   exclude:
@@ -30,10 +28,6 @@ matrix:
     env: BUILD_TYPE=Debug STANDARD=14
   - compiler: g++
     env: BUILD_TYPE=Release STANDARD=14
-  - compiler: g++
-    env: BUILD_TYPE=Debug STANDARD=17
-  - compiler: g++
-    env: BUILD_TYPE=Release STANDARD=17
   
 script:
     - mkdir build
