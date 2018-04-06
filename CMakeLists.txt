@@ -34,7 +34,6 @@ include_directories(.)
 
 if ( BUILD_TESTING )
   enable_testing()
-  message(STATUS "CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}")
   add_subdirectory(tests)
   add_subdirectory(examples)
 endif()

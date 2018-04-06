@@ -1,71 +1,19 @@
+if ( NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}" )
+  message(STATUS "${PROJECT_NAME} is not top level project")
+  return()
+endif()
+
 if (NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 11)
 endif()
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_DEFAULT 11)
-set(CMAKE_CXX17_STANDARD_COMPILE_OPTION "-std=c++17")
-set(CMAKE_CXX14_STANDARD_COMPILE_OPTION "-std=c++14")
-
-
-
 
 if (NOT CMAKE_BUILD_TYPE)
   message(STATUS "No build type selected, default to Release")
   set(CMAKE_BUILD_TYPE "Release")
 endif()
-
-
-get_property(cur_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-
-if (NOT WFLOW_CLONE_DEPENDENCIES)
-include(ConfigureLibrary)
-CONFIGURE_LIBRARY( fas/aop.hpp "${cur_dirs} \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/../faslib \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/../../../faslib \
-                                ${CMAKE_SOURCE_DIR}/../faslib \
-                                ${PROJECT_BINARY_DIR}/faslib \
-                                /usr/include/faslib \
-                                /usr/local/include/faslib" 
-                  faslib "" )
-CONFIGURE_LIBRARY( wjson/json.hpp "${cur_dirs} \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/../wjson \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/../../../wjson \
-                                ${CMAKE_SOURCE_DIR}/../wjson \
-                                ${PROJECT_BINARY_DIR}/wjson \
-                                /usr/include/wjson \
-                                /usr/local/include/wjson" 
-                  wjson "" )
-
-CONFIGURE_LIBRARY( wlog/wlog.hpp "${cur_dirs} \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/../wlog \
-                                ${CMAKE_CURRENT_SOURCE_DIR}/../../../wlog \
-                                ${CMAKE_SOURCE_DIR}/../wlog \
-                                ${PROJECT_BINARY_DIR}/wlog \
-                                /usr/include/wlog \
-                                /usr/local/include/wlog" 
-                  wlog 
-                                "/usr/lib /usr/local/lib /usr/lib64 \
-                                 ${PROJECT_BINARY_DIR}/wlog/build \
-                                 ${CMAKE_SOURCE_DIR}/../wlog/build \
-                                 ${CMAKE_SOURCE_DIR}/wlog/build \
-                                 ${CMAKE_CURRENT_SOURCE_DIR}/../wlog/build \
-                                 ${CMAKE_CURRENT_SOURCE_DIR}/../../../build/wlog \
-                                 ${CMAKE_CURRENT_SOURCE_DIR}/wlog/build" 
-                  )
-endif(NOT WFLOW_CLONE_DEPENDENCIES)
-
-#if ( NOT HAVE_INCLUDE_faslib )
-#  message(WARNING "faslib not found! Use 'git clone https://github.com/migashko/faslib.git' \
-#                   in parent directory or install to system and set path in you project")
-#endif()
-
-#if ( NOT HAVE_INCLUDE_wjson )
-#  message(WARNING "wjson not found! Use 'git clone https://github.com/mambaru/wjson.git' \
-#                   in parent directory or install to system and set path in you project")
-#endif()
-
 
 if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") 
       OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") )
@@ -107,50 +55,39 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO  "/Yd /O2 /DNDEBUG")
 endif()
 
+include(ConfigureLibrary)
+CONFIGURE_LIBRARY( fas/aop.hpp "/usr/include/faslib /usr/local/include/faslib" 
+                  faslib "" )
+CONFIGURE_LIBRARY( wjson/json.hpp "/usr/include/wjson /usr/local/include/wjson" 
+                  wjson "" )
+
+CONFIGURE_LIBRARY( wlog/wlog.hpp "/usr/include/wlog /usr/local/include/wlog" 
+                   wlog "/usr/lib /usr/local/lib /usr/lib64" )
+
 set(store_BUILD_TESTING ${BUILD_TESTING})
+set(BUILD_TESTING OFF)
 
 if ( NOT FASLIB_DIR )
   if ( HAVE_INCLUDE_faslib )
     set(FASLIB_DIR "${HAVE_INCLUDE_faslib}")
-    if (FASLIB_DIR STREQUAL "${PROJECT_SOURCE_DIR}/faslib" )
-      add_subdirectory(faslib)
-    endif()
-
   else()
-    #execute_process(COMMAND git clone https://github.com/migashko/faslib.git WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
-    #execute_process(COMMAND mkdir -p build WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/faslib")
-    #execute_process(COMMAND cmake .. WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/faslib/build")
-    #set(FASLIB_DIR "${PROJECT_BINARY_DIR}/faslib")
     if ( NOT EXISTS "${PROJECT_SOURCE_DIR}/faslib")
       execute_process(COMMAND git clone https://github.com/migashko/faslib.git WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
     endif()
-    
-    set(BUILD_TESTING OFF)
     add_subdirectory(faslib)
     set(FASLIB_DIR "${PROJECT_SOURCE_DIR}/faslib")
-    
   endif()
 endif( NOT FASLIB_DIR )
 
 if ( NOT WJSON_DIR )
   if ( HAVE_INCLUDE_wjson )
     set(WJSON_DIR "${HAVE_INCLUDE_wjson}")
-    if (WJSON_DIR STREQUAL "${PROJECT_SOURCE_DIR}/wjson" )
-      add_subdirectory(wjson)
-    endif()
   else()
-    #execute_process(COMMAND git clone https://github.com/mambaru/wjson.git WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
-    #execute_process(COMMAND mkdir -p build WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wjson")
-    #execute_process(COMMAND cmake .. WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wjson/build")
-    #set(WJSON_DIR "${PROJECT_BINARY_DIR}/wjson")
-    
     if ( NOT EXISTS "${PROJECT_SOURCE_DIR}/wjson")
       execute_process(COMMAND git clone https://github.com/mambaru/wjson.git WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
     endif()
-    set(BUILD_TESTING OFF)
     add_subdirectory(wjson)
     set(WJSON_DIR "${PROJECT_SOURCE_DIR}/wjson")
-
   endif()
 endif( NOT WJSON_DIR )
 
@@ -158,20 +95,10 @@ if ( NOT WLOG_DIR )
   if ( HAVE_INCLUDE_wlog )
     set(WLOG_DIR "${HAVE_INCLUDE_wlog}")
     set(WLOG_LIBDIR "${HAVE_BINARY_wlog}")
-    
-    if ( WLOG_DIR STREQUAL "${PROJECT_SOURCE_DIR}/wlog" )
-      add_subdirectory(wlog)
-    endif()
   else()
-#    execute_process(COMMAND git clone https://github.com/mambaru/wlog.git WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
-#    execute_process(COMMAND make static WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wlog")
-#    execute_process(COMMAND make shared WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/wlog")
-#    set(WLOG_DIR "${PROJECT_BINARY_DIR}/wlog")
-#    set(WLOG_LIBDIR "${PROJECT_BINARY_DIR}/wlog/build")
     if ( NOT EXISTS "${PROJECT_SOURCE_DIR}/wlog")
       execute_process(COMMAND git clone https://github.com/mambaru/wlog.git WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
     endif()
-    set(BUILD_TESTING OFF)
     add_subdirectory(wlog)
     set(WLOG_DIR "${PROJECT_SOURCE_DIR}/wlog")
     set(WLOG_LIBDIR "${PROJECT_BINARY_DIR}")
