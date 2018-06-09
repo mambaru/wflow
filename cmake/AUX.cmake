@@ -79,7 +79,7 @@ if (NOT WFLOW_DISABLE_JSON)
                     wjson "" )
   clone_library(wjson "WJSON_DIR" "https://github.com/mambaru/wjson.git")
 else()
-  add_definitions(-DWFLOW_DISABLE_LOG)
+  add_definitions(-DWFLOW_DISABLE_JSON)
 endif(NOT WFLOW_DISABLE_JSON)
 
 if (NOT WFLOW_DISABLE_LOG)
