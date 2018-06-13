@@ -20,6 +20,7 @@ CMakeCache.txt
 *build_info.h
 config.h
 doc
+cppcheck.cppcheck
 faslib
 wjson
 wlog
