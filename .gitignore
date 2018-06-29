@@ -19,7 +19,7 @@ CMakeCache.txt
 *.kate-swp
 *build_info.h
 config.h
-doc
+docs
 cppcheck.cppcheck
 faslib
 wjson

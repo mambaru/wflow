@@ -4,29 +4,29 @@ help:
 	@echo "	make shared"
 	@echo "	make static"
 	@echo "	make all"
-	@echo "	make light"
+	@echo "	make doc"
+	@echo "	make clean"
+	@echo "	make install"
 
 install:
 	cd build && make install
-doc: 
+doc:
+	rm -rf ./docs
 	if hash doxygen 2>/dev/null; then doxygen; fi
+static: 
 	mkdir -p build
-static: doc
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF 
 	cmake --build ./build 
-shared: doc
+shared: 
+	mkdir -p build
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
 	cmake --build ./build 
-all: 	doc
+all: 	
+	mkdir -p build
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON 
 	cmake --build ./build 
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
 	cmake --build ./build 
-light:
-	mkdir -p build
-	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DWFLOW_DISABLE_JSON=ON -DWFLOW_DISABLE_LOG=ON
-	cmake --build ./build 
-	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DWFLOW_DISABLE_JSON=ON -DWFLOW_DISABLE_LOG=ON
-	cmake --build ./build 
-	
-
+clean:
+	rm -r docs
+	cd build && make clean
