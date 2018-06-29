@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.1)
 project(wflow)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(AUX)
+include(mambaru)
+get_faslib()
+if (NOT WFLOW_DISABLE_JSON)
+  get_mambaru(wjson WFLOW_DIR "")
+  add_definitions(-DWFLOW_DISABLE_JSON)
+endif()
+
 include(FindThreads)
 find_package(Boost REQUIRED system )
 set(
