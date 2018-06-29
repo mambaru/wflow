@@ -7,6 +7,12 @@ get_faslib()
 if (NOT WFLOW_DISABLE_JSON)
   get_mambaru(wjson WFLOW_DIR "")
   add_definitions(-DWFLOW_DISABLE_JSON)
+  add_definitions(-DWLOG_DISABLE_JSON)
+  set(WLOG_DISABLE_JSON ON)
+endif()
+
+if (NOT WFLOW_DISABLE_LOG)
+  get_mambaru(wlog WLOG_DIR "")
 endif()
 
 include(FindThreads)
