@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 project(wflow)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(AUX)
+include(mambaru)
+
 include(FindThreads)
 find_package(Boost REQUIRED system )
 set(
@@ -25,7 +26,7 @@ endif()
 add_library(wflow ${source_list})
 
 if (NOT WFLOW_DISABLE_LOG)
-  target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+  target_link_libraries(wflow ${WLOG_LIB} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
 else() 
   target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
