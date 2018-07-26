@@ -19,8 +19,6 @@ CMakeCache.txt
 *.kate-swp
 *build_info.h
 config.h
-doc
-faslib
-wjson
-wlog
+docs
+cppcheck.cppcheck
 

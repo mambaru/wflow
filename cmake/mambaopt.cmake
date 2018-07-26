@@ -1,7 +1,3 @@
-if ( NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}" )
-  message(STATUS "${PROJECT_NAME} is not top level project")
-  return()
-endif()
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -21,7 +17,7 @@ endif()
 if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") 
       OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") )
       
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Werror -pedantic -ftemplate-backtrace-limit=0")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Werror -pedantic -ftemplate-backtrace-limit=0 -fpic")
   set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG ")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO  "-O2 -g -DNDEBUG")
   set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
@@ -42,11 +38,11 @@ if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunreachable-code -Wunused -Wunused-function -Wunused-label -Wunused-parameter -Wunused-value")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo ")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wstrict-overflow=2 -Wswitch -Wswitch-default -Wundef -Werror")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-      # -Wunsafe-loop-optimizations
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op  -Wnoexcept -Wstrict-null-sentinel -Wno-pragma-once-outside-header")
+      #-Wredundant-move
     endif()
   endif(PARANOID_WARNING)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
@@ -57,41 +53,4 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS_DEBUG  "/Od /D_DEBUG")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO  "/Yd /O2 /DNDEBUG")
 endif()
-
-include(ConfigureLibrary)
-
-if ( BUILD_TESTING OR NOT WFLOW_DISABLE_JSON OR NOT WFLOW_DISABLE_LOG) 
-  set(get_FASLIB ON)
-endif()
-
-set(store_BUILD_TESTING ${BUILD_TESTING})
-set(BUILD_TESTING OFF)
-  
-if (get_FASLIB)
-  CONFIGURE_LIBRARY( fas/aop.hpp "/usr/include/faslib /usr/local/include/faslib " 
-                     faslib "" )
-  clone_library(faslib "FASLIB_DIR" "https://github.com/migashko/faslib.git")
-  set(FAS_TESTING_CPP "${FASLIB_DIR}/fas/testing/testing.cpp")
-endif()
-
-if (NOT WFLOW_DISABLE_JSON)
-  CONFIGURE_LIBRARY( wjson/json.hpp "/usr/include/wjson /usr/local/include/wjson" 
-                    wjson "" )
-  clone_library(wjson "WJSON_DIR" "https://github.com/mambaru/wjson.git")
-else()
-  add_definitions(-DWFLOW_DISABLE_JSON)
-endif(NOT WFLOW_DISABLE_JSON)
-
-if (NOT WFLOW_DISABLE_LOG)
-  CONFIGURE_LIBRARY( wlog/wlog.hpp "/usr/include/wlog /usr/local/include/wlog" 
-                     wlog "/usr/lib /usr/local/lib /usr/lib64" )
-  clone_library(wlog "WLOG_DIR" "https://github.com/mambaru/wlog.git")
-else()
-  add_definitions(-DWFLOW_DISABLE_LOG)
-endif(NOT WFLOW_DISABLE_LOG)
-
-set(BUILD_TESTING ${store_BUILD_TESTING})
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 
