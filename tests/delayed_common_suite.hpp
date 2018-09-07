@@ -138,6 +138,6 @@ inline void delayed_unit4(T& t, Q& dq)
   for (size_t i = 0; i < 10 ; ++i)
   {
     time_t res = static_cast<time_t>(50*(i+1)) - times[i] - 5;
-    t << is_true<expect>( std::abs(res) < 2 ) << " time error ( " << 50*(i+1) << "-" << times[i] << " > 1 )" << notify ;
+    t << is_true<expect>( std::abs(res) < 10 ) << " time error ( " << 50*(i+1) << "-" << times[i] << " > 9 ms ):" << notify ;
   }
 }
