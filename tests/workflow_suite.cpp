@@ -188,8 +188,8 @@ UNIT(requester1, "")
     {
       finish = high_resolution_clock::now();
       ios.stop();
-      //return foo::request::ptr( new foo::request() );
-      return std::make_unique<foo::request>();
+      return foo::request::ptr( new foo::request() ); 
+      //return std::make_unique<foo::request>(); // travis-ci clang++5 ws c++14: member named 'make_unique' in namespace 'std'
     }
   );
   t << message("requester: ") << id;
