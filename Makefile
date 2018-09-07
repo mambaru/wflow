@@ -16,17 +16,17 @@ doc:
 static: 
 	mkdir -p build
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF 
-	cmake --build ./build 
+	cd build && cmake --build .
 shared: 
 	mkdir -p build
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
-	cmake --build ./build 
+	cd build && cmake --build .
 all: 	
 	mkdir -p build
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON 
-	cmake --build ./build 
+	cd build && cmake --build .
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
-	cmake --build ./build 
+	cd build && cmake --build .
 clean:
 	rm -r docs
 	cd build && make clean
