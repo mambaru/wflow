@@ -196,15 +196,6 @@ public:
    */
   bool reconfigure(const workflow_options& opt);
   
-  
-  /**
-    * @brief Установить workflow для таймера workflow_options::control_ms
-    * @details при большом количестве тяжеловесных заданий таймер может не срабатывать во время,
-    * поэтому для его рекомендуется создать отдельный workflow
-    * @see example0.cpp 
-    */
-  void set_control_workflow(std::shared_ptr<workflow> ptr);
-  
   /**
    * @brief Сброс всех очередей
    */

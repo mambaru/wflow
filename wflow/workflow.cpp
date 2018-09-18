@@ -57,11 +57,6 @@ bool workflow::reconfigure(const workflow_options& opt)
   return true;
 }
 
-void workflow::set_control_workflow(std::shared_ptr<workflow> ptr)
-{
-  _workflow_ptr = ptr;
-}
-
 const std::string& workflow::get_id() const
 {
   return _id;
@@ -209,6 +204,7 @@ size_t workflow::dropped() const
 void workflow::create_wrn_timer_(const workflow_options& opt)
 {
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
+  
   auto old_timer = _wrn_timer;
   
   if ( opt.control_ms!=0 )
