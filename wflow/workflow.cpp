@@ -57,6 +57,11 @@ bool workflow::reconfigure(const workflow_options& opt)
   return true;
 }
 
+void workflow::set_control_workflow(std::shared_ptr<workflow> ptr)
+{
+  _workflow_ptr = ptr;
+}
+
 const std::string& workflow::get_id() const
 {
   return _id;
