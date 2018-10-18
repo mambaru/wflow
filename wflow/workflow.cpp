@@ -204,6 +204,7 @@ size_t workflow::dropped() const
 void workflow::create_wrn_timer_(const workflow_options& opt)
 {
   workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
+  
   auto old_timer = _wrn_timer;
   
   if ( opt.control_ms!=0 )
@@ -221,20 +222,21 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
       control_handler= [this, wrnsize, dropsave, debug]()  ->bool 
       {
         auto dropcount = this->_impl->dropped();
-        auto size = this->_impl->full_size();
+        auto us_size = this->_impl->unsafe_size();
+        auto s_size = this->_impl->safe_size();
         auto dropdiff = dropcount - *dropsave;
         if ( dropdiff!=0 )
         {
-          WFLOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropcount << ", size " << size << ")" )
+          WFLOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropcount << ", size " << us_size << ", safe_size " << s_size <<  ")" )
           *dropsave = dropcount;
         }
-        else if ( size > wrnsize )
+        else if ( us_size > wrnsize )
         {
-          WFLOW_LOG_WARNING("Workflow '" << this->_id << "' queue size warning. Size " << size << " (wrnsize=" << wrnsize << ")")
+          WFLOW_LOG_WARNING("Workflow '" << this->_id << "' queue size warning. Size " << us_size << " safe_size " << s_size << " (wrnsize=" << wrnsize << ")")
         } 
         else if ( debug )
         {
-          WFLOW_LOG_MESSAGE("Workflow '" << this->_id << "' debug: total dropped " << dropcount << ", queue size " << size)
+          WFLOW_LOG_MESSAGE("Workflow '" << this->_id << "' debug: total dropped " << dropcount << ", queue size=" << us_size << " + safe_size=" << s_size )
         }
         return true;
       };

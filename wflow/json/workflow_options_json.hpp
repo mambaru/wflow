@@ -6,24 +6,6 @@
 
 namespace wflow {
  
-  /*
-struct workflow_options_thread_json
-{
-  JSON_NAME(threads)
-
-  typedef wjson::object<
-    workflow_options,
-    wjson::member_list<
-      wjson::member< n_threads, workflow_options, size_t,  &workflow_options::threads >
-    >,
-    wjson::strict_mode
-  > type;
-  typedef typename type::target target;
-  typedef typename type::serializer serializer;
-  typedef typename type::member_list member_list;
-};*/
-
-  
 struct workflow_options_basic_json
 {
   JSON_NAME(threads)
