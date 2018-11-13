@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(wflow)
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(mambaru)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(ci)
 
-include(FindThreads)
-find_package(Boost REQUIRED system )
+if ( STANDALONE )
+  getlibs(faslib wjson wlog)
+endif()
+
 set(
   source_list
   wflow/workflow.cpp
@@ -25,15 +27,12 @@ endif()
 
 add_library(wflow ${source_list})
 
-if (NOT WFLOW_DISABLE_LOG)
-  target_link_libraries(wflow ${WLOG_LIB} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
-else() 
-  target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-endif()
-
 include_directories(.)
 
 if ( BUILD_TESTING )
+  include(FindThreads)
+  find_package(Boost REQUIRED system )
+  target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
   enable_testing()
   add_subdirectory(tests)
   add_subdirectory(examples)
