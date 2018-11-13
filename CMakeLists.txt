@@ -27,9 +27,8 @@ endif()
 
 add_library(wflow ${source_list})
 
-include_directories(.)
-
 if ( BUILD_TESTING )
+  include_directories(.)
   include(FindThreads)
   find_package(Boost REQUIRED system )
   target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
