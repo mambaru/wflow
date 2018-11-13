@@ -8,6 +8,7 @@ if ( STANDALONE )
   getlibs(faslib wjson wlog)
 endif()
 
+include_directories(.)
 set(
   source_list
   wflow/workflow.cpp
@@ -28,7 +29,6 @@ endif()
 add_library(wflow ${source_list})
 
 if ( BUILD_TESTING )
-  include_directories(.)
   include(FindThreads)
   find_package(Boost REQUIRED system )
   target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
