@@ -68,6 +68,10 @@ struct workflow_options
    */
   time_t control_ms = 0;
   
+  bool quiet_mode = false;
+  
+  bool overflow_reset = true;
+
   /**
    * @brief Общая задержка в миллисекундах 
    * @details Может использоваться для тестирования или как защита от bruteforce. Работает только для всех незащищенных заданий отправленных 

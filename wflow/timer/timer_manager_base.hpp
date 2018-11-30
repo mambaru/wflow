@@ -58,7 +58,6 @@ protected:
 private:
   typedef std::map< timer_id_t, std::shared_ptr<bool> > id_map;
 
-//  owner _owner;
   timer_id_t _id_counter;
   id_map     _id_map;
 };

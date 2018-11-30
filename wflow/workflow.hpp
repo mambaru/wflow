@@ -580,6 +580,9 @@ private:
   std::shared_ptr<task_manager> _impl;
   timer_id_t _wrn_timer = 0;
   std::shared_ptr<workflow> _workflow_ptr;
+  
+  std::atomic<bool> _quiet_mode;
+  std::atomic<time_t> _overflow_time;
 };
 
 

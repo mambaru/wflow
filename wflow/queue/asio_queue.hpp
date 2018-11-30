@@ -73,6 +73,7 @@ private:
   std::atomic<size_t> _safe_counter;
   std::atomic<size_t> _maxsize;
   std::atomic<size_t> _drop_count;
+  
 };
 
 } // wflow

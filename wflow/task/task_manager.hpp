@@ -67,10 +67,14 @@ public:
   std::size_t safe_size() const;
   std::size_t unsafe_size() const;
   std::size_t dropped() const;
+  std::size_t reset_count() const;
   std::shared_ptr<timer_type> timer() const;
   
+private:
+  bool post_(function_t f, function_t drop);
   
 private:
+  std::string _id;
   std::atomic<size_t> _threads;
   std::atomic<bool> _can_reconfigured;
   std::shared_ptr<queue_type> _queue;
@@ -80,6 +84,15 @@ private:
   std::atomic<size_t> _rate_limit;
   std::atomic<time_t> _start_interval;
   std::atomic<size_t> _interval_count;
+  
+  std::atomic<bool> _quiet_mode;
+  std::atomic<bool> _overflow_reset;
+  std::shared_ptr< std::atomic<size_t> > _reset_count;
+  std::atomic<time_t> _overflow_time;
+  std::atomic<bool> _wait_reset;
+  
+  
+
   
 };
 

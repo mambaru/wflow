@@ -161,18 +161,6 @@ bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t d
     return this->post( f, drop);
   else
     return this->post_at( std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::microseconds>(duration), f, drop);
-  /*
-  std::lock_guard<mutex_t> lock( _mutex );
-  if ( !this->check_( std::move(drop) ) )
-    return false;
-
-  if ( 0 == duration.count() )
-    _que.push( std::move( f ) );
-  else
-    this->push_at_( std::chrono::system_clock::now() + duration, std::move(f) );
-  _cond_var.notify_one();
-  return true;
-  */
 }
 
 std::size_t delayed_queue::unsafe_size() const

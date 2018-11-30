@@ -227,15 +227,43 @@ UNIT(rate_limit, "")
   t << greater<expect, size_t>(2100, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
   
   t << message("CXX_STANDARD: ") << __cplusplus;
-  
+}
+
+UNIT(overflow_reset, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+  t << flush << std::endl;
+  wflow::asio::io_service ios;
+  wflow::workflow_options wo;
+  wo.id = "overflow_reset";
+  wo.maxsize=100;
+  wo.overflow_reset = true;
+  wflow::workflow flw(ios, wo);
+  flw.start();
+  size_t counter = 0;
+  size_t lost_counter = 0;
+  for (int i = 0; i != 142; i++)
+  {
+    flw.post([&](){++counter;}, [&](){++lost_counter;});
+    if ( i == 109 )
+    {
+      ios.run();
+    }
+  }
+  ios.reset();
+  ios.run();
+  t << equal<expect, size_t>(counter, 32) << FAS_FL;
+  t << equal<expect, size_t>(lost_counter, 110) << FAS_FL;
 }
 
 
 BEGIN_SUITE(workflow, "")
-  ADD_UNIT(workflow1)
+  /*ADD_UNIT(workflow1)
   ADD_UNIT(workflow2)
   ADD_UNIT(workflow3)
   ADD_UNIT(rate_limit)
-  ADD_UNIT(requester1)
+  ADD_UNIT(requester1)*/
+  ADD_UNIT(overflow_reset)
 END_SUITE(workflow)
 
