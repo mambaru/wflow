@@ -225,9 +225,12 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
         auto us_size = this->_impl->unsafe_size();
         auto s_size = this->_impl->safe_size();
         auto dropdiff = dropcount - *dropsave;
+        wlog::only_for_log(s_size);
         if ( dropdiff!=0 )
         {
-          WFLOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " << dropdiff << " items (total " << dropcount << ", size " << us_size << ", safe_size " << s_size <<  ")" )
+          WFLOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " 
+                          << dropdiff << " items (total " << dropcount << ", size " 
+                          << us_size << ", safe_size " << s_size <<  ")" )
           *dropsave = dropcount;
         }
         else if ( us_size > wrnsize )
