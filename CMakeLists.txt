@@ -4,10 +4,6 @@ project(wflow)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(ci)
 
-if ( STANDALONE )
-  getlibs(faslib wjson wlog)
-endif()
-
 include_directories(.)
 set(
   source_list
@@ -23,16 +19,34 @@ set(
 )
 
 if (NOT WFLOW_DISABLE_JSON)
+  rootlibs(faslib wjson)
   list(APPEND source_list wflow/json/load.cpp )
+else()
+  add_definitions(-DWFLOW_DISABLE_JSON)
+  set(WLOG_DISABLE_JSON ON)
 endif()
+
+if (NOT WFLOW_DISABLE_LOG)
+  rootlibs(wlog)
+else()
+  add_definitions(-DWFLOW_DISABLE_LOG)
+endif()
+
 
 add_library(wflow ${source_list})
 
 if ( BUILD_TESTING )
+  if ( WFLOW_DISABLE_JSON )
+    rootlibs(faslib)
+  endif()
   include(FindThreads)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})                                                                                                                 
   find_package(Boost REQUIRED system )
-  target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+  if (NOT WFLOW_DISABLE_LOG)
+    target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+  else()
+    target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+  endif()
+  
   enable_testing()
   add_subdirectory(tests)
   add_subdirectory(examples)
@@ -40,8 +54,8 @@ endif()
 
 set(CPACK_PACKAGE_NAME "wflow")
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "7")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_PACKAGE_VERSION_MINOR "8")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/Readme.md")
 set(CPACK_PACKAGE_CONTACT "migashko@gmail.com")

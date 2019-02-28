@@ -32,4 +32,9 @@
 #define WFLOW_LOG_TRACE(X)    
 #define WFLOW_LOG_PROGRESS(X) 
 
+namespace wlog{                                                                                                                       
+template<typename ...Args>                                                                                                              
+inline void only_for_log( Args&& ... ){}                                                                                                
+}                                                                                                                                       
+
 #endif
