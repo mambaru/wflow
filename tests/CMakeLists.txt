@@ -9,8 +9,10 @@ set( SUITE_LIST
 )
 
 add_executable( workflow_test ${FAS_TESTING_CPP} workflow_test.cpp ${SUITE_LIST} )
+
 target_link_libraries(workflow_test wflow )
 add_test(NAME workflow_test COMMAND workflow_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
+
 if ( NOT CODE_COVERAGE )
   add_test(
     NAME workflow_test-memcheck 
