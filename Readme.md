@@ -1,7 +1,11 @@
+[![pipeline status](http://github.lan/cpp/wflow/badges/wip-devel/pipeline.svg)](http://gitlab7.lan/cpp/wflow/commits/wip-devel)
+[![coverage report](http://gitlab7.lan/cpp/wflow/badges/wip-devel/coverage.svg)](http://gitlab7.lan/cpp/wflow/commits/wip-devel)
+
 Библиотека на базе boost::asio::io_service для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами. 
 
-Документация [doxygen](https://mambaru.github.io/wflow/index.html).
-Репозитарий на [github.com](https://github.com/mambaru/wflow).
+* Документация [doxygen](https://mambaru.github.io/wflow/index.html).
+* Репозитарий на [github.com](https://github.com/mambaru/wflow).
+* Отчет [coverage](https://mambaru.github.io/wflow/cov-report/index.html)
 
 # Сборка и установка
 
