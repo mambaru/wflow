@@ -150,7 +150,7 @@ public:
   /// Идентификатор таймера
   typedef int                               timer_id_t;
   
-  typedef task_manager::timer_type          timer_type;
+  typedef task_manager::timer_manager_t     timer_manager_t;
   
 public:
   virtual ~workflow();
@@ -195,11 +195,16 @@ public:
    * @param opt - новые опции. 
    */
   bool reconfigure(const workflow_options& opt);
+
+  /**
+   * @brief Остановка потоков в многопоточном режиме со сбросом всех очередей.
+   */
+  void stop();
   
   /**
    * @brief Сброс всех очередей
    */
-  void clear();
+  void reset();
   
   /**
    * @brief Получить идентификатор workflow
@@ -207,11 +212,6 @@ public:
    */
   const std::string& get_id() const;
 
-  /**
-   * @brief Остановка потоков в многопоточном режиме.
-   */
-  void stop();
-  
   /**
    * @brief Отправить задание на обработку
    * @param handler обработчик задания типа void()
@@ -443,7 +443,7 @@ public:
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>( duration, sender, generator);
+    return this->get_timer_manager()->create<Req, Res>( duration, sender, generator);
   }
 
   /** 
@@ -474,7 +474,7 @@ public:
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>( start_duration, duration, sender, generator );
+    return this->get_timer_manager()->create<Req, Res>( start_duration, duration, sender, generator );
   }
 
   /** 
@@ -505,7 +505,7 @@ public:
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>( tp, duration, sender, generator );
+    return this->get_timer_manager()->create<Req, Res>( tp, duration, sender, generator );
   }
 
   /** 
@@ -536,7 +536,7 @@ public:
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>(stp, duration, sender, generator);
+    return this->get_timer_manager()->create<Req, Res>(stp, duration, sender, generator);
   }
 
   /** 
@@ -565,11 +565,11 @@ public:
     typename requester::generator_t<Req, Res>::type generator
   )
   {
-    return this->get_timer()->create<Req, Res>(stp, sender, generator);
+    return this->get_timer_manager()->create<Req, Res>(stp, sender, generator);
   }
 
-  std::shared_ptr<task_manager> manager() const;
-  std::shared_ptr<timer_type> get_timer() const;
+  std::shared_ptr<task_manager> get_task_manager() const;
+  std::shared_ptr<timer_manager_t> get_timer_manager() const;
 
 private:
   void create_wrn_timer_(const workflow_options& opt);

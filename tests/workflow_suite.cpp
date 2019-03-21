@@ -26,7 +26,7 @@ UNIT(workflow1, "")
     t << flush;
   }, [&](){ t << fatal("DROP"); ++counter;});
   
-  queue.timer()->create(std::chrono::milliseconds(400), [&t, &counter, &m](){
+  queue.get_timer_manager()->create(std::chrono::milliseconds(400), [&t, &counter, &m](){
     std::lock_guard<std::mutex> lk(m);
     ++counter;
     t << message("timer 400ms");
@@ -210,7 +210,7 @@ UNIT(rate_limit, "")
   wo.threads = 0;
   wo.rate_limit = 100;
   wflow::workflow flw(ios, wo);
-  flw.manager(); // cppcheck fix
+  flw.get_timer_manager(); // cppcheck fix
   flw.start();
 
   auto start = high_resolution_clock::now();

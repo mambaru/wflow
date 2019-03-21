@@ -62,7 +62,7 @@ const std::string& workflow::get_id() const
   return _id;
 }
 
-void workflow::clear()
+void workflow::reset()
 {
   _impl->reset();
 }
@@ -72,14 +72,14 @@ void workflow::stop()
   _impl->stop();
 }
 
-std::shared_ptr< task_manager > workflow::manager() const
+std::shared_ptr< task_manager > workflow::get_task_manager() const
 {
   return _impl;
 }
 
-std::shared_ptr< workflow::timer_type> workflow::get_timer() const
+std::shared_ptr< workflow::timer_manager_t> workflow::get_timer_manager() const
 {
-  return _impl->timer();
+  return _impl->get_timer_manager();
 }
 
 void workflow::safe_post(post_handler handler)
@@ -117,68 +117,68 @@ bool workflow::post(duration_t d,   post_handler handler, drop_handler drop)
 
 workflow::timer_id_t workflow::create_timer(duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(d, handler, expires );
+  return _impl->get_timer_manager()->create(d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(d, handler, expires );
+  return _impl->get_timer_manager()->create(d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(duration_t sd, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create( sd, d, handler, expires );
+  return _impl->get_timer_manager()->create( sd, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(duration_t sd, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create( sd, d, handler, expires );
+  return _impl->get_timer_manager()->create( sd, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(time_point_t tp, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, handler, expires );
+  return _impl->get_timer_manager()->create(tp, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(time_point_t tp, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, handler, expires );
+  return _impl->get_timer_manager()->create(tp, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(std::string tp, duration_t d, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, handler, expires );
+  return _impl->get_timer_manager()->create(tp, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(std::string tp, duration_t d, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, d, handler, expires );
+  return _impl->get_timer_manager()->create(tp, d, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(std::string tp, timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, handler, expires );
+  return _impl->get_timer_manager()->create(tp, handler, expires );
 }
 
 workflow::timer_id_t workflow::create_async_timer(std::string tp, async_timer_handler handler, expires_at expires)
 {
-  return _impl->timer()->create(tp, handler, expires );
+  return _impl->get_timer_manager()->create(tp, handler, expires );
 }
 
 
 std::shared_ptr<bool> workflow::detach_timer(timer_id_t id)
 {
-  return _impl->timer()->detach(id);
+  return _impl->get_timer_manager()->detach(id);
 }
 
 bool workflow::release_timer( timer_id_t id )
 {
-  return _impl->timer()->release(id);
+  return _impl->get_timer_manager()->release(id);
 }
   
 size_t workflow::timer_count() const
 {
-  return _impl->timer()->size();
+  return _impl->get_timer_manager()->size();
 }
 
 size_t workflow::full_size() const
