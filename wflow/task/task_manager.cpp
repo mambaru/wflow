@@ -122,7 +122,7 @@ void task_manager::reset_timers()
 
 void task_manager::reset_queues()
 {
-    _queue->reset();
+  _queue->reset();
 }
 
 std::size_t task_manager::run()

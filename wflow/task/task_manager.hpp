@@ -45,7 +45,7 @@ public:
   void stop();
   void reset();
   void reset_timers();
-
+  void reset_queues();
   std::size_t run();
   
   std::size_t run_one();
