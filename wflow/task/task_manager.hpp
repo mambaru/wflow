@@ -46,6 +46,9 @@ public:
   void reset();
   void reset_timers();
   void reset_queues();
+  void shutdown();
+  void wait();
+  
   std::size_t run();
   
   std::size_t run_one();

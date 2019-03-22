@@ -72,6 +72,17 @@ void workflow::stop()
   _impl->stop();
 }
 
+void workflow::shutdown()
+{
+  _impl->shutdown();
+}
+  
+void workflow::wait()
+{
+  _impl->wait();
+}
+
+
 std::shared_ptr< task_manager > workflow::get_task_manager() const
 {
   return _impl;

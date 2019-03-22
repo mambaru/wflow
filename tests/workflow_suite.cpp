@@ -5,6 +5,7 @@
 #include <wflow/system/memory.hpp>
 #include <chrono>
 #include <memory>
+#include <set>
 
 UNIT(workflow1, "")
 {
@@ -68,6 +69,8 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
   ::wflow::workflow_options opt;
   std::atomic<int> counter(0);
   std::atomic<int> dropped(0);
+  
+  opt.id="workflow2";
   opt.maxsize = 4; 
   opt.threads = 0;
   ::wflow::workflow wfl(io, opt);
@@ -257,13 +260,60 @@ UNIT(overflow_reset, "")
   t << equal<expect, size_t>(lost_counter, 110) << FAS_FL;
 }
 
+UNIT(shutdown, "")
+{
+  using namespace ::fas::testing;
+  wflow::workflow_options wo;
+  wo.id = "shutdown";
+  wo.threads = 4;
+  std::mutex mutex;
+  std::set<std::thread::id> threads_ids;
+  size_t count = 0;
+  wflow::workflow flw(wo);
+  for (size_t i = 0; i < 16; ++i)
+  {
+    flw.post([&](){
+      std::lock_guard<std::mutex> lk(mutex);
+      t << message("Thread ID: ") << std::this_thread::get_id() << " count=" << count;
+      t << flush;
+      ++count;
+      threads_ids.insert(std::this_thread::get_id());
+    });
+  }
+  flw.create_timer(std::chrono::milliseconds(10), [&]()
+  {
+    std::lock_guard<std::mutex> lk(mutex); 
+    t << message("timer"); 
+    t << flush;
+    return true;
+  }, wflow::expires_at::before );
+  
+  flw.safe_post(std::chrono::milliseconds(100), [&](){
+    std::lock_guard<std::mutex> lk(mutex); 
+    t << message("delayed"); 
+    t << flush;
+    return true;
+  });
+  { std::lock_guard<std::mutex> lk(mutex); t << message("start..."); }
+  flw.start();
+  { std::lock_guard<std::mutex> lk(mutex); t << message("shutdown..."); }
+  flw.shutdown();
+  { std::lock_guard<std::mutex> lk(mutex); t << message("wait..."); }
+  flw.wait();
+  { std::lock_guard<std::mutex> lk(mutex); t << message("done!"); t << flush; }
+  t << equal<expect, size_t>(count, 16) << FAS_FL;
+  t << equal<expect, size_t>(threads_ids.size(), 4) << FAS_FL;
+}
+
+
 
 BEGIN_SUITE(workflow, "")
-  /*ADD_UNIT(workflow1)
+  ADD_UNIT(workflow1)
   ADD_UNIT(workflow2)
   ADD_UNIT(workflow3)
   ADD_UNIT(rate_limit)
-  ADD_UNIT(requester1)*/
+  ADD_UNIT(requester1)
   ADD_UNIT(overflow_reset)
+  ADD_UNIT(shutdown)
 END_SUITE(workflow)
 

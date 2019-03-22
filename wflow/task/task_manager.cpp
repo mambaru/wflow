@@ -106,7 +106,6 @@ void task_manager::stop()
   _queue->stop();
   if ( _pool!=nullptr) 
     _pool->stop();
-
 }
 
 void task_manager::reset()
@@ -124,6 +123,20 @@ void task_manager::reset_queues()
 {
   _queue->reset();
 }
+
+void task_manager::shutdown()
+{
+  _timer_manager->reset();
+  if ( _pool!=nullptr) 
+    _pool->shutdown();
+}
+
+void task_manager::wait()
+{
+  if ( _pool!=nullptr) 
+    _pool->wait();
+}
+
 
 std::size_t task_manager::run()
 {
