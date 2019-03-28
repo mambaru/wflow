@@ -7,6 +7,17 @@
 #include <memory>
 #include <set>
 
+namespace {
+  
+template<typename T>
+time_t get_accuracy(T& t)
+{
+  if ( t.get_argc() < 2 )
+    return 0;
+  
+  return std::atoi( t.get_arg(1).c_str() );
+}
+
 UNIT(workflow1, "")
 {
   using namespace ::fas::testing;
@@ -59,7 +70,9 @@ UNIT(workflow1, "")
   t << message("flush...");
   t << flush;
   queue.stop();
-  t << equal< assert,int >( counter, 7 ) << FAS_FL ;
+  time_t accuracy = get_accuracy(t);
+  if ( accuracy == 0 )
+    t << equal< assert,int >( counter, 7 ) << FAS_FL ;
   
 }
 
@@ -200,7 +213,10 @@ UNIT(requester1, "")
   flw.start();
   ios.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
-  t << equal<expect>(interval, 0) << FAS_FL;
+//  t << equal<expect>(interval, 0) << FAS_FL;
+  time_t accuracy = get_accuracy(t);
+  t << less_equal<assert>(interval, accuracy) <<  FAS_FL;
+
 
 }
 
@@ -227,8 +243,9 @@ UNIT(rate_limit, "")
   finish = high_resolution_clock::now();
   t << equal<expect, size_t>(counter, 200) << FAS_FL;
   t << equal<expect, size_t>(2, duration_cast<seconds>(finish - start).count()) << FAS_FL;
-  t << less<expect, size_t>(1900, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
-  t << greater<expect, size_t>(2100, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
+  time_t accuracy = get_accuracy(t);
+  t << less<expect, size_t>(1900, duration_cast<milliseconds>(finish - start).count() + accuracy ) << FAS_FL;
+  t << greater<expect, size_t>(2100 + accuracy, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
   
   t << message("CXX_STANDARD: ") << __cplusplus;
 }
@@ -306,6 +323,7 @@ UNIT(shutdown, "")
   t << equal<expect, size_t>(threads_ids.size(), 4) << FAS_FL;
 }
 
+}
 
 
 BEGIN_SUITE(workflow, "")
