@@ -13,6 +13,7 @@ UNIT(workflow1, "")
   t << flush;
   wflow::asio::io_service io;
   wflow::workflow_options opt;
+  opt.id="workflow1";
   opt.maxsize = 3;
   opt.threads = 1;
   opt.use_asio = false;

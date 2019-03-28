@@ -33,6 +33,7 @@ task_manager::task_manager( const workflow_options& opt  )
   , _quiet_mode(opt.quiet_mode)
   , _overflow_reset(opt.overflow_reset)
   , _reset_count(new std::atomic<size_t>() )
+  , _overflow_time()
 {
 }
   
@@ -49,6 +50,7 @@ task_manager::task_manager( io_service_type& io, const workflow_options& opt  )
   , _quiet_mode(opt.quiet_mode)
   , _overflow_reset(opt.overflow_reset)
   , _reset_count(new std::atomic<size_t>() )
+  , _overflow_time()
 {
 }
 
