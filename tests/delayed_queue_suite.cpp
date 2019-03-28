@@ -9,7 +9,9 @@
 
 #include "delayed_common_suite.hpp"
 
-namespace {
+namespace 
+{
+  
 UNIT(delayed_queue1, "")
 {
   auto dq = std::make_shared<wflow::delayed_queue>(0);

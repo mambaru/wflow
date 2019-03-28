@@ -7,3 +7,7 @@ knownConditionTrueFalse:./examples/example08.cpp:40
 knownConditionTrueFalse:./examples/example08.cpp:46
 knownConditionTrueFalse:./examples/example08.cpp:52
 knownConditionTrueFalse:./examples/example14.cpp:117
+syntaxError:./tests/delayed_queue_suite.cpp:21
+syntaxError:./tests/timer_manager_suite.cpp:40
+syntaxError:./tests/workflow_suite.cpp:21
+unusedFunction:./wflow/workflow.cpp:190
