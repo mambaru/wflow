@@ -107,7 +107,7 @@ inline void delayed_unit3(T& t, Q& dq)
   th.join();
   
   t << equal<expect, int>(count, 10) << "count=" << count << " should be 10";
-  time_t accuracy = get_accuracy(t);
+  time_t accuracy = get_accuracy(t) + 10 ;
   for (int i=0 ; i < 5; ++i)
   {
     //t << equal<expect>(time_ms[i]/10, time_chk[i]/10) << "delay fail. ms=" << time_chk[i] << " should be " << time_ms[i];
