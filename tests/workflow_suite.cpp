@@ -291,6 +291,7 @@ UNIT(shutdown, "")
   for (size_t i = 0; i < 16; ++i)
   {
     flw.post([&](){
+      std::this_thread::sleep_for( std::chrono::milliseconds(10)  );
       std::lock_guard<std::mutex> lk(mutex);
       t << message("Thread ID: ") << std::this_thread::get_id() << " count=" << count;
       t << flush;
