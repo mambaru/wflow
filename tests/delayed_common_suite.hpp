@@ -123,7 +123,7 @@ inline void delayed_unit4(T& t, Q& dq)
   using namespace ::std::chrono;
   t << message("DEBUG: unit start");
   std::vector<time_t> times(10, 0);
-  high_resolution_clock::time_point start;
+  auto start = high_resolution_clock::now();
   for (size_t i = 0; i < 10 ; ++i)
   {
     // пуляем с задержкой 50, 100, 150 ... милисекунд
