@@ -10,6 +10,17 @@
 
 #define DELAY_MS 200
 
+namespace {
+  
+template<typename T>
+time_t get_accuracy(T& t)
+{
+  if ( t.get_argc() < 2 )
+    return 0;
+  
+  return std::atoi( t.get_arg(1).c_str() );
+}
+
 template<typename T, typename Q>
 inline void delayed_unit1(T& t, Q& dq)
 {
@@ -23,12 +34,14 @@ inline void delayed_unit1(T& t, Q& dq)
     finish = system_clock::now();
   }, nullptr);
   if (!res)
-    t << fail("delayed_post FAIL!");
+    t << fail("delayed_post FAIL!") << FAS_FL;
   
   dq.run_one();
   time_t ms = duration_cast<milliseconds>(finish-start).count();
   t << message("time: ") << ms;
-  t << equal<assert>(ms, DELAY_MS) << "delay fail. ms=" << ms << " should be " << DELAY_MS;
+  time_t accuracy = get_accuracy(t);
+  t << greater_equal<assert>(ms, DELAY_MS) << FAS_FL;
+  t << less_equal<assert>(ms, DELAY_MS + accuracy) <<  FAS_FL;
 }
 
 
@@ -52,7 +65,9 @@ inline void delayed_unit2(T& t, Q& dq)
   t << message("run_one: ") << dq.run_one();
   time_t ms = duration_cast<milliseconds>(finish-start).count();
   t << message("time: ") << ms;
-  t << equal<assert>(ms, DELAY_MS) << "delay fail. ms=" << ms << " should be " << DELAY_MS;
+  time_t accuracy = get_accuracy(t);
+  t << greater_equal<assert>(ms, DELAY_MS) << FAS_FL;
+  t << less_equal<assert>(ms, DELAY_MS + accuracy) <<  FAS_FL;
 }
 
 template<typename T, typename Q>
@@ -92,52 +107,13 @@ inline void delayed_unit3(T& t, Q& dq)
   th.join();
   
   t << equal<expect, int>(count, 10) << "count=" << count << " should be 10";
+  time_t accuracy = get_accuracy(t) + 10 ;
   for (int i=0 ; i < 5; ++i)
   {
-    t << equal<expect>(time_ms[i]/10, time_chk[i]/10) << "delay fail. ms=" << time_chk[i] << " should be " << time_ms[i];
+    //t << equal<expect>(time_ms[i]/10, time_chk[i]/10) << "delay fail. ms=" << time_chk[i] << " should be " << time_ms[i];
+    t << greater_equal<assert>(time_chk[i], time_ms[i]) << FAS_FL;
+    t << less_equal<assert>(time_chk[i], time_ms[i] + accuracy) <<  FAS_FL;
   }
 }
 
-template<typename T, typename Q>
-inline void delayed_unit4(T& t, Q& dq)
-{
-  using namespace ::fas::testing;
-  using namespace ::std::chrono;
-  t << message("DEBUG: unit start");
-  std::vector<time_t> times(10);
-  high_resolution_clock::time_point start;
-  for (size_t i = 0; i < 10 ; ++i)
-  {
-    // пуляем с задержкой 50, 100, 150 ... милисекунд
-    dq.delayed_post( milliseconds(50*(i+1)),[&start, &times, i]()
-    {
-      time_t& ms = times[i];
-      ms = duration_cast<milliseconds>( high_resolution_clock::now() - start ).count();
-    }, nullptr);
-  }
-  
-  std::condition_variable cv;
-  
-  volatile bool notify = false;
-  for (int i = 0; i < 4 ; ++i)
-  {
-    std::thread( [&](){
-      std::mutex m;
-      std::unique_lock< std::mutex> lck(m);
-      cv.wait(lck, [&]{ return !notify;});
-      dq.run();
-    } ).detach();
-  }
-  std::this_thread::sleep_for( milliseconds(5) );
-  start = high_resolution_clock::now();
-  notify = true;
-  cv.notify_all();
-  std::this_thread::sleep_for( milliseconds(650) );
-  dq.stop();
-  std::this_thread::sleep_for( milliseconds(100) );
-  for (size_t i = 0; i < 10 ; ++i)
-  {
-    time_t res = static_cast<time_t>(50*(i+1)) - times[i] - 5;
-    t << is_true<expect>( std::abs(res) < 10 ) << " time error ( " << 50*(i+1) << "-" << times[i] << " > 9 ms ):" << notify ;
-  }
 }

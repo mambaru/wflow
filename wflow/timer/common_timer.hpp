@@ -3,6 +3,7 @@
 #include <wflow/expires_at.hpp>
 #include <memory>
 #include <chrono>
+#include <atomic>
 
 
 namespace wflow{
@@ -113,12 +114,11 @@ private:
 
     // Сначала delayed_post, потом вызов обработчика
     // pres - для отмены, если обработчика вернул false
-    std::shared_ptr<bool> pres = std::make_shared<bool>(true);
-    std::weak_ptr<bool> wres = pres;
-    
-    pq->safe_delayed_post(delay, [wq, delay, h, wflag, wres]()
+    std::shared_ptr<std::atomic_flag> pres = std::make_shared<std::atomic_flag>();
+    pres->test_and_set();
+    pq->safe_delayed_post(delay, [wq, delay, h, wflag, pres]()
       {
-        if ( wres.lock() == nullptr )
+        if ( !pres->test_and_set() )
           return;
         common_timer::expires_before_(wq, delay, h, wflag );
       }
@@ -126,7 +126,7 @@ private:
     
     if ( *pflag==false || !h() )
     {
-      pres.reset();
+      pres->clear();
     }
   }
 
@@ -141,12 +141,12 @@ private:
     if ( pq == nullptr )
       return;
 
-    std::shared_ptr<bool> pres = std::make_shared<bool>(true);
-    std::weak_ptr<bool> wres = pres;
+    std::shared_ptr<std::atomic_flag> pres = std::make_shared<std::atomic_flag>();
+    pres->test_and_set();
 
-    pq->safe_delayed_post(delay, [wq, delay, h, wflag, wres]()
+    pq->safe_delayed_post(delay, [wq, delay, h, wflag, pres]()
       {
-        if ( wres.lock() == nullptr )
+        if ( !pres->test_and_set() )
           return;
         
         common_timer::expires_before_(wq, delay, std::move(h), wflag );
@@ -155,10 +155,9 @@ private:
     
     if ( *pflag==true )
     {
-      h( [wres](bool ready) mutable
+      h( [pres](bool ready) mutable
       {
-        if (!ready)
-          wres.reset();
+        if (!ready) pres->clear();
       });
     }
   }

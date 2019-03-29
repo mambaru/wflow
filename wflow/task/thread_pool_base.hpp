@@ -46,6 +46,8 @@ public:
   void start(std::shared_ptr<delayed_queue> s, size_t threads);
 
   void stop();
+  void shutdown();
+  void wait();
 
 private: 
   void add_id(int id) ;

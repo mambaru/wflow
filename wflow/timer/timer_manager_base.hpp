@@ -34,7 +34,7 @@ public:
 
   bool release( timer_id_t id );
 
-  size_t clear();
+  size_t reset();
 
   size_t size() const;
 

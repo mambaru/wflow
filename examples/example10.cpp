@@ -46,22 +46,24 @@ int main(int argc, char* argv[])
     threads = size_t(std::atol(argv[1]));
   
   wflow::asio::io_service ios;
-   wflow::asio::io_service::work wrk(ios);
+  wflow::asio::io_service::work wrk(ios);
   wflow::workflow_options opt;
+  opt.use_asio = true;
   opt.threads = threads;
   wflow::workflow wf(ios, opt);
   wf.start();
   std::atomic<bool> run(true);
-  size_t counter = 0;
+  std::atomic<size_t> counter;
+  counter=0;
   
-  std::thread t([&run, &wf, &counter](){
+  std::thread t1([&run, &wf, &counter](){
     for (;run; ++counter)
       wf.safe_post([](){});
   });
   
   wf.safe_post( std::chrono::seconds(10), [&ios, &run](){ ios.stop(); run = false;});
   ios.run();
-  t.join();
+  t1.join();
   std::cout << "dropped " << wf.dropped() << std::endl;
   std::cout << counter << std::endl;
 }

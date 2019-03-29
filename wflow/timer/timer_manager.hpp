@@ -116,37 +116,6 @@ public:
   {
     return this->create(st, this->make_reqester_<Req, Res>(sender, generator));
   }  
-  /*
-  template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
-  timer_id_t create( duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
-  {
-    return this->create( std::chrono::milliseconds(0), d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
-  }
-
-  template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
-  timer_id_t create( duration_t sd, duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
-  {
-    return this->create(sd, d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
-  }
-
-  template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
-  timer_id_t create( time_point_t st, duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
-  {
-    return this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
-  }
-
-  template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
-  timer_id_t create( std::string st, duration_t d, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
-  {
-    return this->create(st, d, this->make_reqester_<Req, Res>(i, mem_fun, result_handler));
-  }
-
-  template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
-  timer_id_t create( std::string st, std::shared_ptr<I> i, MemFun mem_fun,  Handler result_handler )
-  {
-    return this->create(st, this->make_reqester_<Req, Res>(i, mem_fun, std::move(result_handler)));
-  }
-  */
 
   /// //////////////
 
@@ -160,14 +129,6 @@ private:
   {
     return requester::make<Req, Res>( this->_queue, sender,  generator);
   }
-  /*
-  template< typename Req, typename Res, typename I, typename MemFun, typename Handler >
-  auto make_reqester_( std::shared_ptr<I> i, MemFun mem_fun, Handler result_handler ) 
-    -> std::function<void( handler_callback)>
-  {
-    return requester::make<Req, Res>( this->_queue, i, std::move(mem_fun), std::move(result_handler) );
-  }
-  */
 
   template<typename Handler>
   timer_id_t create_(time_point_t start_time, duration_t delay, Handler h, expires_at expires);

@@ -78,7 +78,6 @@ void thread_pool_base::stop()
   std::lock_guard< std::mutex > lk(_mutex);
 
   _flags.clear();
-  //_works.clear();
   _work=nullptr;
 
   for (auto& t : _threads)
@@ -88,6 +87,24 @@ void thread_pool_base::stop()
 
   _started = false;
 }
+
+void thread_pool_base::shutdown()
+{
+  std::lock_guard< std::mutex > lk(_mutex);
+  _work=nullptr; 
+}
+
+void thread_pool_base::wait()
+{
+  std::lock_guard< std::mutex > lk(_mutex);
+  if ( _work!=nullptr )
+    return;
+  for (auto& t : _threads)
+    t.join();
+  _threads.clear();
+  _started = false;
+}
+
 
 template<typename S>
 bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)

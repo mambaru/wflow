@@ -25,7 +25,7 @@ task_manager::task_manager( const workflow_options& opt  )
   , _threads(opt.threads)
   , _can_reconfigured(opt.use_asio)
   , _queue( std::make_shared<queue_type>(opt.maxsize, opt.use_asio) )
-  , _timer( std::make_shared<timer_type >(_queue) )
+  , _timer_manager( std::make_shared<timer_manager_t >(_queue) )
   , _pool( std::make_shared<pool_type>(_queue) )
   , _rate_limit(opt.rate_limit)
   , _start_interval(0)
@@ -33,6 +33,7 @@ task_manager::task_manager( const workflow_options& opt  )
   , _quiet_mode(opt.quiet_mode)
   , _overflow_reset(opt.overflow_reset)
   , _reset_count(new std::atomic<size_t>() )
+  , _overflow_time()
 {
 }
   
@@ -41,7 +42,7 @@ task_manager::task_manager( io_service_type& io, const workflow_options& opt  )
   , _threads(opt.threads)
   , _can_reconfigured(opt.use_asio)
   , _queue( std::make_shared<queue_type>(io, opt.maxsize, opt.use_asio, opt.threads!=0) )
-  , _timer( std::make_shared<timer_type >(_queue) )
+  , _timer_manager( std::make_shared<timer_manager_t >(_queue) )
   , _pool( std::make_shared<pool_type>(_queue) )
   , _rate_limit(opt.rate_limit)
   , _start_interval(0)
@@ -49,6 +50,7 @@ task_manager::task_manager( io_service_type& io, const workflow_options& opt  )
   , _quiet_mode(opt.quiet_mode)
   , _overflow_reset(opt.overflow_reset)
   , _reset_count(new std::atomic<size_t>() )
+  , _overflow_time()
 {
 }
 
@@ -106,14 +108,37 @@ void task_manager::stop()
   _queue->stop();
   if ( _pool!=nullptr) 
     _pool->stop();
-
 }
 
 void task_manager::reset()
 {
-  _timer->clear();
+  _timer_manager->reset();
   _queue->reset();
 }
+
+void task_manager::reset_timers()
+{
+  _timer_manager->reset();
+}
+
+void task_manager::reset_queues()
+{
+  _queue->reset();
+}
+
+void task_manager::shutdown()
+{
+  _timer_manager->reset();
+  if ( _pool!=nullptr) 
+    _pool->shutdown();
+}
+
+void task_manager::wait()
+{
+  if ( _pool!=nullptr) 
+    _pool->wait();
+}
+
 
 std::size_t task_manager::run()
 {
@@ -220,9 +245,9 @@ std::size_t task_manager::reset_count() const
 }
 
   
-std::shared_ptr<task_manager::timer_type> task_manager::timer() const
+std::shared_ptr<task_manager::timer_manager_t> task_manager::get_timer_manager() const
 {
-  return _timer;
+  return _timer_manager;
 }
 
 bool task_manager::post_(function_t f, function_t drop)

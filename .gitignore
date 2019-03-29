@@ -7,7 +7,7 @@
 */debug
 */release
 */build
-build
+build/
 .tup
 btp/server/debug
 btp/server/release
@@ -19,6 +19,6 @@ CMakeCache.txt
 *.kate-swp
 *build_info.h
 config.h
-docs
+docs/
 cppcheck.cppcheck
 

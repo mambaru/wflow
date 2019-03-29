@@ -9,12 +9,14 @@
 
 #include "delayed_common_suite.hpp"
 
+namespace 
+{
+  
 UNIT(delayed_queue1, "")
 {
   auto dq = std::make_shared<wflow::delayed_queue>(0);
   delayed_unit1(t, *dq);
 }
-
 
 UNIT(delayed_queue2, "")
 {
@@ -28,17 +30,11 @@ UNIT(delayed_queue3, "")
   delayed_unit3(t, *dq);
 }
 
-UNIT(delayed_queue4, "")
-{
-  using namespace ::fas::testing;
-  auto dq = std::make_shared<wflow::delayed_queue>(0);
-  delayed_unit4(t, *dq);
 }
 
 BEGIN_SUITE(delayed_queue, "")
   ADD_UNIT(delayed_queue1)
   ADD_UNIT(delayed_queue2)
   ADD_UNIT(delayed_queue3)
-  ADD_UNIT(delayed_queue4)
 END_SUITE(delayed_queue)
 

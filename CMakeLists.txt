@@ -31,21 +31,21 @@ else()
   add_definitions(-DWFLOW_DISABLE_LOG)
 endif()
 
-
 add_library(wflow ${source_list})
+
+include(FindThreads)
+find_package(Boost REQUIRED system )
+if (NOT WFLOW_DISABLE_LOG)
+  target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+else()
+  target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+endif()
 
 if ( BUILD_TESTING )
   if ( WFLOW_DISABLE_JSON )
     rootlibs(faslib)
   endif()
-  include(FindThreads)
-  find_package(Boost REQUIRED system )
-  if (NOT WFLOW_DISABLE_LOG)
-    target_link_libraries(wflow wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
-  else()
-    target_link_libraries(wflow ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
-  endif()
-  
+ 
   enable_testing()
   add_subdirectory(tests)
   if ( WITH_SAMPLES )
