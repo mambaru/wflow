@@ -214,7 +214,7 @@ size_t workflow::dropped() const
 
 void workflow::create_wrn_timer_(const workflow_options& opt)
 {
-  workflow& wrkf = _workflow_ptr == 0 ? *this : *_workflow_ptr;
+  workflow& wrkf = _workflow_ptr == nullptr ? *this : *_workflow_ptr;
   
   auto old_timer = _wrn_timer;
   

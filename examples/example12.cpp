@@ -29,12 +29,12 @@ int main()
     wf.post([](){ sleep(4);});
   
   
-  time_t beg = time(0);
+  time_t beg = time(nullptr);
   wf2.safe_post( 
     std::chrono::seconds(2), 
     [&ios, beg]()
     {
-      time_t now = time(0);
+      time_t now = time(nullptr);
       std::cout << "It was expected 2 seconds, but waited "<< now - beg << " seconds" << std::endl;
       ios.stop();
     });
