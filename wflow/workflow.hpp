@@ -126,7 +126,7 @@ wf.create_requester<request, response>(std::chrono::seconds(1), sender, generato
    передается немедленно после получения ответа до тех пор пока генератор не вернет nullptr и только после этого наступает заданная пауза. Более сложный пример см. \ref example14.cpp 
  */
 
-class workflow final
+class workflow 
 {
 public:
   /// Переопределение boost::asio::io_service 
