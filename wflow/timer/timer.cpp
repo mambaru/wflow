@@ -45,7 +45,7 @@ bool timer::today_from_string(const std::string& strtime, time_point_t& result)
     result = time_point_t();
     return true;
   }
-  std::time_t now = std::time(0);
+  std::time_t now = std::time(nullptr);
   std::tm ptm;
   ::localtime_r(&now, &ptm);
 

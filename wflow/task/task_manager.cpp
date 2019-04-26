@@ -189,7 +189,7 @@ bool task_manager::post( function_t f, function_t drop )
     }
     else if ( !_quiet_mode )
     {
-      time_t now = time(0);
+      time_t now = time(nullptr);
       if ( _overflow_time == 0 || _overflow_time < now  )
       {
         _overflow_time = now + 1;
