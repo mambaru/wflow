@@ -16,7 +16,7 @@ template<typename T>
 time_t get_accuracy(T& t)
 {
   if ( t.get_argc() < 2 )
-    return 0;
+    return 10;
   
   return std::atoi( t.get_arg(1).c_str() );
 }
