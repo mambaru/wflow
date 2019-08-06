@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <chrono>
 
+
 namespace wflow {
 
 namespace{
@@ -188,6 +189,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
   return 
     std::thread([wthis, s, wflag]()
     {
+      std::thread::id thread_id = std::this_thread::get_id();
       try
       {
         thread_pool_base::startup_handler startup;
@@ -200,7 +202,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           finish = pthis->_finish;
           statistics = pthis->_statistics;
         }
-        std::thread::id thread_id = std::this_thread::get_id();
+        
         auto pthis = wthis.lock();
         if ( startup != nullptr )
           startup(thread_id);
@@ -211,10 +213,8 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           size_t handlers = s->run_one();
           if (  handlers == 0 )
             break;
-
           if ( wflag.lock() == nullptr)
             break;
-
           if ( statistics != nullptr )
           {
             auto now = std::chrono::steady_clock::now();

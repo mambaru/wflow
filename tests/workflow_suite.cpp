@@ -126,7 +126,6 @@ UNIT(workflow3, "control handler")
   ::wflow::asio::io_service::work wrk(io);    
   ::wflow::workflow_options opt;
   std::atomic<int> counter(0);
-  std::atomic<int> dropped(0);
   opt.threads = 1;
   opt.control_ms = 100;
   opt.control_handler = [&]()->bool{
@@ -178,7 +177,7 @@ struct foo
     typedef std::unique_ptr<response> ptr;
     typedef std::function< void(ptr) > handler;
   };
-  void method( request::ptr, response::handler h) { h( std::unique_ptr<response>( new response() ) ); };
+  void method( request::ptr, response::handler h) { h( std::unique_ptr<response>( new response() ) ); }
 };
 
 UNIT(requester1, "")
@@ -322,6 +321,18 @@ UNIT(shutdown, "")
   { std::lock_guard<std::mutex> lk(mutex); t << message("done!"); t << flush; }
   t << equal<expect, size_t>(count, 16) << FAS_FL;
   t << equal<expect, size_t>(threads_ids.size(), 4) << FAS_FL;
+  
+  t << message("=====================================");
+  for (size_t i = 0; i < 16; ++i)
+  {
+    flw.post([&](){++count;});
+  }
+  t << message("=====================================");  
+  flw.start();
+  t << message("=====================================");
+  flw.shutdown();
+  flw.wait();
+  t << equal<expect, size_t>(count, 32) << FAS_FL;
 }
 
 }

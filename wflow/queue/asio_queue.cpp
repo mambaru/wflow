@@ -1,4 +1,5 @@
 #include "asio_queue.hpp"
+#include <wflow/logger.hpp>
 #include <wflow/system/system.hpp>
 #include <wflow/system/boost.hpp>
 #include <memory>
@@ -29,6 +30,7 @@ std::size_t asio_queue::run_one()
 {
   ::wflow::system::error_code ec;
   std::size_t count = _io.run_one(ec);
+  if ( ec ) WFLOW_LOG_ERROR("asio_queue::run_one: " << ec.message());
   return count;
 }
   
