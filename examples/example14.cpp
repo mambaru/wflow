@@ -14,51 +14,51 @@
  */
 
 /* Output:
-create FIRST request                                                                                                                                                         
-foo::method 0                                                                                                                                                                
-create request N0.1                                                                                                                                                          
-foo::method 1                                                                                                                                                                
-create request N0.2                                                                                                                                                          
-foo::method 2                                                                                                                                                                
-create request N0.3                                                                                                                                                          
-foo::method 3                                                                                                                                                                
-create request N0.4                                                                                                                                                          
-foo::method 4                                                                                                                                                                
-create request N0.5                                                                                                                                                          
-foo::method FAIL                                                                                                                                                             
-create FIRST request                                                                                                                                                         
-foo::method 0                                                                                                                                                                
-create request N0.1                                                                                                                                                          
-foo::method 1                                                                                                                                                                
-create request N0.2                                                                                                                                                          
-foo::method 2                                                                                                                                                                
-create request N0.3                                                                                                                                                          
-foo::method 3                                                                                                                                                                
-create request N0.4                                                                                                                                                          
-foo::method 4                                                                                                                                                                
-create request N0.5                                                                                                                                                          
-foo::method 5                                                                                                                                                                
-create request N0.6                                                                                                                                                          
-foo::method 6                                                                                                                                                                
-create request N0.7                                                                                                                                                          
-foo::method 7                                                                                                                                                                
-create request N0.8                                                                                                                                                          
-foo::method 8                                                                                                                                                                
-create request N0.9                                                                                                                                                          
-foo::method 9                                                                                                                                                                
-STOP create request                                                                                                                                                          
+create FIRST request
+foo::method 0
+create request N0.1
+foo::method 1
+create request N0.2
+foo::method 2
+create request N0.3
+foo::method 3
+create request N0.4
+foo::method 4
+create request N0.5
+foo::method FAIL
+create FIRST request
+foo::method 0
+create request N0.1
+foo::method 1
+create request N0.2
+foo::method 2
+create request N0.3
+foo::method 3
+create request N0.4
+foo::method 4
+create request N0.5
+foo::method 5
+create request N0.6
+foo::method 6
+create request N0.7
+foo::method 7
+create request N0.8
+foo::method 8
+create request N0.9
+foo::method 9
+STOP create request
  */
 
 struct request
 {
-  int param = 0; 
+  int param = 0;
   // исключительно для удобства
   typedef std::unique_ptr<request> ptr;
 };
 
 struct response
 {
-  int result = 0; 
+  int result = 0;
   // исключительно для удобства
   typedef std::unique_ptr<response> ptr;
   typedef std::function< void(ptr) > handler;
@@ -67,24 +67,24 @@ struct response
 class foo
 {
 public:
-  explicit foo(wflow::workflow& w)
+  explicit foo(wflow::workflow& w) noexcept
     : _workflow(w)
   {}
-  
-  void method( request::ptr req,  response::handler callback) 
+
+  void method( request::ptr req,  response::handler callback)
   {
     if ( req->param == 5 && _flag)
     {
-      // Эмуляция ошибки на пятом запросе каждой второй последовательности 
+      // Эмуляция ошибки на пятом запросе каждой второй последовательности
       std::cout << "foo::method FAIL" << std::endl;
       _flag = false;
       callback(nullptr);
       return;
     }
-    
+
     if ( req->param == 5 )
       _flag = true;
-    
+
     auto preq = std::make_shared<request>( std::move(*req) );
     _workflow.post(
       std::chrono::milliseconds(100),
@@ -97,7 +97,7 @@ public:
       }
     );
   }
-  
+
 private:
   wflow::workflow& _workflow;
   bool _flag = true;
