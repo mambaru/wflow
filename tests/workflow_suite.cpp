@@ -2,7 +2,7 @@
 #include <fas/testing.hpp>
 #include <wflow/task/task_manager.hpp>
 #include <wflow/workflow.hpp>
-#include <wflow/system/memory.hpp>
+#include <fas/system/memory.hpp>
 #include <chrono>
 #include <memory>
 #include <set>
