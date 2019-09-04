@@ -125,10 +125,11 @@ UNIT(workflow3, "control handler")
   ::wflow::asio::io_service io;
   ::wflow::asio::io_service::work wrk(io);    
   ::wflow::workflow_options opt;
+  ::wflow::workflow_handlers handlers;
   std::atomic<int> counter(0);
   opt.threads = 1;
   opt.control_ms = 100;
-  opt.control_handler = [&]()->bool{
+  handlers.control_handler = [&]()->bool{
     if ( counter == 3 )
     {
       t << message("STOP");
@@ -137,7 +138,7 @@ UNIT(workflow3, "control handler")
     return true;
   };
   
-  ::wflow::workflow wfl(io, opt);
+  ::wflow::workflow wfl(io, opt, handlers);
   wfl.start();
 
   for (int i =0 ; i < 5; i++)
@@ -285,7 +286,7 @@ UNIT(shutdown, "")
   wo.threads = 4;
   std::mutex mutex;
   std::set<std::thread::id> threads_ids;
-  size_t count = 0;
+  std::atomic_size_t count={0};
   wflow::workflow flw(wo);
   for (size_t i = 0; i < 16; ++i)
   {
@@ -335,6 +336,37 @@ UNIT(shutdown, "")
   t << equal<expect, size_t>(count, 32) << FAS_FL;
 }
 
+UNIT(wait_and_restart, "")
+{
+  using namespace ::fas::testing;
+  wflow::workflow_options wo;
+  wo.id = "wait_and_restart";
+  wo.threads = 4;
+  wflow::workflow flw(wo);
+
+  std::atomic<size_t> count(0);
+  auto handler = [&count](){ ++count; return true;};
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.start();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.wait_and_restart();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.shutdown();
+  flw.wait();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  t << equal<expect, size_t>(count, 30) << FAS_FL;
+  count = 0;
+  flw.start();
+  flw.shutdown();
+  flw.wait();
+  t << equal<expect, size_t>(count, 10) << FAS_FL;
+  
+}
+
 }
 
 
@@ -346,5 +378,6 @@ BEGIN_SUITE(workflow, "")
   ADD_UNIT(requester1)
   ADD_UNIT(overflow_reset)
   ADD_UNIT(shutdown)
+  ADD_UNIT(wait_and_restart)
 END_SUITE(workflow)
 

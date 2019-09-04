@@ -207,9 +207,12 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
         if ( startup != nullptr )
           startup(thread_id);
         
+        std::chrono::steady_clock::time_point beg = std::chrono::steady_clock::now();
         for (;;)
         {
-          auto beg = std::chrono::steady_clock::now();
+          if ( statistics != nullptr )
+            beg = std::chrono::steady_clock::now();
+          
           size_t handlers = s->run_one();
           if (  handlers == 0 )
             break;

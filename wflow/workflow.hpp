@@ -164,7 +164,7 @@ public:
    * @remark По умолчанию в workflow_options::threads = 0 - необходимо изменить это значение.
    * @param opt - опции.
    */
-  explicit workflow(const workflow_options& opt);
+  explicit workflow(const workflow_options& opt, const workflow_handlers& handlers = workflow_handlers());
 
   /**
    * @brief Основной конструктор с поддержкой различных режимов.
@@ -177,7 +177,8 @@ public:
    * @param io - ссылка на boost::asio::io_service.
    * @param opt - опции.
    */
-  explicit workflow(io_service_type& io, const workflow_options& opt = workflow_options() );
+  explicit workflow(io_service_type& io, const workflow_options& opt = workflow_options(), 
+                    const workflow_handlers& handlers = workflow_handlers() );
 
   /**
    * @brief Запуск потоков обработки.
@@ -195,6 +196,8 @@ public:
    * @param opt - новые опции.
    */
   bool reconfigure(const workflow_options& opt);
+  bool reconfigure(const workflow_handlers& handlers);
+  bool reconfigure(const workflow_options& opt, const workflow_handlers& handlers);
 
   /**
    * @brief Остановка потоков в многопоточном режиме со сбросом всех очередей.
@@ -208,7 +211,7 @@ public:
   void reset();
 
   /**
-   * @brief Сброс всех таймеров и завершение работы после обработки всех заданий
+   * @brief Сброс всех таймеров и завершение работы потоков после обработки всех заданий
    * @details Позволяет завершить работу не сбрасывая очередь заданий. Отложенные
    * задания не сбрасываются, поэтому если в очереди есть задание с задержкой в сутки
    * то завершение работы произойдет через сутки. Для ожидания завершения заданий
@@ -219,7 +222,7 @@ public:
   void shutdown();
 
   /**
-   * @brief Ожидает завершение работы после workflow::shutdown
+   * @brief Ожидает завершения всех заданий после workflow::shutdown
    * @details Работает только в многопоточном режиме и имеет смысл только после вызова
    * метода workflow::shutdown. Блокирует выполнение программы до завершения работы потоков,
    * после обработки всех заданий в очереди. Убедитесь, что во время ожидания, не
@@ -229,12 +232,21 @@ public:
    * @ref example7.cpp
    */
   void wait();
+  
+  /**
+   * @brief Дождаться завершения всех заданий и продолжить работу
+   * @details По сути реализует последовательность вызовов workflow::shutdown, workflow::wait и workflow::start.
+   * */
+  void wait_and_restart();
 
   /**
    * @brief Получить идентификатор workflow
    * @details Это произвольная строка, может использоваться при логгировании
    */
-  const std::string& get_id() const;
+  std::string get_id() const;
+
+  workflow_options get_options() const;
+  workflow_handlers get_handlers() const;
 
   /**
    * @brief Отправить задание на обработку
@@ -594,18 +606,18 @@ public:
 
   std::shared_ptr<task_manager> get_task_manager() const;
   std::shared_ptr<timer_manager_t> get_timer_manager() const;
-
 private:
-  void create_wrn_timer_(const workflow_options& opt);
-  void initialize_(const workflow_options& opt);
+  void initialize_();
+  void create_wrn_timer_();
 private:
-  std::string _id;
   std::atomic<time_t> _delay_ms;
   std::shared_ptr<task_manager> _impl;
+  
+  typedef std::mutex mutex_type;
+  mutable mutex_type _mutex;
   timer_id_t _wrn_timer = 0;
-  std::shared_ptr<workflow> _workflow_ptr;
+  workflow_options _opt;
+  workflow_handlers _handlers;
 };
-
-
 
 }

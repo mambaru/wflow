@@ -94,10 +94,6 @@ private:
   std::shared_ptr< std::atomic<size_t> > _reset_count;
   std::atomic<time_t> _overflow_time;
   std::atomic<bool> _wait_reset;
-  
-  
-
-  
 };
 
 }

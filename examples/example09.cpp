@@ -1,6 +1,9 @@
 #include <wflow/workflow.hpp>
 #include <wflow/logger.hpp>
+#include <wlog/init.hpp>
 #include <fas/system/memory.hpp>
+#include <condition_variable>
+
 #include <iostream>
 #include <chrono>
 #include <mutex>
@@ -18,6 +21,7 @@
  */
 
 /*
+Intel(R) Core(TM) i7-2600 CPU @ 3.40GHz
 | threads | counter  |  rate      | dropped | 
 | ------- | -------- | ---------- | ------- |
 |    0    | 21 млн   | ~2 млн/с   | ~50тыс  |
@@ -48,6 +52,7 @@ int main(int argc, char* argv[])
   wflow::asio::io_service ios;
   wflow::asio::io_service::work wrk(ios);
   wflow::workflow_options opt;
+  opt.id="example09";
   opt.threads = threads;
   opt.maxsize = 128;
   opt.wrnsize = 128;
@@ -56,12 +61,15 @@ int main(int argc, char* argv[])
   wf.start();
   std::atomic<bool> run(true);
   size_t counter = 0;
-  
-  std::thread t([&run, &wf, &counter](){
+
+  std::mutex m;
+  std::condition_variable cond_var;
+  std::thread t([&](){
+    std::unique_lock<std::mutex> lock(m);
     for (;run; ++counter)
       wf.post([](){});
   });
-  
+  cond_var.notify_all();
   wf.safe_post( std::chrono::seconds(10), [&ios, &run](){ ios.stop(); run = false;});
   ios.run();
   t.join();

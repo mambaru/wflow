@@ -100,7 +100,10 @@ struct workflow_options
    * @details Каждые workflow_options::control_ms выводит в лог размеры очередей и потери
    */
   bool debug = false;
-  
+};
+
+struct workflow_handlers
+{
   /**
     * @brief Указатель на workflow для таймера workflow_options::control_ms
     * @details при большом количестве тяжеловесных заданий таймер может не срабатывать во время,
@@ -135,13 +138,13 @@ struct workflow_options
    * @brief Обработчик вызывается после запуска дополнительных потоков 
    * @see workflow_options::startup_handler_t, workflow_options::threads, workflow::reconfigure 
    */
-  startup_handler_t startup_handler;
+  startup_handler_t startup_handler = nullptr;
   
   /**
    * @brief Обработчик вызывается перед завершением дополнительных потоков 
    * @see workflow_options::finish_handler_t, workflow_options::threads, workflow::reconfigure 
    */
-  finish_handler_t finish_handler;
+  finish_handler_t finish_handler = nullptr;
   
   /** 
    * @brief тип временного интервала для статистики
@@ -163,7 +166,7 @@ struct workflow_options
    * @details вызывается на каждой итерации обработки очереди из каждого потока io_service::run()
    * @see workflow_options::statistics_handler_t
    */
-  statistics_handler_t statistics_handler;
+  statistics_handler_t statistics_handler = nullptr;
 };
 
 }

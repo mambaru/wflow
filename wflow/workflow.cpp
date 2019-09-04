@@ -10,32 +10,24 @@ workflow::~workflow()
   _impl = nullptr;
 }
 
-workflow::workflow(const workflow_options& opt )
-  : _id( opt.id )
-  , _delay_ms(opt.post_delay_ms)
+workflow::workflow(const workflow_options& opt, const workflow_handlers& handlers )
+  : _delay_ms(opt.post_delay_ms)
   , _impl( std::make_shared<task_manager>(opt) )
-  , _workflow_ptr(opt.control_workflow)
+  , _opt(opt)
+  , _handlers(handlers)
 {
-  this->initialize_(opt);
+  this->initialize_();
 }
 
-workflow::workflow(io_service_type& io, const workflow_options& opt)
-  : _id( opt.id )
-  , _delay_ms(opt.post_delay_ms)
+workflow::workflow(io_service_type& io, const workflow_options& opt, const workflow_handlers& handlers)
+  : _delay_ms(opt.post_delay_ms)
   , _impl( std::make_shared<task_manager>(io, opt) )
-  , _workflow_ptr(opt.control_workflow)
+  , _opt(opt)
+  , _handlers(handlers)
 {
-  this->initialize_(opt);
+  this->initialize_();
 }
 
-void workflow::initialize_(const workflow_options& opt)
-{
-  _impl->rate_limit( opt.rate_limit );
-  _impl->set_startup( opt.startup_handler );
-  _impl->set_finish( opt.finish_handler );
-  _impl->set_statistics( opt.statistics_handler );
-  this->create_wrn_timer_(opt);
-}
 
 void workflow::start()
 {
@@ -44,22 +36,33 @@ void workflow::start()
 
 bool workflow::reconfigure(const workflow_options& opt)
 {
+  return this->reconfigure(opt, this->get_handlers());
+}
+
+bool workflow::reconfigure(const workflow_handlers& handlers)
+{
+  return this->reconfigure(this->get_options(), handlers);
+}
+
+bool workflow::reconfigure(const workflow_options& opt, const workflow_handlers& handlers)
+{
   if ( !_impl->reconfigure(opt) )
     return false;
-  _id = opt.id;
-  _workflow_ptr = opt.control_workflow;
-  _impl->rate_limit( opt.rate_limit );
-  _impl->set_startup( opt.startup_handler );
-  _impl->set_finish( opt.finish_handler );
-  _impl->set_statistics( opt.statistics_handler );
+
   _delay_ms = opt.post_delay_ms;
-  this->create_wrn_timer_(opt);
+  {
+    std::lock_guard<mutex_type> lk(_mutex);
+    _opt = opt;
+    _handlers = handlers;
+    this->initialize_();
+  }
   return true;
 }
 
-const std::string& workflow::get_id() const
+std::string workflow::get_id() const
 {
-  return _id;
+  std::lock_guard<mutex_type> lk(_mutex);
+  return _opt.id;
 }
 
 void workflow::reset()
@@ -82,6 +85,13 @@ void workflow::wait()
   _impl->wait();
 }
 
+void workflow::wait_and_restart()
+{
+  _impl->shutdown();
+  _impl->wait();
+  _impl->start();
+}
+
 
 std::shared_ptr< task_manager > workflow::get_task_manager() const
 {
@@ -91,6 +101,18 @@ std::shared_ptr< task_manager > workflow::get_task_manager() const
 std::shared_ptr< workflow::timer_manager_t> workflow::get_timer_manager() const
 {
   return _impl->get_timer_manager();
+}
+
+workflow_options workflow::get_options() const
+{
+  std::lock_guard<mutex_type> lk(_mutex);
+  return _opt;  
+}
+
+workflow_handlers workflow::get_handlers() const
+{
+  std::lock_guard<mutex_type> lk(_mutex);
+  return _handlers;  
 }
 
 void workflow::safe_post(post_handler handler)
@@ -212,24 +234,34 @@ size_t workflow::dropped() const
   return _impl->dropped();
 }
 
-void workflow::create_wrn_timer_(const workflow_options& opt)
+void workflow::initialize_()
 {
-  workflow& wrkf = _workflow_ptr == nullptr ? *this : *_workflow_ptr;
+  _impl->rate_limit( _opt.rate_limit );
+  _impl->set_startup( _handlers.startup_handler );
+  _impl->set_finish( _handlers.finish_handler );
+  _impl->set_statistics( _handlers.statistics_handler );
+  this->create_wrn_timer_();
+}
+
+
+void workflow::create_wrn_timer_()
+{
+  workflow& wrkf = _handlers.control_workflow == nullptr ? *this : *_handlers.control_workflow;
   
   auto old_timer = _wrn_timer;
   
-  if ( opt.control_ms!=0 )
+  if ( _opt.control_ms!=0 )
   {
     auto dropsave = std::make_shared<size_t>(0);
     std::function<bool()> control_handler;
-    if (  opt.control_handler != nullptr )
+    if (  _handlers.control_handler != nullptr )
     {
-      control_handler = opt.control_handler;
+      control_handler = _handlers.control_handler;
     }
     else
     {
-      size_t wrnsize = opt.wrnsize;
-      bool debug = opt.debug;
+      size_t wrnsize = _opt.wrnsize;
+      bool debug = _opt.debug;
       control_handler= [this, wrnsize, dropsave, debug]()  ->bool 
       {
         auto dropcount = this->_impl->dropped();
@@ -239,23 +271,23 @@ void workflow::create_wrn_timer_(const workflow_options& opt)
         wlog::only_for_log(s_size);
         if ( dropdiff!=0 )
         {
-          WFLOW_LOG_ERROR("Workflow '" << this->_id << "' queue dropped " 
+          WFLOW_LOG_ERROR("Workflow '" << this->get_id() << "' queue dropped " 
                           << dropdiff << " items (total " << dropcount << ", size " 
                           << us_size << ", safe_size " << s_size <<  ")" )
           *dropsave = dropcount;
         }
         else if ( us_size > wrnsize )
         {
-          WFLOW_LOG_WARNING("Workflow '" << this->_id << "' queue size warning. Size " << us_size << " safe_size " << s_size << " (wrnsize=" << wrnsize << ")")
+          WFLOW_LOG_WARNING("Workflow '" << this->get_id() << "' queue size warning. Size " << us_size << " safe_size " << s_size << " (wrnsize=" << wrnsize << ")")
         } 
         else if ( debug )
         {
-          WFLOW_LOG_MESSAGE("Workflow '" << this->_id << "' debug: total dropped " << dropcount << ", queue size=" << us_size << " + safe_size=" << s_size )
+          WFLOW_LOG_MESSAGE("Workflow '" << this->get_id() << "' debug: total dropped " << dropcount << ", queue size=" << us_size << " + safe_size=" << s_size )
         }
         return true;
       };
     }
-    _wrn_timer = wrkf.create_timer(std::chrono::milliseconds(opt.control_ms), control_handler );
+    _wrn_timer = wrkf.create_timer(std::chrono::milliseconds(_opt.control_ms), control_handler );
   }
   wrkf.release_timer(old_timer);
 }
