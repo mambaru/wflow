@@ -1,3 +1,2 @@
 unusedFunction:./wflow/workflow.cpp
-knownConditionTrueFalse:
 syntaxError:
