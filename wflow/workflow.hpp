@@ -177,7 +177,7 @@ public:
    * @param io - ссылка на boost::asio::io_service.
    * @param opt - опции.
    */
-  explicit workflow(io_service_type& io, const workflow_options& opt = workflow_options(), 
+  explicit workflow(io_service_type& io, const workflow_options& opt = workflow_options(),
                     const workflow_handlers& handlers = workflow_handlers() );
 
   /**
@@ -232,7 +232,7 @@ public:
    * @ref example7.cpp
    */
   void wait();
-  
+
   /**
    * @brief Дождаться завершения всех заданий и продолжить работу
    * @details По сути реализует последовательность вызовов workflow::shutdown, workflow::wait и workflow::start.
@@ -245,7 +245,14 @@ public:
    */
   std::string get_id() const;
 
+  /**
+   * @brief Получить текущие опции workflow
+   */
   workflow_options get_options() const;
+
+  /**
+   * @brief Получить текущие обработчики workflow
+   */
   workflow_handlers get_handlers() const;
 
   /**
@@ -612,7 +619,7 @@ private:
 private:
   std::atomic<time_t> _delay_ms;
   std::shared_ptr<task_manager> _impl;
-  
+
   typedef std::mutex mutex_type;
   mutable mutex_type _mutex;
   timer_id_t _wrn_timer = 0;
