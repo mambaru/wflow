@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: example10.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">example10.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<p class="">Тестирование пропускной способности <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> с различным числом потоков для защищенных заданий. Число потоков передается параметром командной строки. Как видно из результатов, для легковесных заданий, наиболее оптимальным является конфигурация с одним выделенным потоком или однопоточный вариант. Потерь здесь, как в /ref example09.cpp нет, но и результаты немногим хуже. </p><dl class="section remark"><dt>Прим.</dt><dd>для отложенного на 10 секунд задания на завершения работы не использовали отдельный <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> т.к. очередь состоит исключительно из легковесных заданий и не бывает такого, что все потоки зависают на обработке без возможности отработать таймер. Смотри /ref example11.cpp, где показана подобная задержка.</dd></dl>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;fas/system/memory.hpp&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;mutex&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;memory&gt;</span></div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment">| threads | counter  |  rate      | dropped | </span></div><div class="line"><span class="comment">| ------- | -------- | ---------- | ------- |</span></div><div class="line"><span class="comment">|    0    | 21 млн   | ~2 млн/с   |    0    |</span></div><div class="line"><span class="comment">|    1    | 29 млн   | ~2.9 млн/с |    0    |</span></div><div class="line"><span class="comment">|    2    | 6.1 млн  | ~615 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    3    | 5.4 млн  | ~542 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    4    | 4.9 млн  | ~493 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    5    | 4.2 млн  | ~423 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    6    | 3.6 млн  | ~368 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    7    | 3.5 млн  | ~353 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    8    | 3.2 млн  | ~323 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    9    | 3.3 млн  | ~337 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    10   | 3.3 млн  | ~338 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    15   | 3.5 млн  | ~357 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    20   | 3.7 млн  | ~368 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    30   | 3.1 млн  | ~312 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    50   | 2.2 млн  | ~219 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    100  | 1.4 млн  | ~148 тыс/с |    0    |</span></div><div class="line"><span class="comment">|    200  | 677 тыс  | ~67  тыс/с |    0    |</span></div><div class="line"><span class="comment">|    300  | 379 тыс  | ~38  тыс/с |    0    |</span></div><div class="line"><span class="comment">*/</span></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div><div class="line">{</div><div class="line">  <span class="keywordtype">size_t</span> threads = 0;</div><div class="line">  <span class="keywordflow">if</span> ( argc &gt; 1 )</div><div class="line">    threads = size_t(std::atol(argv[1]));</div><div class="line">  </div><div class="line">  wflow::asio::io_service ios;</div><div class="line">  wflow::asio::io_service::work wrk(ios);</div><div class="line">  <a name="_a0"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div><div class="line">  opt.<a name="a1"></a><a class="code" href="structwflow_1_1workflow__options.html#a0f8368c1d0aa8490042acb21c51458b7">use_asio</a> = <span class="keyword">true</span>;</div><div class="line">  opt.<a name="a2"></a><a class="code" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">threads</a> = threads;</div><div class="line">  <a name="_a3"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div><div class="line">  wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div><div class="line">  std::atomic&lt;bool&gt; run(<span class="keyword">true</span>);</div><div class="line">  std::atomic&lt;size_t&gt; counter;</div><div class="line">  counter=0;</div><div class="line">  </div><div class="line">  std::thread t1([&amp;run, &amp;wf, &amp;counter](){</div><div class="line">    <span class="keywordflow">for</span> (;run; ++counter)</div><div class="line">      wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#aea4296e274c45240aa597f88fa9b2be2">safe_post</a>([](){});</div><div class="line">  });</div><div class="line">  </div><div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#aea4296e274c45240aa597f88fa9b2be2">safe_post</a>( std::chrono::seconds(10), [&amp;ios, &amp;run](){ ios.stop(); run = <span class="keyword">false</span>;});</div><div class="line">  ios.run();</div><div class="line">  t1.join();</div><div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;dropped &quot;</span> &lt;&lt; wf.<a name="a6"></a><a class="code" href="classwflow_1_1workflow.html#a9a2c0a0b285ac5a09f1bb2b5046d1e70">dropped</a>() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; counter &lt;&lt; std::endl;</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

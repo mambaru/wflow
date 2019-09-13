@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: example15.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">example15.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<p class="">Пример использования JSON-конфигурации При запуске без параметров выводится сгенерированный JSON со значениями по умолчанию. В качестве параметра передается JSON-конфигурация для <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a>, через который данные из STDIN будут отправлены в STDOUT. Можно поэкспериментировать с многопоточностью, задержками и ограничениями скорости обработки через конфиг. </p><div class="fragment"><div class="line">time cat ../examples/example15.cpp | ./examples/example15 ../examples/example15-1.json</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="load_8hpp.html">wflow/load.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div><div class="line">{</div><div class="line">  <span class="keywordflow">if</span> (argc == 1)</div><div class="line">  {</div><div class="line">    std::cout &lt;&lt; <a name="a0"></a><a class="code" href="namespacewflow.html#a4be3a79d92982330bc8f7a0bc093b109">wflow::dump</a>( <a name="_a1"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a>() ) &lt;&lt; std::endl;</div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">  }</div><div class="line">  </div><div class="line">  <a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div><div class="line">  std::string err;</div><div class="line">  <span class="keywordflow">if</span> ( !<a name="a2"></a><a class="code" href="namespacewflow.html#ae924c213b11520308344cede59c6ede9">wflow::load</a>(argv[1], &amp;opt, &amp;err) )</div><div class="line">  {</div><div class="line">    std::cerr &lt;&lt; <span class="stringliteral">&quot;ERROR: &quot;</span> &lt;&lt; err &lt;&lt; std::endl;</div><div class="line">    <span class="keywordflow">return</span> -1;</div><div class="line">  }</div><div class="line">  wflow::asio::io_service ios;</div><div class="line">  <a name="_a3"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div><div class="line">  wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div><div class="line">  </div><div class="line">  std::atomic&lt;size_t&gt; count(0);</div><div class="line">  </div><div class="line">  <span class="keywordflow">while</span>( std::cin.good() )</div><div class="line">  {</div><div class="line">    std::string str;</div><div class="line">    std::getline (std::cin,str);</div><div class="line">    ++count;</div><div class="line">    wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>([str, &amp;count](){</div><div class="line">      std::cout &lt;&lt; str &lt;&lt; std::endl;</div><div class="line">      --count;</div><div class="line">    });</div><div class="line">  }</div><div class="line">  wf.<a name="a6"></a><a class="code" href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">create_timer</a>(std::chrono::milliseconds(100), [&amp;count, &amp;ios](){</div><div class="line">    <span class="keywordflow">if</span> (count!=0)</div><div class="line">      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">    ios.stop();</div><div class="line">    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">  });</div><div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;Read DONE!&quot;</span> &lt;&lt; std::endl;</div><div class="line">  wflow::asio::io_service::work wrk(ios);</div><div class="line">  ios.run();</div><div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;BYE!&quot;</span> &lt;&lt; std::endl;</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

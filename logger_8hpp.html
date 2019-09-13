@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: Файл wflow/logger.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_8eab678918d29f47ce726eb97f1ecd22.html">wflow</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Макросы</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл logger.hpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;wlog/logging.hpp&gt;</code><br />
+</div>
+<p><a href="logger_8hpp_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Макросы</h2></td></tr>
+<tr class="memitem:a70e0499d64439ea0a889355c85b9b20e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#a70e0499d64439ea0a889355c85b9b20e">WFLOW_LOG_ERROR</a>(X)&#160;&#160;&#160;WLOG_LOG_ERROR( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:a70e0499d64439ea0a889355c85b9b20e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abceb43279e0b1fee72f5bb3d411c1431"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#abceb43279e0b1fee72f5bb3d411c1431">WFLOW_LOG_WARNING</a>(X)&#160;&#160;&#160;WLOG_LOG_WARNING( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:abceb43279e0b1fee72f5bb3d411c1431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03eaaba58a4c08ef214e605b24475ce7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#a03eaaba58a4c08ef214e605b24475ce7">WFLOW_LOG_MESSAGE</a>(X)&#160;&#160;&#160;WLOG_LOG_MESSAGE( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:a03eaaba58a4c08ef214e605b24475ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab22a602914d8d5bc68880b9016c5e0f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#ab22a602914d8d5bc68880b9016c5e0f0">WFLOW_LOG_FATAL</a>(X)&#160;&#160;&#160;WLOG_LOG_FATAL( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:ab22a602914d8d5bc68880b9016c5e0f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82ac4c1d79c0419b52fbd093882584c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#a82ac4c1d79c0419b52fbd093882584c5">WFLOW_LOG_BEGIN</a>(X)&#160;&#160;&#160;WLOG_LOG_BEGIN( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:a82ac4c1d79c0419b52fbd093882584c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58e1c5acbaffeea941d2dcbe9e33ad7f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#a58e1c5acbaffeea941d2dcbe9e33ad7f">WFLOW_LOG_END</a>(X)&#160;&#160;&#160;WLOG_LOG_END( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:a58e1c5acbaffeea941d2dcbe9e33ad7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdb1c06649508e279449c775d92ebbf6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#acdb1c06649508e279449c775d92ebbf6">WFLOW_LOG_DEBUG</a>(X)&#160;&#160;&#160;WLOG_LOG_DEBUG( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:acdb1c06649508e279449c775d92ebbf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a859ad251a58cd34e8b65149fc8a29267"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#a859ad251a58cd34e8b65149fc8a29267">WFLOW_LOG_TRACE</a>(X)&#160;&#160;&#160;WLOG_LOG_TRACE( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:a859ad251a58cd34e8b65149fc8a29267"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2933d5cfdbf76151876c5175a32b2bef"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="logger_8hpp.html#a2933d5cfdbf76151876c5175a32b2bef">WFLOW_LOG_PROGRESS</a>(X)&#160;&#160;&#160;WLOG_LOG_PROGRESS( &quot;WFLOW&quot;, X )</td></tr>
+<tr class="separator:a2933d5cfdbf76151876c5175a32b2bef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Макросы</h2>
+<a id="a82ac4c1d79c0419b52fbd093882584c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82ac4c1d79c0419b52fbd093882584c5">&#9670;&nbsp;</a></span>WFLOW_LOG_BEGIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_BEGIN</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_BEGIN( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acdb1c06649508e279449c775d92ebbf6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdb1c06649508e279449c775d92ebbf6">&#9670;&nbsp;</a></span>WFLOW_LOG_DEBUG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_DEBUG</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_DEBUG( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a58e1c5acbaffeea941d2dcbe9e33ad7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58e1c5acbaffeea941d2dcbe9e33ad7f">&#9670;&nbsp;</a></span>WFLOW_LOG_END</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_END</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_END( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a70e0499d64439ea0a889355c85b9b20e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70e0499d64439ea0a889355c85b9b20e">&#9670;&nbsp;</a></span>WFLOW_LOG_ERROR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_ERROR</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_ERROR( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab22a602914d8d5bc68880b9016c5e0f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab22a602914d8d5bc68880b9016c5e0f0">&#9670;&nbsp;</a></span>WFLOW_LOG_FATAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_FATAL</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_FATAL( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a03eaaba58a4c08ef214e605b24475ce7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03eaaba58a4c08ef214e605b24475ce7">&#9670;&nbsp;</a></span>WFLOW_LOG_MESSAGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_MESSAGE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_MESSAGE( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2933d5cfdbf76151876c5175a32b2bef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2933d5cfdbf76151876c5175a32b2bef">&#9670;&nbsp;</a></span>WFLOW_LOG_PROGRESS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_PROGRESS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_PROGRESS( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a859ad251a58cd34e8b65149fc8a29267"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a859ad251a58cd34e8b65149fc8a29267">&#9670;&nbsp;</a></span>WFLOW_LOG_TRACE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_TRACE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_TRACE( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abceb43279e0b1fee72f5bb3d411c1431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abceb43279e0b1fee72f5bb3d411c1431">&#9670;&nbsp;</a></span>WFLOW_LOG_WARNING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WFLOW_LOG_WARNING</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;WLOG_LOG_WARNING( &quot;WFLOW&quot;, X )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

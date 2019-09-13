@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wflow-coverage.info - wflow/timer/timer_manager_base.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">wflow/timer</a> - timer_manager_base.cpp<span style="font-size: 80%;"> (source / <a href="timer_manager_base.cpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wflow-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntry">57</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-09-13</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntryLo">73.7 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &quot;timer_manager_base.hpp&quot;</a>
+<span class="lineNum">       2 </span>            : #include &quot;timer.hpp&quot;
+<span class="lineNum">       3 </span>            : #include &lt;wflow/queue/asio_queue.hpp&gt;
+<span class="lineNum">       4 </span>            : #include &lt;wflow/queue/delayed_queue.hpp&gt;
+<span class="lineNum">       5 </span>            : #include &lt;wflow/queue/bique.hpp&gt;
+<span class="lineNum">       6 </span>            : #include &lt;wflow/logger.hpp&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : 
+<a name="9"><span class="lineNum">       9 </span>            : namespace wflow{</a>
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span><span class="lineCov">         11 : timer_manager_base::timer_manager_base()</span>
+<span class="lineNum">      12 </span><span class="lineCov">         11 :   : _id_counter(0)</span>
+<a name="13"><span class="lineNum">      13 </span><span class="lineCov">         11 : {}</span></a>
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span><span class="lineNoCov">          0 : std::shared_ptr&lt;bool&gt; timer_manager_base::detach(timer_id_t id)</span>
+<span class="lineNum">      16 </span>            : {
+<span class="lineNum">      17 </span><span class="lineNoCov">          0 :   std::shared_ptr&lt;bool&gt; res;</span>
+<span class="lineNum">      18 </span><span class="lineNoCov">          0 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :   auto itr = _id_map.find(id);</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 :   if ( itr == _id_map.end() )</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :     return nullptr;</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :   res = itr-&gt;second;</span>
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :   _id_map.erase(itr);</span>
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :   return res;</span>
+<a name="25"><span class="lineNum">      25 </span>            : }</a>
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span><span class="lineCov">          7 : bool timer_manager_base::release( timer_id_t id )</span>
+<span class="lineNum">      28 </span>            : {
+<span class="lineNum">      29 </span><span class="lineCov">          7 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      30 </span><span class="lineCov">          7 :   auto itr = _id_map.find(id);</span>
+<span class="lineNum">      31 </span><span class="lineCov">          7 :   if ( itr == _id_map.end() )</span>
+<span class="lineNum">      32 </span><span class="lineCov">          7 :     return false;</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :   _id_map.erase(itr);</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :   return true;</span>
+<a name="35"><span class="lineNum">      35 </span>            : }</a>
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span><span class="lineCov">          5 : size_t timer_manager_base::reset()</span>
+<span class="lineNum">      38 </span>            : {
+<span class="lineNum">      39 </span><span class="lineCov">          5 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      40 </span><span class="lineCov">          5 :   size_t s = _id_map.size();</span>
+<span class="lineNum">      41 </span><span class="lineCov">          5 :   _id_map.clear();</span>
+<span class="lineNum">      42 </span><span class="lineCov">          5 :   return s;</span>
+<a name="43"><span class="lineNum">      43 </span>            : }</a>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineCov">          2 : size_t timer_manager_base::size() const</span>
+<span class="lineNum">      46 </span>            : {
+<span class="lineNum">      47 </span><span class="lineCov">          2 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      48 </span><span class="lineCov">          2 :   return _id_map.size();</span>
+<span class="lineNum">      49 </span>            : }
+<span class="lineNum">      50 </span>            : 
+<a name="51"><span class="lineNum">      51 </span>            : template&lt;typename Q, typename Handler&gt;</a>
+<span class="lineNum">      52 </span>            : timer_manager_base::timer_id_t
+<span class="lineNum">      53 </span><span class="lineCov">          9 :   timer_manager_base::create_( std::shared_ptr&lt;Q&gt; pq,  time_point_t start_time, duration_t delay, Handler h, expires_at expires)</span>
+<span class="lineNum">      54 </span>            : {
+<span class="lineNum">      55 </span><span class="lineCov">          9 :   if ( delay.count() == 0 )</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     delay = std::chrono::hours(24);</span>
+<span class="lineNum">      57 </span><span class="lineCov">          9 :   timer_id_t id = ++_id_counter;</span>
+<span class="lineNum">      58 </span><span class="lineCov">          9 :   std::shared_ptr&lt;bool&gt; pflag = std::make_shared&lt;bool&gt;(true);</span>
+<span class="lineNum">      59 </span><span class="lineCov">         18 :   std::weak_ptr&lt;bool&gt; wflag = pflag;</span>
+<span class="lineNum">      60 </span><span class="lineCov">          9 :   _id_map.insert( std::make_pair(id, pflag) );</span>
+<span class="lineNum">      61 </span><span class="lineCov">          9 :   if ( start_time!=time_point_t() )</span>
+<span class="lineNum">      62 </span><span class="lineCov">          9 :     pq-&gt;safe_post_at( start_time, timer::make(pq, delay, std::move(h), expires, wflag) );</span>
+<span class="lineNum">      63 </span>            :   else
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     pq-&gt;safe_post( timer::make(pq, delay, std::move(h), expires, wflag));</span>
+<span class="lineNum">      65 </span><span class="lineCov">         18 :   return id;</span>
+<span class="lineNum">      66 </span>            : }
+<a name="67"><span class="lineNum">      67 </span>            : </a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineCov">          3 : timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr&lt;bique&gt; pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires)</span>
+<span class="lineNum">      70 </span>            : {
+<span class="lineNum">      71 </span><span class="lineCov">          3 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      72 </span><span class="lineCov">          3 :   return this-&gt;create_(pq, start_time, delay, std::move(h), expires);</span>
+<a name="73"><span class="lineNum">      73 </span>            : }</a>
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span><span class="lineCov">          1 : timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr&lt;bique&gt; pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires)</span>
+<span class="lineNum">      76 </span>            : {
+<span class="lineNum">      77 </span><span class="lineCov">          1 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      78 </span><span class="lineCov">          1 :   return this-&gt;create_(pq, start_time, delay, std::move(h), expires);</span>
+<a name="79"><span class="lineNum">      79 </span>            : }</a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr&lt;delayed_queue&gt; pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires)</span>
+<span class="lineNum">      82 </span>            : {
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :   return this-&gt;create_(pq, start_time, delay, std::move(h), expires);</span>
+<a name="85"><span class="lineNum">      85 </span>            : }</a>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 : timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr&lt;delayed_queue&gt; pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires)</span>
+<span class="lineNum">      88 </span>            : {
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :   return this-&gt;create_(pq, start_time, delay, std::move(h), expires);</span>
+<a name="91"><span class="lineNum">      91 </span>            : }</a>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineCov">          4 : timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr&lt;asio_queue&gt; pq,  time_point_t start_time, duration_t delay, handler h, expires_at expires)</span>
+<span class="lineNum">      94 </span>            : {
+<span class="lineNum">      95 </span><span class="lineCov">          4 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">      96 </span><span class="lineCov">          4 :   return this-&gt;create_(pq, start_time, delay, std::move(h), expires);</span>
+<a name="97"><span class="lineNum">      97 </span>            : }</a>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineCov">          1 : timer_manager_base::timer_id_t timer_manager_base::create( std::shared_ptr&lt;asio_queue&gt; pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires)</span>
+<span class="lineNum">     100 </span>            : {
+<span class="lineNum">     101 </span><span class="lineCov">          1 :   std::lock_guard&lt; mutex_type &gt; lk(_mutex);</span>
+<span class="lineNum">     102 </span><span class="lineCov">          1 :   return this-&gt;create_(pq, start_time, delay, std::move(h), expires);</span>
+<a name="103"><span class="lineNum">     103 </span>            : }</a>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span><span class="lineCov">          3 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

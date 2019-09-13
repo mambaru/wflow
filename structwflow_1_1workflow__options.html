@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: Структура wflow::workflow_options</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="namespacewflow.html">wflow</a></li><li class="navelem"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Открытые атрибуты</a> &#124;
+<a href="structwflow_1_1workflow__options-members.html">Полный список членов класса</a>  </div>
+  <div class="headertitle">
+<div class="title">Структура wflow::workflow_options</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Опции  
+ <a href="structwflow_1_1workflow__options.html#details">Подробнее...</a></p>
+
+<p><code>#include &lt;<a class="el" href="workflow__options_8hpp_source.html">workflow_options.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Открытые атрибуты</h2></td></tr>
+<tr class="memitem:a0f8368c1d0aa8490042acb21c51458b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#a0f8368c1d0aa8490042acb21c51458b7">use_asio</a> = true</td></tr>
+<tr class="memdesc:a0f8368c1d0aa8490042acb21c51458b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Использовать boost::asio::io_service (true) или wflow::delayed_queue.  <a href="#a0f8368c1d0aa8490042acb21c51458b7">Подробнее...</a><br /></td></tr>
+<tr class="separator:a0f8368c1d0aa8490042acb21c51458b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab09df0c5abe0fa70604f8e1b942256b0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#ab09df0c5abe0fa70604f8e1b942256b0">id</a></td></tr>
+<tr class="memdesc:ab09df0c5abe0fa70604f8e1b942256b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Идентификатор для отображения в лог (не обязатльено)  <a href="#ab09df0c5abe0fa70604f8e1b942256b0">Подробнее...</a><br /></td></tr>
+<tr class="separator:ab09df0c5abe0fa70604f8e1b942256b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80352d63df20a1059e1fccd9655d15ec"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">threads</a> = 0</td></tr>
+<tr class="memdesc:a80352d63df20a1059e1fccd9655d15ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Количество дополнительных потоков обработки  <a href="#a80352d63df20a1059e1fccd9655d15ec">Подробнее...</a><br /></td></tr>
+<tr class="separator:a80352d63df20a1059e1fccd9655d15ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48eb69b95225f635e0cbea7508cf326b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#a48eb69b95225f635e0cbea7508cf326b">maxsize</a> = 0</td></tr>
+<tr class="memdesc:a48eb69b95225f635e0cbea7508cf326b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Максимальный размер очереди заданий  <a href="#a48eb69b95225f635e0cbea7508cf326b">Подробнее...</a><br /></td></tr>
+<tr class="separator:a48eb69b95225f635e0cbea7508cf326b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6db2746ce07bcfb5b9f607e7d8b06aa0"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#a6db2746ce07bcfb5b9f607e7d8b06aa0">wrnsize</a> = 0</td></tr>
+<tr class="memdesc:a6db2746ce07bcfb5b9f607e7d8b06aa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Размер очереди заданий, при достижении которого пишется предупреждение в лог  <a href="#a6db2746ce07bcfb5b9f607e7d8b06aa0">Подробнее...</a><br /></td></tr>
+<tr class="separator:a6db2746ce07bcfb5b9f607e7d8b06aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dda32b06e81a8b9b7fbc5f0debb5c1c"><td class="memItemLeft" align="right" valign="top">time_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c">control_ms</a> = 0</td></tr>
+<tr class="memdesc:a6dda32b06e81a8b9b7fbc5f0debb5c1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Интервал проверки счетчиков в миллисекундах  <a href="#a6dda32b06e81a8b9b7fbc5f0debb5c1c">Подробнее...</a><br /></td></tr>
+<tr class="separator:a6dda32b06e81a8b9b7fbc5f0debb5c1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87ec5470d5504507123277452f967c26"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#a87ec5470d5504507123277452f967c26">quiet_mode</a> = false</td></tr>
+<tr class="memdesc:a87ec5470d5504507123277452f967c26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Тихий режим. Отключает вывод лога ошибок при переполнении  <a href="#a87ec5470d5504507123277452f967c26">Подробнее...</a><br /></td></tr>
+<tr class="separator:a87ec5470d5504507123277452f967c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fd722999bf224316d09e2c40d963562"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#a4fd722999bf224316d09e2c40d963562">overflow_reset</a> = false</td></tr>
+<tr class="memdesc:a4fd722999bf224316d09e2c40d963562"><td class="mdescLeft">&#160;</td><td class="mdescRight">Полный сброс очереди при переполнении  <a href="#a4fd722999bf224316d09e2c40d963562">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4fd722999bf224316d09e2c40d963562"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc44b6126571c72170dd39e7d98280d9"><td class="memItemLeft" align="right" valign="top">time_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#afc44b6126571c72170dd39e7d98280d9">post_delay_ms</a> = 0</td></tr>
+<tr class="memdesc:afc44b6126571c72170dd39e7d98280d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Общая задержка в миллисекундах  <a href="#afc44b6126571c72170dd39e7d98280d9">Подробнее...</a><br /></td></tr>
+<tr class="separator:afc44b6126571c72170dd39e7d98280d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2035e352bca3693ce5ac066b0e624b1"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#ad2035e352bca3693ce5ac066b0e624b1">rate_limit</a> = 0</td></tr>
+<tr class="memdesc:ad2035e352bca3693ce5ac066b0e624b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ограничение скорости обработки (в заданиях в секунду)  <a href="#ad2035e352bca3693ce5ac066b0e624b1">Подробнее...</a><br /></td></tr>
+<tr class="separator:ad2035e352bca3693ce5ac066b0e624b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abeb5e450f7a9069f6be094a595ec7eb1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html#abeb5e450f7a9069f6be094a595ec7eb1">debug</a> = false</td></tr>
+<tr class="memdesc:abeb5e450f7a9069f6be094a595ec7eb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отладочный режим  <a href="#abeb5e450f7a9069f6be094a595ec7eb1">Подробнее...</a><br /></td></tr>
+<tr class="separator:abeb5e450f7a9069f6be094a595ec7eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p class="">Опции </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example03_8cpp-example.html#_a0">example03.cpp</a>, <a class="el" href="example04_8cpp-example.html#_a0">example04.cpp</a>, <a class="el" href="example06_8cpp-example.html#_a0">example06.cpp</a>, <a class="el" href="example07_8cpp-example.html#_a0">example07.cpp</a>, <a class="el" href="example08_8cpp-example.html#_a0">example08.cpp</a>, <a class="el" href="example09_8cpp-example.html#_a0">example09.cpp</a>, <a class="el" href="example10_8cpp-example.html#_a0">example10.cpp</a>, <a class="el" href="example11_8cpp-example.html#_a0">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html#_a0">example12.cpp</a> и <a class="el" href="example15_8cpp-example.html#_a1">example15.cpp</a>.</dd>
+</dl></div><h2 class="groupheader">Данные класса</h2>
+<a id="a6dda32b06e81a8b9b7fbc5f0debb5c1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dda32b06e81a8b9b7fbc5f0debb5c1c">&#9670;&nbsp;</a></span>control_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">time_t wflow::workflow_options::control_ms = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Интервал проверки счетчиков в миллисекундах </p>
+<p class="">С этим интервалом проверяются счетчики <a class="el" href="structwflow_1_1workflow__options.html#a48eb69b95225f635e0cbea7508cf326b" title="Максимальный размер очереди заданий ">workflow_options::maxsize</a> и <a class="el" href="structwflow_1_1workflow__options.html#a6db2746ce07bcfb5b9f607e7d8b06aa0" title="Размер очереди заданий, при достижении которого пишется предупреждение в лог ">workflow_options::wrnsize</a> для соответствующих записей в лог. Если control_ms=0, то отключен </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example09_8cpp-example.html#a5">example09.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="abeb5e450f7a9069f6be094a595ec7eb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abeb5e450f7a9069f6be094a595ec7eb1">&#9670;&nbsp;</a></span>debug</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow_options::debug = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Отладочный режим </p>
+<p class="">Каждые <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a> выводит в лог размеры очередей и потери </p>
+
+</div>
+</div>
+<a id="ab09df0c5abe0fa70604f8e1b942256b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab09df0c5abe0fa70604f8e1b942256b0">&#9670;&nbsp;</a></span>id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string wflow::workflow_options::id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Идентификатор для отображения в лог (не обязатльено) </p>
+<p class="">Произвольная строка используется при отображении в лог, чтобы можно было определить о каком workflow идет речь.</p>
+<dl class="section see"><dt>См. также</dt><dd><a class="el" href="classwflow_1_1workflow.html#aa9b54616a6ff3fb068eb3858f4206425" title="Получить идентификатор workflow. ">workflow::get_id</a> </dd></dl>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example09_8cpp-example.html#a1">example09.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a48eb69b95225f635e0cbea7508cf326b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48eb69b95225f635e0cbea7508cf326b">&#9670;&nbsp;</a></span>maxsize</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow_options::maxsize = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Максимальный размер очереди заданий </p>
+<p class="">При достижении этого размера, новые задания будут выкидываться из очереди. Если задан <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a>, то в лог будут отображаться сообщение с ошибкой и количеством выкинутых заданий. В лог пишется не каждый факт потери задания, а с переодичностью <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a> проверяются счетчики и в случае их изменения, делается запись. Таймеры и защищенные задания не выкидываются из очереди. </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example03_8cpp-example.html#a1">example03.cpp</a>, <a class="el" href="example04_8cpp-example.html#a1">example04.cpp</a> и <a class="el" href="example09_8cpp-example.html#a3">example09.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a4fd722999bf224316d09e2c40d963562"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fd722999bf224316d09e2c40d963562">&#9670;&nbsp;</a></span>overflow_reset</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow_options::overflow_reset = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Полный сброс очереди при переполнении </p>
+<p class="">Если maxsize установлено в такое значение, что разбор всей очереди не целесообразен, то имеет смысл ее сбрасывать при каждом переполнении. </p>
+
+</div>
+</div>
+<a id="afc44b6126571c72170dd39e7d98280d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc44b6126571c72170dd39e7d98280d9">&#9670;&nbsp;</a></span>post_delay_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">time_t wflow::workflow_options::post_delay_ms = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Общая задержка в миллисекундах </p>
+<p class="">Может использоваться для тестирования или как защита от bruteforce. Работает только для всех незащищенных заданий отправленных без временного интервала workflow_options::post </p>
+
+</div>
+</div>
+<a id="a87ec5470d5504507123277452f967c26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87ec5470d5504507123277452f967c26">&#9670;&nbsp;</a></span>quiet_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow_options::quiet_mode = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Тихий режим. Отключает вывод лога ошибок при переполнении </p>
+<p class="">Не отключает вывода информации о переполнении control_ms </p>
+
+</div>
+</div>
+<a id="ad2035e352bca3693ce5ac066b0e624b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2035e352bca3693ce5ac066b0e624b1">&#9670;&nbsp;</a></span>rate_limit</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow_options::rate_limit = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ограничение скорости обработки (в заданиях в секунду) </p>
+<p class="">Может использоваться для тестирования как сервера так клиента. Работает только для всех незащищенных заданий (в том числе и отложенных) workflow_options::post </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example07_8cpp-example.html#a2">example07.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a80352d63df20a1059e1fccd9655d15ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80352d63df20a1059e1fccd9655d15ec">&#9670;&nbsp;</a></span>threads</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow_options::threads = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Количество дополнительных потоков обработки </p>
+<p class="">Если значение 0 (по умолчанию), то никаких дополнительных потоков не запускается, все сообщения и таймеры работают с asio::io_service, который был передан в конструкторе <a class="el" href="classwflow_1_1workflow.html#a30291da755df1cee713c2190020bac58">workflow::workflow</a>. При значениях больших 0, создается свой объект asio::io_service с которым и работают все дополнительные потоки. Динамическое реконфигурирование потоков от 1..N работает ожидаемо, просто добавляются новые или завершают работу (после выполнения текущего задания) лишние. Однако при переключении 0-&gt;N или N-&gt;0 потоков есть нюансы связанные с с тем, что в конфигурации N потоков используется свой объект asio::io_service. При переключении 0-&gt;N созданные тамеры и текущие задания остаются в пользовательском asio::io_service </p><dl class="section attention"><dt>Внимание</dt><dd>Не работает при workflow_options::use_io_service == false </dd></dl>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example06_8cpp-example.html#a1">example06.cpp</a>, <a class="el" href="example07_8cpp-example.html#a1">example07.cpp</a>, <a class="el" href="example08_8cpp-example.html#a1">example08.cpp</a>, <a class="el" href="example09_8cpp-example.html#a2">example09.cpp</a>, <a class="el" href="example10_8cpp-example.html#a2">example10.cpp</a>, <a class="el" href="example11_8cpp-example.html#a1">example11.cpp</a> и <a class="el" href="example12_8cpp-example.html#a1">example12.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a0f8368c1d0aa8490042acb21c51458b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f8368c1d0aa8490042acb21c51458b7">&#9670;&nbsp;</a></span>use_asio</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow_options::use_asio = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Использовать boost::asio::io_service (true) или wflow::delayed_queue. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Уст.:</a></b></dt><dd>Альтернативный io_service не дает существенных преимуществ </dd></dl>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example10_8cpp-example.html#a1">example10.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a6db2746ce07bcfb5b9f607e7d8b06aa0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6db2746ce07bcfb5b9f607e7d8b06aa0">&#9670;&nbsp;</a></span>wrnsize</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow_options::wrnsize = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Размер очереди заданий, при достижении которого пишется предупреждение в лог </p>
+<p class="">При достижении этого размера, если задан <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a>, то в лог будут отображаться сообщение с предупреждением и количеством сообщений в очереди. В лог пишется не каждый факт превышения размера, а с переодичностью <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a> проверяются счетчики и в случае их изменения, делается запись. Проверяется только количество незащищенных заданий. Таймеры и защищенные задания не учитываются. </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example09_8cpp-example.html#a4">example09.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<hr/>Объявления и описания членов структуры находятся в файле:<ul>
+<li>wflow/<a class="el" href="workflow__options_8hpp_source.html">workflow_options.hpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

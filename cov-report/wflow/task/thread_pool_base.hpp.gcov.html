@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wflow-coverage.info - wflow/task/thread_pool_base.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">wflow/task</a> - thread_pool_base.hpp<span style="font-size: 80%;"> (source / <a href="thread_pool_base.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wflow-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-09-13</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #pragma once</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : #include &lt;thread&gt;
+<span class="lineNum">       4 </span>            : #include &lt;mutex&gt;
+<span class="lineNum">       5 </span>            : #include &lt;vector&gt;
+<span class="lineNum">       6 </span>            : #include &lt;atomic&gt;
+<span class="lineNum">       7 </span>            : #include &lt;memory&gt;
+<span class="lineNum">       8 </span>            : #include &lt;functional&gt;
+<span class="lineNum">       9 </span>            : #include &lt;wflow/system/asio.hpp&gt;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : namespace wflow {
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : class bique;
+<span class="lineNum">      14 </span>            : class asio_queue;
+<a name="15"><span class="lineNum">      15 </span>            : class delayed_queue;</a>
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span><span class="lineCov">          8 : class thread_pool_base</span>
+<span class="lineNum">      18 </span>            :   : public std::enable_shared_from_this&lt; thread_pool_base &gt;
+<span class="lineNum">      19 </span>            : {
+<span class="lineNum">      20 </span>            : public:
+<span class="lineNum">      21 </span>            :   typedef thread_pool_base self;
+<span class="lineNum">      22 </span>            :   typedef std::shared_ptr&lt;bool&gt; thread_flag;
+<span class="lineNum">      23 </span>            : /*  typedef ::wflow::asio::io_service io_service_type;
+<span class="lineNum">      24 </span>            :   typedef io_service_type::work work_type;
+<span class="lineNum">      25 </span>            :   typedef std::unique_ptr&lt;work_type&gt; work_ptr;
+<span class="lineNum">      26 </span>            :   */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :   typedef std::vector&lt;thread_flag&gt; flag_list;
+<span class="lineNum">      29 </span>            :   typedef std::function&lt;void(std::thread::id)&gt; startup_handler;
+<span class="lineNum">      30 </span>            :   typedef std::function&lt;void(std::thread::id)&gt; finish_handler;
+<span class="lineNum">      31 </span>            :   typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;::duration statistics_duration;
+<span class="lineNum">      32 </span>            :   typedef std::function&lt;void(std::thread::id, size_t count, statistics_duration)&gt; statistics_handler;
+<span class="lineNum">      33 </span>            :   thread_pool_base();
+<span class="lineNum">      34 </span>            :   
+<span class="lineNum">      35 </span>            :   void rate_limit(size_t rps);
+<span class="lineNum">      36 </span>            :   void set_startup( startup_handler handler );
+<span class="lineNum">      37 </span>            :   void set_finish( finish_handler handler );
+<span class="lineNum">      38 </span>            :   void set_statistics( statistics_handler handler );
+<span class="lineNum">      39 </span>            :   
+<span class="lineNum">      40 </span>            :   bool reconfigure(std::shared_ptr&lt;bique&gt; s, size_t threads);
+<span class="lineNum">      41 </span>            :   bool reconfigure(std::shared_ptr&lt;asio_queue&gt; s, size_t threads);
+<span class="lineNum">      42 </span>            :   bool reconfigure(std::shared_ptr&lt;delayed_queue&gt; s, size_t threads);
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :   void start(std::shared_ptr&lt;bique&gt; s, size_t threads);
+<span class="lineNum">      45 </span>            :   void start(std::shared_ptr&lt;asio_queue&gt; s, size_t threads);
+<span class="lineNum">      46 </span>            :   void start(std::shared_ptr&lt;delayed_queue&gt; s, size_t threads);
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :   void stop();
+<span class="lineNum">      49 </span>            :   void shutdown();
+<span class="lineNum">      50 </span>            :   void wait();
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : private: 
+<span class="lineNum">      53 </span>            :   void add_id(int id) ;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :   template&lt;typename S&gt;
+<span class="lineNum">      56 </span>            :   bool reconfigure_(std::shared_ptr&lt;S&gt; s, size_t threads);
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :   template&lt;typename S&gt;
+<span class="lineNum">      59 </span>            :   void start_(std::shared_ptr&lt;S&gt; s, size_t threads);
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            :   template&lt;typename S&gt;
+<span class="lineNum">      62 </span>            :   void run_more_(std::shared_ptr&lt;S&gt; s, size_t threads);
+<span class="lineNum">      63 </span>            :   
+<span class="lineNum">      64 </span>            :   template&lt;typename S&gt;
+<span class="lineNum">      65 </span>            :   std::thread create_thread_( std::shared_ptr&lt;S&gt; s, std::weak_ptr&lt;bool&gt; wflag );
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            : private:
+<span class="lineNum">      68 </span>            :   bool _started;
+<span class="lineNum">      69 </span>            :   std::atomic&lt;size_t&gt; _rate_limit;
+<span class="lineNum">      70 </span>            :   mutable std::mutex _mutex;
+<span class="lineNum">      71 </span>            :   mutable std::vector&lt; std::thread &gt; _threads;
+<span class="lineNum">      72 </span>            :   std::vector&lt; thread_flag &gt; _flags;
+<span class="lineNum">      73 </span>            :   std::function&lt;void()&gt; _work;
+<span class="lineNum">      74 </span>            :   //std::vector&lt; std::function&lt;void()&gt; &gt; _works;
+<span class="lineNum">      75 </span>            :   
+<span class="lineNum">      76 </span>            :   startup_handler _startup;
+<span class="lineNum">      77 </span>            :   finish_handler _finish;
+<span class="lineNum">      78 </span>            :   statistics_handler _statistics;
+<span class="lineNum">      79 </span>            :  };
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: example06.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">example06.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<p class="">Пример многопоточной обработки. В этом примере, в обработчике немного засыпаем, блокируя поток, чтобы подключились другие потоки и получить красивый вывод.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">namespace </span>{</div><div class="line"><span class="keywordtype">void</span> task(<span class="keywordtype">int</span> value);</div><div class="line"></div><div class="line"><span class="keyword">volatile</span> <span class="keywordtype">int</span> counter = 100;</div><div class="line">std::mutex m;</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> task(<span class="keywordtype">int</span> value) </div><div class="line">{</div><div class="line">  usleep( static_cast&lt;useconds_t&gt;(std::rand() % 1000) );</div><div class="line">  std::lock_guard&lt;std::mutex&gt; lk(m);</div><div class="line">  --counter;</div><div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;post &quot;</span> &lt;&lt; value &lt;&lt; <span class="stringliteral">&quot; thread_id: &quot;</span> &lt;&lt; std::this_thread::get_id() &lt;&lt; std::endl; </div><div class="line">}</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">  <a name="_a0"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div><div class="line">  opt.<a name="a1"></a><a class="code" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">threads</a> = 5;</div><div class="line">  <a name="_a2"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(opt);</div><div class="line">  wf.start();</div><div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 100; ++i)</div><div class="line">    wf.post( std::bind(task, i));</div><div class="line">  <span class="keywordflow">for</span>(;;)</div><div class="line">  {</div><div class="line">    {</div><div class="line">      std::lock_guard&lt;std::mutex&gt; lk(m);</div><div class="line">      <span class="keywordflow">if</span> (counter==0)</div><div class="line">        <span class="keywordflow">break</span>;</div><div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;wait... counter=&quot;</span> &lt;&lt; counter &lt;&lt; std::endl;</div><div class="line">    }</div><div class="line">    usleep(1000);</div><div class="line">  }</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

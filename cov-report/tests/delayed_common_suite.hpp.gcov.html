@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wflow-coverage.info - tests/delayed_common_suite.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">tests</a> - delayed_common_suite.hpp<span style="font-size: 80%;"> (source / <a href="delayed_common_suite.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wflow-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">69</td>
+            <td class="headerCovTableEntry">71</td>
+            <td class="headerCovTableEntryHi">97.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-09-13</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #pragma once</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : #include &lt;fas/testing.hpp&gt;
+<span class="lineNum">       4 </span>            : #include &lt;wflow/queue/delayed_queue.hpp&gt;
+<span class="lineNum">       5 </span>            : #include &lt;chrono&gt;
+<span class="lineNum">       6 </span>            : #include &lt;atomic&gt;
+<span class="lineNum">       7 </span>            : #include &lt;thread&gt;
+<span class="lineNum">       8 </span>            : #include &lt;cmath&gt;
+<span class="lineNum">       9 </span>            : #include &lt;condition_variable&gt;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #define DELAY_MS 200
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : namespace {
+<a name="14"><span class="lineNum">      14 </span>            :   </a>
+<span class="lineNum">      15 </span>            : template&lt;typename T&gt;
+<span class="lineNum">      16 </span><span class="lineCov">          6 : time_t get_accuracy(T&amp; t)</span>
+<span class="lineNum">      17 </span>            : {
+<span class="lineNum">      18 </span><span class="lineCov">          6 :   if ( t.get_argc() &lt; 2 )</span>
+<span class="lineNum">      19 </span><span class="lineCov">          6 :     return 10;</span>
+<span class="lineNum">      20 </span>            :   
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :   return std::atoi( t.get_arg(1).c_str() );</span>
+<span class="lineNum">      22 </span>            : }
+<a name="23"><span class="lineNum">      23 </span>            : </a>
+<span class="lineNum">      24 </span>            : template&lt;typename T, typename Q&gt;
+<span class="lineNum">      25 </span><span class="lineCov">          2 : inline void delayed_unit1(T&amp; t, Q&amp; dq)</span>
+<span class="lineNum">      26 </span>            : {
+<span class="lineNum">      27 </span>            :   using namespace ::fas::testing;
+<span class="lineNum">      28 </span>            :   using namespace ::std::chrono;
+<span class="lineNum">      29 </span>            :   
+<a name="30"><span class="lineNum">      30 </span><span class="lineCov">          2 :   system_clock::time_point start = system_clock::now();</span></a>
+<span class="lineNum">      31 </span><span class="lineCov">          2 :   system_clock::time_point finish = start;</span>
+<span class="lineNum">      32 </span><span class="lineCov">          2 :   auto res = dq.delayed_post( milliseconds(DELAY_MS), [&amp;t, &amp;finish](){</span>
+<span class="lineNum">      33 </span><span class="lineCov">          2 :     t &lt;&lt; message(&quot;delayed_post READY!&quot;);</span>
+<span class="lineNum">      34 </span><span class="lineCov">          2 :     finish = system_clock::now();</span>
+<span class="lineNum">      35 </span><span class="lineCov">          4 :   }, nullptr);</span>
+<span class="lineNum">      36 </span><span class="lineCov">          2 :   if (!res)</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :     t &lt;&lt; fail(&quot;delayed_post FAIL!&quot;) &lt;&lt; FAS_FL;</span>
+<span class="lineNum">      38 </span>            :   
+<span class="lineNum">      39 </span><span class="lineCov">          2 :   dq.run_one();</span>
+<span class="lineNum">      40 </span><span class="lineCov">          2 :   time_t ms = duration_cast&lt;milliseconds&gt;(finish-start).count();</span>
+<span class="lineNum">      41 </span><span class="lineCov">          2 :   t &lt;&lt; message(&quot;time: &quot;) &lt;&lt; ms;</span>
+<span class="lineNum">      42 </span><span class="lineCov">          2 :   time_t accuracy = get_accuracy(t);</span>
+<span class="lineNum">      43 </span><span class="lineCov">          2 :   t &lt;&lt; greater_equal&lt;assert&gt;(ms, DELAY_MS) &lt;&lt; FAS_FL;</span>
+<span class="lineNum">      44 </span><span class="lineCov">          2 :   t &lt;&lt; less_equal&lt;assert&gt;(ms, DELAY_MS + accuracy) &lt;&lt;  FAS_FL;</span>
+<span class="lineNum">      45 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">      46 </span>            : 
+<a name="47"><span class="lineNum">      47 </span>            : </a>
+<span class="lineNum">      48 </span>            : template&lt;typename T, typename Q&gt;
+<span class="lineNum">      49 </span><span class="lineCov">          2 : inline void delayed_unit2(T&amp; t, Q&amp; dq)</span>
+<span class="lineNum">      50 </span>            : {
+<span class="lineNum">      51 </span>            :   using namespace ::fas::testing;
+<span class="lineNum">      52 </span>            :   using namespace ::std::chrono;
+<span class="lineNum">      53 </span>            :   
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          2 :   high_resolution_clock::time_point start = high_resolution_clock::now();</span></a>
+<span class="lineNum">      55 </span><span class="lineCov">          2 :   high_resolution_clock::time_point finish = start;</span>
+<span class="lineNum">      56 </span><span class="lineCov">          4 :   dq.delayed_post( milliseconds(DELAY_MS), [&amp;t, &amp;finish](){</span>
+<span class="lineNum">      57 </span><span class="lineCov">          2 :     finish = high_resolution_clock::now();</span>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          2 :     t &lt;&lt; message(&quot;ready delayed_post&quot;);</span></a>
+<span class="lineNum">      59 </span><span class="lineCov">          2 :   }, nullptr);</span>
+<span class="lineNum">      60 </span><span class="lineCov">          4 :   dq.post([&amp;t, &amp;finish](){</span>
+<span class="lineNum">      61 </span><span class="lineCov">          2 :     finish = high_resolution_clock::now();</span>
+<span class="lineNum">      62 </span><span class="lineCov">          2 :     t &lt;&lt; message(&quot;ready post&quot;);</span>
+<span class="lineNum">      63 </span><span class="lineCov">          2 :   }, nullptr);</span>
+<span class="lineNum">      64 </span><span class="lineCov">          2 :   t &lt;&lt; message(&quot;run_one: &quot;) &lt;&lt; dq.run_one();</span>
+<span class="lineNum">      65 </span><span class="lineCov">          2 :   t &lt;&lt; message(&quot;run_one: &quot;) &lt;&lt; dq.run_one();</span>
+<span class="lineNum">      66 </span><span class="lineCov">          2 :   time_t ms = duration_cast&lt;milliseconds&gt;(finish-start).count();</span>
+<span class="lineNum">      67 </span><span class="lineCov">          2 :   t &lt;&lt; message(&quot;time: &quot;) &lt;&lt; ms;</span>
+<span class="lineNum">      68 </span><span class="lineCov">          2 :   time_t accuracy = get_accuracy(t);</span>
+<span class="lineNum">      69 </span><span class="lineCov">          2 :   t &lt;&lt; greater_equal&lt;assert&gt;(ms, DELAY_MS) &lt;&lt; FAS_FL;</span>
+<span class="lineNum">      70 </span><span class="lineCov">          2 :   t &lt;&lt; less_equal&lt;assert&gt;(ms, DELAY_MS + accuracy) &lt;&lt;  FAS_FL;</span>
+<span class="lineNum">      71 </span><span class="lineCov">          2 : }</span>
+<a name="72"><span class="lineNum">      72 </span>            : </a>
+<span class="lineNum">      73 </span>            : template&lt;typename T, typename Q&gt;
+<span class="lineNum">      74 </span><span class="lineCov">          2 : inline void delayed_unit3(T&amp; t, Q&amp; dq)</span>
+<span class="lineNum">      75 </span>            : {
+<span class="lineNum">      76 </span>            :   using namespace ::fas::testing;
+<span class="lineNum">      77 </span>            :   using namespace ::std::chrono;
+<span class="lineNum">      78 </span>            :   
+<span class="lineNum">      79 </span><span class="lineCov">          2 :   time_t time_ms[] = {100, 200, 300, 400, 500};</span>
+<span class="lineNum">      80 </span><span class="lineCov">          2 :   time_t time_chk[] = { 0,   0,   0,   0,   0};</span>
+<span class="lineNum">      81 </span><span class="lineCov">          2 :   std::atomic&lt;size_t&gt; count;</span>
+<span class="lineNum">      82 </span><span class="lineCov">          2 :   count = 0;</span>
+<span class="lineNum">      83 </span><span class="lineCov">          2 :   auto start = high_resolution_clock::now();</span>
+<a name="84"><span class="lineNum">      84 </span><span class="lineCov">         12 :   for (int i=0 ; i &lt; 5; ++i)</span></a>
+<span class="lineNum">      85 </span>            :   {
+<a name="86"><span class="lineNum">      86 </span><span class="lineCov">         20 :     dq.post([&amp;count](){ ++count; }, nullptr);</span></a>
+<span class="lineNum">      87 </span><span class="lineCov">         10 :     time_t&amp; tm = time_chk[i];</span>
+<span class="lineNum">      88 </span><span class="lineCov">         20 :     dq.delayed_post(milliseconds(time_ms[i]), [start, &amp;count, &amp;tm]()</span>
+<span class="lineNum">      89 </span>            :     { 
+<span class="lineNum">      90 </span><span class="lineCov">         10 :       ++count; </span>
+<span class="lineNum">      91 </span><span class="lineCov">         10 :       tm = duration_cast&lt;milliseconds&gt;( high_resolution_clock::now() - start ).count();</span>
+<span class="lineNum">      92 </span><span class="lineCov">         10 :     }, nullptr);</span>
+<span class="lineNum">      93 </span>            :   }
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">          2 :   t &lt;&lt; message( &quot;start thread... &quot;) &lt;&lt; count;</span></a>
+<span class="lineNum">      95 </span>            :   
+<span class="lineNum">      96 </span><span class="lineCov">          2 :   std::thread th([&amp;dq, &amp;t, &amp;start](){</span>
+<span class="lineNum">      97 </span><span class="lineCov">          2 :     t &lt;&lt; message( &quot;thread started &quot;) ;</span>
+<span class="lineNum">      98 </span><span class="lineCov">          2 :     start = high_resolution_clock::now();</span>
+<span class="lineNum">      99 </span><span class="lineCov">          2 :     dq.run();</span>
+<span class="lineNum">     100 </span><span class="lineCov">          4 :   });</span>
+<span class="lineNum">     101 </span><span class="lineCov">          2 :   t &lt;&lt; message( &quot;while count ... &quot;) &lt;&lt; count;</span>
+<span class="lineNum">     102 </span><span class="lineCov">        104 :   while (count &lt; 10)</span>
+<span class="lineNum">     103 </span><span class="lineCov">        100 :     std::this_thread::sleep_for( milliseconds(10)  );</span>
+<span class="lineNum">     104 </span>            :     
+<span class="lineNum">     105 </span><span class="lineCov">          2 :   t &lt;&lt; message( &quot;stop... &quot;) &lt;&lt; count ;</span>
+<span class="lineNum">     106 </span><span class="lineCov">          2 :   dq.stop();</span>
+<span class="lineNum">     107 </span><span class="lineCov">          2 :   th.join();</span>
+<span class="lineNum">     108 </span>            :   
+<span class="lineNum">     109 </span><span class="lineCov">          2 :   t &lt;&lt; equal&lt;expect, int&gt;(count, 10) &lt;&lt; &quot;count=&quot; &lt;&lt; count &lt;&lt; &quot; should be 10&quot;;</span>
+<span class="lineNum">     110 </span><span class="lineCov">          2 :   time_t accuracy = get_accuracy(t) + 10 ;</span>
+<span class="lineNum">     111 </span><span class="lineCov">         12 :   for (int i=0 ; i &lt; 5; ++i)</span>
+<span class="lineNum">     112 </span>            :   {
+<span class="lineNum">     113 </span>            :     //t &lt;&lt; equal&lt;expect&gt;(time_ms[i]/10, time_chk[i]/10) &lt;&lt; &quot;delay fail. ms=&quot; &lt;&lt; time_chk[i] &lt;&lt; &quot; should be &quot; &lt;&lt; time_ms[i];
+<span class="lineNum">     114 </span><span class="lineCov">         10 :     t &lt;&lt; greater_equal&lt;assert&gt;(time_chk[i], time_ms[i]) &lt;&lt; FAS_FL;</span>
+<span class="lineNum">     115 </span><span class="lineCov">         10 :     t &lt;&lt; less_equal&lt;assert&gt;(time_chk[i], time_ms[i] + accuracy) &lt;&lt;  FAS_FL;</span>
+<span class="lineNum">     116 </span><span class="lineCov">          2 :   }</span>
+<span class="lineNum">     117 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wflow-coverage.info - wflow/queue/asio_queue.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">wflow/queue</a> - asio_queue.hpp<span style="font-size: 80%;"> (source / <a href="asio_queue.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wflow-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-09-13</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #pragma once</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : #include &lt;wflow/system/asio.hpp&gt;
+<span class="lineNum">       4 </span>            : #include &lt;mutex&gt;
+<span class="lineNum">       5 </span>            : #include &lt;memory&gt;
+<span class="lineNum">       6 </span>            : #include &lt;atomic&gt;
+<span class="lineNum">       7 </span>            : #include &lt;chrono&gt;
+<span class="lineNum">       8 </span>            : 
+<a name="9"><span class="lineNum">       9 </span>            : namespace wflow{</a>
+<span class="lineNum">      10 </span>            :   
+<span class="lineNum">      11 </span><span class="lineCov">         20 : class asio_queue</span>
+<span class="lineNum">      12 </span>            :   : public std::enable_shared_from_this&lt;asio_queue &gt;
+<span class="lineNum">      13 </span>            : {
+<span class="lineNum">      14 </span>            :   typedef asio_queue self;
+<span class="lineNum">      15 </span>            :   typedef ::wflow::asio::deadline_timer timer_type;
+<span class="lineNum">      16 </span>            :   typedef std::shared_ptr&lt;timer_type&gt; timer_ptr;
+<span class="lineNum">      17 </span>            :   typedef ::wflow::asio::io_service io_service_type;
+<span class="lineNum">      18 </span>            :   typedef io_service_type::work work_type;
+<span class="lineNum">      19 </span>            :   typedef std::unique_ptr&lt;work_type&gt; work_ptr;
+<span class="lineNum">      20 </span>            :   typedef std::mutex mutex_type;
+<span class="lineNum">      21 </span>            : public:
+<span class="lineNum">      22 </span>            :   typedef std::function&lt;void()&gt;                               function_t;
+<span class="lineNum">      23 </span>            :   typedef std::chrono::time_point&lt;std::chrono::system_clock&gt;  time_point_t;
+<span class="lineNum">      24 </span>            :   typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;::duration duration_t;
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :   
+<span class="lineNum">      27 </span>            :   asio_queue( asio_queue const &amp; ) = delete;
+<span class="lineNum">      28 </span>            :   void operator=( asio_queue const &amp; ) = delete;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :   asio_queue(io_service_type&amp; io, size_t maxsize);
+<span class="lineNum">      31 </span>            :   
+<span class="lineNum">      32 </span>            :   void set_maxsize(size_t maxsize);
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            :   std::size_t run();
+<span class="lineNum">      35 </span>            :   
+<span class="lineNum">      36 </span>            :   std::size_t run_one();
+<span class="lineNum">      37 </span>            :   
+<span class="lineNum">      38 </span>            :   std::size_t poll_one();
+<span class="lineNum">      39 </span>            :   
+<span class="lineNum">      40 </span>            :   void reset();
+<span class="lineNum">      41 </span>            :   
+<span class="lineNum">      42 </span>            :   void stop();
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :   void safe_post( function_t f );
+<span class="lineNum">      45 </span>            :  
+<span class="lineNum">      46 </span>            :   void safe_post_at(time_point_t tp, function_t f);
+<span class="lineNum">      47 </span>            :   
+<span class="lineNum">      48 </span>            :   void safe_delayed_post(duration_t duration, function_t f);
+<span class="lineNum">      49 </span>            :   
+<span class="lineNum">      50 </span>            :   bool post( function_t f, function_t drop );
+<span class="lineNum">      51 </span>            :  
+<span class="lineNum">      52 </span>            :   bool post_at(time_point_t tp, function_t f, function_t drop);
+<span class="lineNum">      53 </span>            :   
+<span class="lineNum">      54 </span>            :   bool delayed_post(duration_t duration, function_t f, function_t drop);
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :   std::size_t full_size() const;
+<span class="lineNum">      57 </span>            :   std::size_t unsafe_size() const;
+<span class="lineNum">      58 </span>            :   std::size_t safe_size() const;
+<span class="lineNum">      59 </span>            :   std::size_t dropped() const;
+<span class="lineNum">      60 </span>            :   
+<span class="lineNum">      61 </span>            :   work_type work() const;
+<span class="lineNum">      62 </span>            :   
+<span class="lineNum">      63 </span>            : private:
+<span class="lineNum">      64 </span>            :   
+<span class="lineNum">      65 </span>            :   bool check_(function_t drop);
+<span class="lineNum">      66 </span>            :   
+<span class="lineNum">      67 </span>            :   template&lt;typename TP&gt;
+<span class="lineNum">      68 </span>            :   timer_ptr create_timer_(TP tp);
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            : private:
+<span class="lineNum">      71 </span>            :   io_service_type&amp; _io;
+<span class="lineNum">      72 </span>            :   std::atomic&lt;size_t&gt; _counter;
+<span class="lineNum">      73 </span>            :   std::atomic&lt;size_t&gt; _safe_counter;
+<span class="lineNum">      74 </span>            :   std::atomic&lt;size_t&gt; _maxsize;
+<span class="lineNum">      75 </span>            :   std::atomic&lt;size_t&gt; _drop_count;
+<span class="lineNum">      76 </span>            :   
+<span class="lineNum">      77 </span>            : };
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            : } // wflow
+<span class="lineNum">      80 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

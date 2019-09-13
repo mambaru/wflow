@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: Пространство имен wflow</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Классы</a> &#124;
+<a href="#enum-members">Перечисления</a> &#124;
+<a href="#func-members">Функции</a>  </div>
+  <div class="headertitle">
+<div class="title">Пространство имен wflow</div>  </div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Классы</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html">workflow</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки.  <a href="classwflow_1_1workflow.html#details">Подробнее...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Опции  <a href="structwflow_1_1workflow__options.html#details">Подробнее...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Перечисления</h2></td></tr>
+<tr class="memitem:ad06d017a006a92c3e7a4aa53b4e71e1d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> { <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da2f44417567bc123bd7c60de8c2a2b444">expires_at::before</a> = 1, 
+<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> = 2
+ }</td></tr>
+<tr class="memdesc:ad06d017a006a92c3e7a4aa53b4e71e1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Флаги для таймеров - с какого момента производить отсчет времени <br />
+  <a href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">Подробнее...</a><br /></td></tr>
+<tr class="separator:ad06d017a006a92c3e7a4aa53b4e71e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:ae924c213b11520308344cede59c6ede9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewflow.html#ae924c213b11520308344cede59c6ede9">load</a> (const std::string &amp;src, <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> *opt, std::string *err=nullptr)</td></tr>
+<tr class="memdesc:ae924c213b11520308344cede59c6ede9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Загрузить json-конфигурацию из файла или строки.  <a href="#ae924c213b11520308344cede59c6ede9">Подробнее...</a><br /></td></tr>
+<tr class="separator:ae924c213b11520308344cede59c6ede9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2c06d3d772fc7f07cbd830fdb40eb37"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewflow.html#ae2c06d3d772fc7f07cbd830fdb40eb37">load</a> (const std::string &amp;src, std::string *err=nullptr)</td></tr>
+<tr class="memdesc:ae2c06d3d772fc7f07cbd830fdb40eb37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Загрузить json-конфигурацию из файла или строки.  <a href="#ae2c06d3d772fc7f07cbd830fdb40eb37">Подробнее...</a><br /></td></tr>
+<tr class="separator:ae2c06d3d772fc7f07cbd830fdb40eb37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4be3a79d92982330bc8f7a0bc093b109"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewflow.html#a4be3a79d92982330bc8f7a0bc093b109">dump</a> (const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;opt)</td></tr>
+<tr class="memdesc:a4be3a79d92982330bc8f7a0bc093b109"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сериализация в JSON структуры конфигурации.  <a href="#a4be3a79d92982330bc8f7a0bc093b109">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4be3a79d92982330bc8f7a0bc093b109"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Перечисления</h2>
+<a id="ad06d017a006a92c3e7a4aa53b4e71e1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad06d017a006a92c3e7a4aa53b4e71e1d">&#9670;&nbsp;</a></span>expires_at</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">wflow::expires_at</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Флаги для таймеров - с какого момента производить отсчет времени <br />
+ </p>
+<table class="fieldtable">
+<tr><th colspan="2">Элементы перечислений</th></tr><tr><td class="fieldname"><a id="ad06d017a006a92c3e7a4aa53b4e71e1da2f44417567bc123bd7c60de8c2a2b444"></a>before&#160;</td><td class="fielddoc"><p class="">Начинать отсчет до вызова обработчика таймера </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a"></a>after&#160;</td><td class="fielddoc"><p class="">Начинать отсчет после вызова обработчика таймера </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Функции</h2>
+<a id="a4be3a79d92982330bc8f7a0bc093b109"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4be3a79d92982330bc8f7a0bc093b109">&#9670;&nbsp;</a></span>dump()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string wflow::dump </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>opt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Сериализация в JSON структуры конфигурации. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">opt</td><td>- структура <a class="el" href="structwflow_1_1workflow__options.html" title="Опции ">wflow::workflow_options</a>, которую нужно сериализовать в JSON. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>строка в формате JSON с сериализованной структурой <a class="el" href="structwflow_1_1workflow__options.html" title="Опции ">wflow::workflow_options</a>.</dd></dl>
+<p>обработки ошибок не предусмотрено, т.к. сериализация всегда будет успешной. </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example15_8cpp-example.html#a0">example15.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="ae924c213b11520308344cede59c6ede9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae924c213b11520308344cede59c6ede9">&#9670;&nbsp;</a></span>load() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::load </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> *&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>err</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Загрузить json-конфигурацию из файла или строки. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>- имя файла или json-строка. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">opt</td><td>- десериализованная структура в случае успеха. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">err</td><td>- текст ошибки, если != nullptr, и без изменений ( пустая строка ) в случае успеха. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true если загрузка и десериализация прошла успешно.</dd></dl>
+<p>JSON допускает любые пробельные символы и переводы строк, а также многострочные комментарии в Си-стиле. Если src-не является строкой с JSON, то предполагает что это путь к файлу. </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example15_8cpp-example.html#a2">example15.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="ae2c06d3d772fc7f07cbd830fdb40eb37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2c06d3d772fc7f07cbd830fdb40eb37">&#9670;&nbsp;</a></span>load() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> wflow::load </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>err</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Загрузить json-конфигурацию из файла или строки. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>- имя файла или json-строка. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">err</td><td>- текст ошибки, если != nullptr, и без изменений ( пустая строка ) в случае успеха. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>десериализованная структура в случае успеха, в противном случае частично десериализация, а остальные поля оставят значения по умолчанию.</dd></dl>
+<p>JSON допускает любые пробельные символы и переводы строк, а также многострочные комментарии в Си-стиле. Если src-не является строкой с JSON, то предполагает что это путь к файлу. </p>
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

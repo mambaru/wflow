@@ -1,0 +1,706 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wflow-coverage.info - wflow/workflow.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">wflow</a> - workflow.hpp<span style="font-size: 80%;"> (source / <a href="workflow.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wflow-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-09-13</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #pragma once</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : #include &lt;wflow/workflow_options.hpp&gt;
+<span class="lineNum">       4 </span>            : #include &lt;wflow/expires_at.hpp&gt;
+<span class="lineNum">       5 </span>            : #include &lt;wflow/task/task_manager.hpp&gt;
+<span class="lineNum">       6 </span>            : #include &lt;wflow/system/asio.hpp&gt;
+<span class="lineNum">       7 </span>            : #include &lt;chrono&gt;
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : namespace wflow{
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : /**
+<span class="lineNum">      12 </span>            :    @brief Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки.
+<span class="lineNum">      13 </span>            :    @details *workflow* можно рассматривать как надстройку над boost::asio::io_service. Существуют пять типов заданий:
+<span class="lineNum">      14 </span>            :       - Защищенные задания
+<span class="lineNum">      15 </span>            :       - Незащищенные задания
+<span class="lineNum">      16 </span>            :       - Обычные таймеры
+<span class="lineNum">      17 </span>            :       - Асинхронные таймеры
+<span class="lineNum">      18 </span>            :       - Опросники (requester)
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            :    ## Защищенные задания ( workflow::safe_post )
+<span class="lineNum">      21 </span>            :    Обработчик защищенного задания гарантированно не будут выкинут из очереди, даже при ее переполнении. Таймеры также используют этот вид заданий.
+<span class="lineNum">      22 </span>            :    Отложенные защищенные задания выполняются в момент срабатывания таймера, в отличие от незащищенных, которые в этот момент только отправят задание
+<span class="lineNum">      23 </span>            :    в общую очередь на обработку. Кроме того защищенные задания игнорируют общие ограничения по задержке и скорости обработки, которые задаются в конфигурации.
+<span class="lineNum">      24 </span>            : ```cpp
+<span class="lineNum">      25 </span>            : boost::asio::io_service ios;
+<span class="lineNum">      26 </span>            : wflow::workflow wf(ios);
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : //// Простое задание
+<span class="lineNum">      29 </span>            : wf.safe_post( [](){ std::cout &lt;&lt; &quot;Simple safe post  &quot; &lt;&lt; std::endl; } );
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : //// Отложенное задание
+<span class="lineNum">      32 </span>            : wf.safe_post( std::chrono::seconds(4), [](){ std::cout &lt;&lt; &quot;Safe post after delay 4 second &quot; &lt;&lt; std::endl; } );
+<span class="lineNum">      33 </span>            : ```
+<span class="lineNum">      34 </span>            :    В общем случае, если нет необходимости использовать ограничения, то рекомендуется использовать этот вид заданий, т.к. нет дополнительных накладных расходов.
+<span class="lineNum">      35 </span>            :    Однако в нагруженных системах рекомендуется использовать отдельные wflow::workflow для таймеров и основного потока заданий, чтобы большое количество заданий не мешало отрабатывать
+<span class="lineNum">      36 </span>            :    таймерам во время. Т.к. отложенные задание также используют таймеры, в опциях можно передать указатель на wflow::workflow специально для этих целей.
+<span class="lineNum">      37 </span>            :    См. \ref example01.cpp, \ref example11.cpp, \ref example12.cpp
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :    ## Незащищенные задания ( workflow::post )
+<span class="lineNum">      40 </span>            :    Этот тип заданий может быть выкинут из очереди (с возможностью вызова альтернативного обработчика), а также на очередь таких заданий можно наложить ограничения
+<span class="lineNum">      41 </span>            :    на скорость обработки и/или установить задержку. Если указать альтернативный обработчик при отправке задания в очередь, то он сработает в случае переполнения очереди, если
+<span class="lineNum">      42 </span>            :    основной обработчик был выкинут из очереди. Если workflow::post возвращает false, то однозначно заданию нет места в очереди, и альтернативный обработчик
+<span class="lineNum">      43 </span>            :    был выполнен, если true -  * то задание было поставлено в очередь, но не факт, что будет выполнено.
+<span class="lineNum">      44 </span>            :    См. \ref example02.cpp, \ref example03.cpp, \ref example04.cpp
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            : ```cpp
+<span class="lineNum">      47 </span>            : boost::asio::io_service ios;
+<span class="lineNum">      48 </span>            : wflow::workflow wf(ios);
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : //// Простое задание
+<span class="lineNum">      51 </span>            : wf.post( [](){ std::cout &lt;&lt; &quot;Simple unsafe post  &quot; &lt;&lt; std::endl; } );
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            : //// Отложенное задание
+<span class="lineNum">      54 </span>            : wf.post( std::chrono::seconds(4), [](){ std::cout &lt;&lt; &quot;Safe unpost after delay 4 second &quot; &lt;&lt; std::endl; } );
+<span class="lineNum">      55 </span>            : ```
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            :    Если не задано ограничений на размер очереди (по умолчанию), то задания не будут выкидываться из очереди, но отработка отложенных заданий и/или при ограничении скорости обработки
+<span class="lineNum">      58 </span>            :    отличается. В то время как у защищенного отложенного задания таймер устанавливается на время выполнения обработчика задания, то у незащищенного задания - на время отправки в общую
+<span class="lineNum">      59 </span>            :    очередь. Т.е. задание на отправку в очередь, в заданное время, будет выполнено, но не факт, что успешно, если очередь будет переполнена. \ref example04.cpp
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            :    Незащищенные задания имеет смысл использовать на высоких нагрузках, когда есть вероятность того, что система не будет справляться с потоком заданий, чтобы не допустить
+<span class="lineNum">      62 </span>            :    разбухания очереди workflow_options::maxsize. Например в сетевых приложениях, через незащищенную очередь пропускают все запросы клиентов. Это может быть удобно, также,
+<span class="lineNum">      63 </span>            :    для тестирования, например искусственно увеличив время ответа workflow_options::post_delay_ms или ограничив пропускную способность workflow_options::rate_limit
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            :    ## Обычные таймеры (workflow::create_timer)
+<span class="lineNum">      66 </span>            :    При создании таймера задается функция (обработчик таймера workflow::timer_handler) которая выполняется с заданным интервалом времени. Обработчик таймера должен возвращать true,
+<span class="lineNum">      67 </span>            :    если таймер еще актуален и false - если он больше не нужен. Помимо интервала выполнения, можно передать флаг определяющий, как будет отсчитываться следующий момент времени вызова
+<span class="lineNum">      68 </span>            :    обработчика: с начала или после выполнения. Также можно задать время первого выполнения. Например &quot;через 10 секунд и далее каждую секунду&quot; \ref example05.cpp или в пять утра
+<span class="lineNum">      69 </span>            :    и далее каждые 6 часов. Как уже было сказано, при больших нагрузках (например в сетевых приложениях) не рекомендуется использовать таймеры в общем wflow::workflow (ну или наоборот,
+<span class="lineNum">      70 </span>            :    для потока запросов создать отдельный wflow::workflow)
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            :    ## Асинхронные таймеры (workflow::create_asyn_timer)
+<span class="lineNum">      73 </span>            :    Отличаются от обычного таймера тем, что в обработчик таймера workflow::async_timer_handler пердается функция обратного вызова workflow::callback_timer_handler, которую он должен
+<span class="lineNum">      74 </span>            :    вызвать, чтобы сигнализировать о том, что обработка завершена и что делать далее: завершить работу таймера или продолжить. Используется если в обработчике таймера нужно выполнить
+<span class="lineNum">      75 </span>            :    асинхронную операцию, например сделать запрос на удаленный сервер.
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :    ## Опросники (requester)
+<span class="lineNum">      78 </span>            :    Вид асинхронных таймеров, предназначенных для создания последовательности запросов на основе пришедших ответов. Типичные примеры это периодическое обновление данных из БД или другого
+<span class="lineNum">      79 </span>            :    сервиса с помощью нескольких запросов, реализация репликации и пр. Для реализации потребуются структуры запроса и ответа, обработчики отправителя и генератора запросов.
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span>            :    Запросом и ответом может быть любой тип, но предпочтительно использовать структуры с определенными типами для удобства использования:
+<span class="lineNum">      82 </span>            : ```cpp
+<span class="lineNum">      83 </span>            : struct request
+<span class="lineNum">      84 </span>            : {
+<span class="lineNum">      85 </span>            :   ...
+<span class="lineNum">      86 </span>            : ////исключительно для удобства
+<span class="lineNum">      87 </span>            :   typedef std::unique_ptr&lt;request&gt; ptr;
+<span class="lineNum">      88 </span>            : };
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            : struct response
+<span class="lineNum">      91 </span>            : {
+<span class="lineNum">      92 </span>            :   ...
+<span class="lineNum">      93 </span>            :   ////исключительно для удобства
+<span class="lineNum">      94 </span>            :   typedef std::unique_ptr&lt;response&gt; ptr;
+<span class="lineNum">      95 </span>            :   typedef std::function&lt; void(ptr) &gt; handler;
+<span class="lineNum">      96 </span>            : };
+<span class="lineNum">      97 </span>            : ```
+<span class="lineNum">      98 </span>            :    На вход генератора приходит ответ от предыдущего запроса, на основе которого он может создать следующий запрос. При первом запросе передается nullptr, а для того чтобы обозначить
+<span class="lineNum">      99 </span>            :    конец последовательности опроса генератор также возвращает nullptr. В примере простой случай, когда последовательность из одного запроса:
+<span class="lineNum">     100 </span>            : ```cpp
+<span class="lineNum">     101 </span>            : request::ptr generator(response::ptr resp)
+<span class="lineNum">     102 </span>            : {
+<span class="lineNum">     103 </span>            :   if ( resp == nullptr )
+<span class="lineNum">     104 </span>            :     return std::make_unique&lt;request&gt;();
+<span class="lineNum">     105 </span>            :   return nullptr;
+<span class="lineNum">     106 </span>            : }
+<span class="lineNum">     107 </span>            : ```
+<span class="lineNum">     108 </span>            :    Далее, сгенерированный запрос передается отправителю, который должен с ним что-то сделать и отправить ответ через callback-функцию в любой момент времени (как правило асинхронно).
+<span class="lineNum">     109 </span>            :    В примере просто формируем ответ через тот же workflow с задержкой:
+<span class="lineNum">     110 </span>            : ```cpp
+<span class="lineNum">     111 </span>            : wflow::workflow wf(ios);
+<span class="lineNum">     112 </span>            : bool sender(request::ptr, response::handler callback)
+<span class="lineNum">     113 </span>            : {
+<span class="lineNum">     114 </span>            :   wf.post(std::chrono::milliseconds(500), [callback]()
+<span class="lineNum">     115 </span>            :   {
+<span class="lineNum">     116 </span>            :     callback(std::make_unique&lt;response&gt;());
+<span class="lineNum">     117 </span>            :   });
+<span class="lineNum">     118 </span>            :   return true;
+<span class="lineNum">     119 </span>            : }
+<span class="lineNum">     120 </span>            : ```
+<span class="lineNum">     121 </span>            :    Отправитель возвращает true, аналогично обработчику таймера, сообщая что таймер должен продолжать работать. Создание опросника, аналогично созданию асинхронных таймеров:
+<span class="lineNum">     122 </span>            : ```cpp
+<span class="lineNum">     123 </span>            : wf.create_requester&lt;request, response&gt;(std::chrono::seconds(1), sender, generator );
+<span class="lineNum">     124 </span>            : ```
+<span class="lineNum">     125 </span>            :    В данном примере \ref example13.cpp генерируется последовательность из одного запроса с периодичностью в одну секунду. При более длинных последовательностях последующий запрос
+<span class="lineNum">     126 </span>            :    передается немедленно после получения ответа до тех пор пока генератор не вернет nullptr и только после этого наступает заданная пауза. Более сложный пример см. \ref example14.cpp
+<span class="lineNum">     127 </span>            :  */
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            : class workflow
+<span class="lineNum">     130 </span>            : {
+<span class="lineNum">     131 </span>            : public:
+<span class="lineNum">     132 </span>            :   /// Переопределение boost::asio::io_service
+<span class="lineNum">     133 </span>            :   typedef ::wflow::asio::io_service io_service_type;
+<span class="lineNum">     134 </span>            :   /// Обработчик задания
+<span class="lineNum">     135 </span>            :   typedef std::function&lt; void() &gt; post_handler;
+<span class="lineNum">     136 </span>            :   /// Обработчик сброса задания
+<span class="lineNum">     137 </span>            :   typedef std::function&lt; void() &gt; drop_handler;
+<span class="lineNum">     138 </span>            :   /// Обработчик таймера (возвращает false для остановки таймера)
+<span class="lineNum">     139 </span>            :   typedef std::function&lt;bool()&gt; timer_handler;
+<span class="lineNum">     140 </span>            :   /// Калбэк для обработчика асинхронного таймера
+<span class="lineNum">     141 </span>            :   typedef std::function&lt;void(bool)&gt; callback_timer_handler;
+<span class="lineNum">     142 </span>            :   /// Обработчик асинхронного таймера (вызывает callback_timer_handler)
+<span class="lineNum">     143 </span>            :   typedef std::function&lt;void(callback_timer_handler)&gt; async_timer_handler;
+<span class="lineNum">     144 </span>            :   /// Стандартные часы
+<span class="lineNum">     145 </span>            :   typedef std::chrono::system_clock         clock_t;
+<span class="lineNum">     146 </span>            :   /// Момент времени
+<span class="lineNum">     147 </span>            :   typedef std::chrono::time_point&lt;clock_t&gt;  time_point_t;
+<span class="lineNum">     148 </span>            :   /// Интервал времени
+<span class="lineNum">     149 </span>            :   typedef std::chrono::time_point&lt; std::chrono::steady_clock &gt;::duration duration_t;
+<span class="lineNum">     150 </span>            :   /// Идентификатор таймера
+<span class="lineNum">     151 </span>            :   typedef int                               timer_id_t;
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span>            :   typedef task_manager::timer_manager_t     timer_manager_t;
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span>            : public:
+<span class="lineNum">     156 </span>            :   virtual ~workflow();
+<span class="lineNum">     157 </span>            :   workflow(const workflow&amp; ) = delete;
+<span class="lineNum">     158 </span>            :   workflow&amp; operator=(const workflow&amp; ) = delete;
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :   /**
+<span class="lineNum">     161 </span>            :    * @brief Конструктор без поддержки однопоточного режима.
+<span class="lineNum">     162 </span>            :    * @details Для работы нужен как минимум один дополнительный поток. Для этого в опциях
+<span class="lineNum">     163 </span>            :    * необходимо указать workflow_options::threads = 1 или больше. При workflow_options::threads == 0 задачи из очереди обрабатываться не будут.
+<span class="lineNum">     164 </span>            :    * @remark По умолчанию в workflow_options::threads = 0 - необходимо изменить это значение.
+<span class="lineNum">     165 </span>            :    * @param opt - опции.
+<span class="lineNum">     166 </span>            :    */
+<span class="lineNum">     167 </span>            :   explicit workflow(const workflow_options&amp; opt, const workflow_handlers&amp; handlers = workflow_handlers());
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span>            :   /**
+<span class="lineNum">     170 </span>            :    * @brief Основной конструктор с поддержкой различных режимов.
+<span class="lineNum">     171 </span>            :    * @details Может работать как в основном потоке приложения, так и создавать
+<span class="lineNum">     172 </span>            :    * свой пул потоков. При workflow_options::threads == 0 дополнительные потоки не создаются о обработка
+<span class="lineNum">     173 </span>            :    * происходит при вызове io.run() или аналогичных. Для работы в многопоточном режиме
+<span class="lineNum">     174 </span>            :    * укажите количество потоков. При workflow_options::threads == 1 создается один поток и т.д. При многопоточном
+<span class="lineNum">     175 </span>            :    * режиме io не используется, а создается свой (один на все потоки этого объекта).
+<span class="lineNum">     176 </span>            :    * @remark При workflow_options::threads == 1 или большем создается свой объект io_service, а io не используется
+<span class="lineNum">     177 </span>            :    * @param io - ссылка на boost::asio::io_service.
+<span class="lineNum">     178 </span>            :    * @param opt - опции.
+<span class="lineNum">     179 </span>            :    */
+<span class="lineNum">     180 </span>            :   explicit workflow(io_service_type&amp; io, const workflow_options&amp; opt = workflow_options(),
+<span class="lineNum">     181 </span>            :                     const workflow_handlers&amp; handlers = workflow_handlers() );
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :   /**
+<span class="lineNum">     184 </span>            :    * @brief Запуск потоков обработки.
+<span class="lineNum">     185 </span>            :    * @details Работает только в многопоточном режиме. При threads=0 ничего не происходит. Может
+<span class="lineNum">     186 </span>            :    * использоваться для возобновления работы после вызова workflow::stop.
+<span class="lineNum">     187 </span>            :    */
+<span class="lineNum">     188 </span>            :   void start();
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span>            :   /**
+<span class="lineNum">     191 </span>            :    * @brief Реконфигурация после запуска.
+<span class="lineNum">     192 </span>            :    * @details Позволяет реконфигурировать workflow без сброса очередей.
+<span class="lineNum">     193 </span>            :    * Можно изменить число потоков или ограничения очереди.
+<span class="lineNum">     194 </span>            :    *
+<span class="lineNum">     195 </span>            :    * @attention Не работает при workflow_options::use_io_service == false
+<span class="lineNum">     196 </span>            :    * @param opt - новые опции.
+<span class="lineNum">     197 </span>            :    */
+<span class="lineNum">     198 </span>            :   bool reconfigure(const workflow_options&amp; opt);
+<span class="lineNum">     199 </span>            :   bool reconfigure(const workflow_handlers&amp; handlers);
+<span class="lineNum">     200 </span>            :   bool reconfigure(const workflow_options&amp; opt, const workflow_handlers&amp; handlers);
+<span class="lineNum">     201 </span>            : 
+<span class="lineNum">     202 </span>            :   /**
+<span class="lineNum">     203 </span>            :    * @brief Остановка потоков в многопоточном режиме со сбросом всех очередей.
+<span class="lineNum">     204 </span>            :    */
+<span class="lineNum">     205 </span>            :   void stop();
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span>            :   /**
+<span class="lineNum">     208 </span>            :    * @brief Сброс всех очередей и таймеров.
+<span class="lineNum">     209 </span>            :    * @details Потоки обработки продолжат ожидание новых заданий.
+<span class="lineNum">     210 </span>            :    */
+<span class="lineNum">     211 </span>            :   void reset();
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            :   /**
+<span class="lineNum">     214 </span>            :    * @brief Сброс всех таймеров и завершение работы потоков после обработки всех заданий
+<span class="lineNum">     215 </span>            :    * @details Позволяет завершить работу не сбрасывая очередь заданий. Отложенные
+<span class="lineNum">     216 </span>            :    * задания не сбрасываются, поэтому если в очереди есть задание с задержкой в сутки
+<span class="lineNum">     217 </span>            :    * то завершение работы произойдет через сутки. Для ожидания завершения заданий
+<span class="lineNum">     218 </span>            :    * используете метод workflow::wait. Убедитесь, что после вызова этого метода, не
+<span class="lineNum">     219 </span>            :    * происходит добавления заданий и создание таймеров, иначе останов может не произойти.
+<span class="lineNum">     220 </span>            :    * @ref example7.cpp
+<span class="lineNum">     221 </span>            :    */
+<span class="lineNum">     222 </span>            :   void shutdown();
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span>            :   /**
+<span class="lineNum">     225 </span>            :    * @brief Ожидает завершения всех заданий после workflow::shutdown
+<span class="lineNum">     226 </span>            :    * @details Работает только в многопоточном режиме и имеет смысл только после вызова
+<span class="lineNum">     227 </span>            :    * метода workflow::shutdown. Блокирует выполнение программы до завершения работы потоков,
+<span class="lineNum">     228 </span>            :    * после обработки всех заданий в очереди. Убедитесь, что во время ожидания, не
+<span class="lineNum">     229 </span>            :    * происходит добавления заданий и создание таймеров. Если очередь заданий будет постоянно
+<span class="lineNum">     230 </span>            :    * пополняться то и время ожидания будет увеличиваться. Если во время ожидания создать
+<span class="lineNum">     231 </span>            :    * таймер, то и ожидание будет продолжаться, пока существует этот таймер.
+<span class="lineNum">     232 </span>            :    * @ref example7.cpp
+<span class="lineNum">     233 </span>            :    */
+<span class="lineNum">     234 </span>            :   void wait();
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span>            :   /**
+<span class="lineNum">     237 </span>            :    * @brief Дождаться завершения всех заданий и продолжить работу
+<span class="lineNum">     238 </span>            :    * @details По сути реализует последовательность вызовов workflow::shutdown, workflow::wait и workflow::start.
+<span class="lineNum">     239 </span>            :    * */
+<span class="lineNum">     240 </span>            :   void wait_and_restart();
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span>            :   /**
+<span class="lineNum">     243 </span>            :    * @brief Получить идентификатор workflow
+<span class="lineNum">     244 </span>            :    * @details Это произвольная строка, может использоваться при логгировании
+<span class="lineNum">     245 </span>            :    */
+<span class="lineNum">     246 </span>            :   std::string get_id() const;
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span>            :   /**
+<span class="lineNum">     249 </span>            :    * @brief Получить текущие опции workflow
+<span class="lineNum">     250 </span>            :    */
+<span class="lineNum">     251 </span>            :   workflow_options get_options() const;
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span>            :   /**
+<span class="lineNum">     254 </span>            :    * @brief Получить текущие обработчики workflow
+<span class="lineNum">     255 </span>            :    */
+<span class="lineNum">     256 </span>            :   workflow_handlers get_handlers() const;
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span>            :   /**
+<span class="lineNum">     259 </span>            :    * @brief Отправить задание на обработку
+<span class="lineNum">     260 </span>            :    * @param handler обработчик задания типа void()
+<span class="lineNum">     261 </span>            :    * @param drop альтернативный обработчик, если задание выкидывается из очереди. По умолчанию nullptr (handler выкидывается из очереди без уведомления)
+<span class="lineNum">     262 </span>            :    * @return true - задание поставлено в очередь обработки. false - очередь переполнена, обработчик drop вызван
+<span class="lineNum">     263 </span>            :    *
+<span class="lineNum">     264 </span>            :    * При переполнении очереди drop может быть вызван как синхронно (чаще всего) так и асинхронно (если установлена опция rate_limit)
+<span class="lineNum">     265 </span>            :    */
+<span class="lineNum">     266 </span>            :   bool post(post_handler handler, drop_handler drop = nullptr);
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            :   /**
+<span class="lineNum">     269 </span>            :    * @brief Отправить задание на обработку в указанный момент времени
+<span class="lineNum">     270 </span>            :    * @param tp момент времени, в который задание будет отправлено на обработку
+<span class="lineNum">     271 </span>            :    * @param handler обработчик задания типа void()
+<span class="lineNum">     272 </span>            :    * @param drop альтернативный обработчик, если задание выкидывается из очереди. По умолчанию nullptr (handler выкидывается из очереди без уведомления)
+<span class="lineNum">     273 </span>            :    * @return true - включен таймер для отправки сообщения. Таймер выкинут из очереди быть не может поэтому всегда true
+<span class="lineNum">     274 </span>            :    *
+<span class="lineNum">     275 </span>            :    * В момент времени tp задание будет только отправлено в очередь на обработку (и может быть выкинуто, при переполнении ),
+<span class="lineNum">     276 </span>            :    * в отличии от safe_post, где оно будет выполнено сразу.
+<span class="lineNum">     277 </span>            :    */
+<span class="lineNum">     278 </span>            :   bool post(time_point_t tp, post_handler handler, drop_handler drop = nullptr);
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span>            :   /**
+<span class="lineNum">     281 </span>            :    * @brief Отправить задание на обработку через указанный интервал времени
+<span class="lineNum">     282 </span>            :    * @param duration интервал времени, через который задание будет отправлено на обработку
+<span class="lineNum">     283 </span>            :    * @param handler обработчик задания типа void()
+<span class="lineNum">     284 </span>            :    * @param drop альтернативный обработчик, если задание выкидывается из очереди. По умолчанию nullptr (handler выкидывается из очереди без уведомления)
+<span class="lineNum">     285 </span>            :    * @return true - включен таймер для отправки сообщения. Таймер выкинут из очереди быть не может поэтому всегда true
+<span class="lineNum">     286 </span>            :    *
+<span class="lineNum">     287 </span>            :    * Через указанный интервал времени duration задание будет только отправлено в очередь на обработку (и может быть выкинуто, при переполнении ),
+<span class="lineNum">     288 </span>            :    * в отличии от safe_post, где оно будет выполнено сразу.
+<span class="lineNum">     289 </span>            :    */
+<span class="lineNum">     290 </span>            :   bool post(duration_t duration, post_handler handler, drop_handler drop = nullptr);
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span>            :   /**
+<span class="lineNum">     293 </span>            :    * @brief Отправить задание на обработку игнорируя ограничения на размер очереди и скорости обработки.
+<span class="lineNum">     294 </span>            :    * @param handler обработчик задания типа void()
+<span class="lineNum">     295 </span>            :    *
+<span class="lineNum">     296 </span>            :    * Аналог boost::asio::io_service::post
+<span class="lineNum">     297 </span>            :    */
+<span class="lineNum">     298 </span>            :   void safe_post(post_handler handler);
+<span class="lineNum">     299 </span>            : 
+<span class="lineNum">     300 </span>            :   /**
+<span class="lineNum">     301 </span>            :    * @brief Выполнить задание в указанный момент времени
+<span class="lineNum">     302 </span>            :    * @param tp момент времени, в который задание будет выполнено
+<span class="lineNum">     303 </span>            :    * @param handler обработчик задания типа void()
+<span class="lineNum">     304 </span>            :    */
+<span class="lineNum">     305 </span>            :   void safe_post(time_point_t tp, post_handler handler);
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span>            :   /**
+<span class="lineNum">     308 </span>            :    * @brief Выполнить задание через указанный интервал времени
+<span class="lineNum">     309 </span>            :    * @param duration интервал времени, через который задание будет выполнено
+<span class="lineNum">     310 </span>            :    * @param handler обработчик задания типа void()
+<span class="lineNum">     311 </span>            :    */
+<span class="lineNum">     312 </span>            :   void safe_post(duration_t duration, post_handler handler);
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span>            :   /**
+<span class="lineNum">     315 </span>            :    * @brief Создает таймер, обработчик которого выполняется с заданной периодичностью
+<span class="lineNum">     316 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     317 </span>            :    * @param handler обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения.
+<span class="lineNum">     318 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     319 </span>            :    *
+<span class="lineNum">     320 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     321 </span>            :    */
+<span class="lineNum">     322 </span>            :   timer_id_t create_timer(duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
+<span class="lineNum">     323 </span>            : 
+<span class="lineNum">     324 </span>            :   /**
+<span class="lineNum">     325 </span>            :    * @brief Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью
+<span class="lineNum">     326 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     327 </span>            :    * @param ahandler обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true),
+<span class="lineNum">     328 </span>            :    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
+<span class="lineNum">     329 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     330 </span>            :    * (вызова callback_timer_handler из обработчика)
+<span class="lineNum">     331 </span>            :    *
+<span class="lineNum">     332 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     333 </span>            :    */
+<span class="lineNum">     334 </span>            :   timer_id_t create_async_timer(duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span>            :   /**
+<span class="lineNum">     337 </span>            :    * @brief Создает таймер, обработчик которого выполняется с заданной периодичностью через определенный интервал времени
+<span class="lineNum">     338 </span>            :    * @param start_duration интервал времени, через который запустить таймер
+<span class="lineNum">     339 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     340 </span>            :    * @param handler обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения.
+<span class="lineNum">     341 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     342 </span>            :    *
+<span class="lineNum">     343 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     344 </span>            :    */
+<span class="lineNum">     345 </span>            :   timer_id_t create_timer(duration_t start_duration, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span>            :   /**
+<span class="lineNum">     348 </span>            :    * @brief Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью через определенный интервал времени
+<span class="lineNum">     349 </span>            :    * @param start_duration интервал времени, через который запустить таймер
+<span class="lineNum">     350 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     351 </span>            :    * @param ahandler обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true),
+<span class="lineNum">     352 </span>            :    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
+<span class="lineNum">     353 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     354 </span>            :    * (вызова callback_timer_handler из обработчика)
+<span class="lineNum">     355 </span>            :    *
+<span class="lineNum">     356 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     357 </span>            :    */
+<span class="lineNum">     358 </span>            :   timer_id_t create_async_timer(duration_t start_duration, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
+<span class="lineNum">     359 </span>            : 
+<span class="lineNum">     360 </span>            :   /**
+<span class="lineNum">     361 </span>            :    * @brief Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
+<span class="lineNum">     362 </span>            :    * @param tp момент времени, начиная с которого запустить таймер
+<span class="lineNum">     363 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     364 </span>            :    * @param handler обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения.
+<span class="lineNum">     365 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     366 </span>            :    *
+<span class="lineNum">     367 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     368 </span>            :    */
+<span class="lineNum">     369 </span>            :   timer_id_t create_timer(time_point_t tp, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span>            :   /**
+<span class="lineNum">     372 </span>            :    * @brief Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
+<span class="lineNum">     373 </span>            :    * @param tp момент времени, начиная с которого запустить таймер
+<span class="lineNum">     374 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     375 </span>            :    * @param ahandler обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true),
+<span class="lineNum">     376 </span>            :    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
+<span class="lineNum">     377 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     378 </span>            :    * (вызова callback_timer_handler из обработчика)
+<span class="lineNum">     379 </span>            :    *
+<span class="lineNum">     380 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     381 </span>            :    */
+<span class="lineNum">     382 </span>            :   timer_id_t create_async_timer(time_point_t tp, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
+<span class="lineNum">     383 </span>            : 
+<span class="lineNum">     384 </span>            :   /**
+<span class="lineNum">     385 </span>            :    * @brief Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
+<span class="lineNum">     386 </span>            :    * @param stp момент времени, начиная с которого запустить таймер (строка в формате &quot;22:00:00&quot;)
+<span class="lineNum">     387 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     388 </span>            :    * @param handler обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения.
+<span class="lineNum">     389 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     390 </span>            :    *
+<span class="lineNum">     391 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     392 </span>            :    */
+<span class="lineNum">     393 </span>            :   timer_id_t create_timer(std::string stp, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
+<span class="lineNum">     394 </span>            : 
+<span class="lineNum">     395 </span>            :   /**
+<span class="lineNum">     396 </span>            :    * @brief Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
+<span class="lineNum">     397 </span>            :    * @param stp момент времени, начиная с которого запустить таймер (строка в формате &quot;22:00:00&quot;)
+<span class="lineNum">     398 </span>            :    * @param duration интервал таймера
+<span class="lineNum">     399 </span>            :    * @param ahandler обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true),
+<span class="lineNum">     400 </span>            :    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
+<span class="lineNum">     401 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     402 </span>            :    * (вызова callback_timer_handler из обработчика)
+<span class="lineNum">     403 </span>            :    *
+<span class="lineNum">     404 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     405 </span>            :    */
+<span class="lineNum">     406 </span>            :   timer_id_t create_async_timer(std::string stp, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
+<span class="lineNum">     407 </span>            : 
+<span class="lineNum">     408 </span>            : 
+<span class="lineNum">     409 </span>            :   /**
+<span class="lineNum">     410 </span>            :    * @brief Создает таймер, обработчик которого выполняется раз в сутки начиная с определенного момента времени
+<span class="lineNum">     411 </span>            :    * @param stp момент времени, начиная с которого запустить таймер (строка в формате &quot;22:00:00&quot;)
+<span class="lineNum">     412 </span>            :    * @param handler обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать
+<span class="lineNum">     413 </span>            :    * и false - для завершения.
+<span class="lineNum">     414 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     415 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     416 </span>            :    */
+<span class="lineNum">     417 </span>            :   timer_id_t create_timer(std::string stp, timer_handler handler, expires_at expires = expires_at::after);
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span>            :   /**
+<span class="lineNum">     420 </span>            :    * @brief Создает асинхронный таймер, обработчик которого выполняется раз в сутки с определенного момента времени
+<span class="lineNum">     421 </span>            :    * @param stp момент времени, начиная с которого запустить таймер (строка в формате &quot;22:00:00&quot;)
+<span class="lineNum">     422 </span>            :    * @param ahandler обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true),
+<span class="lineNum">     423 </span>            :    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
+<span class="lineNum">     424 </span>            :    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
+<span class="lineNum">     425 </span>            :    * (вызова callback_timer_handler из обработчика)
+<span class="lineNum">     426 </span>            :    *
+<span class="lineNum">     427 </span>            :    * @return идентификатор таймера, который можно использовать для остановки таймера
+<span class="lineNum">     428 </span>            :    */
+<span class="lineNum">     429 </span>            :   timer_id_t create_async_timer(std::string stp, async_timer_handler ahandler, expires_at expires = expires_at::after);
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span>            :   /**
+<span class="lineNum">     432 </span>            :    * @brief Остановить таймер и освободить ресурсы
+<span class="lineNum">     433 </span>            :    * @param id идентификатор таймера
+<span class="lineNum">     434 </span>            :    * @return bool, если true - таймер остановлен, false - таймер с таким id не найдено
+<span class="lineNum">     435 </span>            :    */
+<span class="lineNum">     436 </span>            :   bool release_timer( timer_id_t id );
+<span class="lineNum">     437 </span>            : 
+<span class="lineNum">     438 </span>            :   /**
+<span class="lineNum">     439 </span>            :    * @brief Отсоединить таймер. Таймер продолжает работать до тех пор пока существует объект, который вернул detach_timer
+<span class="lineNum">     440 </span>            :    * @param id - идентификатор таймера
+<span class="lineNum">     441 </span>            :    * @return std::shared_ptr&lt;bool&gt;, если true - таймер работает , false - таймер с таким id не найдено
+<span class="lineNum">     442 </span>            :    *
+<span class="lineNum">     443 </span>            :    * простой вызов detach_timer эквивалентен release_timer, но если std::shared_ptr&lt;bool&gt; t = detach_timer(id), то таймер будет продолжать работать
+<span class="lineNum">     444 </span>            :    * до тех пор, пока t.reset() или t = nullptr
+<span class="lineNum">     445 </span>            :    */
+<span class="lineNum">     446 </span>            :   std::shared_ptr&lt;bool&gt; detach_timer(timer_id_t id);
+<span class="lineNum">     447 </span>            : 
+<span class="lineNum">     448 </span>            :   /** @brief Общее количество таймеров */
+<span class="lineNum">     449 </span>            :   size_t timer_count() const;
+<span class="lineNum">     450 </span>            : 
+<span class="lineNum">     451 </span>            :   /** @brief Общее количество обработчиков в очереди (включая таймеры) */
+<span class="lineNum">     452 </span>            :   size_t full_size() const;
+<span class="lineNum">     453 </span>            : 
+<span class="lineNum">     454 </span>            :   /** @brief Общее количество невыкидываемых обработчиков в очереди (включая таймеры) */
+<span class="lineNum">     455 </span>            :   size_t safe_size() const;
+<span class="lineNum">     456 </span>            : 
+<span class="lineNum">     457 </span>            :   /** @brief Количество обработчиков в очереди, которые могут быть выкинуты при переполнении */
+<span class="lineNum">     458 </span>            :   size_t unsafe_size() const;
+<span class="lineNum">     459 </span>            : 
+<span class="lineNum">     460 </span>            :   /** @brief Общее количество сброшенных обработчиков при переполнении */
+<span class="lineNum">     461 </span>            :   size_t dropped() const;
+<span class="lineNum">     462 </span>            : 
+<span class="lineNum">     463 </span>            :   /**
+<span class="lineNum">     464 </span>            :    * @brief Создает опросник с заданным интервалом
+<span class="lineNum">     465 </span>            :    * @tparam Req запрос
+<span class="lineNum">     466 </span>            :    * @tparam Res ответ
+<span class="lineNum">     467 </span>            :    * @param duration интервал опроса
+<span class="lineNum">     468 </span>            :    * @param sender отправитель запросов
+<span class="lineNum">     469 </span>            :    * @param generator генератор запросов
+<span class="lineNum">     470 </span>            :    *
+<span class="lineNum">     471 </span>            :    * ```cpp
+<span class="lineNum">     472 </span>            :    *
+<span class="lineNum">     473 </span>            :    * //// Типы sender и generator
+<span class="lineNum">     474 </span>            :    * typedef std::unique_ptr&lt;Req&gt; req_ptr;
+<span class="lineNum">     475 </span>            :    * typedef std::unique_ptr&lt;Res&gt; res_ptr;
+<span class="lineNum">     476 </span>            :    * typedef std::function&lt;void(res_ptr)&gt; callback;
+<span class="lineNum">     477 </span>            :    * typedef std::function&lt; bool(req_ptr, callback) &gt; sender_type;
+<span class="lineNum">     478 </span>            :    * typedef std::function&lt; req_ptr(res_ptr) &gt; sender_type;
+<span class="lineNum">     479 </span>            :    * ```
+<span class="lineNum">     480 </span>            :    * @see Концепция опросников
+<span class="lineNum">     481 </span>            :    */
+<span class="lineNum">     482 </span>            :   template&lt; typename Req, typename Res&gt;
+<span class="lineNum">     483 </span>            :   timer_id_t create_requester(
+<span class="lineNum">     484 </span>            :     duration_t duration,
+<span class="lineNum">     485 </span>            :     typename requester::sender_t&lt;Req, Res&gt;::type sender,
+<span class="lineNum">     486 </span>            :     typename requester::generator_t&lt;Req, Res&gt;::type generator
+<span class="lineNum">     487 </span>            :   )
+<span class="lineNum">     488 </span>            :   {
+<span class="lineNum">     489 </span>            :     return this-&gt;get_timer_manager()-&gt;create&lt;Req, Res&gt;( duration, sender, generator);
+<span class="lineNum">     490 </span>            :   }
+<span class="lineNum">     491 </span>            : 
+<span class="lineNum">     492 </span>            :   /**
+<span class="lineNum">     493 </span>            :    * @brief Создает опросник, который начинает выполняться с заданной периодичностью через определенный интервал времени
+<span class="lineNum">     494 </span>            :    * @tparam Req запрос
+<span class="lineNum">     495 </span>            :    * @tparam Res ответ
+<span class="lineNum">     496 </span>            :    * @param start_duration интервал времени, через который запустить опросник
+<span class="lineNum">     497 </span>            :    * @param duration интервал опроса
+<span class="lineNum">     498 </span>            :    * @param sender отправитель запросов
+<span class="lineNum">     499 </span>            :    * @param generator генератор запросов
+<span class="lineNum">     500 </span>            :    *
+<span class="lineNum">     501 </span>            :    * ```cpp
+<span class="lineNum">     502 </span>            :    *
+<span class="lineNum">     503 </span>            :    * //// Типы sender и generator
+<span class="lineNum">     504 </span>            :    * typedef std::unique_ptr&lt;Req&gt; req_ptr;
+<span class="lineNum">     505 </span>            :    * typedef std::unique_ptr&lt;Res&gt; res_ptr;
+<span class="lineNum">     506 </span>            :    * typedef std::function&lt;void(res_ptr)&gt; callback;
+<span class="lineNum">     507 </span>            :    * typedef std::function&lt; bool(req_ptr, callback) &gt; sender_type;
+<span class="lineNum">     508 </span>            :    * typedef std::function&lt; req_ptr(res_ptr) &gt; sender_type;
+<span class="lineNum">     509 </span>            :    * ```
+<span class="lineNum">     510 </span>            :    * @see Концепция опросников
+<a name="511"><span class="lineNum">     511 </span>            :    */</a>
+<span class="lineNum">     512 </span>            :   template&lt; typename Req, typename Res&gt;
+<span class="lineNum">     513 </span><span class="lineCov">          1 :   timer_id_t create_requester(</span>
+<span class="lineNum">     514 </span>            :     duration_t start_duration,
+<span class="lineNum">     515 </span>            :     duration_t duration,
+<span class="lineNum">     516 </span>            :     typename requester::sender_t&lt;Req, Res&gt;::type sender,
+<span class="lineNum">     517 </span>            :     typename requester::generator_t&lt;Req, Res&gt;::type generator
+<span class="lineNum">     518 </span>            :   )
+<span class="lineNum">     519 </span>            :   {
+<span class="lineNum">     520 </span><span class="lineCov">          1 :     return this-&gt;get_timer_manager()-&gt;create&lt;Req, Res&gt;( start_duration, duration, sender, generator );</span>
+<span class="lineNum">     521 </span>            :   }
+<span class="lineNum">     522 </span>            : 
+<span class="lineNum">     523 </span>            :   /**
+<span class="lineNum">     524 </span>            :    * @brief Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени
+<span class="lineNum">     525 </span>            :    * @tparam Req запрос
+<span class="lineNum">     526 </span>            :    * @tparam Res ответ
+<span class="lineNum">     527 </span>            :    * @param tp интервал времени, через который запустить опросник
+<span class="lineNum">     528 </span>            :    * @param duration интервал опроса
+<span class="lineNum">     529 </span>            :    * @param sender отправитель запросов
+<span class="lineNum">     530 </span>            :    * @param generator генератор запросов
+<span class="lineNum">     531 </span>            :    *
+<span class="lineNum">     532 </span>            :    * ```cpp
+<span class="lineNum">     533 </span>            :    *
+<span class="lineNum">     534 </span>            :    * //// Типы sender и generator
+<span class="lineNum">     535 </span>            :    * typedef std::unique_ptr&lt;Req&gt; req_ptr;
+<span class="lineNum">     536 </span>            :    * typedef std::unique_ptr&lt;Res&gt; res_ptr;
+<span class="lineNum">     537 </span>            :    * typedef std::function&lt;void(res_ptr)&gt; callback;
+<span class="lineNum">     538 </span>            :    * typedef std::function&lt; bool(req_ptr, callback) &gt; sender_type;
+<span class="lineNum">     539 </span>            :    * typedef std::function&lt; req_ptr(res_ptr) &gt; sender_type;
+<span class="lineNum">     540 </span>            :    * ```
+<span class="lineNum">     541 </span>            :    * @see Концепция опросников
+<span class="lineNum">     542 </span>            :    */
+<span class="lineNum">     543 </span>            :   template&lt; typename Req, typename Res&gt;
+<span class="lineNum">     544 </span>            :   timer_id_t create_requester(
+<span class="lineNum">     545 </span>            :     time_point_t tp,
+<span class="lineNum">     546 </span>            :     duration_t duration,
+<span class="lineNum">     547 </span>            :     typename requester::sender_t&lt;Req, Res&gt;::type sender,
+<span class="lineNum">     548 </span>            :     typename requester::generator_t&lt;Req, Res&gt;::type generator
+<span class="lineNum">     549 </span>            :   )
+<span class="lineNum">     550 </span>            :   {
+<span class="lineNum">     551 </span>            :     return this-&gt;get_timer_manager()-&gt;create&lt;Req, Res&gt;( tp, duration, sender, generator );
+<span class="lineNum">     552 </span>            :   }
+<span class="lineNum">     553 </span>            : 
+<span class="lineNum">     554 </span>            :   /**
+<span class="lineNum">     555 </span>            :    * @brief Создает опросник с заданным интервалом
+<span class="lineNum">     556 </span>            :    * @tparam Req запрос
+<span class="lineNum">     557 </span>            :    * @tparam Res ответ
+<span class="lineNum">     558 </span>            :    * @param stp момент времени, начиная с которого запустить опросник (строка в формате &quot;22:00:00&quot;)
+<span class="lineNum">     559 </span>            :    * @param duration интервал опроса
+<span class="lineNum">     560 </span>            :    * @param sender отправитель запросов
+<span class="lineNum">     561 </span>            :    * @param generator генератор запросов
+<span class="lineNum">     562 </span>            :    *
+<span class="lineNum">     563 </span>            :    * ```cpp
+<span class="lineNum">     564 </span>            :    *
+<span class="lineNum">     565 </span>            :    * //// Типы sender и generator
+<span class="lineNum">     566 </span>            :    * typedef std::unique_ptr&lt;Req&gt; req_ptr;
+<span class="lineNum">     567 </span>            :    * typedef std::unique_ptr&lt;Res&gt; res_ptr;
+<span class="lineNum">     568 </span>            :    * typedef std::function&lt;void(res_ptr)&gt; callback;
+<span class="lineNum">     569 </span>            :    * typedef std::function&lt; bool(req_ptr, callback) &gt; sender_type;
+<span class="lineNum">     570 </span>            :    * typedef std::function&lt; req_ptr(res_ptr) &gt; sender_type;
+<span class="lineNum">     571 </span>            :    * ```
+<span class="lineNum">     572 </span>            :    * @see Концепция опросников
+<span class="lineNum">     573 </span>            :    */
+<span class="lineNum">     574 </span>            :   template&lt; typename Req, typename Res&gt;
+<span class="lineNum">     575 </span>            :   timer_id_t create_requester(
+<span class="lineNum">     576 </span>            :     std::string stp,
+<span class="lineNum">     577 </span>            :     duration_t duration,
+<span class="lineNum">     578 </span>            :     typename requester::sender_t&lt;Req, Res&gt;::type sender,
+<span class="lineNum">     579 </span>            :     typename requester::generator_t&lt;Req, Res&gt;::type generator
+<span class="lineNum">     580 </span>            :   )
+<span class="lineNum">     581 </span>            :   {
+<span class="lineNum">     582 </span>            :     return this-&gt;get_timer_manager()-&gt;create&lt;Req, Res&gt;(stp, duration, sender, generator);
+<span class="lineNum">     583 </span>            :   }
+<span class="lineNum">     584 </span>            : 
+<span class="lineNum">     585 </span>            :   /**
+<span class="lineNum">     586 </span>            :    * @brief Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени
+<span class="lineNum">     587 </span>            :    * @tparam Req запрос
+<span class="lineNum">     588 </span>            :    * @tparam Res ответ
+<span class="lineNum">     589 </span>            :    * @param stp момент времени, начиная с которого запустить опросник (строка в формате &quot;22:00:00&quot;)
+<span class="lineNum">     590 </span>            :    * @param sender отправитель запросов
+<span class="lineNum">     591 </span>            :    * @param generator генератор запросов
+<span class="lineNum">     592 </span>            :    *
+<span class="lineNum">     593 </span>            :    * ```cpp
+<span class="lineNum">     594 </span>            :    *
+<span class="lineNum">     595 </span>            :    * //// Типы sender и generator
+<span class="lineNum">     596 </span>            :    * typedef std::unique_ptr&lt;Req&gt; req_ptr;
+<span class="lineNum">     597 </span>            :    * typedef std::unique_ptr&lt;Res&gt; res_ptr;
+<span class="lineNum">     598 </span>            :    * typedef std::function&lt;void(res_ptr)&gt; callback;
+<span class="lineNum">     599 </span>            :    * typedef std::function&lt; bool(req_ptr, callback) &gt; sender_type;
+<span class="lineNum">     600 </span>            :    * typedef std::function&lt; req_ptr(res_ptr) &gt; sender_type;
+<span class="lineNum">     601 </span>            :    * ```
+<span class="lineNum">     602 </span>            :    * @see Концепция опросников
+<span class="lineNum">     603 </span>            :    */
+<span class="lineNum">     604 </span>            :   template&lt; typename Req, typename Res&gt;
+<span class="lineNum">     605 </span>            :   timer_id_t create_requester(
+<span class="lineNum">     606 </span>            :     std::string stp,
+<span class="lineNum">     607 </span>            :     typename requester::sender_t&lt;Req, Res&gt;::type sender,
+<span class="lineNum">     608 </span>            :     typename requester::generator_t&lt;Req, Res&gt;::type generator
+<span class="lineNum">     609 </span>            :   )
+<span class="lineNum">     610 </span>            :   {
+<span class="lineNum">     611 </span>            :     return this-&gt;get_timer_manager()-&gt;create&lt;Req, Res&gt;(stp, sender, generator);
+<span class="lineNum">     612 </span>            :   }
+<span class="lineNum">     613 </span>            : 
+<span class="lineNum">     614 </span>            :   std::shared_ptr&lt;task_manager&gt; get_task_manager() const;
+<span class="lineNum">     615 </span>            :   std::shared_ptr&lt;timer_manager_t&gt; get_timer_manager() const;
+<span class="lineNum">     616 </span>            : private:
+<span class="lineNum">     617 </span>            :   void initialize_();
+<span class="lineNum">     618 </span>            :   void create_wrn_timer_();
+<span class="lineNum">     619 </span>            : private:
+<span class="lineNum">     620 </span>            :   std::atomic&lt;time_t&gt; _delay_ms;
+<span class="lineNum">     621 </span>            :   std::shared_ptr&lt;task_manager&gt; _impl;
+<span class="lineNum">     622 </span>            : 
+<span class="lineNum">     623 </span>            :   typedef std::mutex mutex_type;
+<span class="lineNum">     624 </span>            :   mutable mutex_type _mutex;
+<span class="lineNum">     625 </span>            :   timer_id_t _wrn_timer = 0;
+<span class="lineNum">     626 </span>            :   workflow_options _opt;
+<span class="lineNum">     627 </span>            :   workflow_handlers _handlers;
+<span class="lineNum">     628 </span>            : };
+<span class="lineNum">     629 </span>            : 
+<span class="lineNum">     630 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

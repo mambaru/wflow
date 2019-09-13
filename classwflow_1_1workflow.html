@@ -1,0 +1,2121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: Класс wflow::workflow</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="namespacewflow.html">wflow</a></li><li class="navelem"><a class="el" href="classwflow_1_1workflow.html">workflow</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Открытые типы</a> &#124;
+<a href="#pub-methods">Открытые члены</a> &#124;
+<a href="classwflow_1_1workflow-members.html">Полный список членов класса</a>  </div>
+  <div class="headertitle">
+<div class="title">Класс wflow::workflow</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки.  
+ <a href="classwflow_1_1workflow.html#details">Подробнее...</a></p>
+
+<p><code>#include &lt;<a class="el" href="workflow_8hpp_source.html">workflow.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Открытые типы</h2></td></tr>
+<tr class="memitem:a7c22a6961d118354353fedf784109a39"><td class="memItemLeft" align="right" valign="top">typedef ::wflow::asio::io_service&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a7c22a6961d118354353fedf784109a39">io_service_type</a></td></tr>
+<tr class="memdesc:a7c22a6961d118354353fedf784109a39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Переопределение boost::asio::io_service.  <a href="#a7c22a6961d118354353fedf784109a39">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7c22a6961d118354353fedf784109a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7472aecc04ba9e55c4a57bc3dbaa67e7"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a></td></tr>
+<tr class="memdesc:a7472aecc04ba9e55c4a57bc3dbaa67e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик задания  <a href="#a7472aecc04ba9e55c4a57bc3dbaa67e7">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7472aecc04ba9e55c4a57bc3dbaa67e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbaa16e329c57de5b14f2a4faeea00bd"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">drop_handler</a></td></tr>
+<tr class="memdesc:adbaa16e329c57de5b14f2a4faeea00bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик сброса задания  <a href="#adbaa16e329c57de5b14f2a4faeea00bd">Подробнее...</a><br /></td></tr>
+<tr class="separator:adbaa16e329c57de5b14f2a4faeea00bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fa4292a3984598d666346323266dc0a"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; bool()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a></td></tr>
+<tr class="memdesc:a6fa4292a3984598d666346323266dc0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик таймера (возвращает false для остановки таймера)  <a href="#a6fa4292a3984598d666346323266dc0a">Подробнее...</a><br /></td></tr>
+<tr class="separator:a6fa4292a3984598d666346323266dc0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8a4f8a5cfd2bb31d29e77442b8e9410"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void(bool)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#ab8a4f8a5cfd2bb31d29e77442b8e9410">callback_timer_handler</a></td></tr>
+<tr class="memdesc:ab8a4f8a5cfd2bb31d29e77442b8e9410"><td class="mdescLeft">&#160;</td><td class="mdescRight">Калбэк для обработчика асинхронного таймера  <a href="#ab8a4f8a5cfd2bb31d29e77442b8e9410">Подробнее...</a><br /></td></tr>
+<tr class="separator:ab8a4f8a5cfd2bb31d29e77442b8e9410"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36b781c2615ff47b0d6b2b49d86cff7e"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void(<a class="el" href="classwflow_1_1workflow.html#ab8a4f8a5cfd2bb31d29e77442b8e9410">callback_timer_handler</a>)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a></td></tr>
+<tr class="memdesc:a36b781c2615ff47b0d6b2b49d86cff7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик асинхронного таймера (вызывает callback_timer_handler)  <a href="#a36b781c2615ff47b0d6b2b49d86cff7e">Подробнее...</a><br /></td></tr>
+<tr class="separator:a36b781c2615ff47b0d6b2b49d86cff7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bb77a0d34b629b141b704e2613880cb"><td class="memItemLeft" align="right" valign="top">typedef std::chrono::system_clock&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a7bb77a0d34b629b141b704e2613880cb">clock_t</a></td></tr>
+<tr class="memdesc:a7bb77a0d34b629b141b704e2613880cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Стандартные часы  <a href="#a7bb77a0d34b629b141b704e2613880cb">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7bb77a0d34b629b141b704e2613880cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e9d747b32e9578be3c2b105e5d97719"><td class="memItemLeft" align="right" valign="top">typedef std::chrono::time_point&lt; <a class="el" href="classwflow_1_1workflow.html#a7bb77a0d34b629b141b704e2613880cb">clock_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a></td></tr>
+<tr class="memdesc:a7e9d747b32e9578be3c2b105e5d97719"><td class="mdescLeft">&#160;</td><td class="mdescRight">Момент времени  <a href="#a7e9d747b32e9578be3c2b105e5d97719">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7e9d747b32e9578be3c2b105e5d97719"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a3e1ebbceb4068e0cecb1e6e633f8b8"><td class="memItemLeft" align="right" valign="top">typedef std::chrono::time_point&lt; std::chrono::steady_clock &gt;::duration&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a></td></tr>
+<tr class="memdesc:a5a3e1ebbceb4068e0cecb1e6e633f8b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Интервал времени  <a href="#a5a3e1ebbceb4068e0cecb1e6e633f8b8">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5a3e1ebbceb4068e0cecb1e6e633f8b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa518f5f9fc1003db600a9b49b6ac1457"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a></td></tr>
+<tr class="memdesc:aa518f5f9fc1003db600a9b49b6ac1457"><td class="mdescLeft">&#160;</td><td class="mdescRight">Идентификатор таймера  <a href="#aa518f5f9fc1003db600a9b49b6ac1457">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa518f5f9fc1003db600a9b49b6ac1457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ed609f4b6c69ab14376005fd9359d4b"><td class="memItemLeft" align="right" valign="top">typedef task_manager::timer_manager_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a0ed609f4b6c69ab14376005fd9359d4b">timer_manager_t</a></td></tr>
+<tr class="separator:a0ed609f4b6c69ab14376005fd9359d4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Открытые члены</h2></td></tr>
+<tr class="memitem:a34a039730dcc6f7c60d266ca86dad6de"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a34a039730dcc6f7c60d266ca86dad6de">~workflow</a> ()</td></tr>
+<tr class="separator:a34a039730dcc6f7c60d266ca86dad6de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30291da755df1cee713c2190020bac58"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a30291da755df1cee713c2190020bac58">workflow</a> (const <a class="el" href="classwflow_1_1workflow.html">workflow</a> &amp;)=delete</td></tr>
+<tr class="separator:a30291da755df1cee713c2190020bac58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b2b29a79dd73f2d0986f8d539b35bfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html">workflow</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a8b2b29a79dd73f2d0986f8d539b35bfe">operator=</a> (const <a class="el" href="classwflow_1_1workflow.html">workflow</a> &amp;)=delete</td></tr>
+<tr class="separator:a8b2b29a79dd73f2d0986f8d539b35bfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c580136e28dd0acc3c1036a569f373a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a5c580136e28dd0acc3c1036a569f373a">workflow</a> (const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;opt, const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;handlers=<a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a>())</td></tr>
+<tr class="memdesc:a5c580136e28dd0acc3c1036a569f373a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор без поддержки однопоточного режима.  <a href="#a5c580136e28dd0acc3c1036a569f373a">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5c580136e28dd0acc3c1036a569f373a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64b5aca509b20e3c2e841501fa4bc71f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a64b5aca509b20e3c2e841501fa4bc71f">workflow</a> (<a class="el" href="classwflow_1_1workflow.html#a7c22a6961d118354353fedf784109a39">io_service_type</a> &amp;io, const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;opt=<a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a>(), const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;handlers=<a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a>())</td></tr>
+<tr class="memdesc:a64b5aca509b20e3c2e841501fa4bc71f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Основной конструктор с поддержкой различных режимов.  <a href="#a64b5aca509b20e3c2e841501fa4bc71f">Подробнее...</a><br /></td></tr>
+<tr class="separator:a64b5aca509b20e3c2e841501fa4bc71f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac078e4d80f614092a138d0be0ba78bed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a> ()</td></tr>
+<tr class="memdesc:ac078e4d80f614092a138d0be0ba78bed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Запуск потоков обработки.  <a href="#ac078e4d80f614092a138d0be0ba78bed">Подробнее...</a><br /></td></tr>
+<tr class="separator:ac078e4d80f614092a138d0be0ba78bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea7c0abc0de6a14a0f8d70814250a48f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aea7c0abc0de6a14a0f8d70814250a48f">reconfigure</a> (const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;opt)</td></tr>
+<tr class="memdesc:aea7c0abc0de6a14a0f8d70814250a48f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Реконфигурация после запуска.  <a href="#aea7c0abc0de6a14a0f8d70814250a48f">Подробнее...</a><br /></td></tr>
+<tr class="separator:aea7c0abc0de6a14a0f8d70814250a48f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3994d422c6cc075ba7123213a42cec05"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a3994d422c6cc075ba7123213a42cec05">reconfigure</a> (const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;handlers)</td></tr>
+<tr class="separator:a3994d422c6cc075ba7123213a42cec05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09f3fdab0ceabe74f2317a98f221d109"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a09f3fdab0ceabe74f2317a98f221d109">reconfigure</a> (const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;opt, const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;handlers)</td></tr>
+<tr class="separator:a09f3fdab0ceabe74f2317a98f221d109"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a953d46a7994909524970c4ab750c1f07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a953d46a7994909524970c4ab750c1f07">stop</a> ()</td></tr>
+<tr class="memdesc:a953d46a7994909524970c4ab750c1f07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Остановка потоков в многопоточном режиме со сбросом всех очередей.  <a href="#a953d46a7994909524970c4ab750c1f07">Подробнее...</a><br /></td></tr>
+<tr class="separator:a953d46a7994909524970c4ab750c1f07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa95bd8b4e8e49f54af816e7ce9936220"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aa95bd8b4e8e49f54af816e7ce9936220">reset</a> ()</td></tr>
+<tr class="memdesc:aa95bd8b4e8e49f54af816e7ce9936220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сброс всех очередей и таймеров.  <a href="#aa95bd8b4e8e49f54af816e7ce9936220">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa95bd8b4e8e49f54af816e7ce9936220"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b34e942c65cfdf8a27c66b92c595427"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427">shutdown</a> ()</td></tr>
+<tr class="memdesc:a1b34e942c65cfdf8a27c66b92c595427"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сброс всех таймеров и завершение работы потоков после обработки всех заданий  <a href="#a1b34e942c65cfdf8a27c66b92c595427">Подробнее...</a><br /></td></tr>
+<tr class="separator:a1b34e942c65cfdf8a27c66b92c595427"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c29b64755156d106b620f9e812db74c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a5c29b64755156d106b620f9e812db74c">wait</a> ()</td></tr>
+<tr class="memdesc:a5c29b64755156d106b620f9e812db74c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ожидает завершения всех заданий после <a class="el" href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427" title="Сброс всех таймеров и завершение работы потоков после обработки всех заданий ">workflow::shutdown</a>.  <a href="#a5c29b64755156d106b620f9e812db74c">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5c29b64755156d106b620f9e812db74c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa159f676dd2ef6a2d0683d0935e06bfb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aa159f676dd2ef6a2d0683d0935e06bfb">wait_and_restart</a> ()</td></tr>
+<tr class="memdesc:aa159f676dd2ef6a2d0683d0935e06bfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Дождаться завершения всех заданий и продолжить работу  <a href="#aa159f676dd2ef6a2d0683d0935e06bfb">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa159f676dd2ef6a2d0683d0935e06bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9b54616a6ff3fb068eb3858f4206425"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aa9b54616a6ff3fb068eb3858f4206425">get_id</a> () const</td></tr>
+<tr class="memdesc:aa9b54616a6ff3fb068eb3858f4206425"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить идентификатор workflow.  <a href="#aa9b54616a6ff3fb068eb3858f4206425">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa9b54616a6ff3fb068eb3858f4206425"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7418a39bc564645edb9be9ff1ae55f92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a7418a39bc564645edb9be9ff1ae55f92">get_options</a> () const</td></tr>
+<tr class="memdesc:a7418a39bc564645edb9be9ff1ae55f92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить текущие опции workflow.  <a href="#a7418a39bc564645edb9be9ff1ae55f92">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7418a39bc564645edb9be9ff1ae55f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b7867de0c76a436f6947eaee5f8dc2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a0b7867de0c76a436f6947eaee5f8dc2a">get_handlers</a> () const</td></tr>
+<tr class="memdesc:a0b7867de0c76a436f6947eaee5f8dc2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить текущие обработчики workflow.  <a href="#a0b7867de0c76a436f6947eaee5f8dc2a">Подробнее...</a><br /></td></tr>
+<tr class="separator:a0b7867de0c76a436f6947eaee5f8dc2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d4195f4f557ed076268185c4565f780"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a> (<a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a> handler, <a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">drop_handler</a> drop=nullptr)</td></tr>
+<tr class="memdesc:a5d4195f4f557ed076268185c4565f780"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отправить задание на обработку  <a href="#a5d4195f4f557ed076268185c4565f780">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5d4195f4f557ed076268185c4565f780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f73cc8d8b0296c7d54adf6abc2695d5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a7f73cc8d8b0296c7d54adf6abc2695d5">post</a> (<a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a> tp, <a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a> handler, <a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">drop_handler</a> drop=nullptr)</td></tr>
+<tr class="memdesc:a7f73cc8d8b0296c7d54adf6abc2695d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отправить задание на обработку в указанный момент времени  <a href="#a7f73cc8d8b0296c7d54adf6abc2695d5">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7f73cc8d8b0296c7d54adf6abc2695d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa55118251c8cff0d77cc58a13a7f4a68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aa55118251c8cff0d77cc58a13a7f4a68">post</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a> handler, <a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">drop_handler</a> drop=nullptr)</td></tr>
+<tr class="memdesc:aa55118251c8cff0d77cc58a13a7f4a68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отправить задание на обработку через указанный интервал времени  <a href="#aa55118251c8cff0d77cc58a13a7f4a68">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa55118251c8cff0d77cc58a13a7f4a68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea4296e274c45240aa597f88fa9b2be2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aea4296e274c45240aa597f88fa9b2be2">safe_post</a> (<a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a> handler)</td></tr>
+<tr class="memdesc:aea4296e274c45240aa597f88fa9b2be2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отправить задание на обработку игнорируя ограничения на размер очереди и скорости обработки.  <a href="#aea4296e274c45240aa597f88fa9b2be2">Подробнее...</a><br /></td></tr>
+<tr class="separator:aea4296e274c45240aa597f88fa9b2be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34d4bbe7f9456b3e8a96cdfeadf3566a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a34d4bbe7f9456b3e8a96cdfeadf3566a">safe_post</a> (<a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a> tp, <a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a> handler)</td></tr>
+<tr class="memdesc:a34d4bbe7f9456b3e8a96cdfeadf3566a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выполнить задание в указанный момент времени  <a href="#a34d4bbe7f9456b3e8a96cdfeadf3566a">Подробнее...</a><br /></td></tr>
+<tr class="separator:a34d4bbe7f9456b3e8a96cdfeadf3566a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef6958512e4be3e7ff55afb0824a5347"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aef6958512e4be3e7ff55afb0824a5347">safe_post</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a> handler)</td></tr>
+<tr class="memdesc:aef6958512e4be3e7ff55afb0824a5347"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выполнить задание через указанный интервал времени  <a href="#aef6958512e4be3e7ff55afb0824a5347">Подробнее...</a><br /></td></tr>
+<tr class="separator:aef6958512e4be3e7ff55afb0824a5347"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e8109df8f191419c2bcfc48a1745121"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">create_timer</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a> handler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:a0e8109df8f191419c2bcfc48a1745121"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает таймер, обработчик которого выполняется с заданной периодичностью  <a href="#a0e8109df8f191419c2bcfc48a1745121">Подробнее...</a><br /></td></tr>
+<tr class="separator:a0e8109df8f191419c2bcfc48a1745121"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14114268cd6fb1973ce585bca40e57e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a14114268cd6fb1973ce585bca40e57e4">create_async_timer</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a> ahandler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:a14114268cd6fb1973ce585bca40e57e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью  <a href="#a14114268cd6fb1973ce585bca40e57e4">Подробнее...</a><br /></td></tr>
+<tr class="separator:a14114268cd6fb1973ce585bca40e57e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c759b7636323d7635d57eefa888cb20"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a3c759b7636323d7635d57eefa888cb20">create_timer</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> start_duration, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a> handler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:a3c759b7636323d7635d57eefa888cb20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает таймер, обработчик которого выполняется с заданной периодичностью через определенный интервал времени  <a href="#a3c759b7636323d7635d57eefa888cb20">Подробнее...</a><br /></td></tr>
+<tr class="separator:a3c759b7636323d7635d57eefa888cb20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25d16aaec3c7a5fcfd07166a6804afb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a25d16aaec3c7a5fcfd07166a6804afb5">create_async_timer</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> start_duration, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a> ahandler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:a25d16aaec3c7a5fcfd07166a6804afb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью через определенный интервал времени  <a href="#a25d16aaec3c7a5fcfd07166a6804afb5">Подробнее...</a><br /></td></tr>
+<tr class="separator:a25d16aaec3c7a5fcfd07166a6804afb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1ee06f50f5cef57071b690623be268b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#ab1ee06f50f5cef57071b690623be268b">create_timer</a> (<a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a> tp, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a> handler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:ab1ee06f50f5cef57071b690623be268b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени  <a href="#ab1ee06f50f5cef57071b690623be268b">Подробнее...</a><br /></td></tr>
+<tr class="separator:ab1ee06f50f5cef57071b690623be268b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b1eeb3e91fcf31c34455abc98ab1aed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a6b1eeb3e91fcf31c34455abc98ab1aed">create_async_timer</a> (<a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a> tp, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a> ahandler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:a6b1eeb3e91fcf31c34455abc98ab1aed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени  <a href="#a6b1eeb3e91fcf31c34455abc98ab1aed">Подробнее...</a><br /></td></tr>
+<tr class="separator:a6b1eeb3e91fcf31c34455abc98ab1aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2ccbcf03006e522f111f8991f17d8fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#ab2ccbcf03006e522f111f8991f17d8fd">create_timer</a> (std::string stp, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a> handler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:ab2ccbcf03006e522f111f8991f17d8fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени  <a href="#ab2ccbcf03006e522f111f8991f17d8fd">Подробнее...</a><br /></td></tr>
+<tr class="separator:ab2ccbcf03006e522f111f8991f17d8fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ada07e74ca5e675ca36f28d9bee7bdd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a1ada07e74ca5e675ca36f28d9bee7bdd">create_async_timer</a> (std::string stp, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, <a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a> ahandler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:a1ada07e74ca5e675ca36f28d9bee7bdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени  <a href="#a1ada07e74ca5e675ca36f28d9bee7bdd">Подробнее...</a><br /></td></tr>
+<tr class="separator:a1ada07e74ca5e675ca36f28d9bee7bdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe0bab5fe5b55f40a00312f7ca8a9547"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#abe0bab5fe5b55f40a00312f7ca8a9547">create_timer</a> (std::string stp, <a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a> handler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:abe0bab5fe5b55f40a00312f7ca8a9547"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает таймер, обработчик которого выполняется раз в сутки начиная с определенного момента времени  <a href="#abe0bab5fe5b55f40a00312f7ca8a9547">Подробнее...</a><br /></td></tr>
+<tr class="separator:abe0bab5fe5b55f40a00312f7ca8a9547"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab22a4d6d9f62e3196bb412a8b70d25e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aab22a4d6d9f62e3196bb412a8b70d25e">create_async_timer</a> (std::string stp, <a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a> ahandler, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> expires=<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a>)</td></tr>
+<tr class="memdesc:aab22a4d6d9f62e3196bb412a8b70d25e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает асинхронный таймер, обработчик которого выполняется раз в сутки с определенного момента времени  <a href="#aab22a4d6d9f62e3196bb412a8b70d25e">Подробнее...</a><br /></td></tr>
+<tr class="separator:aab22a4d6d9f62e3196bb412a8b70d25e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77db499fea94a94f76eeae3e64449efa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a77db499fea94a94f76eeae3e64449efa">release_timer</a> (<a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a> id)</td></tr>
+<tr class="memdesc:a77db499fea94a94f76eeae3e64449efa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Остановить таймер и освободить ресурсы  <a href="#a77db499fea94a94f76eeae3e64449efa">Подробнее...</a><br /></td></tr>
+<tr class="separator:a77db499fea94a94f76eeae3e64449efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f8ec8d4bd0205254c6bbb0f698cad43"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a9f8ec8d4bd0205254c6bbb0f698cad43">detach_timer</a> (<a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a> id)</td></tr>
+<tr class="memdesc:a9f8ec8d4bd0205254c6bbb0f698cad43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отсоединить таймер. Таймер продолжает работать до тех пор пока существует объект, который вернул detach_timer.  <a href="#a9f8ec8d4bd0205254c6bbb0f698cad43">Подробнее...</a><br /></td></tr>
+<tr class="separator:a9f8ec8d4bd0205254c6bbb0f698cad43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c3efb3ebe49e9ff9165d3185800ea95"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a3c3efb3ebe49e9ff9165d3185800ea95">timer_count</a> () const</td></tr>
+<tr class="memdesc:a3c3efb3ebe49e9ff9165d3185800ea95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Общее количество таймеров  <a href="#a3c3efb3ebe49e9ff9165d3185800ea95">Подробнее...</a><br /></td></tr>
+<tr class="separator:a3c3efb3ebe49e9ff9165d3185800ea95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4f962c5610d5afa443169a465318b73"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#aa4f962c5610d5afa443169a465318b73">full_size</a> () const</td></tr>
+<tr class="memdesc:aa4f962c5610d5afa443169a465318b73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Общее количество обработчиков в очереди (включая таймеры)  <a href="#aa4f962c5610d5afa443169a465318b73">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa4f962c5610d5afa443169a465318b73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a360f1e63417b70f2f450dfaecb7f9620"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a360f1e63417b70f2f450dfaecb7f9620">safe_size</a> () const</td></tr>
+<tr class="memdesc:a360f1e63417b70f2f450dfaecb7f9620"><td class="mdescLeft">&#160;</td><td class="mdescRight">Общее количество невыкидываемых обработчиков в очереди (включая таймеры)  <a href="#a360f1e63417b70f2f450dfaecb7f9620">Подробнее...</a><br /></td></tr>
+<tr class="separator:a360f1e63417b70f2f450dfaecb7f9620"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a797959888d4db3935b628302a6e600b2"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a797959888d4db3935b628302a6e600b2">unsafe_size</a> () const</td></tr>
+<tr class="memdesc:a797959888d4db3935b628302a6e600b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Количество обработчиков в очереди, которые могут быть выкинуты при переполнении  <a href="#a797959888d4db3935b628302a6e600b2">Подробнее...</a><br /></td></tr>
+<tr class="separator:a797959888d4db3935b628302a6e600b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a2c0a0b285ac5a09f1bb2b5046d1e70"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a9a2c0a0b285ac5a09f1bb2b5046d1e70">dropped</a> () const</td></tr>
+<tr class="memdesc:a9a2c0a0b285ac5a09f1bb2b5046d1e70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Общее количество сброшенных обработчиков при переполнении  <a href="#a9a2c0a0b285ac5a09f1bb2b5046d1e70">Подробнее...</a><br /></td></tr>
+<tr class="separator:a9a2c0a0b285ac5a09f1bb2b5046d1e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c87d22c020ee58359f61f8c49fbc999"><td class="memTemplParams" colspan="2">template&lt;typename Req , typename Res &gt; </td></tr>
+<tr class="memitem:a3c87d22c020ee58359f61f8c49fbc999"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a3c87d22c020ee58359f61f8c49fbc999">create_requester</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, typename requester::sender_t&lt; Req, Res &gt;::type sender, typename requester::generator_t&lt; Req, Res &gt;::type generator)</td></tr>
+<tr class="memdesc:a3c87d22c020ee58359f61f8c49fbc999"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает опросник с заданным интервалом  <a href="#a3c87d22c020ee58359f61f8c49fbc999">Подробнее...</a><br /></td></tr>
+<tr class="separator:a3c87d22c020ee58359f61f8c49fbc999"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a969b4becdddc0fea0a56c106368d719b"><td class="memTemplParams" colspan="2">template&lt;typename Req , typename Res &gt; </td></tr>
+<tr class="memitem:a969b4becdddc0fea0a56c106368d719b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a969b4becdddc0fea0a56c106368d719b">create_requester</a> (<a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> start_duration, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, typename requester::sender_t&lt; Req, Res &gt;::type sender, typename requester::generator_t&lt; Req, Res &gt;::type generator)</td></tr>
+<tr class="memdesc:a969b4becdddc0fea0a56c106368d719b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает опросник, который начинает выполняться с заданной периодичностью через определенный интервал времени  <a href="#a969b4becdddc0fea0a56c106368d719b">Подробнее...</a><br /></td></tr>
+<tr class="separator:a969b4becdddc0fea0a56c106368d719b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae489761fa35f004732768026a8936e6f"><td class="memTemplParams" colspan="2">template&lt;typename Req , typename Res &gt; </td></tr>
+<tr class="memitem:ae489761fa35f004732768026a8936e6f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#ae489761fa35f004732768026a8936e6f">create_requester</a> (<a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a> tp, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, typename requester::sender_t&lt; Req, Res &gt;::type sender, typename requester::generator_t&lt; Req, Res &gt;::type generator)</td></tr>
+<tr class="memdesc:ae489761fa35f004732768026a8936e6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени  <a href="#ae489761fa35f004732768026a8936e6f">Подробнее...</a><br /></td></tr>
+<tr class="separator:ae489761fa35f004732768026a8936e6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accfb4766b26ba880047fae2ac202859a"><td class="memTemplParams" colspan="2">template&lt;typename Req , typename Res &gt; </td></tr>
+<tr class="memitem:accfb4766b26ba880047fae2ac202859a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#accfb4766b26ba880047fae2ac202859a">create_requester</a> (std::string stp, <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a> duration, typename requester::sender_t&lt; Req, Res &gt;::type sender, typename requester::generator_t&lt; Req, Res &gt;::type generator)</td></tr>
+<tr class="memdesc:accfb4766b26ba880047fae2ac202859a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает опросник с заданным интервалом  <a href="#accfb4766b26ba880047fae2ac202859a">Подробнее...</a><br /></td></tr>
+<tr class="separator:accfb4766b26ba880047fae2ac202859a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4cbad9086674a2f92266576c1682e02"><td class="memTemplParams" colspan="2">template&lt;typename Req , typename Res &gt; </td></tr>
+<tr class="memitem:af4cbad9086674a2f92266576c1682e02"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#af4cbad9086674a2f92266576c1682e02">create_requester</a> (std::string stp, typename requester::sender_t&lt; Req, Res &gt;::type sender, typename requester::generator_t&lt; Req, Res &gt;::type generator)</td></tr>
+<tr class="memdesc:af4cbad9086674a2f92266576c1682e02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени  <a href="#af4cbad9086674a2f92266576c1682e02">Подробнее...</a><br /></td></tr>
+<tr class="separator:af4cbad9086674a2f92266576c1682e02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48a5e668d09ce3e8aeb8e5f54ab9c5f5"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; task_manager &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a48a5e668d09ce3e8aeb8e5f54ab9c5f5">get_task_manager</a> () const</td></tr>
+<tr class="separator:a48a5e668d09ce3e8aeb8e5f54ab9c5f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ed2878a0cf1a51542689582e1d82900"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classwflow_1_1workflow.html#a0ed609f4b6c69ab14376005fd9359d4b">timer_manager_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a8ed2878a0cf1a51542689582e1d82900">get_timer_manager</a> () const</td></tr>
+<tr class="separator:a8ed2878a0cf1a51542689582e1d82900"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p class="">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки. </p>
+<p class=""><em>workflow</em> можно рассматривать как надстройку над boost::asio::io_service. Существуют пять типов заданий:</p><ul>
+<li>Защищенные задания</li>
+<li>Незащищенные задания</li>
+<li>Обычные таймеры</li>
+<li>Асинхронные таймеры</li>
+<li>Опросники (requester)</li>
+</ul>
+<h2>Защищенные задания ( <a class="el" href="classwflow_1_1workflow.html#aea4296e274c45240aa597f88fa9b2be2" title="Отправить задание на обработку игнорируя ограничения на размер очереди и скорости обработки...">workflow::safe_post</a> )</h2>
+<p class="">Обработчик защищенного задания гарантированно не будут выкинут из очереди, даже при ее переполнении. Таймеры также используют этот вид заданий. Отложенные защищенные задания выполняются в момент срабатывания таймера, в отличие от незащищенных, которые в этот момент только отправят задание в общую очередь на обработку. Кроме того защищенные задания игнорируют общие ограничения по задержке и скорости обработки, которые задаются в конфигурации. </p><div class="fragment"><div class="line">boost::asio::io_service ios;</div><div class="line"><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div><div class="line"></div><div class="line"><span class="comment">// Простое задание</span></div><div class="line">wf.safe_post( [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;Simple safe post  &quot;</span> &lt;&lt; std::endl; } );</div><div class="line"></div><div class="line"><span class="comment">// Отложенное задание</span></div><div class="line">wf.safe_post( std::chrono::seconds(4), [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;Safe post after delay 4 second &quot;</span> &lt;&lt; std::endl; } );</div></div><!-- fragment --><p> В общем случае, если нет необходимости использовать ограничения, то рекомендуется использовать этот вид заданий, т.к. нет дополнительных накладных расходов. Однако в нагруженных системах рекомендуется использовать отдельные <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> для таймеров и основного потока заданий, чтобы большое количество заданий не мешало отрабатывать таймерам во время. Т.к. отложенные задание также используют таймеры, в опциях можно передать указатель на <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> специально для этих целей. См. <a class="el" href="example01_8cpp-example.html">example01.cpp</a>, <a class="el" href="example11_8cpp-example.html">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html">example12.cpp</a></p>
+<h2>Незащищенные задания ( <a class="el" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780" title="Отправить задание на обработку ">workflow::post</a> )</h2>
+<p class="">Этот тип заданий может быть выкинут из очереди (с возможностью вызова альтернативного обработчика), а также на очередь таких заданий можно наложить ограничения на скорость обработки и/или установить задержку. Если указать альтернативный обработчик при отправке задания в очередь, то он сработает в случае переполнения очереди, если основной обработчик был выкинут из очереди. Если <a class="el" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780" title="Отправить задание на обработку ">workflow::post</a> возвращает false, то однозначно заданию нет места в очереди, и альтернативный обработчик был выполнен, если true - * то задание было поставлено в очередь, но не факт, что будет выполнено. См. <a class="el" href="example02_8cpp-example.html">example02.cpp</a>, <a class="el" href="example03_8cpp-example.html">example03.cpp</a>, <a class="el" href="example04_8cpp-example.html">example04.cpp</a></p>
+<div class="fragment"><div class="line">boost::asio::io_service ios;</div><div class="line"><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div><div class="line"></div><div class="line">wf.post( [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;Simple unsafe post  &quot;</span> &lt;&lt; std::endl; } );</div><div class="line"></div><div class="line">wf.post( std::chrono::seconds(4), [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;Safe unpost after delay 4 second &quot;</span> &lt;&lt; std::endl; } );</div></div><!-- fragment --><p class="">Если не задано ограничений на размер очереди (по умолчанию), то задания не будут выкидываться из очереди, но отработка отложенных заданий и/или при ограничении скорости обработки отличается. В то время как у защищенного отложенного задания таймер устанавливается на время выполнения обработчика задания, то у незащищенного задания - на время отправки в общую очередь. Т.е. задание на отправку в очередь, в заданное время, будет выполнено, но не факт, что успешно, если очередь будет переполнена. <a class="el" href="example04_8cpp-example.html">example04.cpp</a></p>
+<p class="">Незащищенные задания имеет смысл использовать на высоких нагрузках, когда есть вероятность того, что система не будет справляться с потоком заданий, чтобы не допустить разбухания очереди <a class="el" href="structwflow_1_1workflow__options.html#a48eb69b95225f635e0cbea7508cf326b" title="Максимальный размер очереди заданий ">workflow_options::maxsize</a>. Например в сетевых приложениях, через незащищенную очередь пропускают все запросы клиентов. Это может быть удобно, также, для тестирования, например искусственно увеличив время ответа <a class="el" href="structwflow_1_1workflow__options.html#afc44b6126571c72170dd39e7d98280d9" title="Общая задержка в миллисекундах ">workflow_options::post_delay_ms</a> или ограничив пропускную способность <a class="el" href="structwflow_1_1workflow__options.html#ad2035e352bca3693ce5ac066b0e624b1" title="Ограничение скорости обработки (в заданиях в секунду) ">workflow_options::rate_limit</a></p>
+<h2>Обычные таймеры (<a class="el" href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121" title="Создает таймер, обработчик которого выполняется с заданной периодичностью ">workflow::create_timer</a>)</h2>
+<p class="">При создании таймера задается функция (обработчик таймера <a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a" title="Обработчик таймера (возвращает false для остановки таймера) ">workflow::timer_handler</a>) которая выполняется с заданным интервалом времени. Обработчик таймера должен возвращать true, если таймер еще актуален и false - если он больше не нужен. Помимо интервала выполнения, можно передать флаг определяющий, как будет отсчитываться следующий момент времени вызова обработчика: с начала или после выполнения. Также можно задать время первого выполнения. Например "через 10 секунд и далее каждую секунду" <a class="el" href="example05_8cpp-example.html">example05.cpp</a> или в пять утра и далее каждые 6 часов. Как уже было сказано, при больших нагрузках (например в сетевых приложениях) не рекомендуется использовать таймеры в общем <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> (ну или наоборот, для потока запросов создать отдельный <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a>)</p>
+<h2>Асинхронные таймеры (workflow::create_asyn_timer)</h2>
+<p class="">Отличаются от обычного таймера тем, что в обработчик таймера <a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e" title="Обработчик асинхронного таймера (вызывает callback_timer_handler) ">workflow::async_timer_handler</a> пердается функция обратного вызова <a class="el" href="classwflow_1_1workflow.html#ab8a4f8a5cfd2bb31d29e77442b8e9410" title="Калбэк для обработчика асинхронного таймера ">workflow::callback_timer_handler</a>, которую он должен вызвать, чтобы сигнализировать о том, что обработка завершена и что делать далее: завершить работу таймера или продолжить. Используется если в обработчике таймера нужно выполнить асинхронную операцию, например сделать запрос на удаленный сервер.</p>
+<h2>Опросники (requester)</h2>
+<p class="">Вид асинхронных таймеров, предназначенных для создания последовательности запросов на основе пришедших ответов. Типичные примеры это периодическое обновление данных из БД или другого сервиса с помощью нескольких запросов, реализация репликации и пр. Для реализации потребуются структуры запроса и ответа, обработчики отправителя и генератора запросов.</p>
+<p class="">Запросом и ответом может быть любой тип, но предпочтительно использовать структуры с определенными типами для удобства использования: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>request</div><div class="line">{</div><div class="line">  ...</div><div class="line"><span class="comment">//исключительно для удобства</span></div><div class="line">  <span class="keyword">typedef</span> std::unique_ptr&lt;request&gt; ptr;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">struct </span>response</div><div class="line">{</div><div class="line">  ...</div><div class="line"><span class="comment">//исключительно для удобства</span></div><div class="line">  <span class="keyword">typedef</span> std::unique_ptr&lt;response&gt; ptr;</div><div class="line">  <span class="keyword">typedef</span> std::function&lt; void(ptr) &gt; handler;</div><div class="line">};</div></div><!-- fragment --><p> На вход генератора приходит ответ от предыдущего запроса, на основе которого он может создать следующий запрос. При первом запросе передается nullptr, а для того чтобы обозначить конец последовательности опроса генератор также возвращает nullptr. В примере простой случай, когда последовательность из одного запроса: </p><div class="fragment"><div class="line">request::ptr generator(response::ptr resp)</div><div class="line">{</div><div class="line">  <span class="keywordflow">if</span> ( resp == <span class="keyword">nullptr</span> )</div><div class="line">    <span class="keywordflow">return</span> std::make_unique&lt;request&gt;();</div><div class="line">  <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div><div class="line">}</div></div><!-- fragment --><p> Далее, сгенерированный запрос передается отправителю, который должен с ним что-то сделать и отправить ответ через callback-функцию в любой момент времени (как правило асинхронно). В примере просто формируем ответ через тот же workflow с задержкой: </p><div class="fragment"><div class="line"><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div><div class="line"><span class="keywordtype">bool</span> sender(request::ptr, response::handler callback)</div><div class="line">{</div><div class="line">  wf.post(std::chrono::milliseconds(500), [callback]()</div><div class="line">  {</div><div class="line">    callback(std::make_unique&lt;response&gt;());</div><div class="line">  });</div><div class="line">  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">}</div></div><!-- fragment --><p> Отправитель возвращает true, аналогично обработчику таймера, сообщая что таймер должен продолжать работать. Создание опросника, аналогично созданию асинхронных таймеров: </p><div class="fragment"><div class="line">wf.create_requester&lt;request, response&gt;(std::chrono::seconds(1), sender, generator );</div></div><!-- fragment --><p> В данном примере <a class="el" href="example13_8cpp-example.html">example13.cpp</a> генерируется последовательность из одного запроса с периодичностью в одну секунду. При более длинных последовательностях последующий запрос передается немедленно после получения ответа до тех пор пока генератор не вернет nullptr и только после этого наступает заданная пауза. Более сложный пример см. <a class="el" href="example14_8cpp-example.html">example14.cpp</a> </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example01_8cpp-example.html#_a0">example01.cpp</a>, <a class="el" href="example02_8cpp-example.html#_a0">example02.cpp</a>, <a class="el" href="example03_8cpp-example.html#_a2">example03.cpp</a>, <a class="el" href="example04_8cpp-example.html#_a2">example04.cpp</a>, <a class="el" href="example05_8cpp-example.html#_a0">example05.cpp</a>, <a class="el" href="example06_8cpp-example.html#_a2">example06.cpp</a>, <a class="el" href="example07_8cpp-example.html#_a3">example07.cpp</a>, <a class="el" href="example08_8cpp-example.html#_a2">example08.cpp</a>, <a class="el" href="example09_8cpp-example.html#_a6">example09.cpp</a>, <a class="el" href="example10_8cpp-example.html#_a3">example10.cpp</a>, <a class="el" href="example11_8cpp-example.html#_a2">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html#_a2">example12.cpp</a>, <a class="el" href="example13_8cpp-example.html#_a0">example13.cpp</a>, <a class="el" href="example14_8cpp-example.html#_a0">example14.cpp</a> и <a class="el" href="example15_8cpp-example.html#_a3">example15.cpp</a>.</dd>
+</dl></div><h2 class="groupheader">Определения типов</h2>
+<a id="a36b781c2615ff47b0d6b2b49d86cff7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36b781c2615ff47b0d6b2b49d86cff7e">&#9670;&nbsp;</a></span>async_timer_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt;void(<a class="el" href="classwflow_1_1workflow.html#ab8a4f8a5cfd2bb31d29e77442b8e9410">callback_timer_handler</a>)&gt; <a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">wflow::workflow::async_timer_handler</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработчик асинхронного таймера (вызывает callback_timer_handler) </p>
+
+</div>
+</div>
+<a id="ab8a4f8a5cfd2bb31d29e77442b8e9410"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a4f8a5cfd2bb31d29e77442b8e9410">&#9670;&nbsp;</a></span>callback_timer_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt;void(bool)&gt; <a class="el" href="classwflow_1_1workflow.html#ab8a4f8a5cfd2bb31d29e77442b8e9410">wflow::workflow::callback_timer_handler</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Калбэк для обработчика асинхронного таймера </p>
+
+</div>
+</div>
+<a id="a7bb77a0d34b629b141b704e2613880cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bb77a0d34b629b141b704e2613880cb">&#9670;&nbsp;</a></span>clock_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::chrono::system_clock <a class="el" href="classwflow_1_1workflow.html#a7bb77a0d34b629b141b704e2613880cb">wflow::workflow::clock_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Стандартные часы </p>
+
+</div>
+</div>
+<a id="adbaa16e329c57de5b14f2a4faeea00bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbaa16e329c57de5b14f2a4faeea00bd">&#9670;&nbsp;</a></span>drop_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt; void() &gt; <a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">wflow::workflow::drop_handler</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработчик сброса задания </p>
+
+</div>
+</div>
+<a id="a5a3e1ebbceb4068e0cecb1e6e633f8b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a3e1ebbceb4068e0cecb1e6e633f8b8">&#9670;&nbsp;</a></span>duration_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::chrono::time_point&lt; std::chrono::steady_clock &gt;::duration <a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">wflow::workflow::duration_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Интервал времени </p>
+
+</div>
+</div>
+<a id="a7c22a6961d118354353fedf784109a39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c22a6961d118354353fedf784109a39">&#9670;&nbsp;</a></span>io_service_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef ::wflow::asio::io_service <a class="el" href="classwflow_1_1workflow.html#a7c22a6961d118354353fedf784109a39">wflow::workflow::io_service_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Переопределение boost::asio::io_service. </p>
+
+</div>
+</div>
+<a id="a7472aecc04ba9e55c4a57bc3dbaa67e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7472aecc04ba9e55c4a57bc3dbaa67e7">&#9670;&nbsp;</a></span>post_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt; void() &gt; <a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">wflow::workflow::post_handler</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработчик задания </p>
+
+</div>
+</div>
+<a id="a7e9d747b32e9578be3c2b105e5d97719"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e9d747b32e9578be3c2b105e5d97719">&#9670;&nbsp;</a></span>time_point_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::chrono::time_point&lt;<a class="el" href="classwflow_1_1workflow.html#a7bb77a0d34b629b141b704e2613880cb">clock_t</a>&gt; <a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">wflow::workflow::time_point_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Момент времени </p>
+
+</div>
+</div>
+<a id="a6fa4292a3984598d666346323266dc0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fa4292a3984598d666346323266dc0a">&#9670;&nbsp;</a></span>timer_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt;bool()&gt; <a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">wflow::workflow::timer_handler</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработчик таймера (возвращает false для остановки таймера) </p>
+
+</div>
+</div>
+<a id="aa518f5f9fc1003db600a9b49b6ac1457"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa518f5f9fc1003db600a9b49b6ac1457">&#9670;&nbsp;</a></span>timer_id_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef int <a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">wflow::workflow::timer_id_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Идентификатор таймера </p>
+
+</div>
+</div>
+<a id="a0ed609f4b6c69ab14376005fd9359d4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ed609f4b6c69ab14376005fd9359d4b">&#9670;&nbsp;</a></span>timer_manager_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef task_manager::timer_manager_t <a class="el" href="classwflow_1_1workflow.html#a0ed609f4b6c69ab14376005fd9359d4b">wflow::workflow::timer_manager_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Конструктор(ы)</h2>
+<a id="a34a039730dcc6f7c60d266ca86dad6de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34a039730dcc6f7c60d266ca86dad6de">&#9670;&nbsp;</a></span>~workflow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">wflow::workflow::~workflow </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a30291da755df1cee713c2190020bac58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30291da755df1cee713c2190020bac58">&#9670;&nbsp;</a></span>workflow() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">wflow::workflow::workflow </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classwflow_1_1workflow.html">workflow</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5c580136e28dd0acc3c1036a569f373a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c580136e28dd0acc3c1036a569f373a">&#9670;&nbsp;</a></span>workflow() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">wflow::workflow::workflow </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;&#160;</td>
+          <td class="paramname"><em>handlers</em> = <code><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a>()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Конструктор без поддержки однопоточного режима. </p>
+<p class="">Для работы нужен как минимум один дополнительный поток. Для этого в опциях необходимо указать <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a> = 1 или больше. При <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a> == 0 задачи из очереди обрабатываться не будут. </p><dl class="section remark"><dt>Прим.</dt><dd>По умолчанию в <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a> = 0 - необходимо изменить это значение. </dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">opt</td><td>- опции. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a64b5aca509b20e3c2e841501fa4bc71f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64b5aca509b20e3c2e841501fa4bc71f">&#9670;&nbsp;</a></span>workflow() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">wflow::workflow::workflow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7c22a6961d118354353fedf784109a39">io_service_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>io</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>opt</em> = <code><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a>()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;&#160;</td>
+          <td class="paramname"><em>handlers</em> = <code><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a>()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Основной конструктор с поддержкой различных режимов. </p>
+<p class="">Может работать как в основном потоке приложения, так и создавать свой пул потоков. При <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a> == 0 дополнительные потоки не создаются о обработка происходит при вызове io.run() или аналогичных. Для работы в многопоточном режиме укажите количество потоков. При <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a> == 1 создается один поток и т.д. При многопоточном режиме io не используется, а создается свой (один на все потоки этого объекта). </p><dl class="section remark"><dt>Прим.</dt><dd>При <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a> == 1 или большем создается свой объект io_service, а io не используется </dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">io</td><td>- ссылка на boost::asio::io_service. </td></tr>
+    <tr><td class="paramname">opt</td><td>- опции. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Методы</h2>
+<a id="a14114268cd6fb1973ce585bca40e57e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14114268cd6fb1973ce585bca40e57e4">&#9670;&nbsp;</a></span>create_async_timer() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_async_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a>&#160;</td>
+          <td class="paramname"><em>ahandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">ahandler</td><td>обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true), если таймер должен продолжать работать и callback_timer_handler(false) - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера (вызова callback_timer_handler из обработчика)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="a25d16aaec3c7a5fcfd07166a6804afb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25d16aaec3c7a5fcfd07166a6804afb5">&#9670;&nbsp;</a></span>create_async_timer() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_async_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>start_duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a>&#160;</td>
+          <td class="paramname"><em>ahandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью через определенный интервал времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">start_duration</td><td>интервал времени, через который запустить таймер </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">ahandler</td><td>обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true), если таймер должен продолжать работать и callback_timer_handler(false) - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера (вызова callback_timer_handler из обработчика)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="a6b1eeb3e91fcf31c34455abc98ab1aed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b1eeb3e91fcf31c34455abc98ab1aed">&#9670;&nbsp;</a></span>create_async_timer() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_async_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a>&#160;</td>
+          <td class="paramname"><em>tp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a>&#160;</td>
+          <td class="paramname"><em>ahandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tp</td><td>момент времени, начиная с которого запустить таймер </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">ahandler</td><td>обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true), если таймер должен продолжать работать и callback_timer_handler(false) - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера (вызова callback_timer_handler из обработчика)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="a1ada07e74ca5e675ca36f28d9bee7bdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ada07e74ca5e675ca36f28d9bee7bdd">&#9670;&nbsp;</a></span>create_async_timer() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_async_timer </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>stp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a>&#160;</td>
+          <td class="paramname"><em>ahandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stp</td><td>момент времени, начиная с которого запустить таймер (строка в формате "22:00:00") </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">ahandler</td><td>обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true), если таймер должен продолжать работать и callback_timer_handler(false) - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера (вызова callback_timer_handler из обработчика)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="aab22a4d6d9f62e3196bb412a8b70d25e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab22a4d6d9f62e3196bb412a8b70d25e">&#9670;&nbsp;</a></span>create_async_timer() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_async_timer </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>stp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a36b781c2615ff47b0d6b2b49d86cff7e">async_timer_handler</a>&#160;</td>
+          <td class="paramname"><em>ahandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает асинхронный таймер, обработчик которого выполняется раз в сутки с определенного момента времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stp</td><td>момент времени, начиная с которого запустить таймер (строка в формате "22:00:00") </td></tr>
+    <tr><td class="paramname">ahandler</td><td>обработчик таймера std::function&lt;void(callback_timer_handler)&gt;, который должен вызвать callback_timer_handler(true), если таймер должен продолжать работать и callback_timer_handler(false) - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера (вызова callback_timer_handler из обработчика)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="a3c87d22c020ee58359f61f8c49fbc999"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c87d22c020ee58359f61f8c49fbc999">&#9670;&nbsp;</a></span>create_requester() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Req , typename Res &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a> wflow::workflow::create_requester </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::sender_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::generator_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>generator</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создает опросник с заданным интервалом </p>
+<dl class="tparams"><dt>Параметры шаблона</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Req</td><td>запрос </td></tr>
+    <tr><td class="paramname">Res</td><td>ответ </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duration</td><td>интервал опроса </td></tr>
+    <tr><td class="paramname">sender</td><td>отправитель запросов </td></tr>
+    <tr><td class="paramname">generator</td><td>генератор запросов</td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="fragment"><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Req&gt; req_ptr;</div><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Res&gt; res_ptr;</div><div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div></div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+
+</div>
+</div>
+<a id="a969b4becdddc0fea0a56c106368d719b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a969b4becdddc0fea0a56c106368d719b">&#9670;&nbsp;</a></span>create_requester() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Req , typename Res &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a> wflow::workflow::create_requester </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>start_duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::sender_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::generator_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>generator</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создает опросник, который начинает выполняться с заданной периодичностью через определенный интервал времени </p>
+<dl class="tparams"><dt>Параметры шаблона</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Req</td><td>запрос </td></tr>
+    <tr><td class="paramname">Res</td><td>ответ </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">start_duration</td><td>интервал времени, через который запустить опросник </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал опроса </td></tr>
+    <tr><td class="paramname">sender</td><td>отправитель запросов </td></tr>
+    <tr><td class="paramname">generator</td><td>генератор запросов</td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="fragment"><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Req&gt; req_ptr;</div><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Res&gt; res_ptr;</div><div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div></div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+
+</div>
+</div>
+<a id="ae489761fa35f004732768026a8936e6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae489761fa35f004732768026a8936e6f">&#9670;&nbsp;</a></span>create_requester() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Req , typename Res &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a> wflow::workflow::create_requester </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a>&#160;</td>
+          <td class="paramname"><em>tp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::sender_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::generator_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>generator</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени </p>
+<dl class="tparams"><dt>Параметры шаблона</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Req</td><td>запрос </td></tr>
+    <tr><td class="paramname">Res</td><td>ответ </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tp</td><td>интервал времени, через который запустить опросник </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал опроса </td></tr>
+    <tr><td class="paramname">sender</td><td>отправитель запросов </td></tr>
+    <tr><td class="paramname">generator</td><td>генератор запросов</td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="fragment"><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Req&gt; req_ptr;</div><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Res&gt; res_ptr;</div><div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div></div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+
+</div>
+</div>
+<a id="accfb4766b26ba880047fae2ac202859a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accfb4766b26ba880047fae2ac202859a">&#9670;&nbsp;</a></span>create_requester() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Req , typename Res &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a> wflow::workflow::create_requester </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>stp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::sender_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::generator_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>generator</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создает опросник с заданным интервалом </p>
+<dl class="tparams"><dt>Параметры шаблона</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Req</td><td>запрос </td></tr>
+    <tr><td class="paramname">Res</td><td>ответ </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stp</td><td>момент времени, начиная с которого запустить опросник (строка в формате "22:00:00") </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал опроса </td></tr>
+    <tr><td class="paramname">sender</td><td>отправитель запросов </td></tr>
+    <tr><td class="paramname">generator</td><td>генератор запросов</td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="fragment"><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Req&gt; req_ptr;</div><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Res&gt; res_ptr;</div><div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div></div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+
+</div>
+</div>
+<a id="af4cbad9086674a2f92266576c1682e02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4cbad9086674a2f92266576c1682e02">&#9670;&nbsp;</a></span>create_requester() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Req , typename Res &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a> wflow::workflow::create_requester </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>stp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::sender_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename requester::generator_t&lt; Req, Res &gt;::type&#160;</td>
+          <td class="paramname"><em>generator</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени </p>
+<dl class="tparams"><dt>Параметры шаблона</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Req</td><td>запрос </td></tr>
+    <tr><td class="paramname">Res</td><td>ответ </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stp</td><td>момент времени, начиная с которого запустить опросник (строка в формате "22:00:00") </td></tr>
+    <tr><td class="paramname">sender</td><td>отправитель запросов </td></tr>
+    <tr><td class="paramname">generator</td><td>генератор запросов</td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="fragment"><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Req&gt; req_ptr;</div><div class="line"><span class="keyword">typedef</span> std::unique_ptr&lt;Res&gt; res_ptr;</div><div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div><div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div></div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+
+</div>
+</div>
+<a id="a0e8109df8f191419c2bcfc48a1745121"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e8109df8f191419c2bcfc48a1745121">&#9670;&nbsp;</a></span>create_timer() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает таймер, обработчик которого выполняется с заданной периодичностью </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example05_8cpp-example.html#a1">example05.cpp</a>, <a class="el" href="example08_8cpp-example.html#a5">example08.cpp</a> и <a class="el" href="example15_8cpp-example.html#a6">example15.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a3c759b7636323d7635d57eefa888cb20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c759b7636323d7635d57eefa888cb20">&#9670;&nbsp;</a></span>create_timer() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>start_duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает таймер, обработчик которого выполняется с заданной периодичностью через определенный интервал времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">start_duration</td><td>интервал времени, через который запустить таймер </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="ab1ee06f50f5cef57071b690623be268b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1ee06f50f5cef57071b690623be268b">&#9670;&nbsp;</a></span>create_timer() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a>&#160;</td>
+          <td class="paramname"><em>tp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tp</td><td>момент времени, начиная с которого запустить таймер </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="ab2ccbcf03006e522f111f8991f17d8fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2ccbcf03006e522f111f8991f17d8fd">&#9670;&nbsp;</a></span>create_timer() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_timer </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>stp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stp</td><td>момент времени, начиная с которого запустить таймер (строка в формате "22:00:00") </td></tr>
+    <tr><td class="paramname">duration</td><td>интервал таймера </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="abe0bab5fe5b55f40a00312f7ca8a9547"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe0bab5fe5b55f40a00312f7ca8a9547">&#9670;&nbsp;</a></span>create_timer() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">workflow::timer_id_t</a> wflow::workflow::create_timer </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>stp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a6fa4292a3984598d666346323266dc0a">timer_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a>&#160;</td>
+          <td class="paramname"><em>expires</em> = <code><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Создает таймер, обработчик которого выполняется раз в сутки начиная с определенного момента времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stp</td><td>момент времени, начиная с которого запустить таймер (строка в формате "22:00:00") </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик таймера std::function&lt;bool()&gt;, который должен возвращать true, если таймер должен продолжать работать и false - для завершения. </td></tr>
+    <tr><td class="paramname">expires</td><td>если <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>идентификатор таймера, который можно использовать для остановки таймера </dd></dl>
+
+</div>
+</div>
+<a id="a9f8ec8d4bd0205254c6bbb0f698cad43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f8ec8d4bd0205254c6bbb0f698cad43">&#9670;&nbsp;</a></span>detach_timer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; bool &gt; wflow::workflow::detach_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Отсоединить таймер. Таймер продолжает работать до тех пор пока существует объект, который вернул detach_timer. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>- идентификатор таймера </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>std::shared_ptr&lt;bool&gt;, если true - таймер работает , false - таймер с таким id не найдено</dd></dl>
+<p>простой вызов detach_timer эквивалентен release_timer, но если std::shared_ptr&lt;bool&gt; t = detach_timer(id), то таймер будет продолжать работать до тех пор, пока t.reset() или t = nullptr </p>
+
+</div>
+</div>
+<a id="a9a2c0a0b285ac5a09f1bb2b5046d1e70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a2c0a0b285ac5a09f1bb2b5046d1e70">&#9670;&nbsp;</a></span>dropped()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow::dropped </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Общее количество сброшенных обработчиков при переполнении </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example09_8cpp-example.html#a10">example09.cpp</a> и <a class="el" href="example10_8cpp-example.html#a6">example10.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="aa4f962c5610d5afa443169a465318b73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4f962c5610d5afa443169a465318b73">&#9670;&nbsp;</a></span>full_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow::full_size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Общее количество обработчиков в очереди (включая таймеры) </p>
+
+</div>
+</div>
+<a id="a0b7867de0c76a436f6947eaee5f8dc2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b7867de0c76a436f6947eaee5f8dc2a">&#9670;&nbsp;</a></span>get_handlers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> wflow::workflow::get_handlers </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить текущие обработчики workflow. </p>
+
+</div>
+</div>
+<a id="aa9b54616a6ff3fb068eb3858f4206425"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9b54616a6ff3fb068eb3858f4206425">&#9670;&nbsp;</a></span>get_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string wflow::workflow::get_id </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить идентификатор workflow. </p>
+<p class="">Это произвольная строка, может использоваться при логгировании </p>
+
+</div>
+</div>
+<a id="a7418a39bc564645edb9be9ff1ae55f92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7418a39bc564645edb9be9ff1ae55f92">&#9670;&nbsp;</a></span>get_options()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> wflow::workflow::get_options </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить текущие опции workflow. </p>
+
+</div>
+</div>
+<a id="a48a5e668d09ce3e8aeb8e5f54ab9c5f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48a5e668d09ce3e8aeb8e5f54ab9c5f5">&#9670;&nbsp;</a></span>get_task_manager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; task_manager &gt; wflow::workflow::get_task_manager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8ed2878a0cf1a51542689582e1d82900"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ed2878a0cf1a51542689582e1d82900">&#9670;&nbsp;</a></span>get_timer_manager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="classwflow_1_1workflow.html#a0ed609f4b6c69ab14376005fd9359d4b">workflow::timer_manager_t</a> &gt; wflow::workflow::get_timer_manager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8b2b29a79dd73f2d0986f8d539b35bfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b2b29a79dd73f2d0986f8d539b35bfe">&#9670;&nbsp;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html">workflow</a>&amp; wflow::workflow::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classwflow_1_1workflow.html">workflow</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5d4195f4f557ed076268185c4565f780"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d4195f4f557ed076268185c4565f780">&#9670;&nbsp;</a></span>post() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow::post </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">drop_handler</a>&#160;</td>
+          <td class="paramname"><em>drop</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Отправить задание на обработку </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler</td><td>обработчик задания типа void() </td></tr>
+    <tr><td class="paramname">drop</td><td>альтернативный обработчик, если задание выкидывается из очереди. По умолчанию nullptr (handler выкидывается из очереди без уведомления) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true - задание поставлено в очередь обработки. false - очередь переполнена, обработчик drop вызван</dd></dl>
+<p>При переполнении очереди drop может быть вызван как синхронно (чаще всего) так и асинхронно (если установлена опция rate_limit) </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example02_8cpp-example.html#a1">example02.cpp</a>, <a class="el" href="example03_8cpp-example.html#a3">example03.cpp</a>, <a class="el" href="example04_8cpp-example.html#a3">example04.cpp</a>, <a class="el" href="example05_8cpp-example.html#a2">example05.cpp</a>, <a class="el" href="example07_8cpp-example.html#a5">example07.cpp</a>, <a class="el" href="example08_8cpp-example.html#a4">example08.cpp</a>, <a class="el" href="example09_8cpp-example.html#a8">example09.cpp</a>, <a class="el" href="example11_8cpp-example.html#a4">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html#a4">example12.cpp</a>, <a class="el" href="example13_8cpp-example.html#a1">example13.cpp</a> и <a class="el" href="example15_8cpp-example.html#a5">example15.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a7f73cc8d8b0296c7d54adf6abc2695d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f73cc8d8b0296c7d54adf6abc2695d5">&#9670;&nbsp;</a></span>post() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow::post </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a>&#160;</td>
+          <td class="paramname"><em>tp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">drop_handler</a>&#160;</td>
+          <td class="paramname"><em>drop</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Отправить задание на обработку в указанный момент времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tp</td><td>момент времени, в который задание будет отправлено на обработку </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик задания типа void() </td></tr>
+    <tr><td class="paramname">drop</td><td>альтернативный обработчик, если задание выкидывается из очереди. По умолчанию nullptr (handler выкидывается из очереди без уведомления) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true - включен таймер для отправки сообщения. Таймер выкинут из очереди быть не может поэтому всегда true</dd></dl>
+<p>В момент времени tp задание будет только отправлено в очередь на обработку (и может быть выкинуто, при переполнении ), в отличии от safe_post, где оно будет выполнено сразу. </p>
+
+</div>
+</div>
+<a id="aa55118251c8cff0d77cc58a13a7f4a68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa55118251c8cff0d77cc58a13a7f4a68">&#9670;&nbsp;</a></span>post() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow::post </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#adbaa16e329c57de5b14f2a4faeea00bd">drop_handler</a>&#160;</td>
+          <td class="paramname"><em>drop</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Отправить задание на обработку через указанный интервал времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duration</td><td>интервал времени, через который задание будет отправлено на обработку </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик задания типа void() </td></tr>
+    <tr><td class="paramname">drop</td><td>альтернативный обработчик, если задание выкидывается из очереди. По умолчанию nullptr (handler выкидывается из очереди без уведомления) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true - включен таймер для отправки сообщения. Таймер выкинут из очереди быть не может поэтому всегда true</dd></dl>
+<p>Через указанный интервал времени duration задание будет только отправлено в очередь на обработку (и может быть выкинуто, при переполнении ), в отличии от safe_post, где оно будет выполнено сразу. </p>
+
+</div>
+</div>
+<a id="aea7c0abc0de6a14a0f8d70814250a48f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea7c0abc0de6a14a0f8d70814250a48f">&#9670;&nbsp;</a></span>reconfigure() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow::reconfigure </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>opt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Реконфигурация после запуска. </p>
+<p class="">Позволяет реконфигурировать workflow без сброса очередей. Можно изменить число потоков или ограничения очереди.</p>
+<dl class="section attention"><dt>Внимание</dt><dd>Не работает при workflow_options::use_io_service == false </dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">opt</td><td>- новые опции. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example08_8cpp-example.html#a6">example08.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a3994d422c6cc075ba7123213a42cec05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3994d422c6cc075ba7123213a42cec05">&#9670;&nbsp;</a></span>reconfigure() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow::reconfigure </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;&#160;</td>
+          <td class="paramname"><em>handlers</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a09f3fdab0ceabe74f2317a98f221d109"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09f3fdab0ceabe74f2317a98f221d109">&#9670;&nbsp;</a></span>reconfigure() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow::reconfigure </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a> &amp;&#160;</td>
+          <td class="paramname"><em>handlers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77db499fea94a94f76eeae3e64449efa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77db499fea94a94f76eeae3e64449efa">&#9670;&nbsp;</a></span>release_timer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wflow::workflow::release_timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Остановить таймер и освободить ресурсы </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>идентификатор таймера </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>bool, если true - таймер остановлен, false - таймер с таким id не найдено </dd></dl>
+
+</div>
+</div>
+<a id="aa95bd8b4e8e49f54af816e7ce9936220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa95bd8b4e8e49f54af816e7ce9936220">&#9670;&nbsp;</a></span>reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Сброс всех очередей и таймеров. </p>
+<p class="">Потоки обработки продолжат ожидание новых заданий. </p>
+
+</div>
+</div>
+<a id="aea4296e274c45240aa597f88fa9b2be2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea4296e274c45240aa597f88fa9b2be2">&#9670;&nbsp;</a></span>safe_post() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::safe_post </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Отправить задание на обработку игнорируя ограничения на размер очереди и скорости обработки. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler</td><td>обработчик задания типа void()</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Аналог boost::asio::io_service::post </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example01_8cpp-example.html#a1">example01.cpp</a>, <a class="el" href="example09_8cpp-example.html#a9">example09.cpp</a>, <a class="el" href="example10_8cpp-example.html#a5">example10.cpp</a>, <a class="el" href="example11_8cpp-example.html#a5">example11.cpp</a> и <a class="el" href="example12_8cpp-example.html#a5">example12.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a34d4bbe7f9456b3e8a96cdfeadf3566a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34d4bbe7f9456b3e8a96cdfeadf3566a">&#9670;&nbsp;</a></span>safe_post() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::safe_post </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7e9d747b32e9578be3c2b105e5d97719">time_point_t</a>&#160;</td>
+          <td class="paramname"><em>tp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выполнить задание в указанный момент времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tp</td><td>момент времени, в который задание будет выполнено </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик задания типа void() </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aef6958512e4be3e7ff55afb0824a5347"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef6958512e4be3e7ff55afb0824a5347">&#9670;&nbsp;</a></span>safe_post() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::safe_post </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a5a3e1ebbceb4068e0cecb1e6e633f8b8">duration_t</a>&#160;</td>
+          <td class="paramname"><em>duration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwflow_1_1workflow.html#a7472aecc04ba9e55c4a57bc3dbaa67e7">post_handler</a>&#160;</td>
+          <td class="paramname"><em>handler</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выполнить задание через указанный интервал времени </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duration</td><td>интервал времени, через который задание будет выполнено </td></tr>
+    <tr><td class="paramname">handler</td><td>обработчик задания типа void() </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a360f1e63417b70f2f450dfaecb7f9620"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a360f1e63417b70f2f450dfaecb7f9620">&#9670;&nbsp;</a></span>safe_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow::safe_size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Общее количество невыкидываемых обработчиков в очереди (включая таймеры) </p>
+
+</div>
+</div>
+<a id="a1b34e942c65cfdf8a27c66b92c595427"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b34e942c65cfdf8a27c66b92c595427">&#9670;&nbsp;</a></span>shutdown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::shutdown </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Сброс всех таймеров и завершение работы потоков после обработки всех заданий </p>
+<p class="">Позволяет завершить работу не сбрасывая очередь заданий. Отложенные задания не сбрасываются, поэтому если в очереди есть задание с задержкой в сутки то завершение работы произойдет через сутки. Для ожидания завершения заданий используете метод <a class="el" href="classwflow_1_1workflow.html#a5c29b64755156d106b620f9e812db74c" title="Ожидает завершения всех заданий после workflow::shutdown. ">workflow::wait</a>. Убедитесь, что после вызова этого метода, не происходит добавления заданий и создание таймеров, иначе останов может не произойти. example7.cpp </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example07_8cpp-example.html#a6">example07.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="ac078e4d80f614092a138d0be0ba78bed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac078e4d80f614092a138d0be0ba78bed">&#9670;&nbsp;</a></span>start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::start </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Запуск потоков обработки. </p>
+<p class="">Работает только в многопоточном режиме. При threads=0 ничего не происходит. Может использоваться для возобновления работы после вызова <a class="el" href="classwflow_1_1workflow.html#a953d46a7994909524970c4ab750c1f07" title="Остановка потоков в многопоточном режиме со сбросом всех очередей. ">workflow::stop</a>. </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example07_8cpp-example.html#a4">example07.cpp</a>, <a class="el" href="example08_8cpp-example.html#a3">example08.cpp</a>, <a class="el" href="example09_8cpp-example.html#a7">example09.cpp</a>, <a class="el" href="example10_8cpp-example.html#a4">example10.cpp</a>, <a class="el" href="example11_8cpp-example.html#a3">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html#a3">example12.cpp</a> и <a class="el" href="example15_8cpp-example.html#a4">example15.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="a953d46a7994909524970c4ab750c1f07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a953d46a7994909524970c4ab750c1f07">&#9670;&nbsp;</a></span>stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::stop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Остановка потоков в многопоточном режиме со сбросом всех очередей. </p>
+
+</div>
+</div>
+<a id="a3c3efb3ebe49e9ff9165d3185800ea95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c3efb3ebe49e9ff9165d3185800ea95">&#9670;&nbsp;</a></span>timer_count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow::timer_count </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Общее количество таймеров </p>
+
+</div>
+</div>
+<a id="a797959888d4db3935b628302a6e600b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a797959888d4db3935b628302a6e600b2">&#9670;&nbsp;</a></span>unsafe_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t wflow::workflow::unsafe_size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Количество обработчиков в очереди, которые могут быть выкинуты при переполнении </p>
+
+</div>
+</div>
+<a id="a5c29b64755156d106b620f9e812db74c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c29b64755156d106b620f9e812db74c">&#9670;&nbsp;</a></span>wait()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::wait </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ожидает завершения всех заданий после <a class="el" href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427" title="Сброс всех таймеров и завершение работы потоков после обработки всех заданий ">workflow::shutdown</a>. </p>
+<p class="">Работает только в многопоточном режиме и имеет смысл только после вызова метода <a class="el" href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427" title="Сброс всех таймеров и завершение работы потоков после обработки всех заданий ">workflow::shutdown</a>. Блокирует выполнение программы до завершения работы потоков, после обработки всех заданий в очереди. Убедитесь, что во время ожидания, не происходит добавления заданий и создание таймеров. Если очередь заданий будет постоянно пополняться то и время ожидания будет увеличиваться. Если во время ожидания создать таймер, то и ожидание будет продолжаться, пока существует этот таймер. example7.cpp </p>
+<dl><dt><b>Примеры: </b></dt><dd><a class="el" href="example07_8cpp-example.html#a7">example07.cpp</a>.</dd>
+</dl>
+</div>
+</div>
+<a id="aa159f676dd2ef6a2d0683d0935e06bfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa159f676dd2ef6a2d0683d0935e06bfb">&#9670;&nbsp;</a></span>wait_and_restart()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wflow::workflow::wait_and_restart </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Дождаться завершения всех заданий и продолжить работу </p>
+<p class="">По сути реализует последовательность вызовов <a class="el" href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427" title="Сброс всех таймеров и завершение работы потоков после обработки всех заданий ">workflow::shutdown</a>, <a class="el" href="classwflow_1_1workflow.html#a5c29b64755156d106b620f9e812db74c" title="Ожидает завершения всех заданий после workflow::shutdown. ">workflow::wait</a> и <a class="el" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed" title="Запуск потоков обработки. ">workflow::start</a>. </p>
+
+</div>
+</div>
+<hr/>Объявления и описания членов классов находятся в файлах:<ul>
+<li>wflow/<a class="el" href="workflow_8hpp_source.html">workflow.hpp</a></li>
+<li>wflow/<a class="el" href="workflow_8cpp.html">workflow.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

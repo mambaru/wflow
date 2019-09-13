@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wflow-coverage.info - wflow/queue/delayed_queue.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">wflow/queue</a> - delayed_queue.cpp<span style="font-size: 80%;"> (source / <a href="delayed_queue.cpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wflow-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">123</td>
+            <td class="headerCovTableEntry">158</td>
+            <td class="headerCovTableEntryMed">77.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-09-13</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntry">42</td>
+            <td class="headerCovTableEntryLo">71.4 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &quot;delayed_queue.hpp&quot;</a>
+<span class="lineNum">       2 </span>            : 
+<a name="3"><span class="lineNum">       3 </span>            : namespace wflow {</a>
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span><span class="lineCov">         11 : delayed_queue::delayed_queue(size_t maxsize)</span>
+<span class="lineNum">       6 </span>            :   : _loop_exit(false)
+<span class="lineNum">       7 </span>            :   , _counter(0)
+<span class="lineNum">       8 </span>            :   , _safe_counter(0)
+<span class="lineNum">       9 </span>            :   , _maxsize(maxsize)
+<span class="lineNum">      10 </span><span class="lineCov">         11 :   , _drop_count(0)</span>
+<span class="lineNum">      11 </span>            : {
+<a name="12"><span class="lineNum">      12 </span><span class="lineCov">         11 : }</span></a>
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span><span class="lineCov">         22 : delayed_queue::~delayed_queue ()</span>
+<span class="lineNum">      15 </span>            : {
+<span class="lineNum">      16 </span><span class="lineCov">         11 :   this-&gt;stop();</span>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">         11 : }</span></a>
+<span class="lineNum">      18 </span>            :   
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 : void delayed_queue::set_maxsize(size_t maxsize)</span>
+<span class="lineNum">      20 </span>            : {
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :   std::unique_lock&lt;mutex_t&gt; lck( _mutex );</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :   _maxsize = maxsize;</span>
+<a name="23"><span class="lineNum">      23 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span><span class="lineCov">          5 : void delayed_queue::reset()</span>
+<span class="lineNum">      26 </span>            : {
+<span class="lineNum">      27 </span><span class="lineCov">          5 :   _drop_count = 0;</span>
+<span class="lineNum">      28 </span><span class="lineCov">          5 :   _loop_exit = false;</span>
+<span class="lineNum">      29 </span><span class="lineCov">         10 :   while ( !_que.empty() ) </span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :     _que.pop();</span>
+<span class="lineNum">      31 </span><span class="lineCov">         10 :   while ( !_delayed_que.empty() ) </span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :     _delayed_que.pop();</span>
+<a name="33"><span class="lineNum">      33 </span><span class="lineCov">          5 : }</span></a>
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span><span class="lineCov">          1 : std::size_t delayed_queue::run()</span>
+<span class="lineNum">      36 </span>            : {
+<span class="lineNum">      37 </span><span class="lineCov">          1 :   std::unique_lock&lt;mutex_t&gt; lck( _mutex );</span>
+<span class="lineNum">      38 </span><span class="lineCov">          1 :   if ( _loop_exit ) </span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :     return 0;</span>
+<span class="lineNum">      40 </span><span class="lineCov">          1 :   lck.unlock();</span>
+<span class="lineNum">      41 </span><span class="lineCov">          1 :   return this-&gt;loop_(lck, false);</span>
+<a name="42"><span class="lineNum">      42 </span>            : }</a>
+<span class="lineNum">      43 </span>            :   
+<span class="lineNum">      44 </span><span class="lineCov">         15 : std::size_t delayed_queue::run_one()</span>
+<span class="lineNum">      45 </span>            : {
+<span class="lineNum">      46 </span><span class="lineCov">         15 :   if ( _loop_exit ) </span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :     return 0;</span>
+<span class="lineNum">      48 </span><span class="lineCov">         15 :   std::unique_lock&lt;mutex_t&gt; lck( _mutex, std::defer_lock );</span>
+<span class="lineNum">      49 </span><span class="lineCov">         15 :   return this-&gt;run_one_( lck );</span>
+<a name="50"><span class="lineNum">      50 </span>            : }</a>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 : std::size_t delayed_queue::poll_one()</span>
+<span class="lineNum">      53 </span>            : {
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :   std::unique_lock&lt;mutex_t&gt; lck( _mutex, std::defer_lock );</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :   if ( _loop_exit ) </span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     return 0;</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :   return this-&gt;poll_one_( lck );</span>
+<a name="58"><span class="lineNum">      58 </span>            : }</a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineCov">         29 : void delayed_queue::stop()</span>
+<span class="lineNum">      61 </span>            : {
+<span class="lineNum">      62 </span><span class="lineCov">         29 :   std::unique_lock&lt;mutex_t&gt; lck( _mutex );</span>
+<span class="lineNum">      63 </span><span class="lineCov">         29 :   if ( !_loop_exit )</span>
+<span class="lineNum">      64 </span>            :   { 
+<span class="lineNum">      65 </span><span class="lineCov">         11 :     _drop_count = 0;</span>
+<span class="lineNum">      66 </span><span class="lineCov">         11 :     _loop_exit = true;</span>
+<span class="lineNum">      67 </span><span class="lineCov">         11 :     _cond_var.notify_all();</span>
+<span class="lineNum">      68 </span><span class="lineCov">         29 :   }</span>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">         29 : }</span></a>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 : void delayed_queue::safe_post( function_t f)</span>
+<span class="lineNum">      72 </span>            : {
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :   std::lock_guard&lt;mutex_t&gt; lock( _mutex );</span>
+<span class="lineNum">      74 </span>            :   
+<a name="75"><span class="lineNum">      75 </span><span class="lineNoCov">          0 :   std::weak_ptr&lt;self&gt; wthis = this-&gt;shared_from_this();</span></a>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :   ++_safe_counter;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :   _que.push( [wthis, f]()</span>
+<span class="lineNum">      78 </span>            :   {
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     if (auto pthis = wthis.lock() )</span>
+<span class="lineNum">      80 </span>            :     {
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :       --pthis-&gt;_safe_counter;</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :       f();</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :   } );</span>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :   _cond_var.notify_one();</span>
+<a name="87"><span class="lineNum">      87 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span><span class="lineCov">         11 : bool delayed_queue::post( function_t f, function_t drop )</span>
+<span class="lineNum">      90 </span>            : {
+<span class="lineNum">      91 </span><span class="lineCov">         11 :   std::lock_guard&lt;mutex_t&gt; lock( _mutex );</span>
+<span class="lineNum">      92 </span><span class="lineCov">         11 :   if ( !this-&gt;check_(std::move(drop)) )</span>
+<span class="lineNum">      93 </span><span class="lineCov">          2 :     return false;</span>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            :   // _que.push( std::move( f ) );
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">         18 :   std::weak_ptr&lt;self&gt; wthis = this-&gt;shared_from_this();</span></a>
+<span class="lineNum">      97 </span><span class="lineCov">          9 :   ++_counter;</span>
+<span class="lineNum">      98 </span><span class="lineCov">         36 :   _que.push( [wthis, f]()</span>
+<span class="lineNum">      99 </span>            :   {
+<span class="lineNum">     100 </span><span class="lineCov">          9 :     if (auto pthis = wthis.lock() )</span>
+<span class="lineNum">     101 </span>            :     {
+<span class="lineNum">     102 </span><span class="lineCov">          9 :       --pthis-&gt;_counter;</span>
+<span class="lineNum">     103 </span><span class="lineCov">          9 :       f();</span>
+<span class="lineNum">     104 </span><span class="lineCov">          9 :     }</span>
+<span class="lineNum">     105 </span><span class="lineCov">         18 :   } );</span>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineCov">          9 :   _cond_var.notify_one();</span>
+<span class="lineNum">     108 </span><span class="lineCov">         20 :   return true;</span>
+<a name="109"><span class="lineNum">     109 </span>            : }</a>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineCov">          9 : void delayed_queue::safe_post_at(time_point_t time_point, function_t f)</span>
+<span class="lineNum">     112 </span>            : {
+<span class="lineNum">     113 </span><span class="lineCov">          9 :   std::lock_guard&lt;mutex_t&gt; lock( _mutex );</span>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         18 :   std::weak_ptr&lt;self&gt; wthis = this-&gt;shared_from_this();</span></a>
+<span class="lineNum">     115 </span><span class="lineCov">          9 :   ++_safe_counter;</span>
+<span class="lineNum">     116 </span><span class="lineCov">         51 :   this-&gt;push_at_( time_point, [wthis, f]()</span>
+<span class="lineNum">     117 </span>            :   {
+<span class="lineNum">     118 </span><span class="lineCov">          8 :     if (auto pthis = wthis.lock() )</span>
+<span class="lineNum">     119 </span>            :     {
+<span class="lineNum">     120 </span><span class="lineCov">          8 :       --pthis-&gt;_safe_counter;</span>
+<span class="lineNum">     121 </span><span class="lineCov">          8 :       f();</span>
+<span class="lineNum">     122 </span><span class="lineCov">          8 :     }</span>
+<span class="lineNum">     123 </span><span class="lineCov">         17 :   } );</span>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineCov">         18 :   _cond_var.notify_one();</span>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">          9 : }</span></a>
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span><span class="lineCov">          7 : bool delayed_queue::post_at(time_point_t time_point, function_t f, function_t drop)</span>
+<span class="lineNum">     129 </span>            : {
+<span class="lineNum">     130 </span><span class="lineCov">          7 :   std::lock_guard&lt;mutex_t&gt; lock( _mutex );</span>
+<span class="lineNum">     131 </span><span class="lineCov">          7 :   if ( !this-&gt;check_(std::move(drop)) )</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     return false;</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            :   //this-&gt;push_at_( std::move(time_point), std::move(f) ); 
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         14 :   std::weak_ptr&lt;self&gt; wthis = this-&gt;shared_from_this();</span></a>
+<span class="lineNum">     136 </span><span class="lineCov">          7 :   ++_counter;</span>
+<span class="lineNum">     137 </span><span class="lineCov">         42 :   this-&gt;push_at_( time_point, [wthis, f]()</span>
+<span class="lineNum">     138 </span>            :   {
+<span class="lineNum">     139 </span><span class="lineCov">          7 :     if (auto pthis = wthis.lock() )</span>
+<span class="lineNum">     140 </span>            :     {
+<span class="lineNum">     141 </span><span class="lineCov">          7 :       --pthis-&gt;_counter;</span>
+<span class="lineNum">     142 </span><span class="lineCov">          7 :       f();</span>
+<span class="lineNum">     143 </span><span class="lineCov">          7 :     }</span>
+<span class="lineNum">     144 </span><span class="lineCov">         14 :   } );</span>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineCov">          7 :   _cond_var.notify_one();</span>
+<span class="lineNum">     147 </span><span class="lineCov">         14 :   return true;</span>
+<a name="148"><span class="lineNum">     148 </span>            : }</a>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineCov">          8 : void delayed_queue::safe_delayed_post(duration_t duration, function_t f)</span>
+<span class="lineNum">     151 </span>            : {  
+<span class="lineNum">     152 </span><span class="lineCov">          8 :   if ( 0 == duration.count() )</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     this-&gt;safe_post( f);</span>
+<span class="lineNum">     154 </span>            :   else
+<span class="lineNum">     155 </span><span class="lineCov">          8 :     this-&gt;safe_post_at( std::chrono::system_clock::now() + std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(duration), f);</span>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">          8 : }</span></a>
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span><span class="lineCov">          7 : bool delayed_queue::delayed_post(duration_t duration, function_t f, function_t drop)</span>
+<span class="lineNum">     159 </span>            : {  
+<span class="lineNum">     160 </span><span class="lineCov">          7 :   if ( 0 == duration.count() )</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     return this-&gt;post( f, drop);</span>
+<span class="lineNum">     162 </span>            :   else
+<span class="lineNum">     163 </span><span class="lineCov">          7 :     return this-&gt;post_at( std::chrono::system_clock::now() + std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(duration), f, drop);</span>
+<a name="164"><span class="lineNum">     164 </span>            : }</a>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 : std::size_t delayed_queue::unsafe_size() const</span>
+<span class="lineNum">     167 </span>            : {
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :   return _counter;</span>
+<a name="169"><span class="lineNum">     169 </span>            : }</a>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 : std::size_t delayed_queue::safe_size() const</span>
+<span class="lineNum">     172 </span>            : {
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :   return _safe_counter;</span>
+<a name="174"><span class="lineNum">     174 </span>            : }</a>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 : std::size_t delayed_queue::full_size() const</span>
+<span class="lineNum">     177 </span>            : {
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :   return _safe_counter + _counter;</span>
+<a name="179"><span class="lineNum">     179 </span>            : }</a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineCov">          1 : std::size_t delayed_queue::dropped() const</span>
+<span class="lineNum">     182 </span>            : {
+<span class="lineNum">     183 </span><span class="lineCov">          1 :   return _drop_count;</span>
+<span class="lineNum">     184 </span>            : }
+<a name="185"><span class="lineNum">     185 </span>            : </a>
+<span class="lineNum">     186 </span>            : //private:
+<span class="lineNum">     187 </span><span class="lineCov">         18 : bool delayed_queue::check_(function_t drop)</span>
+<span class="lineNum">     188 </span>            : {
+<span class="lineNum">     189 </span><span class="lineCov">         18 :   if ( _maxsize == 0 )</span>
+<span class="lineNum">     190 </span><span class="lineCov">         13 :     return true;</span>
+<span class="lineNum">     191 </span><span class="lineCov">          5 :   if ( this-&gt;size_() &lt; _maxsize )</span>
+<span class="lineNum">     192 </span><span class="lineCov">          3 :     return true;</span>
+<span class="lineNum">     193 </span><span class="lineCov">          2 :   ++_drop_count;</span>
+<span class="lineNum">     194 </span><span class="lineCov">          2 :   if (drop!=nullptr)</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     drop();</span>
+<span class="lineNum">     196 </span><span class="lineCov">          2 :   return false;</span>
+<a name="197"><span class="lineNum">     197 </span>            : }</a>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineCov">          5 : std::size_t delayed_queue::size_() const</span>
+<span class="lineNum">     200 </span>            : {
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">          5 :   return _que.size() + _delayed_que.size();</span></a>
+<span class="lineNum">     202 </span>            : }
+<span class="lineNum">     203 </span><span class="lineCov">         16 : void delayed_queue::push_at_(time_point_t time_point, function_t f)</span>
+<span class="lineNum">     204 </span>            : {
+<span class="lineNum">     205 </span><span class="lineCov">         16 :   _delayed_que.emplace( time_point, std::move( f ) );</span>
+<a name="206"><span class="lineNum">     206 </span><span class="lineCov">         16 : }</span></a>
+<span class="lineNum">     207 </span>            :   
+<span class="lineNum">     208 </span><span class="lineCov">         41 : std::size_t delayed_queue::poll_one_( std::unique_lock&lt;mutex_t&gt;&amp; lck)</span>
+<span class="lineNum">     209 </span>            : {
+<span class="lineNum">     210 </span><span class="lineCov">         41 :   lck.lock();</span>
+<span class="lineNum">     211 </span><span class="lineCov">         41 :   if ( ! _delayed_que.empty() )</span>
+<span class="lineNum">     212 </span>            :   {
+<span class="lineNum">     213 </span><span class="lineCov">         39 :     if ( _delayed_que.top().first &lt;= std::chrono::system_clock::now() )</span>
+<span class="lineNum">     214 </span>            :     {
+<span class="lineNum">     215 </span><span class="lineCov">         15 :       _que.push( std::move( _delayed_que.top().second ) );</span>
+<span class="lineNum">     216 </span><span class="lineCov">         15 :       _delayed_que.pop();</span>
+<span class="lineNum">     217 </span>            :     }
+<span class="lineNum">     218 </span>            :   }
+<span class="lineNum">     219 </span><span class="lineCov">         41 :   if ( _que.empty() )</span>
+<span class="lineNum">     220 </span>            :   {
+<span class="lineNum">     221 </span><span class="lineCov">         17 :     lck.unlock();</span>
+<span class="lineNum">     222 </span><span class="lineCov">         17 :     return 0;</span>
+<span class="lineNum">     223 </span>            :   }
+<span class="lineNum">     224 </span><span class="lineCov">         24 :   function_t run_func = std::move( _que.front() );</span>
+<span class="lineNum">     225 </span><span class="lineCov">         24 :   _que.pop();</span>
+<span class="lineNum">     226 </span><span class="lineCov">         24 :   lck.unlock();</span>
+<span class="lineNum">     227 </span>            :    
+<span class="lineNum">     228 </span><span class="lineCov">         24 :   run_func();</span>
+<span class="lineNum">     229 </span>            :     
+<span class="lineNum">     230 </span><span class="lineCov">         24 :   return 1;</span>
+<a name="231"><span class="lineNum">     231 </span>            : }</a>
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span><span class="lineCov">         15 : std::size_t delayed_queue::run_one_( std::unique_lock&lt;mutex_t&gt;&amp; lck)</span>
+<span class="lineNum">     234 </span>            : {
+<span class="lineNum">     235 </span><span class="lineCov">         15 :   return this-&gt;loop_( lck, true);</span>
+<a name="236"><span class="lineNum">     236 </span>            : }</a>
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineCov">         16 : std::size_t delayed_queue::loop_(std::unique_lock&lt;mutex_t&gt;&amp; lck, bool one)</span>
+<span class="lineNum">     239 </span>            : {
+<span class="lineNum">     240 </span><span class="lineCov">         16 :   std::size_t result = 0;</span>
+<span class="lineNum">     241 </span><span class="lineCov">         59 :   while ( !_loop_exit )</span>
+<span class="lineNum">     242 </span>            :   {
+<span class="lineNum">     243 </span><span class="lineCov">         41 :     if ( !this-&gt;poll_one_( lck ) )</span>
+<span class="lineNum">     244 </span>            :     {
+<span class="lineNum">     245 </span><span class="lineCov">         17 :       this-&gt;run_wait_(lck);</span>
+<span class="lineNum">     246 </span>            :     } 
+<span class="lineNum">     247 </span><span class="lineCov">         24 :     else if ( one )</span>
+<span class="lineNum">     248 </span>            :     {
+<span class="lineNum">     249 </span><span class="lineCov">         14 :       return 1;</span>
+<span class="lineNum">     250 </span>            :     }
+<span class="lineNum">     251 </span>            :     else
+<span class="lineNum">     252 </span><span class="lineCov">         10 :       ++result;</span>
+<span class="lineNum">     253 </span>            :   }
+<span class="lineNum">     254 </span><span class="lineCov">          2 :   return result;</span>
+<a name="255"><span class="lineNum">     255 </span>            : }</a>
+<span class="lineNum">     256 </span>            : 
+<span class="lineNum">     257 </span><span class="lineCov">         17 : void delayed_queue::run_wait_( std::unique_lock&lt;mutex_t&gt; &amp; lck)</span>
+<span class="lineNum">     258 </span>            : {
+<span class="lineNum">     259 </span><span class="lineCov">         17 :   lck.lock();</span>
+<span class="lineNum">     260 </span><span class="lineCov">         17 :   if ( _que.empty() &amp;&amp; _delayed_que.empty() )</span>
+<span class="lineNum">     261 </span>            :   {
+<span class="lineNum">     262 </span><span class="lineCov">          1 :     _cond_var.wait( lck );</span>
+<span class="lineNum">     263 </span>            :   }
+<span class="lineNum">     264 </span><span class="lineCov">         16 :   else if ( _que.empty() &amp;&amp; !_delayed_que.empty() )</span>
+<span class="lineNum">     265 </span>            :   {
+<span class="lineNum">     266 </span><span class="lineCov">         16 :     _cond_var.wait_until( lck, _delayed_que.top().first );</span>
+<span class="lineNum">     267 </span>            :   }
+<span class="lineNum">     268 </span><span class="lineCov">         17 :   lck.unlock();</span>
+<span class="lineNum">     269 </span><span class="lineCov">         17 : }</span>
+<span class="lineNum">     270 </span>            : 
+<span class="lineNum">     271 </span>            : }
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

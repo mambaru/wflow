@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: Исходный файл wflow/logger.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_8eab678918d29f47ce726eb97f1ecd22.html">wflow</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">logger.hpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="logger_8hpp.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Author: Vladimir Migashko &lt;migashko@gmail.com&gt;, (C) 2013-2018</span></div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//</span></div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// Copyright: See COPYING file that comes with this distribution</span></div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//</span></div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#pragma once</span></div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef WFLOW_DISABLE_LOG</span></div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;wlog/logging.hpp&gt;</span></div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div><div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a70e0499d64439ea0a889355c85b9b20e">   13</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_ERROR(X)    WLOG_LOG_ERROR( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="logger_8hpp.html#abceb43279e0b1fee72f5bb3d411c1431">   14</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_WARNING(X)  WLOG_LOG_WARNING( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a03eaaba58a4c08ef214e605b24475ce7">   15</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_MESSAGE(X)  WLOG_LOG_MESSAGE( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="logger_8hpp.html#ab22a602914d8d5bc68880b9016c5e0f0">   16</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_FATAL(X)    WLOG_LOG_FATAL( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a82ac4c1d79c0419b52fbd093882584c5">   17</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_BEGIN(X)    WLOG_LOG_BEGIN( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a58e1c5acbaffeea941d2dcbe9e33ad7f">   18</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_END(X)      WLOG_LOG_END( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="logger_8hpp.html#acdb1c06649508e279449c775d92ebbf6">   19</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_DEBUG(X)    WLOG_LOG_DEBUG( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a859ad251a58cd34e8b65149fc8a29267">   20</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_TRACE(X)    WLOG_LOG_TRACE( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a2933d5cfdbf76151876c5175a32b2bef">   21</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_PROGRESS(X) WLOG_LOG_PROGRESS( &quot;WFLOW&quot;, X )</span></div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#else</span></div><div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div><div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#define WFLOW_LOG_ERROR(X)    </span></div><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define WFLOW_LOG_WARNING(X)  </span></div><div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define WFLOW_LOG_MESSAGE(X)  </span></div><div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define WFLOW_LOG_FATAL(X)    </span></div><div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#define WFLOW_LOG_BEGIN(X)    </span></div><div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#define WFLOW_LOG_END(X)      </span></div><div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#define WFLOW_LOG_DEBUG(X)    </span></div><div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#define WFLOW_LOG_TRACE(X)    </span></div><div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#define WFLOW_LOG_PROGRESS(X) </span></div><div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>wlog{                                                                                                                       </div><div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> ...Args&gt;                                                                                                              </div><div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> only_for_log( Args&amp;&amp; ... ){}                                                                                                </div><div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}                                                                                                                                       </div><div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div><div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#endif</span></div></div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>

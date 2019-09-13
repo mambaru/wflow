@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>wflow: Структура wflow::workflow_handlers</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">wflow
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.15 -->
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',false,false,'search.php','Поиск');
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="namespacewflow.html">wflow</a></li><li class="navelem"><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Открытые типы</a> &#124;
+<a href="#pub-attribs">Открытые атрибуты</a> &#124;
+<a href="structwflow_1_1workflow__handlers-members.html">Полный список членов класса</a>  </div>
+  <div class="headertitle">
+<div class="title">Структура wflow::workflow_handlers</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="workflow__options_8hpp_source.html">workflow_options.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Открытые типы</h2></td></tr>
+<tr class="memitem:aa9b6eef63805c00348aa56a212faa337"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void(std::thread::id)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#aa9b6eef63805c00348aa56a212faa337">startup_handler_t</a></td></tr>
+<tr class="memdesc:aa9b6eef63805c00348aa56a212faa337"><td class="mdescLeft">&#160;</td><td class="mdescRight">тип обработчика для workflow_options::startup_handler.  <a href="#aa9b6eef63805c00348aa56a212faa337">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa9b6eef63805c00348aa56a212faa337"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7177035f9b2c40855f03be2489c16deb"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void(std::thread::id)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#a7177035f9b2c40855f03be2489c16deb">finish_handler_t</a></td></tr>
+<tr class="memdesc:a7177035f9b2c40855f03be2489c16deb"><td class="mdescLeft">&#160;</td><td class="mdescRight">тип обработчика для workflow_options::finish_handler.  <a href="#a7177035f9b2c40855f03be2489c16deb">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7177035f9b2c40855f03be2489c16deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6acb836b7565bfba45aea9169db4451"><td class="memItemLeft" align="right" valign="top">typedef std::chrono::time_point&lt; std::chrono::steady_clock &gt;::duration&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#ad6acb836b7565bfba45aea9169db4451">statistics_duration</a></td></tr>
+<tr class="memdesc:ad6acb836b7565bfba45aea9169db4451"><td class="mdescLeft">&#160;</td><td class="mdescRight">тип временного интервала для статистики  <a href="#ad6acb836b7565bfba45aea9169db4451">Подробнее...</a><br /></td></tr>
+<tr class="separator:ad6acb836b7565bfba45aea9169db4451"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a100ab44f354928e0fc1fc070557b058f"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void(std::thread::id, size_t count, <a class="el" href="structwflow_1_1workflow__handlers.html#ad6acb836b7565bfba45aea9169db4451">statistics_duration</a>)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#a100ab44f354928e0fc1fc070557b058f">statistics_handler_t</a></td></tr>
+<tr class="memdesc:a100ab44f354928e0fc1fc070557b058f"><td class="mdescLeft">&#160;</td><td class="mdescRight">тип функции обработчика статистики  <a href="#a100ab44f354928e0fc1fc070557b058f">Подробнее...</a><br /></td></tr>
+<tr class="separator:a100ab44f354928e0fc1fc070557b058f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Открытые атрибуты</h2></td></tr>
+<tr class="memitem:a68ac9d05369b315832070d1ee3b8e7e0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classwflow_1_1workflow.html">workflow</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#a68ac9d05369b315832070d1ee3b8e7e0">control_workflow</a></td></tr>
+<tr class="memdesc:a68ac9d05369b315832070d1ee3b8e7e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Указатель на workflow для таймера <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a>.  <a href="#a68ac9d05369b315832070d1ee3b8e7e0">Подробнее...</a><br /></td></tr>
+<tr class="separator:a68ac9d05369b315832070d1ee3b8e7e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84b7bac250ef0e2583dca9777d23576c"><td class="memItemLeft" align="right" valign="top">std::function&lt; bool()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#a84b7bac250ef0e2583dca9777d23576c">control_handler</a> = nullptr</td></tr>
+<tr class="memdesc:a84b7bac250ef0e2583dca9777d23576c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Альернативный обработчик для <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a>.  <a href="#a84b7bac250ef0e2583dca9777d23576c">Подробнее...</a><br /></td></tr>
+<tr class="separator:a84b7bac250ef0e2583dca9777d23576c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed6630ef179488f6c7ae9dd6bee874c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwflow_1_1workflow__handlers.html#aa9b6eef63805c00348aa56a212faa337">startup_handler_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#aed6630ef179488f6c7ae9dd6bee874c6">startup_handler</a> = nullptr</td></tr>
+<tr class="memdesc:aed6630ef179488f6c7ae9dd6bee874c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик вызывается после запуска дополнительных потоков  <a href="#aed6630ef179488f6c7ae9dd6bee874c6">Подробнее...</a><br /></td></tr>
+<tr class="separator:aed6630ef179488f6c7ae9dd6bee874c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e00c7bbd1055b7d722f24bd3a1fe76e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwflow_1_1workflow__handlers.html#a7177035f9b2c40855f03be2489c16deb">finish_handler_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#a4e00c7bbd1055b7d722f24bd3a1fe76e">finish_handler</a> = nullptr</td></tr>
+<tr class="memdesc:a4e00c7bbd1055b7d722f24bd3a1fe76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик вызывается перед завершением дополнительных потоков  <a href="#a4e00c7bbd1055b7d722f24bd3a1fe76e">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4e00c7bbd1055b7d722f24bd3a1fe76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f82c95d60d7f901de76e8025c627b34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwflow_1_1workflow__handlers.html#a100ab44f354928e0fc1fc070557b058f">statistics_handler_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html#a6f82c95d60d7f901de76e8025c627b34">statistics_handler</a> = nullptr</td></tr>
+<tr class="memdesc:a6f82c95d60d7f901de76e8025c627b34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик для сбора статистики  <a href="#a6f82c95d60d7f901de76e8025c627b34">Подробнее...</a><br /></td></tr>
+<tr class="separator:a6f82c95d60d7f901de76e8025c627b34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Определения типов</h2>
+<a id="a7177035f9b2c40855f03be2489c16deb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7177035f9b2c40855f03be2489c16deb">&#9670;&nbsp;</a></span>finish_handler_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt;void(std::thread::id)&gt; <a class="el" href="structwflow_1_1workflow__handlers.html#a7177035f9b2c40855f03be2489c16deb">wflow::workflow_handlers::finish_handler_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>тип обработчика для workflow_options::finish_handler. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">std::thread::id</td><td>Идентификатор текущего потока </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa9b6eef63805c00348aa56a212faa337"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9b6eef63805c00348aa56a212faa337">&#9670;&nbsp;</a></span>startup_handler_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt;void(std::thread::id)&gt; <a class="el" href="structwflow_1_1workflow__handlers.html#aa9b6eef63805c00348aa56a212faa337">wflow::workflow_handlers::startup_handler_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>тип обработчика для workflow_options::startup_handler. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">std::thread::id</td><td>Идентификатор текущего потока </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad6acb836b7565bfba45aea9169db4451"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6acb836b7565bfba45aea9169db4451">&#9670;&nbsp;</a></span>statistics_duration</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;::duration <a class="el" href="structwflow_1_1workflow__handlers.html#ad6acb836b7565bfba45aea9169db4451">wflow::workflow_handlers::statistics_duration</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>тип временного интервала для статистики </p>
+<dl class="section see"><dt>См. также</dt><dd>workflow_options::statistics_handler_t, workflow_options::statistics_handler </dd></dl>
+
+</div>
+</div>
+<a id="a100ab44f354928e0fc1fc070557b058f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a100ab44f354928e0fc1fc070557b058f">&#9670;&nbsp;</a></span>statistics_handler_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::function&lt;void(std::thread::id, size_t count, <a class="el" href="structwflow_1_1workflow__handlers.html#ad6acb836b7565bfba45aea9169db4451">statistics_duration</a>)&gt; <a class="el" href="structwflow_1_1workflow__handlers.html#a100ab44f354928e0fc1fc070557b058f">wflow::workflow_handlers::statistics_handler_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>тип функции обработчика статистики </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">std::thread::id</td><td>Идентификатор текущего потока </td></tr>
+    <tr><td class="paramname">size_t</td><td>Количество выполненных заданий за интервал времени </td></tr>
+    <tr><td class="paramname">statistics_duration</td><td>интервал времени </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>См. также</dt><dd>workflow_options::statistics_handler </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Данные класса</h2>
+<a id="a84b7bac250ef0e2583dca9777d23576c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84b7bac250ef0e2583dca9777d23576c">&#9670;&nbsp;</a></span>control_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;bool()&gt; wflow::workflow_handlers::control_handler = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Альернативный обработчик для <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a>. </p>
+<p class="">Например, чтобы подавить любой вывод в лог: </p><div class="fragment"><div class="line">workflow_options opt;</div><div class="line">opt.control_handler=[](){<span class="keywordflow">return</span> <span class="keyword">true</span>;}</div></div><!-- fragment --> 
+</div>
+</div>
+<a id="a68ac9d05369b315832070d1ee3b8e7e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68ac9d05369b315832070d1ee3b8e7e0">&#9670;&nbsp;</a></span>control_workflow</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classwflow_1_1workflow.html">workflow</a>&gt; wflow::workflow_handlers::control_workflow</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Указатель на workflow для таймера <a class="el" href="structwflow_1_1workflow__options.html#a6dda32b06e81a8b9b7fbc5f0debb5c1c" title="Интервал проверки счетчиков в миллисекундах ">workflow_options::control_ms</a>. </p>
+<p class="">при большом количестве тяжеловесных заданий таймер может не срабатывать во время, поэтому для его рекомендуется создать отдельный workflow </p><dl class="section see"><dt>См. также</dt><dd>example0.cpp </dd></dl>
+
+</div>
+</div>
+<a id="a4e00c7bbd1055b7d722f24bd3a1fe76e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e00c7bbd1055b7d722f24bd3a1fe76e">&#9670;&nbsp;</a></span>finish_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structwflow_1_1workflow__handlers.html#a7177035f9b2c40855f03be2489c16deb">finish_handler_t</a> wflow::workflow_handlers::finish_handler = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработчик вызывается перед завершением дополнительных потоков </p>
+<dl class="section see"><dt>См. также</dt><dd>workflow_options::finish_handler_t, <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a>, <a class="el" href="classwflow_1_1workflow.html#aea7c0abc0de6a14a0f8d70814250a48f" title="Реконфигурация после запуска. ">workflow::reconfigure</a> </dd></dl>
+
+</div>
+</div>
+<a id="aed6630ef179488f6c7ae9dd6bee874c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed6630ef179488f6c7ae9dd6bee874c6">&#9670;&nbsp;</a></span>startup_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structwflow_1_1workflow__handlers.html#aa9b6eef63805c00348aa56a212faa337">startup_handler_t</a> wflow::workflow_handlers::startup_handler = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработчик вызывается после запуска дополнительных потоков </p>
+<dl class="section see"><dt>См. также</dt><dd>workflow_options::startup_handler_t, <a class="el" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec" title="Количество дополнительных потоков обработки ">workflow_options::threads</a>, <a class="el" href="classwflow_1_1workflow.html#aea7c0abc0de6a14a0f8d70814250a48f" title="Реконфигурация после запуска. ">workflow::reconfigure</a> </dd></dl>
+
+</div>
+</div>
+<a id="a6f82c95d60d7f901de76e8025c627b34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f82c95d60d7f901de76e8025c627b34">&#9670;&nbsp;</a></span>statistics_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structwflow_1_1workflow__handlers.html#a100ab44f354928e0fc1fc070557b058f">statistics_handler_t</a> wflow::workflow_handlers::statistics_handler = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработчик для сбора статистики </p>
+<p class="">вызывается на каждой итерации обработки очереди из каждого потока io_service::run() </p><dl class="section see"><dt>См. также</dt><dd>workflow_options::statistics_handler_t </dd></dl>
+
+</div>
+</div>
+<hr/>Объявления и описания членов структуры находятся в файле:<ul>
+<li>wflow/<a class="el" href="workflow__options_8hpp_source.html">workflow_options.hpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.15
+</small></address>
+</body>
+</html>
