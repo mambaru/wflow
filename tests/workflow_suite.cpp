@@ -2,7 +2,7 @@
 #include <fas/testing.hpp>
 #include <wflow/task/task_manager.hpp>
 #include <wflow/workflow.hpp>
-#include <wflow/system/memory.hpp>
+#include <fas/system/memory.hpp>
 #include <chrono>
 #include <memory>
 #include <set>
@@ -125,11 +125,11 @@ UNIT(workflow3, "control handler")
   ::wflow::asio::io_service io;
   ::wflow::asio::io_service::work wrk(io);    
   ::wflow::workflow_options opt;
+  ::wflow::workflow_handlers handlers;
   std::atomic<int> counter(0);
-  std::atomic<int> dropped(0);
   opt.threads = 1;
   opt.control_ms = 100;
-  opt.control_handler = [&]()->bool{
+  handlers.control_handler = [&]()->bool{
     if ( counter == 3 )
     {
       t << message("STOP");
@@ -138,7 +138,7 @@ UNIT(workflow3, "control handler")
     return true;
   };
   
-  ::wflow::workflow wfl(io, opt);
+  ::wflow::workflow wfl(io, opt, handlers);
   wfl.start();
 
   for (int i =0 ; i < 5; i++)
@@ -178,7 +178,7 @@ struct foo
     typedef std::unique_ptr<response> ptr;
     typedef std::function< void(ptr) > handler;
   };
-  void method( request::ptr, response::handler h) { h( std::unique_ptr<response>( new response() ) ); };
+  void method( request::ptr, response::handler h) { h( std::unique_ptr<response>( new response() ) ); }
 };
 
 UNIT(requester1, "")
@@ -286,7 +286,7 @@ UNIT(shutdown, "")
   wo.threads = 4;
   std::mutex mutex;
   std::set<std::thread::id> threads_ids;
-  size_t count = 0;
+  std::atomic_size_t count={0};
   wflow::workflow flw(wo);
   for (size_t i = 0; i < 16; ++i)
   {
@@ -322,6 +322,49 @@ UNIT(shutdown, "")
   { std::lock_guard<std::mutex> lk(mutex); t << message("done!"); t << flush; }
   t << equal<expect, size_t>(count, 16) << FAS_FL;
   t << equal<expect, size_t>(threads_ids.size(), 4) << FAS_FL;
+  
+  t << message("=====================================");
+  for (size_t i = 0; i < 16; ++i)
+  {
+    flw.post([&](){++count;});
+  }
+  t << message("=====================================");  
+  flw.start();
+  t << message("=====================================");
+  flw.shutdown();
+  flw.wait();
+  t << equal<expect, size_t>(count, 32) << FAS_FL;
+}
+
+UNIT(wait_and_restart, "")
+{
+  using namespace ::fas::testing;
+  wflow::workflow_options wo;
+  wo.id = "wait_and_restart";
+  wo.threads = 4;
+  wflow::workflow flw(wo);
+
+  std::atomic<size_t> count(0);
+  auto handler = [&count](){ ++count; return true;};
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.start();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.wait_and_restart();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.shutdown();
+  flw.wait();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  t << equal<expect, size_t>(count, 30) << FAS_FL;
+  count = 0;
+  flw.start();
+  flw.shutdown();
+  flw.wait();
+  t << equal<expect, size_t>(count, 10) << FAS_FL;
+  
 }
 
 }
@@ -335,5 +378,6 @@ BEGIN_SUITE(workflow, "")
   ADD_UNIT(requester1)
   ADD_UNIT(overflow_reset)
   ADD_UNIT(shutdown)
+  ADD_UNIT(wait_and_restart)
 END_SUITE(workflow)
 

@@ -137,6 +137,7 @@ void task_manager::wait()
 {
   if ( _pool!=nullptr) 
     _pool->wait();
+  _queue->reset();
 }
 
 

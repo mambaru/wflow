@@ -1,3 +1,5 @@
+*_build.counter
+*build_info.h
 *~
 *.kdev4
 *.pyc
@@ -7,10 +9,8 @@
 */debug
 */release
 */build
-build/
+build
 .tup
-btp/server/debug
-btp/server/release
 *.kch
 autom4te.cache
 *.deps
@@ -19,6 +19,4 @@ CMakeCache.txt
 *.kate-swp
 *build_info.h
 config.h
-docs/
-cppcheck.cppcheck
-
+docs
