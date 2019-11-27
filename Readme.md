@@ -1,9 +1,6 @@
-[![Build Status](https://travis-ci.com/mambaru/wflow.svg?branch=master)](https://travis-ci.com/mambaru/wflow)
-[![Build Status](https://travis-ci.com/mambaru/wflow.svg?branch=mambaru)](https://travis-ci.com/mambaru/wflow)
-[![pipeline status](http://github.lan/cpp/wflow/badges/wip-devel/pipeline.svg)](http://github.lan/cpp/wflow/commits/wip-devel)
-[![pipeline status](http://github.lan/cpp/wflow/badges/pre-release/pipeline.svg)](http://github.lan/cpp/wflow/commits/pre-release)
-[![coverage report](http://github.lan/cpp/wflow/badges/wip-devel/coverage.svg)](http://github.lan/cpp/wflow/commits/wip-devel)
-[![coverage report](http://github.lan/cpp/wflow/badges/pre-release/coverage.svg)](http://github.lan/cpp/wflow/commits/pre-release)
+[![Build Status](https://github.com/mambaru/wflow/workflows/C/C++%20CI/badge.svg?branch=master)](https://github.com/mambaru/wflow/tree/master)
+[![Build Status](https://github.com/mambaru/wflow/workflows/C/C++%20CI/badge.svg?branch=mambaru)](https://github.com/mambaru/wflow/tree/mambaru)
+[![Coverage Report](http://github.lan/cpp/wflow/badges/pre-release/coverage.svg)](http://github.lan/cpp/wflow/commits/pre-release)
 
 Библиотека на базе boost::asio::io_service для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами. 
 
@@ -25,9 +22,9 @@ Usage:
 Для сборки примеров и тестов, а также чтобы отключить поддержку JSON-конфигурации и/или логирования :
 
 ```bash
-git clone https://github.com/mambaru/wlog.git
-mkdir wlog/build
-cd wlog/build
+git clone https://github.com/mambaru/wflow.git
+mkdir wflow/build
+cd wflow/build
 cmake ..
 # Для сборки примеров и тестов
 cmake -DBUILD_TESTING=ON ..
