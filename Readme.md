@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.com/mambaru/wflow.svg?branch=master)](https://travis-ci.com/mambaru/wflow)
 [![Build Status](https://travis-ci.com/mambaru/wflow.svg?branch=mambaru)](https://travis-ci.com/mambaru/wflow)
+[![pipeline status](http://github.lan/cpp/wflow/badges/wip-devel/pipeline.svg)](http://github.lan/cpp/wflow/commits/wip-devel)
+[![pipeline status](http://github.lan/cpp/wflow/badges/pre-release/pipeline.svg)](http://github.lan/cpp/wflow/commits/pre-release)
+[![coverage report](http://github.lan/cpp/wflow/badges/wip-devel/coverage.svg)](http://github.lan/cpp/wflow/commits/wip-devel)
+[![coverage report](http://github.lan/cpp/wflow/badges/pre-release/coverage.svg)](http://github.lan/cpp/wflow/commits/pre-release)
 
 Библиотека на базе boost::asio::io_service для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами. 
 
