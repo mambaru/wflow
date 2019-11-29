@@ -34,7 +34,7 @@ endif()
 
 add_library(wflow ${source_list})
 wci_targets(wflow)
-target_include_directories(wflow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(wflow PUBLIC ${wflow_SOURCE_DIR})
 
 include(FindThreads)
 find_package(Boost REQUIRED system )
