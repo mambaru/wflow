@@ -1,6 +1,7 @@
+
 [![Build Status](https://github.com/mambaru/wflow/workflows/C++%20CI/badge.svg?branch=master)](https://github.com/mambaru/wflow/tree/master)
 [![Build Status](https://github.com/mambaru/wflow/workflows/C++%20CI/badge.svg?branch=mambaru)](https://github.com/mambaru/wflow/tree/mambaru)
-[![Coverage Report](http://github.lan/cpp/wflow/badges/pre-release/coverage.svg)](http://github.lan/cpp/wflow/commits/pre-release)
+[![codecov](https://codecov.io/gh/mambaru/wflow/branch/master/graph/badge.svg)](https://codecov.io/gh/mambaru/wflow)
 
 Библиотека на базе boost::asio::io_service для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами. 
 
