@@ -5,34 +5,59 @@ help:
 	@echo "	make static"
 	@echo "	make tests"
 	@echo "	make doc"
+	@echo "	make cppcheck"
+	@echo "	make debug"
+	@echo "	make paranoid"
+	@echo "	make coverage"
+	@echo "	make coverage-report"
+	@echo "	make clean"
 	@echo "	make update"
 	@echo "	make upgrade"
+	@echo "Example:"
+	@echo "	make static "
+	@echo "	make shared VERBOSE=1 ARGS=-j5"
+
 doc:
 	rm -rf docs
 	if hash doxygen 2>/dev/null; then doxygen; fi
-external:
-	git submodule update --init
-build: 
+init:
 	mkdir -p build
-static: external build
-	cd build && cmake .. -DBUILD_SHARED_LIBS=OFF 
-	cmake --build ./build 
-shared: external build
-	mkdir -p build
-	cd build && cmake .. -DBUILD_SHARED_LIBS=ON
-	cmake --build ./build 
-tests: 	external build
-	cd build && cmake .. -DBUILD_TESTING=ON 
-	cmake --build ./build 
-	cd build && ctest 
+	[[ -d external/cmake-ci/cmake ]] || git submodule update --init external/cmake-ci
+cppcheck: init
+	./external/cmake-ci/scripts/cppcheck-ci.sh
+static: init
+	cd build && cmake .. -DBUILD_SHARED_LIBS=OFF -DDISABLE_WARNINGS=ON
+	cmake --build ./build -- $(or ${ARGS},-j4)
+shared: init
+	cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DDISABLE_WARNINGS=ON
+	cmake --build ./build -- $(or ${ARGS},-j4)
+tests: 	init
+	cd build && cmake .. -DBUILD_TESTING=ON
+	cmake --build ./build -- $(or ${ARGS},-j4)
+	cd build && ctest --output-on-failure
+paranoid: init
+	cd build && cmake .. -DBUILD_TESTING=ON -DPARANOID_WARNINGS=ON
+	cmake --build ./build -- $(or ${ARGS},-j4)
+debug: init
+	cd build && cmake .. -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE="Debug"
+	cmake --build ./build -- $(or ${ARGS},-j4)
+coverage: init
+	cd build && cmake .. -DCODE_COVERAGE=ON -DDISABLE_WARNINGS=ON
+	cmake --build ./build -- $(or ${ARGS},-j4)
+	cd build && ctest
+	./external/cmake-ci/scripts/coverage-report.sh build summary
+coverage-report: init
+	cd build && cmake .. -DCODE_COVERAGE=ON -DDISABLE_WARNINGS=ON
+	cmake --build ./build -- $(or ${ARGS},-j4)
+	cd build && ctest
+	mkdir -p docs
+	mkdir -p docs/html
+	./external/cmake-ci/scripts/coverage-report.sh build docs/html/cov-report
 clean:
 	rm -rf docs
 	cd build && make clean
-update: external
-	rm -f update.sh
-	wget http://github.lan/cpp/cmake-ci/raw/master/update.sh
-	bash update.sh
+	rm build/CMakeCache.txt
+update: init
+	./external/cmake-ci/scripts/update.sh
 upgrade: update
-	rm -f upgrade.sh
-	wget http://github.lan/cpp/cmake-ci/raw/master/upgrade.sh 
-	bash upgrade.sh
+	./external/cmake-ci/scripts/upgrade.sh no-auto master

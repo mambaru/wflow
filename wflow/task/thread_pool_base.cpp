@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <chrono>
 
+
 namespace wflow {
 
 namespace{
@@ -78,7 +79,6 @@ void thread_pool_base::stop()
   std::lock_guard< std::mutex > lk(_mutex);
 
   _flags.clear();
-  //_works.clear();
   _work=nullptr;
 
   for (auto& t : _threads)
@@ -88,6 +88,24 @@ void thread_pool_base::stop()
 
   _started = false;
 }
+
+void thread_pool_base::shutdown()
+{
+  std::lock_guard< std::mutex > lk(_mutex);
+  _work=nullptr; 
+}
+
+void thread_pool_base::wait()
+{
+  std::lock_guard< std::mutex > lk(_mutex);
+  if ( _work!=nullptr )
+    return;
+  for (auto& t : _threads)
+    t.join();
+  _threads.clear();
+  _started = false;
+}
+
 
 template<typename S>
 bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
@@ -171,6 +189,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
   return 
     std::thread([wthis, s, wflag]()
     {
+      std::thread::id thread_id = std::this_thread::get_id();
       try
       {
         thread_pool_base::startup_handler startup;
@@ -183,21 +202,22 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           finish = pthis->_finish;
           statistics = pthis->_statistics;
         }
-        std::thread::id thread_id = std::this_thread::get_id();
+        
         auto pthis = wthis.lock();
         if ( startup != nullptr )
           startup(thread_id);
         
+        std::chrono::steady_clock::time_point beg = std::chrono::steady_clock::now();
         for (;;)
         {
-          auto beg = std::chrono::steady_clock::now();
+          if ( statistics != nullptr )
+            beg = std::chrono::steady_clock::now();
+          
           size_t handlers = s->run_one();
           if (  handlers == 0 )
             break;
-
           if ( wflag.lock() == nullptr)
             break;
-
           if ( statistics != nullptr )
           {
             auto now = std::chrono::steady_clock::now();

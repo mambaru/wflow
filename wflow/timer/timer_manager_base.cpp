@@ -34,7 +34,7 @@ bool timer_manager_base::release( timer_id_t id )
   return true;
 }
 
-size_t timer_manager_base::clear()
+size_t timer_manager_base::reset()
 {
   std::lock_guard< mutex_type > lk(_mutex);
   size_t s = _id_map.size();

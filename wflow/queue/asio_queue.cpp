@@ -1,10 +1,12 @@
 #include "asio_queue.hpp"
+#include <wflow/logger.hpp>
 #include <wflow/system/system.hpp>
 #include <wflow/system/boost.hpp>
+#include <fas/utility/useless_cast.hpp>
 #include <memory>
 
 namespace wflow{
-  
+
 asio_queue::asio_queue(io_service_type& io, const size_t maxsize)
   : _io(io)
 {
@@ -13,7 +15,7 @@ asio_queue::asio_queue(io_service_type& io, const size_t maxsize)
   _drop_count = 0;
   _maxsize = maxsize;
 }
-  
+
 void asio_queue::set_maxsize(size_t maxsize)
 {
   _maxsize = maxsize;
@@ -24,21 +26,22 @@ std::size_t asio_queue::run()
   ::wflow::system::error_code ec;
   return _io.run(ec);
 }
-  
+
 std::size_t asio_queue::run_one()
 {
   ::wflow::system::error_code ec;
   std::size_t count = _io.run_one(ec);
+  if ( ec ) WFLOW_LOG_ERROR("asio_queue::run_one: " << ec.message());
   return count;
 }
-  
+
 std::size_t asio_queue::poll_one()
 {
   ::wflow::system::error_code ec;
   return _io.poll_one(ec);
 }
 
-void asio_queue::reset() 
+void asio_queue::reset()
 {
   _io.reset();
 }
@@ -65,7 +68,7 @@ void asio_queue::safe_post( function_t f)
 bool asio_queue::post( function_t f, function_t drop )
 {
   if ( !this->check_(std::move(drop)) )
-    return false;  
+    return false;
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_counter;
   _io.post( [wthis, f]()
@@ -148,11 +151,11 @@ std::size_t asio_queue::dropped() const
 {
   return _drop_count;
 }
-  
+
 // ----------------------------------------
 // ----------------------------------------
 // ----------------------------------------
-  
+
 bool asio_queue::check_(function_t drop)
 {
   if ( _maxsize == 0 )
@@ -168,14 +171,14 @@ bool asio_queue::check_(function_t drop)
 template<typename TP>
 asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
 {
-  typedef std::chrono::microseconds microseconds; 
-  typedef microseconds::rep rep_t; 
-  rep_t d = std::chrono::duration_cast<microseconds>(tp.time_since_epoch()).count(); 
-  rep_t sec = d/1000000; 
-  rep_t mksec = d%1000000; 
-  ::boost::posix_time::ptime ptime = 
+  typedef std::chrono::microseconds microseconds;
+  typedef microseconds::rep rep_t;
+  rep_t d = std::chrono::duration_cast<microseconds>(tp.time_since_epoch()).count();
+  rep_t sec = d/1000000;
+  rep_t mksec = d%1000000;
+  ::boost::posix_time::ptime ptime =
     ::boost::posix_time::from_time_t(0)
-    + ::boost::posix_time::seconds(static_cast<long>(sec))
+    + ::boost::posix_time::seconds(fas::useless_cast<long>(sec))
     + ::boost::posix_time::microseconds(mksec);
   return std::make_shared<timer_type>( this->_io, ptime);
 }

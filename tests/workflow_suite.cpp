@@ -2,9 +2,21 @@
 #include <fas/testing.hpp>
 #include <wflow/task/task_manager.hpp>
 #include <wflow/workflow.hpp>
-#include <wflow/system/memory.hpp>
+#include <fas/system/memory.hpp>
 #include <chrono>
 #include <memory>
+#include <set>
+
+namespace {
+  
+template<typename T>
+time_t get_accuracy(T& t)
+{
+  if ( t.get_argc() < 2 )
+    return 0;
+  
+  return std::atoi( t.get_arg(1).c_str() );
+}
 
 UNIT(workflow1, "")
 {
@@ -12,6 +24,7 @@ UNIT(workflow1, "")
   t << flush;
   wflow::asio::io_service io;
   wflow::workflow_options opt;
+  opt.id="workflow1";
   opt.maxsize = 3;
   opt.threads = 1;
   opt.use_asio = false;
@@ -26,7 +39,7 @@ UNIT(workflow1, "")
     t << flush;
   }, [&](){ t << fatal("DROP"); ++counter;});
   
-  queue.timer()->create(std::chrono::milliseconds(400), [&t, &counter, &m](){
+  queue.get_timer_manager()->create(std::chrono::milliseconds(400), [&t, &counter, &m](){
     std::lock_guard<std::mutex> lk(m);
     ++counter;
     t << message("timer 400ms");
@@ -57,7 +70,9 @@ UNIT(workflow1, "")
   t << message("flush...");
   t << flush;
   queue.stop();
-  t << equal< assert,int >( counter, 7 ) << FAS_FL ;
+  time_t accuracy = get_accuracy(t);
+  if ( accuracy == 0 )
+    t << equal< assert,int >( counter, 7 ) << FAS_FL ;
   
 }
 
@@ -68,6 +83,8 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
   ::wflow::workflow_options opt;
   std::atomic<int> counter(0);
   std::atomic<int> dropped(0);
+  
+  opt.id="workflow2";
   opt.maxsize = 4; 
   opt.threads = 0;
   ::wflow::workflow wfl(io, opt);
@@ -108,11 +125,11 @@ UNIT(workflow3, "control handler")
   ::wflow::asio::io_service io;
   ::wflow::asio::io_service::work wrk(io);    
   ::wflow::workflow_options opt;
+  ::wflow::workflow_handlers handlers;
   std::atomic<int> counter(0);
-  std::atomic<int> dropped(0);
   opt.threads = 1;
   opt.control_ms = 100;
-  opt.control_handler = [&]()->bool{
+  handlers.control_handler = [&]()->bool{
     if ( counter == 3 )
     {
       t << message("STOP");
@@ -121,7 +138,7 @@ UNIT(workflow3, "control handler")
     return true;
   };
   
-  ::wflow::workflow wfl(io, opt);
+  ::wflow::workflow wfl(io, opt, handlers);
   wfl.start();
 
   for (int i =0 ; i < 5; i++)
@@ -161,7 +178,7 @@ struct foo
     typedef std::unique_ptr<response> ptr;
     typedef std::function< void(ptr) > handler;
   };
-  void method( request::ptr, response::handler h) { h( std::unique_ptr<response>( new response() ) ); };
+  void method( request::ptr, response::handler h) { h( std::unique_ptr<response>( new response() ) ); }
 };
 
 UNIT(requester1, "")
@@ -196,7 +213,10 @@ UNIT(requester1, "")
   flw.start();
   ios.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
-  t << equal<expect>(interval, 0) << FAS_FL;
+//  t << equal<expect>(interval, 0) << FAS_FL;
+  time_t accuracy = get_accuracy(t);
+  t << less_equal<assert>(interval, accuracy) <<  FAS_FL;
+
 
 }
 
@@ -210,7 +230,7 @@ UNIT(rate_limit, "")
   wo.threads = 0;
   wo.rate_limit = 100;
   wflow::workflow flw(ios, wo);
-  flw.manager(); // cppcheck fix
+  flw.get_timer_manager(); // cppcheck fix
   flw.start();
 
   auto start = high_resolution_clock::now();
@@ -223,8 +243,9 @@ UNIT(rate_limit, "")
   finish = high_resolution_clock::now();
   t << equal<expect, size_t>(counter, 200) << FAS_FL;
   t << equal<expect, size_t>(2, duration_cast<seconds>(finish - start).count()) << FAS_FL;
-  t << less<expect, size_t>(1900, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
-  t << greater<expect, size_t>(2100, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
+  time_t accuracy = get_accuracy(t);
+  t << less<expect, size_t>(1900, duration_cast<milliseconds>(finish - start).count() + accuracy ) << FAS_FL;
+  t << greater<expect, size_t>(2100 + accuracy, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
   
   t << message("CXX_STANDARD: ") << __cplusplus;
 }
@@ -257,13 +278,106 @@ UNIT(overflow_reset, "")
   t << equal<expect, size_t>(lost_counter, 110) << FAS_FL;
 }
 
+UNIT(shutdown, "")
+{
+  using namespace ::fas::testing;
+  wflow::workflow_options wo;
+  wo.id = "shutdown";
+  wo.threads = 4;
+  std::mutex mutex;
+  std::set<std::thread::id> threads_ids;
+  std::atomic_size_t count={0};
+  wflow::workflow flw(wo);
+  for (size_t i = 0; i < 16; ++i)
+  {
+    flw.post([&](){
+      std::this_thread::sleep_for( std::chrono::milliseconds(10)  );
+      std::lock_guard<std::mutex> lk(mutex);
+      t << message("Thread ID: ") << std::this_thread::get_id() << " count=" << count;
+      t << flush;
+      ++count;
+      threads_ids.insert(std::this_thread::get_id());
+    });
+  }
+  flw.create_timer(std::chrono::milliseconds(10), [&]()
+  {
+    std::lock_guard<std::mutex> lk(mutex); 
+    t << message("timer"); 
+    t << flush;
+    return true;
+  }, wflow::expires_at::before );
+  
+  flw.safe_post(std::chrono::milliseconds(100), [&](){
+    std::lock_guard<std::mutex> lk(mutex); 
+    t << message("delayed"); 
+    t << flush;
+    return true;
+  });
+  { std::lock_guard<std::mutex> lk(mutex); t << message("start..."); }
+  flw.start();
+  { std::lock_guard<std::mutex> lk(mutex); t << message("shutdown..."); }
+  flw.shutdown();
+  { std::lock_guard<std::mutex> lk(mutex); t << message("wait..."); }
+  flw.wait();
+  { std::lock_guard<std::mutex> lk(mutex); t << message("done!"); t << flush; }
+  t << equal<expect, size_t>(count, 16) << FAS_FL;
+  t << equal<expect, size_t>(threads_ids.size(), 4) << FAS_FL;
+  
+  t << message("=====================================");
+  for (size_t i = 0; i < 16; ++i)
+  {
+    flw.post([&](){++count;});
+  }
+  t << message("=====================================");  
+  flw.start();
+  t << message("=====================================");
+  flw.shutdown();
+  flw.wait();
+  t << equal<expect, size_t>(count, 32) << FAS_FL;
+}
+
+UNIT(wait_and_restart, "")
+{
+  using namespace ::fas::testing;
+  wflow::workflow_options wo;
+  wo.id = "wait_and_restart";
+  wo.threads = 4;
+  wflow::workflow flw(wo);
+
+  std::atomic<size_t> count(0);
+  auto handler = [&count](){ ++count; return true;};
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.start();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.wait_and_restart();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  flw.shutdown();
+  flw.wait();
+  for (int i = 0 ; i < 10; ++i)
+    flw.post(handler);
+  t << equal<expect, size_t>(count, 30) << FAS_FL;
+  count = 0;
+  flw.start();
+  flw.shutdown();
+  flw.wait();
+  t << equal<expect, size_t>(count, 10) << FAS_FL;
+  
+}
+
+}
+
 
 BEGIN_SUITE(workflow, "")
-  /*ADD_UNIT(workflow1)
+  ADD_UNIT(workflow1)
   ADD_UNIT(workflow2)
   ADD_UNIT(workflow3)
   ADD_UNIT(rate_limit)
-  ADD_UNIT(requester1)*/
+  ADD_UNIT(requester1)
   ADD_UNIT(overflow_reset)
+  ADD_UNIT(shutdown)
+  ADD_UNIT(wait_and_restart)
 END_SUITE(workflow)
 

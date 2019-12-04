@@ -18,11 +18,11 @@ class task_manager
 public:
   typedef bique queue_type;
 
-  typedef std::function<void()>                               function_t;
-  typedef std::chrono::time_point<std::chrono::system_clock>  time_point_t;
-  typedef std::chrono::time_point<std::chrono::steady_clock>::duration                              duration_t;
+  typedef std::function<void()> function_t;
+  typedef std::chrono::time_point<std::chrono::system_clock> time_point_t;
+  typedef std::chrono::time_point<std::chrono::steady_clock>::duration duration_t;
   typedef ::wflow::asio::io_service io_service_type;
-  typedef timer_manager<queue_type> timer_type;
+  typedef timer_manager<queue_type> timer_manager_t;
   
   typedef std::function<void(std::thread::id)> startup_handler;
   typedef std::function<void(std::thread::id)> finish_handler;
@@ -44,7 +44,11 @@ public:
   void start();
   void stop();
   void reset();
-
+  void reset_timers();
+  void reset_queues();
+  void shutdown();
+  void wait();
+  
   std::size_t run();
   
   std::size_t run_one();
@@ -68,7 +72,7 @@ public:
   std::size_t unsafe_size() const;
   std::size_t dropped() const;
   std::size_t reset_count() const;
-  std::shared_ptr<timer_type> timer() const;
+  std::shared_ptr<timer_manager_t> get_timer_manager() const;
   
 private:
   bool post_(function_t f, function_t drop);
@@ -78,7 +82,7 @@ private:
   std::atomic<size_t> _threads;
   std::atomic<bool> _can_reconfigured;
   std::shared_ptr<queue_type> _queue;
-  std::shared_ptr<timer_type> _timer;
+  std::shared_ptr<timer_manager_t> _timer_manager;
   std::shared_ptr<pool_type>  _pool;
   
   std::atomic<size_t> _rate_limit;
@@ -90,10 +94,6 @@ private:
   std::shared_ptr< std::atomic<size_t> > _reset_count;
   std::atomic<time_t> _overflow_time;
   std::atomic<bool> _wait_reset;
-  
-  
-
-  
 };
 
 }

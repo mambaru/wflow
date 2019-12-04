@@ -3,9 +3,9 @@
 #include <wflow/timer/timer_manager.hpp>
 #include <wflow/queue/delayed_queue.hpp>
 #include <wflow/queue/asio_queue.hpp>
-#include <wflow/system/memory.hpp>
+#include <fas/system/memory.hpp>
 
-
+namespace {
 struct test_request
 {
   typedef std::unique_ptr<test_request> ptr;
@@ -25,6 +25,16 @@ public:
     handler( std::unique_ptr<test_response>(new test_response() ) );
   }
 };
+
+template<typename T>
+time_t get_accuracy(T& t)
+{
+  if ( t.get_argc() < 2 )
+    return 0;
+  
+  return std::atoi( t.get_arg(1).c_str() );
+}
+
 
 
 UNIT(timer_manager1, "")
@@ -87,8 +97,9 @@ UNIT(timer_manager2, "")
   } );
   io.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
-  t << equal<expect>(interval, 0) << FAS_FL;
-  t << nothing;
+  
+  time_t accuracy = get_accuracy(t);
+  t << less_equal<assert>(interval, accuracy) <<  FAS_FL;
 }
 
 UNIT(timer_manager3, "")
@@ -109,8 +120,11 @@ UNIT(timer_manager3, "")
   }, wflow::expires_at::before );
   io.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
-  t << equal<expect>(interval, 0) << FAS_FL;
-  t << nothing;
+  
+  time_t accuracy = get_accuracy(t);
+  t << less_equal<assert>(interval, accuracy) <<  FAS_FL;
+}
+
 }
 
 BEGIN_SUITE(timer_manager, "")
