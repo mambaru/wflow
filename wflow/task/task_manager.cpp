@@ -8,7 +8,7 @@
 
 namespace wflow{
 
-  
+
 class task_manager::pool_impl
   : public thread_pool<task_manager::queue_type>
 {
@@ -36,7 +36,7 @@ task_manager::task_manager( const workflow_options& opt  )
   , _overflow_time()
 {
 }
-  
+
 task_manager::task_manager( io_service_type& io, const workflow_options& opt  )
   : _id(opt.id)
   , _threads(opt.threads)
@@ -64,40 +64,42 @@ bool task_manager::reconfigure(const workflow_options& opt  )
   _rate_limit = opt.rate_limit;
   _start_interval = 0;
   _interval_count = 0;
-  
+
   _quiet_mode = opt.quiet_mode;
   _overflow_reset = opt.overflow_reset;
   _overflow_time = 0;
+
+  _id = opt.id;
   return true;
 }
-  
-void task_manager::rate_limit(size_t rps) 
+
+void task_manager::rate_limit(size_t rps)
 {
   _rate_limit = rps;
 }
 
 void task_manager::set_startup( startup_handler handler )
 {
-  if ( _pool!=nullptr) 
+  if ( _pool!=nullptr)
     _pool->set_startup(handler);
 }
 
 void task_manager::set_finish( finish_handler handler )
 {
-  if ( _pool!=nullptr) 
+  if ( _pool!=nullptr)
     _pool->set_finish(handler);
 }
 
 void task_manager::set_statistics( statistics_handler handler )
 {
-  if ( _pool!=nullptr) 
+  if ( _pool!=nullptr)
     _pool->set_statistics(handler);
 }
 
 
 void task_manager::start()
 {
-  if ( _pool!=nullptr) 
+  if ( _pool!=nullptr)
   {
     _pool->start(_threads);
   }
@@ -106,7 +108,7 @@ void task_manager::start()
 void task_manager::stop()
 {
   _queue->stop();
-  if ( _pool!=nullptr) 
+  if ( _pool!=nullptr)
     _pool->stop();
 }
 
@@ -129,13 +131,13 @@ void task_manager::reset_queues()
 void task_manager::shutdown()
 {
   _timer_manager->reset();
-  if ( _pool!=nullptr) 
+  if ( _pool!=nullptr)
     _pool->shutdown();
 }
 
 void task_manager::wait()
 {
-  if ( _pool!=nullptr) 
+  if ( _pool!=nullptr)
     _pool->wait();
   _queue->reset();
 }
@@ -145,12 +147,12 @@ std::size_t task_manager::run()
 {
   return _queue->run();
 }
-  
+
 std::size_t task_manager::run_one()
 {
   return _queue->run_one();
 }
-  
+
 std::size_t task_manager::poll_one()
 {
   return _queue->poll_one();
@@ -160,7 +162,7 @@ void task_manager::safe_post( function_t f)
 {
   _queue->safe_post(f);
 }
-  
+
 void task_manager::safe_post_at(time_point_t tp, function_t f)
 {
   _queue->safe_post_at( tp, f);
@@ -178,7 +180,7 @@ bool task_manager::post( function_t f, function_t drop )
   {
     if ( _overflow_reset && !_wait_reset)
     {
-      // Сбрасываем очередь (weak_ptr который передали в задание становится не 
+      // Сбрасываем очередь (weak_ptr который передали в задание становится не
       //  действительным и срабатывает альтернативный обработчик)
       _reset_count = std::make_shared< std::atomic<size_t> >( *_reset_count + 1 );
       // До того как io_service начнет выгребать "сброшенные" задания, работаем как с обычным переполнением без сброса
@@ -197,17 +199,17 @@ bool task_manager::post( function_t f, function_t drop )
         WFLOW_LOG_ERROR("Workflow '" << this->_id << "' task dropped. Total dropped: " << this->dropped() )
       }
     }
-  } 
+  }
   else if ( _overflow_reset )
   {
-    // Первый же успешный post_, что в очереди появилось место 
+    // Первый же успешный post_, что в очереди появилось место
     // а значит началась отработка сброшенных заданий (запуск альтернативных обработчиков )
     _wait_reset = false;
   }
-  
+
   return succeeded;
 }
-  
+
 bool task_manager::post_at(time_point_t tp, function_t f, function_t drop)
 {
   this->safe_post_at(tp, std::bind(&task_manager::post, this, f, drop) );
@@ -219,7 +221,7 @@ bool task_manager::delayed_post(duration_t duration, function_t f, function_t dr
   this->safe_delayed_post(duration, std::bind(&task_manager::post, this, f, drop) );
   return true;
 }
-  
+
 std::size_t task_manager::full_size() const
 {
   return _queue->full_size();
@@ -245,7 +247,7 @@ std::size_t task_manager::reset_count() const
   return *_reset_count;
 }
 
-  
+
 std::shared_ptr<task_manager::timer_manager_t> task_manager::get_timer_manager() const
 {
   return _timer_manager;
@@ -265,7 +267,7 @@ bool task_manager::post_(function_t f, function_t drop)
       else drop();
     };
   }
-  
+
   if ( _rate_limit == 0 )
   {
     return _queue->post(f, drop );
@@ -287,12 +289,12 @@ bool task_manager::post_(function_t f, function_t drop)
     else
       ++_interval_count;
   }
-  
+
   if ( _interval_count <= _rate_limit )
     return _queue->post(f, drop);
-  
+
   this->safe_delayed_post(
-    nanoseconds((_interval_count*1000000000)/_rate_limit), 
+    nanoseconds((_interval_count*1000000000)/_rate_limit),
     [this, f, drop]()
     {
       this->post(f, drop);
