@@ -17,7 +17,7 @@
 
 int main()
 {
-  wflow::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options opt;
   opt.threads = 10;
   wflow::workflow wf(ios, opt);
@@ -27,18 +27,18 @@ int main()
 
   for (int i=0; i < 10; ++i)
     wf.post([](){ sleep(4);});
-  
-  
+
+
   time_t beg = time(nullptr);
-  wf2.safe_post( 
-    std::chrono::seconds(2), 
+  wf2.safe_post(
+    std::chrono::seconds(2),
     [&ios, beg]()
     {
       time_t now = time(nullptr);
       std::cout << "It was expected 2 seconds, but waited "<< now - beg << " seconds" << std::endl;
       ios.stop();
     });
-  wflow::asio::io_service::work wrk(ios);
+  boost::asio::executor_work_guard<boost::asio::io_context::executor_type> wrk(ios.get_executor());
   ios.run();
-  
+
 }

@@ -38,6 +38,9 @@ target_include_directories(wflow PUBLIC ${wflow_SOURCE_DIR})
 
 include(FindThreads)
 find_package(Boost REQUIRED system )
+
+target_compile_definitions(wflow PRIVATE -DBOOST_ASIO_NO_DEPRECATED)
+
 if (NOT WFLOW_DISABLE_LOG)
   target_link_libraries(wflow PUBLIC wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
 elseif (NOT WFLOW_DISABLE_JSON)
@@ -50,7 +53,7 @@ if ( BUILD_TESTING )
   if ( WFLOW_DISABLE_JSON )
     wci_getlib(faslib master)
   endif()
- 
+
   enable_testing()
   add_subdirectory(tests)
   if ( WITH_SAMPLES )
