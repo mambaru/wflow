@@ -105,7 +105,7 @@ private:
 
 int main()
 {
-  boost::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow wf(ios);
   auto f = std::make_shared<foo>(wf);
   volatile int callcount = 0;

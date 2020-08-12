@@ -37,7 +37,7 @@ task_manager::task_manager( const workflow_options& opt  )
 {
 }
 
-task_manager::task_manager( io_service_type& io, const workflow_options& opt  )
+task_manager::task_manager( io_context_type& io, const workflow_options& opt  )
   : _id(opt.id)
   , _threads(opt.threads)
   , _can_reconfigured(opt.use_asio)
@@ -183,7 +183,7 @@ bool task_manager::post( function_t f, function_t drop )
       // Сбрасываем очередь (weak_ptr который передали в задание становится не
       //  действительным и срабатывает альтернативный обработчик)
       _reset_count = std::make_shared< std::atomic<size_t> >( *_reset_count + 1 );
-      // До того как io_service начнет выгребать "сброшенные" задания, работаем как с обычным переполнением без сброса
+      // До того как io_context начнет выгребать "сброшенные" задания, работаем как с обычным переполнением без сброса
       _wait_reset = true;
       if ( !_quiet_mode )
       {

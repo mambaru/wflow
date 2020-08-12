@@ -4,7 +4,7 @@
 
 UNIT(asio_queue1, "")
 {
-  ::wflow::asio::io_service io;
+  boost::asio::io_context io;
   auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
   delayed_unit1(t, *pq);
 }
@@ -12,14 +12,14 @@ UNIT(asio_queue1, "")
 
 UNIT(asio_queue2, "")
 {
-  ::wflow::asio::io_service io;
+  boost::asio::io_context io;
   auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
   delayed_unit2(t, *pq);
 }
 
 UNIT(asio_queue3, "")
 {
-  ::wflow::asio::io_service io;
+  boost::asio::io_context io;
   auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
   delayed_unit3(t, *pq);
 }

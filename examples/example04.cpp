@@ -5,8 +5,8 @@
 /**
  * @example example04.cpp
  * @brief Пример ограничения размера очереди для отложенных.
- * @details Для отложенных заданий, сначала создается таймер на постановку в очередь. Значение таймера номинальное, но сработает он только 
- * после запуска io_service::run(), поэтому в отличии от \ref example03.cpp переполнение произойдет уже после запуска.
+ * @details Для отложенных заданий, сначала создается таймер на постановку в очередь. Значение таймера номинальное, но сработает он только
+ * после запуска io_context::run(), поэтому в отличии от \ref example03.cpp переполнение произойдет уже после запуска.
  */
 
 /**
@@ -25,21 +25,21 @@
 */
 int main()
 {
-  boost::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options opt;
   opt.maxsize = 5;
   wflow::workflow wf(ios, opt);
-  
+
   for (int i = 0; i < 10; ++i)
   {
-    wf.post( 
-      std::chrono::nanoseconds(1), 
+    wf.post(
+      std::chrono::nanoseconds(1),
       [i](){ std::cout << "post " << i << std::endl; },
-      [i](){ std::cout << "drop " << i << std::endl; } 
+      [i](){ std::cout << "drop " << i << std::endl; }
     );
   }
-  
+
   std::cout << "Run!" << std::endl;
-  // Ожидаем выполнение всех заданий 
+  // Ожидаем выполнение всех заданий
   ios.run();
 }

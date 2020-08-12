@@ -23,7 +23,7 @@ thread_pool_base::thread_pool_base()
 {
 }
 
-void thread_pool_base::rate_limit(size_t rps) 
+void thread_pool_base::rate_limit(size_t rps)
 {
   _rate_limit = rps;
 }
@@ -43,34 +43,34 @@ void thread_pool_base::set_statistics( statistics_handler handler )
   _statistics = handler;
 }
 
-bool thread_pool_base::reconfigure(std::shared_ptr<bique> s, size_t threads) 
+bool thread_pool_base::reconfigure(std::shared_ptr<bique> s, size_t threads)
 {
-  return this->reconfigure_(s, threads); 
+  return this->reconfigure_(s, threads);
 }
 
 bool thread_pool_base::reconfigure(std::shared_ptr<asio_queue> s, size_t threads)
 {
-  return this->reconfigure_(s, threads); 
+  return this->reconfigure_(s, threads);
 }
 
-bool thread_pool_base::reconfigure(std::shared_ptr<delayed_queue> s, size_t threads) 
+bool thread_pool_base::reconfigure(std::shared_ptr<delayed_queue> s, size_t threads)
 {
-  return this->reconfigure_(s, threads); 
+  return this->reconfigure_(s, threads);
 }
 
-void thread_pool_base::start(std::shared_ptr<bique> s, size_t threads) 
+void thread_pool_base::start(std::shared_ptr<bique> s, size_t threads)
 {
-  this->start_(s, threads); 
+  this->start_(s, threads);
 }
 
 void thread_pool_base::start(std::shared_ptr<asio_queue> s, size_t threads)
-{ 
-  this->start_(s, threads); 
+{
+  this->start_(s, threads);
 }
 
-void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads) 
+void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads)
 {
-  this->start_(s, threads); 
+  this->start_(s, threads);
 }
 
 // только после _service->stop();
@@ -92,7 +92,7 @@ void thread_pool_base::stop()
 void thread_pool_base::shutdown()
 {
   std::lock_guard< std::mutex > lk(_mutex);
-  _work=nullptr; 
+  _work=nullptr;
 }
 
 void thread_pool_base::wait()
@@ -111,16 +111,16 @@ template<typename S>
 bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
 {
   std::lock_guard< std::mutex > lk(_mutex);
-  
+
   if ( !_started )
     return false;
-  
-  if ( threads == _threads.size() ) 
+
+  if ( threads == _threads.size() )
     return false;
-  
-  if ( threads > _threads.size() ) 
+
+  if ( threads > _threads.size() )
   {
-    // При серии реконфигураций N->0->N потоков, сбрасываем io_service для нового запуска 
+    // При серии реконфигураций N->0->N потоков, сбрасываем io_context для нового запуска
     if ( _threads.empty() )
       s->reset();
     size_t diff = threads - _threads.size();
@@ -151,15 +151,15 @@ template<typename S>
 void thread_pool_base::start_(std::shared_ptr<S> s, size_t threads)
 {
   std::lock_guard< std::mutex > lk(_mutex);
-  
+
   if ( _started )
     return;
-  
+
   _started = true;
-  
+
   if ( !_threads.empty())
     return;
-  
+
   this->run_more_(s, threads);
 }
 
@@ -186,7 +186,7 @@ template<typename S>
 std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_ptr<bool> wflag )
 {
   std::weak_ptr<self> wthis = this->shared_from_this();
-  return 
+  return
     std::thread([wthis, s, wflag]()
     {
       std::thread::id thread_id = std::this_thread::get_id();
@@ -202,17 +202,17 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           finish = pthis->_finish;
           statistics = pthis->_statistics;
         }
-        
+
         auto pthis = wthis.lock();
         if ( startup != nullptr )
           startup(thread_id);
-        
+
         std::chrono::steady_clock::time_point beg = std::chrono::steady_clock::now();
         for (;;)
         {
           if ( statistics != nullptr )
             beg = std::chrono::steady_clock::now();
-          
+
           size_t handlers = s->run_one();
           if (  handlers == 0 )
             break;
@@ -227,7 +227,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           }
         }
         if ( finish != nullptr )
-          finish(thread_id);    
+          finish(thread_id);
       }
       catch(const std::exception& e)
       {

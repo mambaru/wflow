@@ -8,13 +8,13 @@
 #include <set>
 
 namespace {
-  
+
 template<typename T>
 time_t get_accuracy(T& t)
 {
   if ( t.get_argc() < 2 )
     return 0;
-  
+
   return std::atoi( t.get_arg(1).c_str() );
 }
 
@@ -22,7 +22,7 @@ UNIT(workflow1, "")
 {
   using namespace ::fas::testing;
   t << flush;
-  wflow::asio::io_service io;
+  boost::asio::io_context io;
   wflow::workflow_options opt;
   opt.id="workflow1";
   opt.maxsize = 3;
@@ -38,7 +38,7 @@ UNIT(workflow1, "")
     t << message("simple post");
     t << flush;
   }, [&](){ t << fatal("DROP"); ++counter;});
-  
+
   queue.get_timer_manager()->create(std::chrono::milliseconds(400), [&t, &counter, &m](){
     std::lock_guard<std::mutex> lk(m);
     ++counter;
@@ -52,7 +52,7 @@ UNIT(workflow1, "")
     t << message("delayed post 600ms");
     t << flush;
   }, nullptr);
-  
+
   for (int i =0 ; i < 3 ; ++i)
   {
     queue.delayed_post( std::chrono::milliseconds(300 + i*300), [&t, &counter, i, &m](){
@@ -62,7 +62,7 @@ UNIT(workflow1, "")
       t << flush;
     }, nullptr);
   }
-  
+
   t << flush;
   t << message("sleep...");
   t << flush;
@@ -73,21 +73,21 @@ UNIT(workflow1, "")
   time_t accuracy = get_accuracy(t);
   if ( accuracy == 0 )
     t << equal< assert,int >( counter, 7 ) << FAS_FL ;
-  
+
 }
 
 UNIT(workflow2, "5 сообщений, одно 'теряется' и одно остаеться в очереди")
 {
   using namespace ::fas::testing;
-  ::wflow::asio::io_service io;  
-  ::wflow::workflow_options opt;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
   std::atomic<int> counter(0);
   std::atomic<int> dropped(0);
-  
+
   opt.id="workflow2";
-  opt.maxsize = 4; 
+  opt.maxsize = 4;
   opt.threads = 0;
-  ::wflow::workflow wfl(io, opt);
+  wflow::workflow wfl(io, opt);
   wfl.start();
 
   for (int i =0 ; i < 5; i++)
@@ -104,12 +104,12 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
       [&dropped, &t]()
       {
         t << warning("DROP");
-        ++dropped; 
+        ++dropped;
       }
     );
-    
+
   }
-  
+
   io.run();
 
   t << equal<expect, size_t>(counter, 3) << FAS_FL;
@@ -122,10 +122,10 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
 UNIT(workflow3, "control handler")
 {
   using namespace ::fas::testing;
-  ::wflow::asio::io_service io;
-  ::wflow::asio::io_service::work wrk(io);    
-  ::wflow::workflow_options opt;
-  ::wflow::workflow_handlers handlers;
+  boost::asio::io_context io;
+  boost::asio::executor_work_guard<boost::asio::io_context::executor_type> wrk(io.get_executor());
+  wflow::workflow_options opt;
+  wflow::workflow_handlers handlers;
   std::atomic<int> counter(0);
   opt.threads = 1;
   opt.control_ms = 100;
@@ -137,14 +137,14 @@ UNIT(workflow3, "control handler")
     }
     return true;
   };
-  
-  ::wflow::workflow wfl(io, opt, handlers);
+
+  wflow::workflow wfl(io, opt, handlers);
   wfl.start();
 
   for (int i =0 ; i < 5; i++)
   {
     wfl.post(
-      std::chrono::milliseconds(500*(i+1) ), 
+      std::chrono::milliseconds(500*(i+1) ),
       [&t, i, &counter]()
       {
         t << message("for 0..5 i=") << i;
@@ -152,17 +152,17 @@ UNIT(workflow3, "control handler")
       }
     );
   }
-  // 5 + 1 control_timer 
+  // 5 + 1 control_timer
   t << equal<expect, size_t>(wfl.safe_size(), 6 ) << FAS_FL;
   t << equal<expect, size_t>(wfl.timer_count(), 1) << FAS_FL;
-  
+
   io.run();
   wfl.stop();
 
   t << equal<expect, size_t>(counter, 3) << FAS_FL;
   t << equal<expect, size_t>(wfl.dropped(), 0) << FAS_FL;
   t << equal<expect, size_t>(wfl.unsafe_size(), 0) << FAS_FL;
-  // таймер + две отложенные задачи 
+  // таймер + две отложенные задачи
   t << equal<expect, size_t>(wfl.safe_size(), 3) << FAS_FL;
 }
 
@@ -170,7 +170,7 @@ struct foo
 {
   struct request
   {
-    typedef std::unique_ptr<request> ptr; 
+    typedef std::unique_ptr<request> ptr;
   };
 
   struct response
@@ -186,7 +186,7 @@ UNIT(requester1, "")
   using namespace ::fas::testing;
   using namespace std::chrono;
   auto f = std::make_shared<foo>();
-  wflow::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options wo;
   wo.threads = 0;
   wflow::workflow flw(ios, wo);
@@ -195,7 +195,7 @@ UNIT(requester1, "")
   auto finish = start;
   id = flw.create_requester< foo::request, foo::response >(
     milliseconds(0),
-    milliseconds(1000), 
+    milliseconds(1000),
     [f](foo::request::ptr req, foo::response::handler callback)
     {
       f->method(std::move(req), callback);
@@ -205,7 +205,7 @@ UNIT(requester1, "")
     {
       finish = high_resolution_clock::now();
       ios.stop();
-      return foo::request::ptr( new foo::request() ); 
+      return foo::request::ptr( new foo::request() );
       //return std::make_unique<foo::request>(); // travis-ci clang++5 ws c++14: member named 'make_unique' in namespace 'std'
     }
   );
@@ -225,7 +225,7 @@ UNIT(rate_limit, "")
   using namespace ::fas::testing;
   using namespace std::chrono;
 
-  wflow::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options wo;
   wo.threads = 0;
   wo.rate_limit = 100;
@@ -235,7 +235,7 @@ UNIT(rate_limit, "")
 
   auto start = high_resolution_clock::now();
   auto finish = start;
-  
+
   size_t counter = 0;
   for (int i = 0; i != 200; i++)
     flw.post([&](){++counter;});
@@ -246,7 +246,7 @@ UNIT(rate_limit, "")
   time_t accuracy = get_accuracy(t);
   t << less<expect, size_t>(1900, duration_cast<milliseconds>(finish - start).count() + accuracy ) << FAS_FL;
   t << greater<expect, size_t>(2100 + accuracy, duration_cast<milliseconds>(finish - start).count()) << FAS_FL;
-  
+
   t << message("CXX_STANDARD: ") << __cplusplus;
 }
 
@@ -255,7 +255,7 @@ UNIT(overflow_reset, "")
   using namespace ::fas::testing;
   using namespace std::chrono;
   t << flush << std::endl;
-  wflow::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options wo;
   wo.id = "overflow_reset";
   wo.maxsize=100;
@@ -272,7 +272,7 @@ UNIT(overflow_reset, "")
       ios.run();
     }
   }
-  ios.reset();
+  ios.restart();
   ios.run();
   t << equal<expect, size_t>(counter, 32) << FAS_FL;
   t << equal<expect, size_t>(lost_counter, 110) << FAS_FL;
@@ -301,15 +301,15 @@ UNIT(shutdown, "")
   }
   flw.create_timer(std::chrono::milliseconds(10), [&]()
   {
-    std::lock_guard<std::mutex> lk(mutex); 
-    t << message("timer"); 
+    std::lock_guard<std::mutex> lk(mutex);
+    t << message("timer");
     t << flush;
     return true;
   }, wflow::expires_at::before );
-  
+
   flw.safe_post(std::chrono::milliseconds(100), [&](){
-    std::lock_guard<std::mutex> lk(mutex); 
-    t << message("delayed"); 
+    std::lock_guard<std::mutex> lk(mutex);
+    t << message("delayed");
     t << flush;
     return true;
   });
@@ -322,13 +322,13 @@ UNIT(shutdown, "")
   { std::lock_guard<std::mutex> lk(mutex); t << message("done!"); t << flush; }
   t << equal<expect, size_t>(count, 16) << FAS_FL;
   t << equal<expect, size_t>(threads_ids.size(), 4) << FAS_FL;
-  
+
   t << message("=====================================");
   for (size_t i = 0; i < 16; ++i)
   {
     flw.post([&](){++count;});
   }
-  t << message("=====================================");  
+  t << message("=====================================");
   flw.start();
   t << message("=====================================");
   flw.shutdown();
@@ -364,7 +364,7 @@ UNIT(wait_and_restart, "")
   flw.shutdown();
   flw.wait();
   t << equal<expect, size_t>(count, 10) << FAS_FL;
-  
+
 }
 
 }
