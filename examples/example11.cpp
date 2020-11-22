@@ -5,7 +5,7 @@
 /**
  * @example example11.cpp
  * @brief Пример того, как можно забить очередь так, чтобы таймеры не сработали вовремя.
- * @details В конфигурации 4 потока отправляем 4 задания которые засыпают и не отпускают 
+ * @details В конфигурации 4 потока отправляем 4 задания которые засыпают и не отпускают
  * поток на 4 секунды. Тут же отправляем отложенное на 2 секунды задание, но оно сработает
  * только через 4 секунды, когда освободится один из потоков.
  */
@@ -19,7 +19,7 @@
 
 int main()
 {
-  wflow::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options opt;
   opt.threads = 4;
   wflow::workflow wf(ios, opt);
@@ -27,16 +27,16 @@ int main()
 
   for (int i=0; i < 4; ++i)
     wf.post([](){ sleep(4);});
-  
+
   time_t beg = time(nullptr);
-  wf.safe_post( 
-    std::chrono::seconds(2), 
+  wf.safe_post(
+    std::chrono::seconds(2),
     [&ios, beg]()
     {
       time_t now = time(nullptr);
       std::cout << "It was expected 2 seconds, but waited "<< now - beg << " seconds" << std::endl;
       ios.stop();
     });
-  wflow::asio::io_service::work wrk(ios);
+  boost::asio::executor_work_guard<boost::asio::io_context::executor_type> wrk(ios.get_executor());
   ios.run();
 }

@@ -4,7 +4,7 @@
 
 
 namespace wflow{
- 
+
 bique::~bique()
 {
   this->stop();
@@ -13,17 +13,17 @@ bique::~bique()
 bique::bique( size_t maxsize, bool use_asio)
   : _dflag(!use_asio)
   , _mt_flag(true)
-  , _io( std::make_shared<io_service_type>() )
+  , _io( std::make_shared<io_context_type>() )
   , _delayed( std::make_shared<delayed_queue>(maxsize) )
   , _asio( std::make_shared<asio_queue>( *_io, maxsize) )
   , _asio_st(nullptr)
 {
 }
 
-bique::bique( io_service_type& io, size_t maxsize, bool use_asio, bool mt )
+bique::bique( io_context_type& io, size_t maxsize, bool use_asio, bool mt )
   : _dflag(!use_asio)
   , _mt_flag(mt)
-  , _io( std::make_shared<io_service_type>() )
+  , _io( std::make_shared<io_context_type>() )
   , _delayed( std::make_shared<delayed_queue>(maxsize) )
   , _asio( std::make_shared<asio_queue>( *_io, maxsize) )
   , _asio_st(std::make_shared<asio_queue>( io, maxsize) )
@@ -43,7 +43,7 @@ void bique::reconfigure(size_t maxsize, bool use_asio, bool mt )
   _mt_flag = mt;
   _delayed->set_maxsize(maxsize);
   _asio->set_maxsize(maxsize);
-  if( _asio_st ) 
+  if( _asio_st )
     _asio_st->set_maxsize(maxsize);
 }
 
@@ -57,12 +57,12 @@ std::size_t bique::run()
 {
   return this->invoke_( &delayed_queue::run, &asio_queue::run);
 }
-  
+
 std::size_t bique::run_one()
 {
   return this->invoke_( &delayed_queue::run_one, &asio_queue::run_one);
 }
-  
+
 std::size_t bique::poll_one()
 {
   return this->invoke_( &delayed_queue::poll_one, &asio_queue::poll_one);
@@ -123,14 +123,14 @@ std::size_t bique::dropped() const
 {
   return this->invoke_( &delayed_queue::dropped, &asio_queue::dropped);
 }
-  
+
 template<typename R, typename... Args>
-R bique::invoke_( 
+R bique::invoke_(
   R(delayed_queue::* method1)(Args...),
-  R(asio_queue::* method2)(Args...), 
+  R(asio_queue::* method2)(Args...),
   Args... args)
 {
-  return _dflag 
+  return _dflag
          ? (_delayed.get()->*method1)( std::move(args)...)
          : _mt_flag
              ? (_asio.get()->*method2)( std::move(args)...)
@@ -138,12 +138,12 @@ R bique::invoke_(
 }
 
 template<typename R, typename... Args>
-R bique::invoke_( 
+R bique::invoke_(
   R(delayed_queue::* method1)(Args...) const,
-  R(asio_queue::* method2)(Args...) const, 
+  R(asio_queue::* method2)(Args...) const,
   Args... args) const
 {
-  return _dflag 
+  return _dflag
          ? (_delayed.get()->*method1)( std::move(args)...)
          : _mt_flag
            ? (_asio.get()->*method2)( std::move(args)...)

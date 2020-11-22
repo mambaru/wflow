@@ -9,16 +9,16 @@
 /**
  * @example example10.cpp
  * @brief Тестирование пропускной способности wflow::workflow с различным числом потоков для защищенных заданий.
- * @details Число потоков передается параметром командной строки. Как видно из результатов, для легковесных заданий, наиболее 
+ * @details Число потоков передается параметром командной строки. Как видно из результатов, для легковесных заданий, наиболее
  * оптимальным является конфигурация с одним выделенным потоком или однопоточный вариант. Потерь здесь, как в /ref example09.cpp нет,
  * но и результаты немногим хуже.
  * @remark для отложенного на 10 секунд задания на завершения работы не использовали отдельный wflow::workflow т.к. очередь
- * состоит исключительно из легковесных заданий и не бывает такого, что все потоки зависают на обработке без возможности отработать 
+ * состоит исключительно из легковесных заданий и не бывает такого, что все потоки зависают на обработке без возможности отработать
  * таймер. Смотри /ref example11.cpp, где показана подобная задержка.
  */
 
 /*
-| threads | counter  |  rate      | dropped | 
+| threads | counter  |  rate      | dropped |
 | ------- | -------- | ---------- | ------- |
 |    0    | 21 млн   | ~2 млн/с   |    0    |
 |    1    | 29 млн   | ~2.9 млн/с |    0    |
@@ -44,9 +44,9 @@ int main(int argc, char* argv[])
   size_t threads = 0;
   if ( argc > 1 )
     threads = size_t(std::atol(argv[1]));
-  
-  wflow::asio::io_service ios;
-  wflow::asio::io_service::work wrk(ios);
+
+  boost::asio::io_context ios;
+  boost::asio::executor_work_guard<boost::asio::io_context::executor_type> wrk(ios.get_executor());
   wflow::workflow_options opt;
   opt.use_asio = true;
   opt.threads = threads;
@@ -55,12 +55,12 @@ int main(int argc, char* argv[])
   std::atomic<bool> run(true);
   std::atomic<size_t> counter;
   counter=0;
-  
+
   std::thread t1([&run, &wf, &counter](){
     for (;run; ++counter)
       wf.safe_post([](){});
   });
-  
+
   wf.safe_post( std::chrono::seconds(10), [&ios, &run](){ ios.stop(); run = false;});
   ios.run();
   t1.join();

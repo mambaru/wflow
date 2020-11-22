@@ -7,7 +7,7 @@
 
 namespace wflow{
 
-asio_queue::asio_queue(io_service_type& io, const size_t maxsize)
+asio_queue::asio_queue(io_context_type& io, const size_t maxsize)
   : _io(io)
 {
   _counter = 0;
@@ -23,27 +23,22 @@ void asio_queue::set_maxsize(size_t maxsize)
 
 std::size_t asio_queue::run()
 {
-  ::wflow::system::error_code ec;
-  return _io.run(ec);
+  return _io.run();
 }
 
 std::size_t asio_queue::run_one()
 {
-  ::wflow::system::error_code ec;
-  std::size_t count = _io.run_one(ec);
-  if ( ec ) WFLOW_LOG_ERROR("asio_queue::run_one: " << ec.message());
-  return count;
+  return _io.run_one();
 }
 
 std::size_t asio_queue::poll_one()
 {
-  ::wflow::system::error_code ec;
-  return _io.poll_one(ec);
+  return _io.poll_one();
 }
 
 void asio_queue::reset()
 {
-  _io.reset();
+  _io.restart();
 }
 
 void asio_queue::stop()
@@ -55,14 +50,14 @@ void asio_queue::safe_post( function_t f)
 {
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_safe_counter;
-  _io.post( [wthis, f]()
+  ::boost::asio::post( _io,  [wthis, f]()
   {
     if (auto pthis = wthis.lock() )
     {
       --pthis->_safe_counter;
       f();
     }
-  } );
+  }, nullptr);
 }
 
 bool asio_queue::post( function_t f, function_t drop )
@@ -71,14 +66,14 @@ bool asio_queue::post( function_t f, function_t drop )
     return false;
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_counter;
-  _io.post( [wthis, f]()
+  ::boost::asio::post(_io, [wthis, f]()
   {
     if (auto pthis = wthis.lock() )
     {
       --pthis->_counter;
       f();
     }
-  } );
+  }, nullptr);
   return true;
 }
 
@@ -90,7 +85,7 @@ void asio_queue::safe_post_at(time_point_t tp, function_t f)
   auto ptimer = this->create_timer_( tp );
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_safe_counter;
-  ptimer->async_wait([f, ptimer, wthis]( const ::wflow::system::error_code& )
+  ptimer->async_wait([f, ptimer, wthis]( const boost::system::error_code& )
   {
     if (auto pthis = wthis.lock() )
     {
@@ -111,7 +106,7 @@ bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
   auto ptimer = this->create_timer_( tp );
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_counter;
-  ptimer->async_wait([f, ptimer, wthis]( const ::wflow::system::error_code& )
+  ptimer->async_wait([f, ptimer, wthis]( const boost::system::error_code& )
   {
     if (auto pthis = wthis.lock() )
     {
@@ -185,7 +180,7 @@ asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
 
 asio_queue::work_type asio_queue::work() const
 {
-  return work_type(_io);
+  return work_type(_io.get_executor());
 }
 
 } // wflow

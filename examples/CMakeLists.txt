@@ -1,3 +1,5 @@
+add_definitions(-DBOOST_ASIO_NO_DEPRECATED)
+
 add_executable( example01 example01.cpp )
 target_link_libraries(example01 PRIVATE wflow )
 
@@ -41,8 +43,8 @@ add_executable( example14 example14.cpp )
 target_link_libraries(example14 PRIVATE wflow )
 
 wci_utils(
-  example01 example02 example03 example04 example05 
-  example06 example07 example08 example09 example10 
+  example01 example02 example03 example04 example05
+  example06 example07 example08 example09 example10
   example11 example12 example13 example14)
 
 if (NOT WFLOW_DISABLE_JSON)
