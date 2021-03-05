@@ -31,7 +31,7 @@ time_t get_accuracy(T& t)
 {
   if ( t.get_argc() < 2 )
     return 0;
-  
+
   return std::atoi( t.get_arg(1).c_str() );
 }
 
@@ -40,7 +40,7 @@ time_t get_accuracy(T& t)
 UNIT(timer_manager1, "")
 {
   using namespace ::fas::testing;
-  wflow::asio::io_service io;
+  boost::asio::io_context io;
   auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
   auto tm = std::make_shared< ::wflow::timer_manager< ::wflow::asio_queue > >( pq );
   std::atomic<int> counter(0);
@@ -56,26 +56,26 @@ UNIT(timer_manager1, "")
     t << message("tick2");
     return true;
   } );
-  
+
   auto tc = std::make_shared<test_class>();
-  tm->create<test_request, test_response>( 
-    "", std::chrono::milliseconds(600), 
+  tm->create<test_request, test_response>(
+    "", std::chrono::milliseconds(600),
     [tc](test_request::ptr req, test_response::handler callback)
     {
       tc->method(std::move(req), callback);
       return true;
     },
-    [&t, &counter]( test_response::ptr) -> test_request::ptr 
+    [&t, &counter]( test_response::ptr) -> test_request::ptr
     {
       ++counter;
       t << message("call1");
       return test_request::ptr( new test_request() );
     }
   );
-  
+
   for ( int i =0 ; i < 4; i++)
     io.run_one();
-  
+
   t << equal< assert,int >( counter, 4 ) << "counter 4!=" << counter ;
 }
 
@@ -83,7 +83,7 @@ UNIT(timer_manager2, "")
 {
   using namespace ::fas::testing;
   using namespace ::std::chrono;
-  wflow::asio::io_service io;
+  boost::asio::io_context io;
   auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
   auto tm = std::make_shared< ::wflow::timer_manager< ::wflow::asio_queue > >( pq );
 
@@ -97,7 +97,7 @@ UNIT(timer_manager2, "")
   } );
   io.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
-  
+
   time_t accuracy = get_accuracy(t);
   t << less_equal<assert>(interval, accuracy) <<  FAS_FL;
 }
@@ -106,7 +106,7 @@ UNIT(timer_manager3, "")
 {
   using namespace ::fas::testing;
   using namespace ::std::chrono;
-  wflow::asio::io_service io;
+  boost::asio::io_context io;
   auto pq = std::make_shared< ::wflow::asio_queue >(io, 0);
   auto tm = std::make_shared< ::wflow::timer_manager< ::wflow::asio_queue > >( pq );
 
@@ -120,7 +120,7 @@ UNIT(timer_manager3, "")
   }, wflow::expires_at::before );
   io.run();
   auto interval = duration_cast<milliseconds>(finish - start).count();
-  
+
   time_t accuracy = get_accuracy(t);
   t << less_equal<assert>(interval, accuracy) <<  FAS_FL;
 }

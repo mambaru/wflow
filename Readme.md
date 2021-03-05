@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.com/mambaru/wflow.svg?branch=mambaru)](https://travis-ci.com/mambaru/wflow)
 [![codecov](https://codecov.io/gh/mambaru/wflow/branch/master/graph/badge.svg)](https://codecov.io/gh/mambaru/wflow)
 
-Библиотека на базе boost::asio::io_service для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами. 
+Библиотека на базе boost::asio для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами.
 
 * Документация [doxygen](https://mambaru.github.io/wflow/index.html).
 * Репозитарий на [github.com](https://github.com/mambaru/wflow).
@@ -32,14 +32,14 @@ cd wflow/build
 cmake ..
 # Для сборки примеров и тестов
 cmake -DBUILD_TESTING=ON ..
-# Если поддержка JSON-конфигурации не требуется 
+# Если поддержка JSON-конфигурации не требуется
 #   cmake -DWFLOW_DISABLE_JSON=ON -DWLOG_DISABLE_JSON=ON ..
-# Если поддержка логирования не требуется 
+# Если поддержка логирования не требуется
 #   cmake -DWFLOW_DISABLE_LOG=ON ..
 cmake --build make
-ctest 
+ctest
 ```
-Для компиляции с поддержкой JSON-конфигурации потребуются библиотеки faslib, wjson, wlog, которые система сборки автоматически клонирует 
+Для компиляции с поддержкой JSON-конфигурации потребуются библиотеки faslib, wjson, wlog, которые система сборки автоматически клонирует
 в директорию проекта, если не найдет их в системе.
 
 # Некоторые примеры
@@ -50,21 +50,21 @@ ctest
 ```cpp
 int main()
 {
-  boost::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow wf(ios);
 
-  // Простое задание 
+  // Простое задание
   wf.safe_post( [](){ std::cout << "Simple safe post  " << std::endl; } );
 
-  // Отложенное задание 
+  // Отложенное задание
   wf.safe_post( std::chrono::seconds(4), [](){ std::cout << "Safe post after delay 4 second " << std::endl; } );
 
-  // Задание на конкретный момент времени 
+  // Задание на конкретный момент времени
   auto tp = std::chrono::system_clock::now();
   tp += std::chrono::seconds(2);
   wf.safe_post( tp, [](){ std::cout << "Safe post in time point" << std::endl; } );
 
-  // Ожидаем выполнение всех заданий 
+  // Ожидаем выполнение всех заданий
   ios.run();
 }
 ```
@@ -73,21 +73,21 @@ int main()
 ```cpp
 int main()
 {
-  boost::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options opt;
   opt.maxsize = 5;
   wflow::workflow wf(ios, opt);
 
   for (int i = 0; i < 10; ++i)
   {
-    wf.post( 
+    wf.post(
       [i](){ std::cout << "post " << i << std::endl; },
-      [i](){ std::cout << "drop " << i << std::endl; } 
+      [i](){ std::cout << "drop " << i << std::endl; }
     );
   }
 
   std::cout << "Run!" << std::endl;
-  // Ожидаем выполнение всех заданий 
+  // Ожидаем выполнение всех заданий
   ios.run();
 }
 ```
@@ -95,13 +95,13 @@ int main()
 Различные варианты таймеров:
 
 ```cpp
-  boost::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow wf(ios);
 
   // простой таймер
   wf.create_timer(
     std::chrono::seconds(5),
-    []()->bool{ 
+    []()->bool{
       std::cout << "Every 5 seconds" << std::endl;
       // Продолжаем работу таймера
       return true;
@@ -112,16 +112,16 @@ int main()
   wf.create_timer(
     std::chrono::seconds(30),
     std::chrono::seconds(5),
-    []()->bool{ 
+    []()->bool{
       std::cout << "Every 5 seconds" << std::endl;
       return true;
     }
   );
 
-  // Запускаем раз в сутки в 5 утра 
+  // Запускаем раз в сутки в 5 утра
   wf.create_timer(
     "05:00:00",
-    []()->bool{ 
+    []()->bool{
       std::cout << "Every day at 5:00 am" << std::endl;
       return true;
     }
@@ -131,7 +131,7 @@ int main()
   wf.create_timer(
     "03:00:00",
     std::chrono::hour(6),
-    []()->bool{ 
+    []()->bool{
       std::cout << "Every six hour" << std::endl;
       return true;
     }
@@ -142,8 +142,8 @@ int main()
 
 Пример тестирования пропускной способности (порядка 3 млн в секунду) см. example9 и example10
 ```cpp
-  wflow::asio::io_service ios;
-  wflow::asio::io_service::work wrk(ios);
+  boost::asio::io_context ios;
+  boost::asio::executor_work_guard<boost::asio::io_context::executor_type> wrk(ios);
   wflow::workflow_options opt;
   opt.threads = 1;
   wflow::workflow wf(ios, opt);
