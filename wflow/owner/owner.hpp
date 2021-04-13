@@ -37,8 +37,8 @@ public:
   owner(const owner& ) = delete;
   owner& operator = (const owner& ) = delete;
 
-  owner(owner&& ) = default;
-  owner& operator = (owner&& ) = default;
+  owner(owner&& other) = delete;
+  owner& operator = (owner&& other) = delete;
 
   alive_type alive() const
   {

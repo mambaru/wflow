@@ -29,7 +29,6 @@ class rwlock
   std::condition_variable_any _can_read;
   std::condition_variable_any _can_write;
 
-  
 public:
   rwlock()
     : _readers(0)
@@ -39,9 +38,11 @@ public:
   {
   }
 
+  rwlock(rwlock&& other) = delete;
+  rwlock& operator=(rwlock&&) = delete;
   rwlock(const rwlock&) = delete;
-  
   rwlock& operator=(const rwlock&) = delete;
+
 
   void lock()
   {
