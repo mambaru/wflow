@@ -27,10 +27,10 @@ Output:
 
 namespace {
 
-boost::asio::io_service ios;
+boost::asio::io_context ios;
 wflow::workflow wf(ios);
 
-// Произвольный тип запроса 
+// Произвольный тип запроса
 struct request
 {
   // исключительно для удобства
@@ -72,14 +72,14 @@ request::ptr generator(response::ptr resp)
     std::cout << "generate first" << std::endl;
     return request::ptr(new request() );
   }
-  
+
   // Так как последовательность из одного вызова, то на resp!=nullptr возвращаем nullptr
-  // cообщая, что последовательность завершена 
+  // cообщая, что последовательность завершена
   std::cout << "finish chain" << std::endl;
   return nullptr;
 }
 
-} 
+}
 
 int main()
 {

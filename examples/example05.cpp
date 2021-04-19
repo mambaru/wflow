@@ -22,10 +22,10 @@
 
 int main()
 {
-  boost::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow wf(ios);
-  
-  wf.create_timer( 
+
+  wf.create_timer(
     std::chrono::milliseconds(500),
     std::chrono::milliseconds(1000),
     []()->bool
@@ -35,7 +35,7 @@ int main()
       return --count != 0;
     }
   );
-  
+
   wf.post( std::chrono::nanoseconds(1000000000),[](){ std::cout << "after 1 seconds " << std::endl; });
   wf.post( std::chrono::milliseconds(2000),     [](){ std::cout << "after 2 seconds " << std::endl; });
   wf.post( std::chrono::seconds(3),             [](){ std::cout << "after 3 seconds " << std::endl; });

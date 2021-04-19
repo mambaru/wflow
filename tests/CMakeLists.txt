@@ -8,7 +8,8 @@ set( SUITE_LIST
 )
 
 add_executable( workflow_test workflow_test.cpp ${SUITE_LIST} )
-
+target_compile_definitions(workflow_test PRIVATE -DBOOST_ASIO_NO_DEPRECATED)
 target_link_libraries(workflow_test PRIVATE wflow fas::testing)
 wci_test(TARGET workflow_test COMMAND workflow_test 100 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
 
+add_subdirectory(owner)

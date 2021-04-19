@@ -4,13 +4,14 @@
 #include <wflow/expires_at.hpp>
 #include <wflow/task/task_manager.hpp>
 #include <wflow/system/asio.hpp>
+#include <wflow/owner.hpp>
 #include <chrono>
 
 namespace wflow{
 
 /**
    @brief Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки.
-   @details *workflow* можно рассматривать как надстройку над boost::asio::io_service. Существуют пять типов заданий:
+   @details *workflow* можно рассматривать как надстройку над boost::asio::io_context. Существуют пять типов заданий:
       - Защищенные задания
       - Незащищенные задания
       - Обычные таймеры
@@ -22,7 +23,7 @@ namespace wflow{
    Отложенные защищенные задания выполняются в момент срабатывания таймера, в отличие от незащищенных, которые в этот момент только отправят задание
    в общую очередь на обработку. Кроме того защищенные задания игнорируют общие ограничения по задержке и скорости обработки, которые задаются в конфигурации.
 ```cpp
-boost::asio::io_service ios;
+boost::asio::io_context ios;
 wflow::workflow wf(ios);
 
 //// Простое задание
@@ -44,7 +45,7 @@ wf.safe_post( std::chrono::seconds(4), [](){ std::cout << "Safe post after delay
    См. \ref example02.cpp, \ref example03.cpp, \ref example04.cpp
 
 ```cpp
-boost::asio::io_service ios;
+boost::asio::io_context ios;
 wflow::workflow wf(ios);
 
 //// Простое задание
@@ -129,8 +130,8 @@ wf.create_requester<request, response>(std::chrono::seconds(1), sender, generato
 class workflow
 {
 public:
-  /// Переопределение boost::asio::io_service
-  typedef ::wflow::asio::io_service io_service_type;
+  /// Переопределение boost::asio::io_context
+  typedef boost::asio::io_context io_context_type;
   /// Обработчик задания
   typedef std::function< void() > post_handler;
   /// Обработчик сброса задания
@@ -173,11 +174,11 @@ public:
    * происходит при вызове io.run() или аналогичных. Для работы в многопоточном режиме
    * укажите количество потоков. При workflow_options::threads == 1 создается один поток и т.д. При многопоточном
    * режиме io не используется, а создается свой (один на все потоки этого объекта).
-   * @remark При workflow_options::threads == 1 или большем создается свой объект io_service, а io не используется
-   * @param io - ссылка на boost::asio::io_service.
+   * @remark При workflow_options::threads == 1 или большем создается свой объект io_context, а io не используется
+   * @param io - ссылка на boost::asio::io_context.
    * @param opt - опции.
    */
-  explicit workflow(io_service_type& io, const workflow_options& opt = workflow_options(),
+  explicit workflow(io_context_type& io, const workflow_options& opt = workflow_options(),
                     const workflow_handlers& handlers = workflow_handlers() );
 
   /**
@@ -192,7 +193,7 @@ public:
    * @details Позволяет реконфигурировать workflow без сброса очередей.
    * Можно изменить число потоков или ограничения очереди.
    *
-   * @attention Не работает при workflow_options::use_io_service == false
+   * @attention Не работает при workflow_options::use_io_context == false
    * @param opt - новые опции.
    */
   bool reconfigure(const workflow_options& opt);
@@ -278,6 +279,18 @@ public:
   bool post(time_point_t tp, post_handler handler, drop_handler drop = nullptr);
 
   /**
+   * @brief Отправить задание на обработку в указанный момент времени (строка в формате "22:00:00")
+   * @param tp момент времени, в который задание будет отправлено на обработку
+   * @param handler обработчик задания типа void()
+   * @param drop альтернативный обработчик, если задание выкидывается из очереди. По умолчанию nullptr (handler выкидывается из очереди без уведомления)
+   * @return true - включен таймер для отправки сообщения. Таймер выкинут из очереди быть не может поэтому всегда true
+   *
+   * В момент времени tp задание будет только отправлено в очередь на обработку (и может быть выкинуто, при переполнении ),
+   * в отличии от safe_post, где оно будет выполнено сразу.
+   */
+  bool post(const std::string& tp, post_handler handler, drop_handler drop = nullptr);
+
+  /**
    * @brief Отправить задание на обработку через указанный интервал времени
    * @param duration интервал времени, через который задание будет отправлено на обработку
    * @param handler обработчик задания типа void()
@@ -293,7 +306,7 @@ public:
    * @brief Отправить задание на обработку игнорируя ограничения на размер очереди и скорости обработки.
    * @param handler обработчик задания типа void()
    *
-   * Аналог boost::asio::io_service::post
+   * Аналог boost::asio::io_context::post
    */
   void safe_post(post_handler handler);
 
@@ -303,6 +316,14 @@ public:
    * @param handler обработчик задания типа void()
    */
   void safe_post(time_point_t tp, post_handler handler);
+
+
+  /**
+   * @brief Выполнить задание в указанный момент времени (строка в формате "22:00:00")
+   * @param tp момент времени, в который задание будет выполнено
+   * @param handler обработчик задания типа void()
+   */
+  void safe_post(const std::string& tp, post_handler handler);
 
   /**
    * @brief Выполнить задание через указанный интервал времени
@@ -625,6 +646,7 @@ private:
   timer_id_t _wrn_timer = 0;
   workflow_options _opt;
   workflow_handlers _handlers;
+  owner _owner;
 };
 
 }

@@ -26,11 +26,11 @@
 #     undef BOOST_NO_CXX11_SCOPED_ENUMS
 #   endif
 # endif
-  
+
 # if __cplusplus >= 201103L
 #   define NO_SCOPED_ENUMS
 # endif
-  
+
 // BOOST_COMPILED_WITH_CXX11 doesn't exist
 # if (__cplusplus >= 201103L) && !defined(BOOST_COMPILED_WITH_CXX11)
 #   define NO_SCOPED_ENUMS
@@ -42,8 +42,3 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/asio/time_traits.hpp>
 
-namespace wflow{ namespace boost{
-
-using namespace boost;
-
-}}

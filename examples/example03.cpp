@@ -5,7 +5,7 @@
 /**
  * @example example03.cpp
  * @brief Пример ограничения размера очереди.
- * @details В этом примере при превышении размера, задания не ставятся в очередь, а сразу вызывается drop-обработчик до запуска io_service::run().
+ * @details В этом примере при превышении размера, задания не ставятся в очередь, а сразу вызывается drop-обработчик до запуска io_context::run().
  */
 
 /**
@@ -24,20 +24,21 @@
 */
 int main()
 {
-  boost::asio::io_service ios;
+  boost::asio::io_context ios;
   wflow::workflow_options opt;
+  opt.id = "foo";
   opt.maxsize = 5;
   wflow::workflow wf(ios, opt);
-  
+
   for (int i = 0; i < 10; ++i)
   {
-    wf.post( 
+    wf.post(
       [i](){ std::cout << "post " << i << std::endl; },
-      [i](){ std::cout << "drop " << i << std::endl; } 
+      [i](){ std::cout << "drop " << i << std::endl; }
     );
   }
-  
+
   std::cout << "Run!" << std::endl;
-  // Ожидаем выполнение всех заданий 
+  // Ожидаем выполнение всех заданий
   ios.run();
 }
