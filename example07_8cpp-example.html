@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: example07.cpp</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.15 -->
+<!-- Создано системой Doxygen 1.8.17 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -43,13 +43,48 @@ $(function() {
 <div class="title">example07.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<p class="">Пример многопоточной обработки с ограничением скорости обработки. В этом примере ограничение на десять заданий в секунду. Первые десять заданий выполняются моментально, а остальные более менее равномерно, но так, чтобы не превышать заданную скорость.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;mutex&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">  boost::asio::io_service ios;</div><div class="line">  <a name="_a0"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div><div class="line">  opt.<a name="a1"></a><a class="code" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">threads</a> = 5;</div><div class="line">  opt.<a name="a2"></a><a class="code" href="structwflow_1_1workflow__options.html#ad2035e352bca3693ce5ac066b0e624b1">rate_limit</a> = 10;</div><div class="line">  <a name="_a3"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div><div class="line">  wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div><div class="line">  std::mutex m;</div><div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 100; ++i)</div><div class="line">  {</div><div class="line">    wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( [&amp;, i](){</div><div class="line">      std::lock_guard&lt;std::mutex&gt; lk(m);</div><div class="line">      std::cout &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; std::this_thread::get_id() &lt;&lt; std::endl;</div><div class="line">    });</div><div class="line">  }</div><div class="line">  wf.<a name="a6"></a><a class="code" href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427">shutdown</a>();</div><div class="line">  wf.<a name="a7"></a><a class="code" href="classwflow_1_1workflow.html#a5c29b64755156d106b620f9e812db74c">wait</a>();</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<p>Пример многопоточной обработки с ограничением скорости обработки. В этом примере ограничение на десять заданий в секунду. Первые десять заданий выполняются моментально, а остальные более менее равномерно, но так, чтобы не превышать заданную скорость.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;mutex&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">  boost::asio::io_context ios;</div>
+<div class="line">  <a name="_a0"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div>
+<div class="line">  opt.<a name="a1"></a><a class="code" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">threads</a> = 5;</div>
+<div class="line">  opt.<a name="a2"></a><a class="code" href="structwflow_1_1workflow__options.html#ad2035e352bca3693ce5ac066b0e624b1">rate_limit</a> = 10;</div>
+<div class="line">  <a name="_a3"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div>
+<div class="line">  wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div>
+<div class="line">  std::mutex m;</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 100; ++i)</div>
+<div class="line">  {</div>
+<div class="line">    wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( [&amp;, i](){</div>
+<div class="line">      std::lock_guard&lt;std::mutex&gt; lk(m);</div>
+<div class="line">      std::cout &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; std::this_thread::get_id() &lt;&lt; std::endl;</div>
+<div class="line">    });</div>
+<div class="line">  }</div>
+<div class="line">  wf.<a name="a6"></a><a class="code" href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427">shutdown</a>();</div>
+<div class="line">  wf.<a name="a7"></a><a class="code" href="classwflow_1_1workflow.html#a5c29b64755156d106b620f9e812db74c">wait</a>();</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div><!-- contents -->
+<div class="ttc" id="aclasswflow_1_1workflow_html_a5d4195f4f557ed076268185c4565f780"><div class="ttname"><a href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">wflow::workflow::post</a></div><div class="ttdeci">bool post(post_handler handler, drop_handler drop=nullptr)</div><div class="ttdoc">Отправить задание на обработку</div><div class="ttdef"><b>Definition:</b> workflow.cpp:124</div></div>
+<div class="ttc" id="aworkflow_8hpp_html"><div class="ttname"><a href="workflow_8hpp.html">workflow.hpp</a></div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_ac078e4d80f614092a138d0be0ba78bed"><div class="ttname"><a href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">wflow::workflow::start</a></div><div class="ttdeci">void start()</div><div class="ttdoc">Запуск потоков обработки.</div><div class="ttdef"><b>Definition:</b> workflow.cpp:32</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_a5c29b64755156d106b620f9e812db74c"><div class="ttname"><a href="classwflow_1_1workflow.html#a5c29b64755156d106b620f9e812db74c">wflow::workflow::wait</a></div><div class="ttdeci">void wait()</div><div class="ttdoc">Ожидает завершения всех заданий после workflow::shutdown.</div><div class="ttdef"><b>Definition:</b> workflow.cpp:84</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:130</div></div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html_a80352d63df20a1059e1fccd9655d15ec"><div class="ttname"><a href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">wflow::workflow_options::threads</a></div><div class="ttdeci">size_t threads</div><div class="ttdoc">Количество дополнительных потоков обработки</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:44</div></div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html_ad2035e352bca3693ce5ac066b0e624b1"><div class="ttname"><a href="structwflow_1_1workflow__options.html#ad2035e352bca3693ce5ac066b0e624b1">wflow::workflow_options::rate_limit</a></div><div class="ttdeci">size_t rate_limit</div><div class="ttdoc">Ограничение скорости обработки (в заданиях в секунду)</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:96</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_a1b34e942c65cfdf8a27c66b92c595427"><div class="ttname"><a href="classwflow_1_1workflow.html#a1b34e942c65cfdf8a27c66b92c595427">wflow::workflow::shutdown</a></div><div class="ttdeci">void shutdown()</div><div class="ttdoc">Сброс всех таймеров и завершение работы потоков после обработки всех заданий</div><div class="ttdef"><b>Definition:</b> workflow.cpp:79</div></div>
+<div class="ttc" id="alogger_8hpp_html"><div class="ttname"><a href="logger_8hpp.html">logger.hpp</a></div></div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html"><div class="ttname"><a href="structwflow_1_1workflow__options.html">wflow::workflow_options</a></div><div class="ttdoc">Опции</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:15</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Создано системой &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.15
+</a> 1.8.17
 </small></address>
 </body>
 </html>

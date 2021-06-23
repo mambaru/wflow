@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: example14.cpp</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.15 -->
+<!-- Создано системой Doxygen 1.8.17 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -43,13 +43,154 @@ $(function() {
 <div class="title">example14.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<p class="">Более сложный пример requester'в. В этом примере каждая вторая последовательность из десяти вызовов прерывается на пятом сообщении и начинается сначала. После отработки пяти успешных последовательностей завершаем работу.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;fas/system/memory.hpp&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;mutex&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;memory&gt;</span></div><div class="line"></div><div class="line"><span class="comment">/* Output:</span></div><div class="line"><span class="comment">create FIRST request</span></div><div class="line"><span class="comment">foo::method 0</span></div><div class="line"><span class="comment">create request N0.1</span></div><div class="line"><span class="comment">foo::method 1</span></div><div class="line"><span class="comment">create request N0.2</span></div><div class="line"><span class="comment">foo::method 2</span></div><div class="line"><span class="comment">create request N0.3</span></div><div class="line"><span class="comment">foo::method 3</span></div><div class="line"><span class="comment">create request N0.4</span></div><div class="line"><span class="comment">foo::method 4</span></div><div class="line"><span class="comment">create request N0.5</span></div><div class="line"><span class="comment">foo::method FAIL</span></div><div class="line"><span class="comment">create FIRST request</span></div><div class="line"><span class="comment">foo::method 0</span></div><div class="line"><span class="comment">create request N0.1</span></div><div class="line"><span class="comment">foo::method 1</span></div><div class="line"><span class="comment">create request N0.2</span></div><div class="line"><span class="comment">foo::method 2</span></div><div class="line"><span class="comment">create request N0.3</span></div><div class="line"><span class="comment">foo::method 3</span></div><div class="line"><span class="comment">create request N0.4</span></div><div class="line"><span class="comment">foo::method 4</span></div><div class="line"><span class="comment">create request N0.5</span></div><div class="line"><span class="comment">foo::method 5</span></div><div class="line"><span class="comment">create request N0.6</span></div><div class="line"><span class="comment">foo::method 6</span></div><div class="line"><span class="comment">create request N0.7</span></div><div class="line"><span class="comment">foo::method 7</span></div><div class="line"><span class="comment">create request N0.8</span></div><div class="line"><span class="comment">foo::method 8</span></div><div class="line"><span class="comment">create request N0.9</span></div><div class="line"><span class="comment">foo::method 9</span></div><div class="line"><span class="comment">STOP create request</span></div><div class="line"><span class="comment"> */</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>request</div><div class="line">{</div><div class="line">  <span class="keywordtype">int</span> param = 0;</div><div class="line">  <span class="comment">// исключительно для удобства</span></div><div class="line">  <span class="keyword">typedef</span> std::unique_ptr&lt;request&gt; ptr;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">struct </span>response</div><div class="line">{</div><div class="line">  <span class="keywordtype">int</span> result = 0;</div><div class="line">  <span class="comment">// исключительно для удобства</span></div><div class="line">  <span class="keyword">typedef</span> std::unique_ptr&lt;response&gt; ptr;</div><div class="line">  <span class="keyword">typedef</span> std::function&lt; void(ptr) &gt; handler;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">class </span>foo</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="keyword">explicit</span> foo(<a name="_a0"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a>&amp; w) noexcept</div><div class="line">    : _workflow(w)</div><div class="line">  {}</div><div class="line"></div><div class="line">  <span class="keywordtype">void</span> method( request::ptr req,  response::handler callback)</div><div class="line">  {</div><div class="line">    <span class="keywordflow">if</span> ( req-&gt;param == 5 &amp;&amp; _flag)</div><div class="line">    {</div><div class="line">      <span class="comment">// Эмуляция ошибки на пятом запросе каждой второй последовательности</span></div><div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;foo::method FAIL&quot;</span> &lt;&lt; std::endl;</div><div class="line">      _flag = <span class="keyword">false</span>;</div><div class="line">      callback(<span class="keyword">nullptr</span>);</div><div class="line">      <span class="keywordflow">return</span>;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> ( req-&gt;param == 5 )</div><div class="line">      _flag = <span class="keyword">true</span>;</div><div class="line"></div><div class="line">    <span class="keyword">auto</span> preq = std::make_shared&lt;request&gt;( std::move(*req) );</div><div class="line">    _workflow.post(</div><div class="line">      std::chrono::milliseconds(100),</div><div class="line">      [preq, callback]()</div><div class="line">      {</div><div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;foo::method &quot;</span> &lt;&lt; preq-&gt;param &lt;&lt; std::endl;</div><div class="line">        response::ptr res(<span class="keyword">new</span> response() );</div><div class="line">        res-&gt;result = preq-&gt;param + 1;</div><div class="line">        callback( std::move(res) );</div><div class="line">      }</div><div class="line">    );</div><div class="line">  }</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a>&amp; _workflow;</div><div class="line">  <span class="keywordtype">bool</span> _flag = <span class="keyword">true</span>;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">  boost::asio::io_service ios;</div><div class="line">  <a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div><div class="line">  <span class="keyword">auto</span> f = std::make_shared&lt;foo&gt;(wf);</div><div class="line">  <span class="keyword">volatile</span> <span class="keywordtype">int</span> callcount = 0;</div><div class="line">  wf.create_requester&lt;request, response&gt;(</div><div class="line">    std::chrono::seconds(1),</div><div class="line">    [f, &amp;callcount](request::ptr req, response::handler callback)</div><div class="line">    {</div><div class="line">      <span class="comment">// После отработки пяти успешных последовательностей завершаем работу.</span></div><div class="line">      <span class="keywordflow">if</span> ( callcount == 5 )</div><div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">      f-&gt;method(std::move(req), callback);</div><div class="line">      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">    },</div><div class="line">    [&amp;callcount](response::ptr resp) -&gt; request::ptr</div><div class="line">    {</div><div class="line">      <span class="keywordflow">if</span> ( resp == <span class="keyword">nullptr</span> )</div><div class="line">      {</div><div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;create FIRST request &quot;</span>  &lt;&lt; std::endl;</div><div class="line">        <span class="keywordflow">return</span> request::ptr(<span class="keyword">new</span> request() );</div><div class="line">      }</div><div class="line">      <span class="keywordflow">else</span> <span class="keywordflow">if</span> ( resp-&gt;result != 10)</div><div class="line">      {</div><div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;create request N&quot;</span> &lt;&lt; callcount &lt;&lt; <span class="stringliteral">&quot;.&quot;</span> &lt;&lt; resp-&gt;result &lt;&lt; std::endl;</div><div class="line">        request::ptr req(<span class="keyword">new</span> request() );</div><div class="line">        req-&gt;param = resp-&gt;result;</div><div class="line">        <span class="keywordflow">return</span> req;</div><div class="line">      }</div><div class="line">      <span class="keywordflow">else</span></div><div class="line">      {</div><div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;STOP create request&quot;</span> &lt;&lt; std::endl;</div><div class="line">        ++callcount;</div><div class="line">        <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div><div class="line">      }</div><div class="line">    }</div><div class="line">  );</div><div class="line">  ios.run();</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<p>Более сложный пример requester'в. В этом примере каждая вторая последовательность из десяти вызовов прерывается на пятом сообщении и начинается сначала. После отработки пяти успешных последовательностей завершаем работу.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;fas/system/memory.hpp&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;mutex&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Output:</span></div>
+<div class="line"><span class="comment">create FIRST request</span></div>
+<div class="line"><span class="comment">foo::method 0</span></div>
+<div class="line"><span class="comment">create request N0.1</span></div>
+<div class="line"><span class="comment">foo::method 1</span></div>
+<div class="line"><span class="comment">create request N0.2</span></div>
+<div class="line"><span class="comment">foo::method 2</span></div>
+<div class="line"><span class="comment">create request N0.3</span></div>
+<div class="line"><span class="comment">foo::method 3</span></div>
+<div class="line"><span class="comment">create request N0.4</span></div>
+<div class="line"><span class="comment">foo::method 4</span></div>
+<div class="line"><span class="comment">create request N0.5</span></div>
+<div class="line"><span class="comment">foo::method FAIL</span></div>
+<div class="line"><span class="comment">create FIRST request</span></div>
+<div class="line"><span class="comment">foo::method 0</span></div>
+<div class="line"><span class="comment">create request N0.1</span></div>
+<div class="line"><span class="comment">foo::method 1</span></div>
+<div class="line"><span class="comment">create request N0.2</span></div>
+<div class="line"><span class="comment">foo::method 2</span></div>
+<div class="line"><span class="comment">create request N0.3</span></div>
+<div class="line"><span class="comment">foo::method 3</span></div>
+<div class="line"><span class="comment">create request N0.4</span></div>
+<div class="line"><span class="comment">foo::method 4</span></div>
+<div class="line"><span class="comment">create request N0.5</span></div>
+<div class="line"><span class="comment">foo::method 5</span></div>
+<div class="line"><span class="comment">create request N0.6</span></div>
+<div class="line"><span class="comment">foo::method 6</span></div>
+<div class="line"><span class="comment">create request N0.7</span></div>
+<div class="line"><span class="comment">foo::method 7</span></div>
+<div class="line"><span class="comment">create request N0.8</span></div>
+<div class="line"><span class="comment">foo::method 8</span></div>
+<div class="line"><span class="comment">create request N0.9</span></div>
+<div class="line"><span class="comment">foo::method 9</span></div>
+<div class="line"><span class="comment">STOP create request</span></div>
+<div class="line"><span class="comment"> */</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>request</div>
+<div class="line">{</div>
+<div class="line">  <span class="keywordtype">int</span> param = 0;</div>
+<div class="line">  <span class="comment">// исключительно для удобства</span></div>
+<div class="line">  <span class="keyword">typedef</span> std::unique_ptr&lt;request&gt; ptr;</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>response</div>
+<div class="line">{</div>
+<div class="line">  <span class="keywordtype">int</span> result = 0;</div>
+<div class="line">  <span class="comment">// исключительно для удобства</span></div>
+<div class="line">  <span class="keyword">typedef</span> std::unique_ptr&lt;response&gt; ptr;</div>
+<div class="line">  <span class="keyword">typedef</span> std::function&lt; void(ptr) &gt; handler;</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">class </span>foo</div>
+<div class="line">{</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">  <span class="keyword">explicit</span> foo(<a name="_a0"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a>&amp; w) noexcept</div>
+<div class="line">    : _workflow(w)</div>
+<div class="line">  {}</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordtype">void</span> method( request::ptr req,  response::handler callback)</div>
+<div class="line">  {</div>
+<div class="line">    <span class="keywordflow">if</span> ( req-&gt;param == 5 &amp;&amp; _flag)</div>
+<div class="line">    {</div>
+<div class="line">      <span class="comment">// Эмуляция ошибки на пятом запросе каждой второй последовательности</span></div>
+<div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;foo::method FAIL&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">      _flag = <span class="keyword">false</span>;</div>
+<div class="line">      callback(<span class="keyword">nullptr</span>);</div>
+<div class="line">      <span class="keywordflow">return</span>;</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">if</span> ( req-&gt;param == 5 )</div>
+<div class="line">      _flag = <span class="keyword">true</span>;</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">auto</span> preq = std::make_shared&lt;request&gt;( std::move(*req) );</div>
+<div class="line">    _workflow.post(</div>
+<div class="line">      std::chrono::milliseconds(100),</div>
+<div class="line">      [preq, callback]()</div>
+<div class="line">      {</div>
+<div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;foo::method &quot;</span> &lt;&lt; preq-&gt;param &lt;&lt; std::endl;</div>
+<div class="line">        response::ptr res(<span class="keyword">new</span> response() );</div>
+<div class="line">        res-&gt;result = preq-&gt;param + 1;</div>
+<div class="line">        callback( std::move(res) );</div>
+<div class="line">      }</div>
+<div class="line">    );</div>
+<div class="line">  }</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">private</span>:</div>
+<div class="line">  <a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a>&amp; _workflow;</div>
+<div class="line">  <span class="keywordtype">bool</span> _flag = <span class="keyword">true</span>;</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">  boost::asio::io_context ios;</div>
+<div class="line">  <a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div>
+<div class="line">  <span class="keyword">auto</span> f = std::make_shared&lt;foo&gt;(wf);</div>
+<div class="line">  <span class="keyword">volatile</span> <span class="keywordtype">int</span> callcount = 0;</div>
+<div class="line">  wf.create_requester&lt;request, response&gt;(</div>
+<div class="line">    std::chrono::seconds(1),</div>
+<div class="line">    [f, &amp;callcount](request::ptr req, response::handler callback)</div>
+<div class="line">    {</div>
+<div class="line">      <span class="comment">// После отработки пяти успешных последовательностей завершаем работу.</span></div>
+<div class="line">      <span class="keywordflow">if</span> ( callcount == 5 )</div>
+<div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line">      f-&gt;method(std::move(req), callback);</div>
+<div class="line">      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line">    },</div>
+<div class="line">    [&amp;callcount](response::ptr resp) -&gt; request::ptr</div>
+<div class="line">    {</div>
+<div class="line">      <span class="keywordflow">if</span> ( resp == <span class="keyword">nullptr</span> )</div>
+<div class="line">      {</div>
+<div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;create FIRST request &quot;</span>  &lt;&lt; std::endl;</div>
+<div class="line">        <span class="keywordflow">return</span> request::ptr(<span class="keyword">new</span> request() );</div>
+<div class="line">      }</div>
+<div class="line">      <span class="keywordflow">else</span> <span class="keywordflow">if</span> ( resp-&gt;result != 10)</div>
+<div class="line">      {</div>
+<div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;create request N&quot;</span> &lt;&lt; callcount &lt;&lt; <span class="stringliteral">&quot;.&quot;</span> &lt;&lt; resp-&gt;result &lt;&lt; std::endl;</div>
+<div class="line">        request::ptr req(<span class="keyword">new</span> request() );</div>
+<div class="line">        req-&gt;param = resp-&gt;result;</div>
+<div class="line">        <span class="keywordflow">return</span> req;</div>
+<div class="line">      }</div>
+<div class="line">      <span class="keywordflow">else</span></div>
+<div class="line">      {</div>
+<div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;STOP create request&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">        callcount = callcount + 1;</div>
+<div class="line">        <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line">      }</div>
+<div class="line">    }</div>
+<div class="line">  );</div>
+<div class="line">  ios.run();</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div><!-- contents -->
+<div class="ttc" id="aworkflow_8hpp_html"><div class="ttname"><a href="workflow_8hpp.html">workflow.hpp</a></div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:130</div></div>
+<div class="ttc" id="alogger_8hpp_html"><div class="ttname"><a href="logger_8hpp.html">logger.hpp</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Создано системой &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.15
+</a> 1.8.17
 </small></address>
 </body>
 </html>

@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: example15.cpp</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.15 -->
+<!-- Создано системой Doxygen 1.8.17 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -43,12 +43,69 @@ $(function() {
 <div class="title">example15.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<p class="">Пример использования JSON-конфигурации При запуске без параметров выводится сгенерированный JSON со значениями по умолчанию. В качестве параметра передается JSON-конфигурация для <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a>, через который данные из STDIN будут отправлены в STDOUT. Можно поэкспериментировать с многопоточностью, задержками и ограничениями скорости обработки через конфиг. </p><div class="fragment"><div class="line">time cat ../examples/example15.cpp | ./examples/example15 ../examples/example15-1.json</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="load_8hpp.html">wflow/load.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div><div class="line">{</div><div class="line">  <span class="keywordflow">if</span> (argc == 1)</div><div class="line">  {</div><div class="line">    std::cout &lt;&lt; <a name="a0"></a><a class="code" href="namespacewflow.html#a4be3a79d92982330bc8f7a0bc093b109">wflow::dump</a>( <a name="_a1"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a>() ) &lt;&lt; std::endl;</div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">  }</div><div class="line">  </div><div class="line">  <a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div><div class="line">  std::string err;</div><div class="line">  <span class="keywordflow">if</span> ( !<a name="a2"></a><a class="code" href="namespacewflow.html#ae924c213b11520308344cede59c6ede9">wflow::load</a>(argv[1], &amp;opt, &amp;err) )</div><div class="line">  {</div><div class="line">    std::cerr &lt;&lt; <span class="stringliteral">&quot;ERROR: &quot;</span> &lt;&lt; err &lt;&lt; std::endl;</div><div class="line">    <span class="keywordflow">return</span> -1;</div><div class="line">  }</div><div class="line">  wflow::asio::io_service ios;</div><div class="line">  <a name="_a3"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div><div class="line">  wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div><div class="line">  </div><div class="line">  std::atomic&lt;size_t&gt; count(0);</div><div class="line">  </div><div class="line">  <span class="keywordflow">while</span>( std::cin.good() )</div><div class="line">  {</div><div class="line">    std::string str;</div><div class="line">    std::getline (std::cin,str);</div><div class="line">    ++count;</div><div class="line">    wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>([str, &amp;count](){</div><div class="line">      std::cout &lt;&lt; str &lt;&lt; std::endl;</div><div class="line">      --count;</div><div class="line">    });</div><div class="line">  }</div><div class="line">  wf.<a name="a6"></a><a class="code" href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">create_timer</a>(std::chrono::milliseconds(100), [&amp;count, &amp;ios](){</div><div class="line">    <span class="keywordflow">if</span> (count!=0)</div><div class="line">      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">    ios.stop();</div><div class="line">    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">  });</div><div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;Read DONE!&quot;</span> &lt;&lt; std::endl;</div><div class="line">  wflow::asio::io_service::work wrk(ios);</div><div class="line">  ios.run();</div><div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;BYE!&quot;</span> &lt;&lt; std::endl;</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<p>Пример использования JSON-конфигурации При запуске без параметров выводится сгенерированный JSON со значениями по умолчанию. В качестве параметра передается JSON-конфигурация для <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a>, через который данные из STDIN будут отправлены в STDOUT. Можно поэкспериментировать с многопоточностью, задержками и ограничениями скорости обработки через конфиг. </p><div class="fragment"><div class="line">time cat ../examples/example15.cpp | ./examples/example15 ../examples/example15-1.json</div>
+</div><!-- fragment --><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="load_8hpp.html">wflow/load.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
+<div class="line">{</div>
+<div class="line">  <span class="keywordflow">if</span> (argc == 1)</div>
+<div class="line">  {</div>
+<div class="line">    std::cout &lt;&lt; <a name="a0"></a><a class="code" href="namespacewflow.html#a4be3a79d92982330bc8f7a0bc093b109">wflow::dump</a>( <a name="_a1"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a>() ) &lt;&lt; std::endl;</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">  }</div>
+<div class="line"> </div>
+<div class="line">  <a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div>
+<div class="line">  std::string err;</div>
+<div class="line">  <span class="keywordflow">if</span> ( !<a name="a2"></a><a class="code" href="namespacewflow.html#ae924c213b11520308344cede59c6ede9">wflow::load</a>(argv[1], &amp;opt, &amp;err) )</div>
+<div class="line">  {</div>
+<div class="line">    std::cerr &lt;&lt; <span class="stringliteral">&quot;ERROR: &quot;</span> &lt;&lt; err &lt;&lt; std::endl;</div>
+<div class="line">    <span class="keywordflow">return</span> -1;</div>
+<div class="line">  }</div>
+<div class="line">  boost::asio::io_context ios;</div>
+<div class="line">  <a name="_a3"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div>
+<div class="line">  wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div>
+<div class="line"> </div>
+<div class="line">  std::atomic&lt;size_t&gt; count(0);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">while</span>( std::cin.good() )</div>
+<div class="line">  {</div>
+<div class="line">    std::string str;</div>
+<div class="line">    std::getline (std::cin,str);</div>
+<div class="line">    ++count;</div>
+<div class="line">    wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>([str, &amp;count](){</div>
+<div class="line">      std::cout &lt;&lt; str &lt;&lt; std::endl;</div>
+<div class="line">      --count;</div>
+<div class="line">    });</div>
+<div class="line">  }</div>
+<div class="line">  wf.<a name="a6"></a><a class="code" href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">create_timer</a>(std::chrono::milliseconds(100), [&amp;count, &amp;ios](){</div>
+<div class="line">    <span class="keywordflow">if</span> (count!=0)</div>
+<div class="line">      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line">    ios.stop();</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line">  });</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;Read DONE!&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">  boost::asio::executor_work_guard&lt;boost::asio::io_context::executor_type&gt; wrk(ios.get_executor());</div>
+<div class="line">  ios.run();</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;BYE!&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div><!-- contents -->
+<div class="ttc" id="aclasswflow_1_1workflow_html_a5d4195f4f557ed076268185c4565f780"><div class="ttname"><a href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">wflow::workflow::post</a></div><div class="ttdeci">bool post(post_handler handler, drop_handler drop=nullptr)</div><div class="ttdoc">Отправить задание на обработку</div><div class="ttdef"><b>Definition:</b> workflow.cpp:124</div></div>
+<div class="ttc" id="aworkflow_8hpp_html"><div class="ttname"><a href="workflow_8hpp.html">workflow.hpp</a></div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_ac078e4d80f614092a138d0be0ba78bed"><div class="ttname"><a href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">wflow::workflow::start</a></div><div class="ttdeci">void start()</div><div class="ttdoc">Запуск потоков обработки.</div><div class="ttdef"><b>Definition:</b> workflow.cpp:32</div></div>
+<div class="ttc" id="anamespacewflow_html_a4be3a79d92982330bc8f7a0bc093b109"><div class="ttname"><a href="namespacewflow.html#a4be3a79d92982330bc8f7a0bc093b109">wflow::dump</a></div><div class="ttdeci">std::string dump(const workflow_options &amp;opt)</div><div class="ttdoc">Сериализация в JSON структуры конфигурации.</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:130</div></div>
+<div class="ttc" id="anamespacewflow_html_ae924c213b11520308344cede59c6ede9"><div class="ttname"><a href="namespacewflow.html#ae924c213b11520308344cede59c6ede9">wflow::load</a></div><div class="ttdeci">bool load(const std::string &amp;src, workflow_options *opt, std::string *err=nullptr)</div><div class="ttdoc">Загрузить json-конфигурацию из файла или строки.</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_a0e8109df8f191419c2bcfc48a1745121"><div class="ttname"><a href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">wflow::workflow::create_timer</a></div><div class="ttdeci">timer_id_t create_timer(duration_t duration, timer_handler handler, expires_at expires=expires_at::after)</div><div class="ttdoc">Создает таймер, обработчик которого выполняется с заданной периодичностью</div><div class="ttdef"><b>Definition:</b> workflow.cpp:170</div></div>
+<div class="ttc" id="aload_8hpp_html"><div class="ttname"><a href="load_8hpp.html">load.hpp</a></div></div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html"><div class="ttname"><a href="structwflow_1_1workflow__options.html">wflow::workflow_options</a></div><div class="ttdoc">Опции</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:15</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Создано системой &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.15
+</a> 1.8.17
 </small></address>
 </body>
 </html>

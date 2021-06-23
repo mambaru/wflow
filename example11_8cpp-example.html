@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: example11.cpp</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.15 -->
+<!-- Создано системой Doxygen 1.8.17 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -43,13 +43,54 @@ $(function() {
 <div class="title">example11.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<p class="">Пример того, как можно забить очередь так, чтобы таймеры не сработали вовремя. В конфигурации 4 потока отправляем 4 задания которые засыпают и не отпускают поток на 4 секунды. Тут же отправляем отложенное на 2 секунды задание, но оно сработает только через 4 секунды, когда освободится один из потоков.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"></div><div class="line"><span class="comment">/* &gt; time example11</span></div><div class="line"><span class="comment">  It was expected 2 seconds, but waited 4 seconds</span></div><div class="line"><span class="comment">  real    0m4.005s</span></div><div class="line"><span class="comment">  user    0m0.000s</span></div><div class="line"><span class="comment">  sys     0m0.006s</span></div><div class="line"><span class="comment"> */</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">  wflow::asio::io_service ios;</div><div class="line">  <a name="_a0"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div><div class="line">  opt.<a name="a1"></a><a class="code" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">threads</a> = 4;</div><div class="line">  <a name="_a2"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div><div class="line">  wf.<a name="a3"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div><div class="line"></div><div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i &lt; 4; ++i)</div><div class="line">    wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>([](){ sleep(4);});</div><div class="line">  </div><div class="line">  time_t beg = time(<span class="keyword">nullptr</span>);</div><div class="line">  wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#aea4296e274c45240aa597f88fa9b2be2">safe_post</a>( </div><div class="line">    std::chrono::seconds(2), </div><div class="line">    [&amp;ios, beg]()</div><div class="line">    {</div><div class="line">      time_t now = time(<span class="keyword">nullptr</span>);</div><div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;It was expected 2 seconds, but waited &quot;</span>&lt;&lt; now - beg &lt;&lt; <span class="stringliteral">&quot; seconds&quot;</span> &lt;&lt; std::endl;</div><div class="line">      ios.stop();</div><div class="line">    });</div><div class="line">  wflow::asio::io_service::work wrk(ios);</div><div class="line">  ios.run();</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<p>Пример того, как можно забить очередь так, чтобы таймеры не сработали вовремя. В конфигурации 4 потока отправляем 4 задания которые засыпают и не отпускают поток на 4 секунды. Тут же отправляем отложенное на 2 секунды задание, но оно сработает только через 4 секунды, когда освободится один из потоков.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* &gt; time example11</span></div>
+<div class="line"><span class="comment">  It was expected 2 seconds, but waited 4 seconds</span></div>
+<div class="line"><span class="comment">  real    0m4.005s</span></div>
+<div class="line"><span class="comment">  user    0m0.000s</span></div>
+<div class="line"><span class="comment">  sys     0m0.006s</span></div>
+<div class="line"><span class="comment"> */</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">  boost::asio::io_context ios;</div>
+<div class="line">  <a name="_a0"></a><a class="code" href="structwflow_1_1workflow__options.html">wflow::workflow_options</a> opt;</div>
+<div class="line">  opt.<a name="a1"></a><a class="code" href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">threads</a> = 4;</div>
+<div class="line">  <a name="_a2"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios, opt);</div>
+<div class="line">  wf.<a name="a3"></a><a class="code" href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">start</a>();</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i &lt; 4; ++i)</div>
+<div class="line">    wf.<a name="a4"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>([](){ sleep(4);});</div>
+<div class="line"> </div>
+<div class="line">  time_t beg = time(<span class="keyword">nullptr</span>);</div>
+<div class="line">  wf.<a name="a5"></a><a class="code" href="classwflow_1_1workflow.html#aea4296e274c45240aa597f88fa9b2be2">safe_post</a>(</div>
+<div class="line">    std::chrono::seconds(2),</div>
+<div class="line">    [&amp;ios, beg]()</div>
+<div class="line">    {</div>
+<div class="line">      time_t now = time(<span class="keyword">nullptr</span>);</div>
+<div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;It was expected 2 seconds, but waited &quot;</span>&lt;&lt; now - beg &lt;&lt; <span class="stringliteral">&quot; seconds&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">      ios.stop();</div>
+<div class="line">    });</div>
+<div class="line">  boost::asio::executor_work_guard&lt;boost::asio::io_context::executor_type&gt; wrk(ios.get_executor());</div>
+<div class="line">  ios.run();</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div><!-- contents -->
+<div class="ttc" id="aclasswflow_1_1workflow_html_a5d4195f4f557ed076268185c4565f780"><div class="ttname"><a href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">wflow::workflow::post</a></div><div class="ttdeci">bool post(post_handler handler, drop_handler drop=nullptr)</div><div class="ttdoc">Отправить задание на обработку</div><div class="ttdef"><b>Definition:</b> workflow.cpp:124</div></div>
+<div class="ttc" id="aworkflow_8hpp_html"><div class="ttname"><a href="workflow_8hpp.html">workflow.hpp</a></div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_ac078e4d80f614092a138d0be0ba78bed"><div class="ttname"><a href="classwflow_1_1workflow.html#ac078e4d80f614092a138d0be0ba78bed">wflow::workflow::start</a></div><div class="ttdeci">void start()</div><div class="ttdoc">Запуск потоков обработки.</div><div class="ttdef"><b>Definition:</b> workflow.cpp:32</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:130</div></div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html_a80352d63df20a1059e1fccd9655d15ec"><div class="ttname"><a href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">wflow::workflow_options::threads</a></div><div class="ttdeci">size_t threads</div><div class="ttdoc">Количество дополнительных потоков обработки</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:44</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_aea4296e274c45240aa597f88fa9b2be2"><div class="ttname"><a href="classwflow_1_1workflow.html#aea4296e274c45240aa597f88fa9b2be2">wflow::workflow::safe_post</a></div><div class="ttdeci">void safe_post(post_handler handler)</div><div class="ttdoc">Отправить задание на обработку игнорируя ограничения на размер очереди и скорости обработки.</div><div class="ttdef"><b>Definition:</b> workflow.cpp:119</div></div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html"><div class="ttname"><a href="structwflow_1_1workflow__options.html">wflow::workflow_options</a></div><div class="ttdoc">Опции</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:15</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Создано системой &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.15
+</a> 1.8.17
 </small></address>
 </body>
 </html>

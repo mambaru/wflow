@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.15"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: example05.cpp</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.15 -->
+<!-- Создано системой Doxygen 1.8.17 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -43,13 +43,46 @@ $(function() {
 <div class="title">example05.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<p class="">Еще пример таймера и различных заданий.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">  boost::asio::io_service ios;</div><div class="line">  <a name="_a0"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div><div class="line">  </div><div class="line">  wf.<a name="a1"></a><a class="code" href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">create_timer</a>( </div><div class="line">    std::chrono::milliseconds(500),</div><div class="line">    std::chrono::milliseconds(1000),</div><div class="line">    []()-&gt;<span class="keywordtype">bool</span></div><div class="line">    {</div><div class="line">      <span class="keyword">static</span> <span class="keywordtype">int</span> count = 4;</div><div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;timer count=&quot;</span> &lt;&lt; count &lt;&lt; std::endl;</div><div class="line">      <span class="keywordflow">return</span> --count != 0;</div><div class="line">    }</div><div class="line">  );</div><div class="line">  </div><div class="line">  wf.<a name="a2"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::nanoseconds(1000000000),[](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 1 seconds &quot;</span> &lt;&lt; std::endl; });</div><div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::milliseconds(2000),     [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 2 seconds &quot;</span> &lt;&lt; std::endl; });</div><div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::seconds(3),             [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 3 seconds &quot;</span> &lt;&lt; std::endl; });</div><div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::microseconds(4000000),  [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 4 seconds &quot;</span> &lt;&lt; std::endl; });</div><div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;first message &quot;</span> &lt;&lt; std::endl; } );</div><div class="line">  ios.run();</div><div class="line">}</div></div><!-- fragment --> </div><!-- contents -->
+<p>Еще пример таймера и различных заданий.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="workflow_8hpp.html">wflow/workflow.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="logger_8hpp.html">wflow/logger.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">  boost::asio::io_context ios;</div>
+<div class="line">  <a name="_a0"></a><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div>
+<div class="line"> </div>
+<div class="line">  wf.<a name="a1"></a><a class="code" href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">create_timer</a>(</div>
+<div class="line">    std::chrono::milliseconds(500),</div>
+<div class="line">    std::chrono::milliseconds(1000),</div>
+<div class="line">    []()-&gt;<span class="keywordtype">bool</span></div>
+<div class="line">    {</div>
+<div class="line">      <span class="keyword">static</span> <span class="keywordtype">int</span> count = 4;</div>
+<div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;timer count=&quot;</span> &lt;&lt; count &lt;&lt; std::endl;</div>
+<div class="line">      <span class="keywordflow">return</span> --count != 0;</div>
+<div class="line">    }</div>
+<div class="line">  );</div>
+<div class="line"> </div>
+<div class="line">  wf.<a name="a2"></a><a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::nanoseconds(1000000000),[](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 1 seconds &quot;</span> &lt;&lt; std::endl; });</div>
+<div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::milliseconds(2000),     [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 2 seconds &quot;</span> &lt;&lt; std::endl; });</div>
+<div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::seconds(3),             [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 3 seconds &quot;</span> &lt;&lt; std::endl; });</div>
+<div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( std::chrono::microseconds(4000000),  [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;after 4 seconds &quot;</span> &lt;&lt; std::endl; });</div>
+<div class="line">  wf.<a class="code" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">post</a>( [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;first message &quot;</span> &lt;&lt; std::endl; } );</div>
+<div class="line">  ios.run();</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div><!-- contents -->
+<div class="ttc" id="aclasswflow_1_1workflow_html_a5d4195f4f557ed076268185c4565f780"><div class="ttname"><a href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780">wflow::workflow::post</a></div><div class="ttdeci">bool post(post_handler handler, drop_handler drop=nullptr)</div><div class="ttdoc">Отправить задание на обработку</div><div class="ttdef"><b>Definition:</b> workflow.cpp:124</div></div>
+<div class="ttc" id="aworkflow_8hpp_html"><div class="ttname"><a href="workflow_8hpp.html">workflow.hpp</a></div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:130</div></div>
+<div class="ttc" id="aclasswflow_1_1workflow_html_a0e8109df8f191419c2bcfc48a1745121"><div class="ttname"><a href="classwflow_1_1workflow.html#a0e8109df8f191419c2bcfc48a1745121">wflow::workflow::create_timer</a></div><div class="ttdeci">timer_id_t create_timer(duration_t duration, timer_handler handler, expires_at expires=expires_at::after)</div><div class="ttdoc">Создает таймер, обработчик которого выполняется с заданной периодичностью</div><div class="ttdef"><b>Definition:</b> workflow.cpp:170</div></div>
+<div class="ttc" id="alogger_8hpp_html"><div class="ttname"><a href="logger_8hpp.html">logger.hpp</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Создано системой &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.15
+</a> 1.8.17
 </small></address>
 </body>
 </html>
