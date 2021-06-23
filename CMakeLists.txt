@@ -17,6 +17,10 @@ set(
   wflow/task/thread_pool_base.cpp
 )
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
+  set_source_files_properties(wflow/queue/asio_queue.cpp PROPERTIES COMPILE_FLAGS -Wno-zero-as-null-pointer-constant)
+endif()
+
 if (NOT WFLOW_DISABLE_JSON)
   wci_getlib(NAME faslib)
   wci_getlib(NAME wjson)
@@ -36,17 +40,18 @@ add_library(wflow ${source_list})
 wci_targets(wflow)
 target_include_directories(wflow PUBLIC ${wflow_SOURCE_DIR})
 
-include(FindThreads)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+include(FindThreads REQUIRED)
 
-find_package(Boost REQUIRED COMPONENTS system)
+get_boost(system)
 target_compile_definitions(wflow PRIVATE -DBOOST_ASIO_NO_DEPRECATED)
 
 if (NOT WFLOW_DISABLE_LOG)
-  target_link_libraries(wflow PUBLIC wlog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+  target_link_libraries(wflow PUBLIC wlog Threads::Threads Boost::system )
 elseif (NOT WFLOW_DISABLE_JSON)
-  target_link_libraries(wflow PUBLIC wjson ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+  target_link_libraries(wflow PUBLIC wjson Threads::Threads Boost::system )
 else()
-  target_link_libraries(wflow PUBLIC faslib ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
+  target_link_libraries(wflow PUBLIC faslib Threads::Threads Boost::system )
 endif()
 
 if ( BUILD_TESTING )
@@ -64,7 +69,7 @@ endif()
 set(CPACK_PACKAGE_NAME "wflow")
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
 set(CPACK_PACKAGE_VERSION_MINOR "9")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_PACKAGE_VERSION_PATCH "3")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/Readme.md")
 set(CPACK_PACKAGE_CONTACT "migashko@gmail.com")

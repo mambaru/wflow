@@ -136,7 +136,7 @@ int main()
       else
       {
         std::cout << "STOP create request" << std::endl;
-        ++callcount;
+        callcount = callcount + 1;
         return nullptr;
       }
     }

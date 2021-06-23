@@ -196,14 +196,14 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
         thread_pool_base::finish_handler finish;
         thread_pool_base::statistics_handler statistics;
 
-        if ( auto pthis = wthis.lock() )
+        auto pthis = wthis.lock();
+        if ( pthis != nullptr )
         {
           startup = pthis->_startup;
           finish = pthis->_finish;
           statistics = pthis->_statistics;
         }
 
-        auto pthis = wthis.lock();
         if ( startup != nullptr )
           startup(thread_id);
 

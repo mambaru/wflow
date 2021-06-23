@@ -19,7 +19,7 @@ void task(int value)
 {
   usleep( static_cast<useconds_t>(std::rand() % 1000) );
   std::lock_guard<std::mutex> lk(m);
-  --counter;
+  counter=counter - 1;
   std::cout << "post " << value << " thread_id: " << std::this_thread::get_id() << std::endl; 
 }
 }

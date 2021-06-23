@@ -50,14 +50,14 @@ void asio_queue::safe_post( function_t f)
 {
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_safe_counter;
-  ::boost::asio::post( _io,  [wthis, f]()
+  boost::asio::post( _io,  [wthis, f]()
   {
     if (auto pthis = wthis.lock() )
     {
       --pthis->_safe_counter;
       f();
     }
-  }, nullptr);
+  });
 }
 
 bool asio_queue::post( function_t f, function_t drop )
@@ -66,14 +66,14 @@ bool asio_queue::post( function_t f, function_t drop )
     return false;
   std::weak_ptr<self> wthis = this->shared_from_this();
   ++_counter;
-  ::boost::asio::post(_io, [wthis, f]()
+  boost::asio::post(_io, [wthis, f]()
   {
     if (auto pthis = wthis.lock() )
     {
       --pthis->_counter;
       f();
     }
-  }, nullptr);
+  });
   return true;
 }
 

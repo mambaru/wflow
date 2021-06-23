@@ -30,7 +30,7 @@ int main()
     std::chrono::milliseconds(100),
     [&time_counter, &wf, &opt, &ios](){
       std::cout << time_counter << " " << std::this_thread::get_id() << std::endl;
-      ++time_counter;
+      time_counter = time_counter + 1;
       if ( time_counter == 20 )
       {
         opt.threads = 0;
