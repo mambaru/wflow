@@ -12,11 +12,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Install packages
-        run: |
-          sudo locale-gen ru_RU
-          sudo locale-gen ru_RU.UTF-8
-          sudo update-locale
-          sudo apt-get install -y lcov
+        run: bash setup.sh
         working-directory: ./.github/workflows
 
       - name: Coverage report and push to master branches
