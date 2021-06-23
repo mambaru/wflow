@@ -11,11 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: setup
-      run: |
-        sudo locale-gen ru_RU
-        sudo locale-gen ru_RU.UTF-8
-        sudo update-locale
-        sudo apt-get install -y lcov doxygen
+      run: bash setup.sh
       working-directory: ./.github/workflows
 
 
