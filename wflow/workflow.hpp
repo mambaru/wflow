@@ -380,18 +380,18 @@ public:
 
   /**
    * @brief Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
-   * @param tp момент времени, начиная с которого запустить таймер
+   * @param start_time момент времени, начиная с которого запустить таймер
    * @param duration интервал таймера
    * @param handler обработчик таймера std::function<bool()>, который должен возвращать true, если таймер должен продолжать работать и false - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    *
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_timer(time_point_t tp, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
+  timer_id_t create_timer(time_point_t start_time, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
 
   /**
    * @brief Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
-   * @param tp момент времени, начиная с которого запустить таймер
+   * @param start_time момент времени, начиная с которого запустить таймер
    * @param duration интервал таймера
    * @param ahandler обработчик таймера std::function<void(callback_timer_handler)>, который должен вызвать callback_timer_handler(true),
    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
@@ -400,22 +400,22 @@ public:
    *
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_async_timer(time_point_t tp, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(time_point_t start_time, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
 
   /**
    * @brief Создает таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
-   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+   * @param start_time момент времени, начиная с которого запустить таймер (строка в формате "22:00:00" или CRON)
    * @param duration интервал таймера
    * @param handler обработчик таймера std::function<bool()>, который должен возвращать true, если таймер должен продолжать работать и false - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    *
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_timer(std::string stp, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
+  timer_id_t create_timer(std::string start_time, duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
 
   /**
    * @brief Создает асинхронный таймер, обработчик которого выполняется с заданной периодичностью начиная с определенного момента времени
-   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+   * @param start_time момент времени, начиная с которого запустить таймер (строка в формате "22:00:00" или CRON)
    * @param duration интервал таймера
    * @param ahandler обработчик таймера std::function<void(callback_timer_handler)>, который должен вызвать callback_timer_handler(true),
    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
@@ -424,22 +424,22 @@ public:
    *
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_async_timer(std::string stp, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(std::string start_time, duration_t duration, async_timer_handler ahandler, expires_at expires = expires_at::after);
 
 
   /**
    * @brief Создает таймер, обработчик которого выполняется раз в сутки начиная с определенного момента времени
-   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+   * @param schedule расписание таймера (строка в формате "22:00:00" раз в сутки или CRON )
    * @param handler обработчик таймера std::function<bool()>, который должен возвращать true, если таймер должен продолжать работать
    * и false - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_timer(std::string stp, timer_handler handler, expires_at expires = expires_at::after);
+  timer_id_t create_timer(std::string schedule, timer_handler handler, expires_at expires = expires_at::after);
 
   /**
    * @brief Создает асинхронный таймер, обработчик которого выполняется раз в сутки с определенного момента времени
-   * @param stp момент времени, начиная с которого запустить таймер (строка в формате "22:00:00")
+   * @param schedule расписание таймера (строка в формате "22:00:00" раз в сутки или CRON )
    * @param ahandler обработчик таймера std::function<void(callback_timer_handler)>, который должен вызвать callback_timer_handler(true),
    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
@@ -447,8 +447,15 @@ public:
    *
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
-  timer_id_t create_async_timer(std::string stp, async_timer_handler ahandler, expires_at expires = expires_at::after);
+  timer_id_t create_async_timer(std::string schedule, async_timer_handler ahandler, expires_at expires = expires_at::after);
 
+  
+  /*
+    timer_id_t create_cron(std::string cron, timer_handler handler, expires_at expires = expires_at::after);
+    timer_id_t create_async_cron(std::string cron, async_timer_handler ahandler, expires_at expires = expires_at::after);
+  */
+  
+  
   /**
    * @brief Остановить таймер и освободить ресурсы
    * @param id идентификатор таймера
@@ -631,6 +638,9 @@ public:
   {
     return this->get_timer_manager()->create<Req, Res>(stp, sender, generator);
   }
+
+  static bool time_point_from_string(const std::string& strtime, time_point_t* result, std::string* err);
+  static bool duration_from_string(const std::string& strtime, duration_t* result, std::string* err);
 
   std::shared_ptr<task_manager> get_task_manager() const;
   std::shared_ptr<timer_manager_t> get_timer_manager() const;

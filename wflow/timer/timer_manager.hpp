@@ -1,6 +1,5 @@
 #pragma once
 
-#include <wflow/timer/timer.hpp>
 #include <wflow/timer/requester.hpp>
 #include <wflow/timer/timer_manager_base.hpp>
 
@@ -57,11 +56,17 @@ public:
 
   timer_id_t create(const std::string& start_time, duration_t delay, async_handler h, expires_at expires  = expires_at::after);
 
-  /// Evry 24 hours
+  /// Evry 24 hours or CRON
   
-  timer_id_t create(std::string start_time, handler h, expires_at expires = expires_at::after);
+  timer_id_t create(const std::string& schedule, handler h, expires_at expires = expires_at::after);
 
-  timer_id_t create(std::string start_time, async_handler h, expires_at expires = expires_at::after);
+  timer_id_t create(const std::string& schedule, async_handler h, expires_at expires = expires_at::after);
+
+  /// CRON
+  
+//  timer_id_t create_cron(std::string cron, handler h, expires_at expires = expires_at::after);
+
+//  timer_id_t create_cron(std::string cron, async_handler h, expires_at expires = expires_at::after);
 
   // reqesters 
 

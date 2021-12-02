@@ -44,7 +44,7 @@ struct workflow_options_json
     workflow_options,
     wjson::member_list<
       wjson::base< workflow_options_basic_json >,
-      wjson::member< n_post_delay_ms, workflow_options, time_t, &workflow_options::post_delay_ms, wjson::time_interval<> >,
+      wjson::member< n_post_delay_ms, workflow_options, time_t, &workflow_options::post_delay_ms, wjson::time_interval<time_t, 1000> >,
       wjson::member< n_rate_limit, workflow_options, size_t, &workflow_options::rate_limit >
     >,
     wjson::strict_mode

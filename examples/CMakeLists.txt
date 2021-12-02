@@ -42,13 +42,17 @@ target_link_libraries(example13 PRIVATE wflow )
 add_executable( example14 example14.cpp )
 target_link_libraries(example14 PRIVATE wflow )
 
-wci_utils(
+add_executable( example16 example16.cpp )
+target_link_libraries(example16 PRIVATE wflow )
+
+wci_examples(
   example01 example02 example03 example04 example05
   example06 example07 example08 example09 example10
-  example11 example12 example13 example14)
+  example11 example12 example13 example14 example16)
 
 if (NOT WFLOW_DISABLE_JSON)
   add_executable( example15 example15.cpp )
   target_link_libraries(example15 PRIVATE wflow )
-  wci_utils(example15)
+  wci_examples(example15)
 endif()
+

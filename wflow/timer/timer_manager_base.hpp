@@ -50,12 +50,33 @@ public:
 
   timer_id_t create( std::shared_ptr<asio_queue> pq,  time_point_t start_time, duration_t delay, async_handler h, expires_at expires);
 
+  ///
+  /// CRON
+  /// 
+
+  timer_id_t create( std::shared_ptr<bique> pq,  const std::string& schedule, handler h, expires_at expires);
+
+  timer_id_t create( std::shared_ptr<bique> pq,  const std::string& schedule, async_handler h, expires_at expires);
+
+  timer_id_t create( std::shared_ptr<delayed_queue> pq, const std::string& schedule, handler h, expires_at expires);
+
+  timer_id_t create( std::shared_ptr<delayed_queue> pq, const std::string& schedule, async_handler h, expires_at expires);
+
+  timer_id_t create( std::shared_ptr<asio_queue> pq, const std::string& schedule, handler h, expires_at expires);
+
+  timer_id_t create( std::shared_ptr<asio_queue> pq, const std::string& schedule, async_handler h, expires_at expires);
+  
 protected:
+
   template<typename Q, typename Handler>
-  timer_id_t create_( std::shared_ptr<Q> pq,  time_point_t start_time, duration_t delay, Handler h, expires_at expires);
-  mutable mutex_type _mutex;
+  timer_id_t create_( std::shared_ptr<Q> pq, time_point_t start_time, duration_t delay, Handler h, expires_at expires);
+
+  template<typename Q, typename Handler>
+  timer_id_t create_( std::shared_ptr<Q> pq, const std::string& schedule, Handler h, expires_at expires);
 
 private:
+  mutable mutex_type _mutex;
+
   typedef std::map< timer_id_t, std::shared_ptr<bool> > id_map;
 
   timer_id_t _id_counter;

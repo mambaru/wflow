@@ -10,9 +10,10 @@ set(
   wflow/queue/delayed_queue.cpp
   wflow/queue/asio_queue.cpp
   wflow/queue/bique.cpp
-  wflow/timer/timer.cpp
+  wflow/timer/private/timer_handler.cpp
   wflow/timer/timer_manager_base.cpp
   wflow/timer/timer_manager.cpp
+  wflow/timer/private/time_parser.cpp
   wflow/task/task_manager.cpp
   wflow/task/thread_pool_base.cpp
 )
