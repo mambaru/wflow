@@ -236,6 +236,9 @@ $(function() {
 <tr class="memitem:af4cbad9086674a2f92266576c1682e02"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#aa518f5f9fc1003db600a9b49b6ac1457">timer_id_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#af4cbad9086674a2f92266576c1682e02">create_requester</a> (std::string stp, typename requester::sender_t&lt; Req, Res &gt;::type sender, typename requester::generator_t&lt; Req, Res &gt;::type generator)</td></tr>
 <tr class="memdesc:af4cbad9086674a2f92266576c1682e02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создает опросник, который начинает выполняться с заданной периодичностью с определенного момента времени  <a href="classwflow_1_1workflow.html#af4cbad9086674a2f92266576c1682e02">Подробнее...</a><br /></td></tr>
 <tr class="separator:af4cbad9086674a2f92266576c1682e02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac737c9a67cb94b4921820f8c0849116b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwflow_1_1workflow.html#a42ff97459426b38a6d9771bb0fa1b515">io_context_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#ac737c9a67cb94b4921820f8c0849116b">get_io_context</a> ()</td></tr>
+<tr class="memdesc:ac737c9a67cb94b4921820f8c0849116b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Возвращает актуальный boost::io_context.  <a href="classwflow_1_1workflow.html#ac737c9a67cb94b4921820f8c0849116b">Подробнее...</a><br /></td></tr>
+<tr class="separator:ac737c9a67cb94b4921820f8c0849116b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48a5e668d09ce3e8aeb8e5f54ab9c5f5"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; task_manager &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a48a5e668d09ce3e8aeb8e5f54ab9c5f5">get_task_manager</a> () const</td></tr>
 <tr class="separator:a48a5e668d09ce3e8aeb8e5f54ab9c5f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ed2878a0cf1a51542689582e1d82900"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classwflow_1_1workflow.html#a0ed609f4b6c69ab14376005fd9359d4b">timer_manager_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html#a8ed2878a0cf1a51542689582e1d82900">get_timer_manager</a> () const</td></tr>
@@ -1642,6 +1645,26 @@ template&lt;typename Req , typename Res &gt; </div>
 
 <p>Получить идентификатор workflow. </p>
 <p>Это произвольная строка, может использоваться при логгировании </p>
+
+</div>
+</div>
+<a id="ac737c9a67cb94b4921820f8c0849116b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac737c9a67cb94b4921820f8c0849116b">&#9670;&nbsp;</a></span>get_io_context()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwflow_1_1workflow.html#a42ff97459426b38a6d9771bb0fa1b515">workflow::io_context_type</a> &amp; wflow::workflow::get_io_context </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Возвращает актуальный boost::io_context. </p>
+<p>Если установлена опция use_asio и threads &gt; 0, то это созданный boost::io_context который обслуживает потоки, в противном случае boost::io_context который передан в конструкторе Если use_asio=false то boost::io_context который передан в конструкторе или не работающий io_context (уточнить) </p>
 
 </div>
 </div>
