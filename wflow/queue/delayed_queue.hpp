@@ -82,7 +82,7 @@ private:
 
   struct queue_cmp
   {
-    inline bool operator()( delayed_queue::event_t & e1, delayed_queue::event_t & e2 ) const
+    inline bool operator()( const delayed_queue::event_t& e1, const delayed_queue::event_t& e2 ) const
     {
       return e1.first > e2.first;
     }

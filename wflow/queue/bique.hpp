@@ -29,6 +29,8 @@ public:
 
   bique( io_context_type& io, size_t maxsize, bool use_asio, bool mt );
 
+  io_context_type& get_io_context();
+
   void reconfigure( size_t maxsize, bool use_asio, bool mt );
 
   void reset();
@@ -66,13 +68,13 @@ private:
   R invoke_(
     R(delayed_queue::* method1)(Args...),
     R(asio_queue::* method2)(Args...),
-    Args... args);
+    Args&&... args);
 
   template<typename R, typename... Args>
   R invoke_(
     R(delayed_queue::* method1)(Args...) const,
     R(asio_queue::* method2)(Args...) const,
-    Args... args) const;
+    Args&&... args) const;
 
 private:
   std::atomic<bool> _dflag;

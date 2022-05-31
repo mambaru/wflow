@@ -639,8 +639,17 @@ public:
     return this->get_timer_manager()->create<Req, Res>(stp, sender, generator);
   }
 
+  /** @brief Возвращает актуальный boost::io_context 
+   *  @details Если установлена опция use_asio и threads > 0, то это созданный boost::io_context 
+   *  который обслуживает потоки, в противном случае boost::io_context который передан в конструкторе
+   *  Если use_asio=false то boost::io_context который передан в конструкторе или не работающий io_context
+   *  (уточнить)
+   */
+  io_context_type& get_io_context();
+
   static bool time_point_from_string(const std::string& strtime, time_point_t* result, std::string* err);
   static bool duration_from_string(const std::string& strtime, duration_t* result, std::string* err);
+
 
   std::shared_ptr<task_manager> get_task_manager() const;
   std::shared_ptr<timer_manager_t> get_timer_manager() const;

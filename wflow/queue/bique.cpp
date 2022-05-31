@@ -30,6 +30,14 @@ bique::bique( io_context_type& io, size_t maxsize, bool use_asio, bool mt )
 {
 }
 
+bique::io_context_type& bique::get_io_context()
+{
+  return 
+    _dflag || !_mt_flag 
+      ? _asio_st->get_io_context()
+      : _asio->get_io_context();
+}
+
 bique::work_type bique::work() const
 {
   return _mt_flag
@@ -76,17 +84,17 @@ void bique::stop()
 
 void bique::safe_post( function_t f )
 {
-  return this->invoke_( &delayed_queue::safe_post, &asio_queue::safe_post, f);
+  return this->invoke_( &delayed_queue::safe_post, &asio_queue::safe_post, std::move(f));
 }
 
 void bique::safe_post_at(time_point_t tp, function_t f)
 {
-  return this->invoke_( &delayed_queue::safe_post_at, &asio_queue::safe_post_at, tp, f);
+  return this->invoke_( &delayed_queue::safe_post_at, &asio_queue::safe_post_at, std::move(tp), std::move(f) );
 }
 
 void bique::safe_delayed_post(duration_t duration, function_t f)
 {
-  return this->invoke_( &delayed_queue::safe_delayed_post, &asio_queue::safe_delayed_post, duration, f);
+  return this->invoke_( &delayed_queue::safe_delayed_post, &asio_queue::safe_delayed_post, std::move(duration), std::move(f) );
 }
 
 bool bique::post( function_t f, function_t drop )
@@ -96,12 +104,12 @@ bool bique::post( function_t f, function_t drop )
 
 bool bique::post_at(time_point_t tp, function_t f, function_t drop)
 {
-  return this->invoke_( &delayed_queue::post_at, &asio_queue::post_at, tp, std::move(f), std::move(drop));
+  return this->invoke_( &delayed_queue::post_at, &asio_queue::post_at, std::move(tp), std::move(f), std::move(drop));
 }
 
 bool bique::delayed_post(duration_t duration, function_t f, function_t drop)
 {
-  return this->invoke_( &delayed_queue::delayed_post, &asio_queue::delayed_post, duration, std::move(f), std::move(drop));
+  return this->invoke_( &delayed_queue::delayed_post, &asio_queue::delayed_post, std::move(duration), std::move(f), std::move(drop));
 }
 
 std::size_t bique::full_size() const
@@ -128,26 +136,26 @@ template<typename R, typename... Args>
 R bique::invoke_(
   R(delayed_queue::* method1)(Args...),
   R(asio_queue::* method2)(Args...),
-  Args... args)
+  Args&&... args)
 {
   return _dflag
-         ? (_delayed.get()->*method1)( std::move(args)...)
+         ? (_delayed.get()->*method1)( std::forward<Args>(args)...)
          : _mt_flag
-             ? (_asio.get()->*method2)( std::move(args)...)
-             : (_asio_st.get()->*method2)( std::move(args)...);
+             ? (_asio.get()->*method2)( std::forward<Args>(args)...)
+             : (_asio_st.get()->*method2)( std::forward<Args>(args)...);
 }
 
 template<typename R, typename... Args>
 R bique::invoke_(
   R(delayed_queue::* method1)(Args...) const,
   R(asio_queue::* method2)(Args...) const,
-  Args... args) const
+  Args&&... args) const
 {
   return _dflag
-         ? (_delayed.get()->*method1)( std::move(args)...)
+         ? (_delayed.get()->*method1)( std::forward<Args>(args)...)
          : _mt_flag
-           ? (_asio.get()->*method2)( std::move(args)...)
-           : (_asio_st.get()->*method2)( std::move(args)...);
+           ? (_asio.get()->*method2)( std::forward<Args>(args)...)
+           : (_asio_st.get()->*method2)( std::forward<Args>(args)...);
 }
 
 }

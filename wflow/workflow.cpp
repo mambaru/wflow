@@ -252,6 +252,12 @@ size_t workflow::dropped() const
   return _impl->dropped();
 }
 
+workflow::io_context_type& workflow::get_io_context()
+{
+  return _impl->get_io_context();  
+}
+
+
 void workflow::initialize_()
 {
   _impl->rate_limit( _opt.rate_limit );

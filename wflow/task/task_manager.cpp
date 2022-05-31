@@ -73,6 +73,12 @@ bool task_manager::reconfigure(const workflow_options& opt  )
   return true;
 }
 
+task_manager::io_context_type& task_manager::get_io_context()
+{
+  return _queue->get_io_context();
+}
+
+
 void task_manager::rate_limit(size_t rps)
 {
   _rate_limit = rps;

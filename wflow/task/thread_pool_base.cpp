@@ -222,8 +222,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           {
             auto now = std::chrono::steady_clock::now();
             auto span = now - beg ;
-            if ( statistics != nullptr )
-              statistics( thread_id, handlers, span );
+            statistics( thread_id, handlers, span );
           }
         }
         if ( finish != nullptr )

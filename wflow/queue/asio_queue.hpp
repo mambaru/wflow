@@ -29,6 +29,8 @@ public:
 
   asio_queue(io_context_type& io, size_t maxsize);
 
+  io_context_type& get_io_context();
+  
   void set_maxsize(size_t maxsize);
 
   std::size_t run();

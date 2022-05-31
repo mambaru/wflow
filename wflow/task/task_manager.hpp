@@ -34,6 +34,8 @@ public:
 
   task_manager( io_context_type& io, const workflow_options& opt );
 
+  io_context_type& get_io_context();
+
   bool reconfigure( const workflow_options& opt );
 
   void rate_limit(size_t rps);
