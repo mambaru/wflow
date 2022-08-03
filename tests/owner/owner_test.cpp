@@ -217,10 +217,10 @@ UNIT(callback1, "")
   cb1();
   t << equal<expect>(count, 1) << FAS_FL;
   
-  own.set_double_call_handler([&dcount](){++dcount;});
-  own.set_no_call_handler([&ncount](){++ncount;});
+  own.set_double_call_handler([&dcount]() noexcept {++dcount;});
+  own.set_no_call_handler([&ncount]() noexcept {++ncount;});
 
-  auto cb2 = own.callback([&count](){count++;});
+  auto cb2 = own.callback([&count]() noexcept {count++;});
   cb1();
   t << equal<expect>(count, 1) << FAS_FL;
   cb2();

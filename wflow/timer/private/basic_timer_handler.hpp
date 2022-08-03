@@ -201,7 +201,7 @@ private:
     
     if ( *pflag==true )
     {
-      h( [pres](bool ready) mutable
+      h( [pres](bool ready) mutable noexcept
       {
         if (!ready) pres->clear();
       });

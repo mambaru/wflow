@@ -140,7 +140,7 @@ bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
     for (;oldsize!=0; --oldsize )
     {
       // Даем прочухаться потокам и завершить работу
-      s->safe_post([](){});
+      s->safe_post([]() noexcept{});
       std::this_thread::sleep_for( std::chrono::milliseconds(1) );
     }
   }

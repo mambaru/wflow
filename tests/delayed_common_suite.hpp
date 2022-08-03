@@ -83,7 +83,7 @@ inline void delayed_unit3(T& t, Q& dq)
   auto start = high_resolution_clock::now();
   for (int i=0 ; i < 5; ++i)
   {
-    dq.post([&count](){ ++count; }, nullptr);
+    dq.post([&count]() noexcept{ ++count; }, nullptr);
     time_t& tm = time_chk[i];
     dq.delayed_post(milliseconds(time_ms[i]), [start, &count, &tm]()
     { 

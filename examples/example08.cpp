@@ -24,7 +24,7 @@ int main()
   size_t post_counter =0;
   std::thread([&time_counter, &wf, &post_counter](){
     for (;time_counter < 60; ++post_counter)
-      wf.post([](){});
+      wf.post([]() noexcept{});
   }).detach();
   wf.create_timer(
     std::chrono::milliseconds(100),

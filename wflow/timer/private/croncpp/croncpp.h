@@ -11,7 +11,7 @@
 
 #if __cplusplus > 201402L
 #include <string_view>
-#define CRONCPP_IS_CPP17
+//#define CRONCPP_IS_CPP17
 #endif
 
 namespace cron

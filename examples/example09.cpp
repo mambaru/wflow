@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
   std::thread t([&](){
     std::unique_lock<std::mutex> lock(m);
     for (;run; ++counter)
-      wf.post([](){});
+      wf.post([]() noexcept{});
   });
   cond_var.notify_all();
   wf.safe_post( std::chrono::seconds(10), [&ios, &run](){ ios.stop(); run = false;});

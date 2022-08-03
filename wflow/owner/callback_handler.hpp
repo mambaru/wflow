@@ -43,13 +43,13 @@ struct callback_handler
   
   template <class... Args>
   auto operator()(Args&&... args)
-    ->  typename std::result_of< H(Args&&...) >::type
+    ->  typename std::invoke_result< H, Args&&... >::type
   {
     if ( !_ready->test_and_set() )
       return _handler(std::forward<Args>(args)...);
     else if (_double_call!=nullptr)
       _double_call();
-    return typename std::result_of< H(Args&&...) >::type();
+    return typename std::invoke_result< H, Args&&... >::type();
   }
   
 private:

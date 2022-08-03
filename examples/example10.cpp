@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
   std::thread t1([&run, &wf, &counter](){
     for (;run; ++counter)
-      wf.safe_post([](){});
+      wf.safe_post([]() noexcept{});
   });
 
   wf.safe_post( std::chrono::seconds(10), [&ios, &run](){ ios.stop(); run = false;});

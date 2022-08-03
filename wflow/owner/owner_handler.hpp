@@ -1,5 +1,5 @@
 //
-// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015, 2021
+// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015, 2021, 2022
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -27,7 +27,7 @@ struct owner_handler
   
   template <class... Args>
   auto operator()(Args&&... args)
-    ->  typename std::result_of< H(Args&&...) >::type
+    ->  typename std::invoke_result< H, Args&&... >::type
   {
     if ( auto p = _alive.lock() )
     {
@@ -57,13 +57,13 @@ struct owner_handler< H, std::nullptr_t >
   
   template <class... Args>
   auto operator()(Args&&... args)
-    ->  typename std::result_of< H(Args&&...) >::type
+    ->  typename std::invoke_result< H, Args&&... >::type
   {
     if ( auto p = _alive.lock() )
     {
       return _handler(std::forward<Args>(args)...);
     }
-    return typename std::result_of< H(Args&&...) >::type();
+    return typename std::invoke_result< H, Args&&... >::type();
   }
 private:
   H _handler;

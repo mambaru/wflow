@@ -238,7 +238,7 @@ UNIT(rate_limit, "")
 
   size_t counter = 0;
   for (int i = 0; i != 200; i++)
-    flw.post([&](){++counter;});
+    flw.post([&]() noexcept {++counter;});
   ios.run();
   finish = high_resolution_clock::now();
   t << equal<expect, size_t>(counter, 200) << FAS_FL;
@@ -266,7 +266,7 @@ UNIT(overflow_reset, "")
   size_t lost_counter = 0;
   for (int i = 0; i != 142; i++)
   {
-    flw.post([&](){++counter;}, [&](){++lost_counter;});
+    flw.post([&]() noexcept {++counter;}, [&]() noexcept {++lost_counter;});
     if ( i == 109 )
     {
       ios.run();
@@ -326,7 +326,7 @@ UNIT(shutdown, "")
   t << message("=====================================");
   for (size_t i = 0; i < 16; ++i)
   {
-    flw.post([&](){++count;});
+    flw.post([&]() noexcept {++count;});
   }
   t << message("=====================================");
   flw.start();
@@ -345,7 +345,7 @@ UNIT(wait_and_restart, "")
   wflow::workflow flw(wo);
 
   std::atomic<size_t> count(0);
-  auto handler = [&count](){ ++count; return true;};
+  auto handler = [&count]() noexcept { ++count; return true;};
   for (int i = 0 ; i < 10; ++i)
     flw.post(handler);
   flw.start();
