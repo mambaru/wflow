@@ -60,7 +60,8 @@ void asio_queue::safe_post( function_t f)
     if (auto pthis = wthis.lock() )
     {
       --pthis->_safe_counter;
-      f();
+      if ( f!=nullptr )
+        f();
     }
   });
 }
@@ -76,7 +77,8 @@ bool asio_queue::post( function_t f, function_t drop )
     if (auto pthis = wthis.lock() )
     {
       --pthis->_counter;
-      f();
+      if ( f!=nullptr )
+        f();
     }
   });
   return true;
@@ -95,7 +97,8 @@ void asio_queue::safe_post_at(time_point_t tp, function_t f)
     if (auto pthis = wthis.lock() )
     {
       --pthis->_safe_counter;
-      f();
+      if ( f!=nullptr )
+        f();
     }
   });
 }
@@ -116,7 +119,8 @@ bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
     if (auto pthis = wthis.lock() )
     {
       --pthis->_counter;
-      f();
+      if ( f!=nullptr )
+        f();
     }
   });
   return true;
