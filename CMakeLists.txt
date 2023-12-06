@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(wflow)
+project(wflow VERSION "0.9.8")
 
 include(cmake/ci.cmake)
 
@@ -39,7 +39,7 @@ endif()
 
 add_library(wflow ${source_list})
 wci_targets(wflow)
-target_include_directories(wflow PUBLIC ${wflow_SOURCE_DIR})
+target_include_directories(wflow PUBLIC $<BUILD_INTERFACE:${wflow_SOURCE_DIR}>)
 
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 include(FindThreads REQUIRED)
@@ -67,14 +67,4 @@ if ( BUILD_TESTING )
   endif()
 endif()
 
-set(CPACK_PACKAGE_NAME "wflow")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "9")
-set(CPACK_PACKAGE_VERSION_PATCH "4")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/Readme.md")
-set(CPACK_PACKAGE_CONTACT "migashko@gmail.com")
-
-install(DIRECTORY wflow DESTINATION include FILES_MATCHING PATTERN "*.hpp" )
-install(TARGETS wflow LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-include(CPack)
+include(cmake/install.cmake)
