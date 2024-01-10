@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: Титульная страница</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -43,7 +43,7 @@ $(function() {
 <div class="title">wflow Документация</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a href="https://github.com/mambaru/wflow/tree/master"><object type="image/svg+xml" data="https://img.shields.io/github/v/tag/mambaru/wflow.svg?sort=semver" style="pointer-events: none;">tag</object></a> <a href="https://github.com/mambaru/wflow/tree/master"><object type="image/svg+xml" data="https://github.com/mambaru/wflow/workflows/C++%20CI/badge.svg?branch=master" style="pointer-events: none;">Build Status</object></a> <a href="https://github.com/mambaru/wflow/tree/mambaru"><object type="image/svg+xml" data="https://github.com/mambaru/wflow/workflows/C++%20CI/badge.svg?branch=mambaru" style="pointer-events: none;">Build Status</object></a> <a href="https://travis-ci.com/mambaru/wflow"><object type="image/svg+xml" data="https://travis-ci.com/mambaru/wflow.svg?branch=master" style="pointer-events: none;">Build Status</object></a> <a href="https://travis-ci.com/mambaru/wflow"><object type="image/svg+xml" data="https://travis-ci.com/mambaru/wflow.svg?branch=mambaru" style="pointer-events: none;">Build Status</object></a> <a href="https://codecov.io/gh/mambaru/wflow"><object type="image/svg+xml" data="https://codecov.io/gh/mambaru/wflow/branch/master/graph/badge.svg" style="pointer-events: none;">codecov</object></a></p>
+<div class="textblock"><p><a class="anchor" id="md_Readme"></a><a href="https://github.com/mambaru/wflow/tree/master"><img src="https://img.shields.io/github/v/tag/mambaru/wflow.svg?sort=semver" alt="tag" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/mambaru/wflow/tree/master"><img src="https://github.com/mambaru/wflow/workflows/C++%20CI/badge.svg?branch=master" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/mambaru/wflow/tree/mambaru"><img src="https://github.com/mambaru/wflow/workflows/C++%20CI/badge.svg?branch=mambaru" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://travis-ci.com/mambaru/wflow"><img src="https://travis-ci.com/mambaru/wflow.svg?branch=master" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://travis-ci.com/mambaru/wflow"><img src="https://travis-ci.com/mambaru/wflow.svg?branch=mambaru" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://codecov.io/gh/mambaru/wflow"><img src="https://codecov.io/gh/mambaru/wflow/branch/master/graph/badge.svg" alt="codecov" style="pointer-events: none;" class="inline"/></a></p>
 <p>Библиотека на базе boost::asio для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами.</p>
 <ul>
 <li>Документация <a href="https://mambaru.github.io/wflow/index.html">doxygen</a>.</li>
@@ -57,7 +57,7 @@ $(function() {
 <div class="line">        make shared</div>
 <div class="line">        make static</div>
 <div class="line">        make tests</div>
-</div><!-- fragment --><p>Если установлен doxygen то в папке <code>/docs/html</code> будет документация.</p>
+</div><!-- fragment --><p> Если установлен doxygen то в папке <code>/docs/html</code> будет документация.</p>
 <p>Для сборки примеров и тестов, а также чтобы отключить поддержку JSON-конфигурации и/или логирования :</p>
 <div class="fragment"><div class="line">git clone https://github.com/mambaru/wflow.git</div>
 <div class="line">mkdir wflow/build</div>
@@ -71,7 +71,7 @@ $(function() {
 <div class="line">#   cmake -DWFLOW_DISABLE_LOG=ON ..</div>
 <div class="line">cmake --build make</div>
 <div class="line">ctest</div>
-</div><!-- fragment --><p>Для компиляции с поддержкой JSON-конфигурации потребуются библиотеки faslib, wjson, wlog, которые система сборки автоматически клонирует в директорию проекта, если не найдет их в системе.</p>
+</div><!-- fragment --><p> Для компиляции с поддержкой JSON-конфигурации потребуются библиотеки faslib, wjson, wlog, которые система сборки автоматически клонирует в директорию проекта, если не найдет их в системе.</p>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Некоторые примеры</h1>
 <p>Все примеры с описанием в <code>examples</code>.</p>
@@ -94,6 +94,7 @@ $(function() {
 <div class="line">  <span class="comment">// Ожидаем выполнение всех заданий</span></div>
 <div class="line">  ios.run();</div>
 <div class="line">}</div>
+<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:131</div></div>
 </div><!-- fragment --><p>Пример ограничения размера очереди: </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
 <div class="line">  boost::asio::io_context ios;</div>
@@ -113,6 +114,8 @@ $(function() {
 <div class="line">  <span class="comment">// Ожидаем выполнение всех заданий</span></div>
 <div class="line">  ios.run();</div>
 <div class="line">}</div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html"><div class="ttname"><a href="structwflow_1_1workflow__options.html">wflow::workflow_options</a></div><div class="ttdoc">Опции</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:16</div></div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html_a48eb69b95225f635e0cbea7508cf326b"><div class="ttname"><a href="structwflow_1_1workflow__options.html#a48eb69b95225f635e0cbea7508cf326b">wflow::workflow_options::maxsize</a></div><div class="ttdeci">size_t maxsize</div><div class="ttdoc">Максимальный размер очереди заданий</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:54</div></div>
 </div><!-- fragment --><p>Различные варианты таймеров:</p>
 <div class="fragment"><div class="line">boost::asio::io_context ios;</div>
 <div class="line"><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div>
@@ -175,17 +178,12 @@ $(function() {
 <div class="line">ios.run();</div>
 <div class="line">t.join();</div>
 <div class="line">std::cout &lt;&lt; counter/10 &lt;&lt; std::endl;</div>
+<div class="ttc" id="astructwflow_1_1workflow__options_html_a80352d63df20a1059e1fccd9655d15ec"><div class="ttname"><a href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">wflow::workflow_options::threads</a></div><div class="ttdeci">size_t threads</div><div class="ttdoc">Количество дополнительных потоков обработки</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:44</div></div>
 </div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="astructwflow_1_1workflow__options_html_a48eb69b95225f635e0cbea7508cf326b"><div class="ttname"><a href="structwflow_1_1workflow__options.html#a48eb69b95225f635e0cbea7508cf326b">wflow::workflow_options::maxsize</a></div><div class="ttdeci">size_t maxsize</div><div class="ttdoc">Максимальный размер очереди заданий</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:54</div></div>
-<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:130</div></div>
-<div class="ttc" id="astructwflow_1_1workflow__options_html_a80352d63df20a1059e1fccd9655d15ec"><div class="ttname"><a href="structwflow_1_1workflow__options.html#a80352d63df20a1059e1fccd9655d15ec">wflow::workflow_options::threads</a></div><div class="ttdeci">size_t threads</div><div class="ttdoc">Количество дополнительных потоков обработки</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:44</div></div>
-<div class="ttc" id="astructwflow_1_1workflow__options_html"><div class="ttname"><a href="structwflow_1_1workflow__options.html">wflow::workflow_options</a></div><div class="ttdoc">Опции</div><div class="ttdef"><b>Definition:</b> workflow_options.hpp:15</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Создано системой &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.17
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

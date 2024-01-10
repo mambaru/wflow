@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: Исходный файл wflow/logger.hpp</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -59,15 +59,15 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;wlog/logging.hpp&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a70e0499d64439ea0a889355c85b9b20e">   13</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_ERROR(X)    WLOG_LOG_ERROR( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="logger_8hpp.html#abceb43279e0b1fee72f5bb3d411c1431">   14</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_WARNING(X)  WLOG_LOG_WARNING( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a03eaaba58a4c08ef214e605b24475ce7">   15</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_MESSAGE(X)  WLOG_LOG_MESSAGE( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="logger_8hpp.html#ab22a602914d8d5bc68880b9016c5e0f0">   16</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_FATAL(X)    WLOG_LOG_FATAL( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a82ac4c1d79c0419b52fbd093882584c5">   17</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_BEGIN(X)    WLOG_LOG_BEGIN( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a58e1c5acbaffeea941d2dcbe9e33ad7f">   18</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_END(X)      WLOG_LOG_END( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="logger_8hpp.html#acdb1c06649508e279449c775d92ebbf6">   19</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_DEBUG(X)    WLOG_LOG_DEBUG( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a859ad251a58cd34e8b65149fc8a29267">   20</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_TRACE(X)    WLOG_LOG_TRACE( &quot;WFLOW&quot;, X )</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a2933d5cfdbf76151876c5175a32b2bef">   21</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_PROGRESS(X) WLOG_LOG_PROGRESS( &quot;WFLOW&quot;, X )</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a70e0499d64439ea0a889355c85b9b20e">   13</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_ERROR(X)    WLOG_LOG_ERROR( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="logger_8hpp.html#abceb43279e0b1fee72f5bb3d411c1431">   14</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_WARNING(X)  WLOG_LOG_WARNING( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a03eaaba58a4c08ef214e605b24475ce7">   15</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_MESSAGE(X)  WLOG_LOG_MESSAGE( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="logger_8hpp.html#ab22a602914d8d5bc68880b9016c5e0f0">   16</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_FATAL(X)    WLOG_LOG_FATAL( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a82ac4c1d79c0419b52fbd093882584c5">   17</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_BEGIN(X)    WLOG_LOG_BEGIN( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a58e1c5acbaffeea941d2dcbe9e33ad7f">   18</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_END(X)      WLOG_LOG_END( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="logger_8hpp.html#acdb1c06649508e279449c775d92ebbf6">   19</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_DEBUG(X)    WLOG_LOG_DEBUG( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a859ad251a58cd34e8b65149fc8a29267">   20</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_TRACE(X)    WLOG_LOG_TRACE( &quot;WFLOW&quot;</span>, X )</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="logger_8hpp.html#a2933d5cfdbf76151876c5175a32b2bef">   21</a></span>&#160;<span class="preprocessor">#define WFLOW_LOG_PROGRESS(X) WLOG_LOG_PROGRESS( &quot;WFLOW&quot;</span>, X )</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
@@ -90,9 +90,7 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Создано системой &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.17
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

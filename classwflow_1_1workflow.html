@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: Класс wflow::workflow</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -270,7 +270,8 @@ $(function() {
 <div class="line"> </div>
 <div class="line"><span class="comment">// Отложенное задание</span></div>
 <div class="line">wf.safe_post( std::chrono::seconds(4), [](){ std::cout &lt;&lt; <span class="stringliteral">&quot;Safe post after delay 4 second &quot;</span> &lt;&lt; std::endl; } );</div>
-</div><!-- fragment --><p>В общем случае, если нет необходимости использовать ограничения, то рекомендуется использовать этот вид заданий, т.к. нет дополнительных накладных расходов. Однако в нагруженных системах рекомендуется использовать отдельные <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> для таймеров и основного потока заданий, чтобы большое количество заданий не мешало отрабатывать таймерам во время. Т.к. отложенные задание также используют таймеры, в опциях можно передать указатель на <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> специально для этих целей. См. <a class="el" href="example01_8cpp-example.html">example01.cpp</a>, <a class="el" href="example11_8cpp-example.html">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html">example12.cpp</a></p>
+<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:131</div></div>
+</div><!-- fragment --><p> В общем случае, если нет необходимости использовать ограничения, то рекомендуется использовать этот вид заданий, т.к. нет дополнительных накладных расходов. Однако в нагруженных системах рекомендуется использовать отдельные <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> для таймеров и основного потока заданий, чтобы большое количество заданий не мешало отрабатывать таймерам во время. Т.к. отложенные задание также используют таймеры, в опциях можно передать указатель на <a class="el" href="classwflow_1_1workflow.html" title="Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...">wflow::workflow</a> специально для этих целей. См. <a class="el" href="example01_8cpp-example.html">example01.cpp</a>, <a class="el" href="example11_8cpp-example.html">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html">example12.cpp</a></p>
 <h2><a class="anchor" id="autotoc_md1"></a>
 Незащищенные задания ( workflow::post )</h2>
 <p>Этот тип заданий может быть выкинут из очереди (с возможностью вызова альтернативного обработчика), а также на очередь таких заданий можно наложить ограничения на скорость обработки и/или установить задержку. Если указать альтернативный обработчик при отправке задания в очередь, то он сработает в случае переполнения очереди, если основной обработчик был выкинут из очереди. Если <a class="el" href="classwflow_1_1workflow.html#a5d4195f4f557ed076268185c4565f780" title="Отправить задание на обработку">workflow::post</a> возвращает false, то однозначно заданию нет места в очереди, и альтернативный обработчик был выполнен, если true - * то задание было поставлено в очередь, но не факт, что будет выполнено. См. <a class="el" href="example02_8cpp-example.html">example02.cpp</a>, <a class="el" href="example03_8cpp-example.html">example03.cpp</a>, <a class="el" href="example04_8cpp-example.html">example04.cpp</a></p>
@@ -305,13 +306,13 @@ $(function() {
 <div class="line">  <span class="keyword">typedef</span> std::unique_ptr&lt;response&gt; ptr;</div>
 <div class="line">  <span class="keyword">typedef</span> std::function&lt; void(ptr) &gt; handler;</div>
 <div class="line">};</div>
-</div><!-- fragment --><p>На вход генератора приходит ответ от предыдущего запроса, на основе которого он может создать следующий запрос. При первом запросе передается nullptr, а для того чтобы обозначить конец последовательности опроса генератор также возвращает nullptr. В примере простой случай, когда последовательность из одного запроса: </p><div class="fragment"><div class="line">request::ptr generator(response::ptr resp)</div>
+</div><!-- fragment --><p> На вход генератора приходит ответ от предыдущего запроса, на основе которого он может создать следующий запрос. При первом запросе передается nullptr, а для того чтобы обозначить конец последовательности опроса генератор также возвращает nullptr. В примере простой случай, когда последовательность из одного запроса: </p><div class="fragment"><div class="line">request::ptr generator(response::ptr resp)</div>
 <div class="line">{</div>
 <div class="line">  <span class="keywordflow">if</span> ( resp == <span class="keyword">nullptr</span> )</div>
 <div class="line">    <span class="keywordflow">return</span> std::make_unique&lt;request&gt;();</div>
 <div class="line">  <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Далее, сгенерированный запрос передается отправителю, который должен с ним что-то сделать и отправить ответ через callback-функцию в любой момент времени (как правило асинхронно). В примере просто формируем ответ через тот же workflow с задержкой: </p><div class="fragment"><div class="line"><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div>
+</div><!-- fragment --><p> Далее, сгенерированный запрос передается отправителю, который должен с ним что-то сделать и отправить ответ через callback-функцию в любой момент времени (как правило асинхронно). В примере просто формируем ответ через тот же workflow с задержкой: </p><div class="fragment"><div class="line"><a class="code" href="classwflow_1_1workflow.html">wflow::workflow</a> wf(ios);</div>
 <div class="line"><span class="keywordtype">bool</span> sender(request::ptr, response::handler callback)</div>
 <div class="line">{</div>
 <div class="line">  wf.post(std::chrono::milliseconds(500), [callback]()</div>
@@ -320,8 +321,8 @@ $(function() {
 <div class="line">  });</div>
 <div class="line">  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Отправитель возвращает true, аналогично обработчику таймера, сообщая что таймер должен продолжать работать. Создание опросника, аналогично созданию асинхронных таймеров: </p><div class="fragment"><div class="line">wf.create_requester&lt;request, response&gt;(std::chrono::seconds(1), sender, generator );</div>
-</div><!-- fragment --><p>В данном примере <a class="el" href="example13_8cpp-example.html">example13.cpp</a> генерируется последовательность из одного запроса с периодичностью в одну секунду. При более длинных последовательностях последующий запрос передается немедленно после получения ответа до тех пор пока генератор не вернет nullptr и только после этого наступает заданная пауза. Более сложный пример см. <a class="el" href="example14_8cpp-example.html">example14.cpp</a> </p>
+</div><!-- fragment --><p> Отправитель возвращает true, аналогично обработчику таймера, сообщая что таймер должен продолжать работать. Создание опросника, аналогично созданию асинхронных таймеров: </p><div class="fragment"><div class="line">wf.create_requester&lt;request, response&gt;(std::chrono::seconds(1), sender, generator );</div>
+</div><!-- fragment --><p> В данном примере <a class="el" href="example13_8cpp-example.html">example13.cpp</a> генерируется последовательность из одного запроса с периодичностью в одну секунду. При более длинных последовательностях последующий запрос передается немедленно после получения ответа до тех пор пока генератор не вернет nullptr и только после этого наступает заданная пауза. Более сложный пример см. <a class="el" href="example14_8cpp-example.html">example14.cpp</a> </p>
 <dl class="section examples"><dt>Примеры</dt><dd><a class="el" href="example01_8cpp-example.html#_a0">example01.cpp</a>, <a class="el" href="example02_8cpp-example.html#_a0">example02.cpp</a>, <a class="el" href="example03_8cpp-example.html#_a3">example03.cpp</a>, <a class="el" href="example04_8cpp-example.html#_a2">example04.cpp</a>, <a class="el" href="example05_8cpp-example.html#_a0">example05.cpp</a>, <a class="el" href="example06_8cpp-example.html#_a2">example06.cpp</a>, <a class="el" href="example07_8cpp-example.html#_a3">example07.cpp</a>, <a class="el" href="example08_8cpp-example.html#_a2">example08.cpp</a>, <a class="el" href="example09_8cpp-example.html#_a6">example09.cpp</a>, <a class="el" href="example10_8cpp-example.html#_a3">example10.cpp</a>, <a class="el" href="example11_8cpp-example.html#_a2">example11.cpp</a>, <a class="el" href="example12_8cpp-example.html#_a2">example12.cpp</a>, <a class="el" href="example13_8cpp-example.html#_a0">example13.cpp</a>, <a class="el" href="example14_8cpp-example.html#_a0">example14.cpp</a> и <a class="el" href="example15_8cpp-example.html#_a3">example15.cpp</a>.</dd>
 </dl>
 </div><h2 class="groupheader">Определения типов</h2>
@@ -958,7 +959,7 @@ template&lt;typename Req , typename Res &gt; </div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div>
-</div><!-- fragment --><dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+</div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
 
 </div>
 </div>
@@ -1032,7 +1033,7 @@ template&lt;typename Req , typename Res &gt; </div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div>
-</div><!-- fragment --><dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+</div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
 
 </div>
 </div>
@@ -1106,7 +1107,7 @@ template&lt;typename Req , typename Res &gt; </div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div>
-</div><!-- fragment --><dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+</div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
 
 </div>
 </div>
@@ -1173,7 +1174,7 @@ template&lt;typename Req , typename Res &gt; </div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div>
-</div><!-- fragment --><dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+</div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
 
 </div>
 </div>
@@ -1247,7 +1248,7 @@ template&lt;typename Req , typename Res &gt; </div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt;void(res_ptr)&gt; callback;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; bool(req_ptr, callback) &gt; sender_type;</div>
 <div class="line"><span class="keyword">typedef</span> std::function&lt; req_ptr(res_ptr) &gt; sender_type;</div>
-</div><!-- fragment --><dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
+</div><!-- fragment --> <dl class="section see"><dt>См. также</dt><dd>Концепция опросников </dd></dl>
 
 </div>
 </div>
@@ -2398,12 +2399,9 @@ template&lt;typename Req , typename Res &gt; </div>
 <li>wflow/<a class="el" href="workflow_8cpp.html">workflow.cpp</a></li>
 </ul>
 </div><!-- contents -->
-<div class="ttc" id="aclasswflow_1_1workflow_html"><div class="ttname"><a href="classwflow_1_1workflow.html">wflow::workflow</a></div><div class="ttdoc">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией...</div><div class="ttdef"><b>Definition:</b> workflow.hpp:130</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Создано системой &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.17
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

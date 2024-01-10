@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wflow: Пространство имен wflow</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -53,19 +53,17 @@ $(function() {
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwflow_1_1workflow.html">workflow</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Очередь заданий с поддержкой отложенных заданий, таймеров, пула потоков, динамической реконфигурацией и конфигурируемыми ограничениями на размер очереди и скорость обработки.  <a href="classwflow_1_1workflow.html#details">Подробнее...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__options.html">workflow_options</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Опции  <a href="structwflow_1_1workflow__options.html#details">Подробнее...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwflow_1_1workflow__handlers.html">workflow_handlers</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Перечисления</h2></td></tr>
-<tr class="memitem:ad06d017a006a92c3e7a4aa53b4e71e1d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> { <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da2f44417567bc123bd7c60de8c2a2b444">expires_at::before</a> = 1, 
-<a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">expires_at::after</a> = 2
+<tr class="memitem:ad06d017a006a92c3e7a4aa53b4e71e1d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">expires_at</a> { <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da2f44417567bc123bd7c60de8c2a2b444">before</a> = 1
+, <a class="el" href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1da632a2406bbcbcd553eec45ac14b40a0a">after</a> = 2
  }</td></tr>
-<tr class="memdesc:ad06d017a006a92c3e7a4aa53b4e71e1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Флаги для таймеров - с какого момента производить отсчет времени <br  />
-  <a href="namespacewflow.html#ad06d017a006a92c3e7a4aa53b4e71e1d">Подробнее...</a><br /></td></tr>
 <tr class="separator:ad06d017a006a92c3e7a4aa53b4e71e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -100,9 +98,6 @@ $(function() {
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Флаги для таймеров - с какого момента производить отсчет времени <br  />
- </p>
 <table class="fieldtable">
 <tr><th colspan="2">Элементы перечислений</th></tr><tr><td class="fieldname"><a id="ad06d017a006a92c3e7a4aa53b4e71e1da2f44417567bc123bd7c60de8c2a2b444"></a>before&#160;</td><td class="fielddoc"><p>Начинать отсчет до вызова обработчика таймера <br  />
  </p>
@@ -235,9 +230,7 @@ $(function() {
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Создано системой &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.17
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
