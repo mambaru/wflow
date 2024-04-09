@@ -25,6 +25,7 @@ public:
   typedef timer_manager<queue_type> timer_manager_t;
 
   typedef std::function<void(std::thread::id)> startup_handler;
+  typedef std::function<void(std::thread::id)> status_handler;
   typedef std::function<void(std::thread::id)> finish_handler;
 
   typedef std::chrono::time_point<std::chrono::steady_clock>::duration statistics_duration;
@@ -40,6 +41,7 @@ public:
 
   void rate_limit(size_t rps);
   void set_startup( startup_handler handler );
+  void set_status( status_handler handler );
   void set_finish( finish_handler handler );
   void set_statistics( statistics_handler handler );
 

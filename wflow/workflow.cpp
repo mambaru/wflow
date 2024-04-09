@@ -262,6 +262,7 @@ void workflow::initialize_()
 {
   _impl->rate_limit( _opt.rate_limit );
   _impl->set_startup( _handlers.startup_handler );
+  _impl->set_status( _handlers.status_handler );
   _impl->set_finish( _handlers.finish_handler );
   _impl->set_statistics( _handlers.statistics_handler );
   this->create_wrn_timer_();

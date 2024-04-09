@@ -138,6 +138,12 @@ UNIT(workflow3, "control handler")
     return true;
   };
 
+  size_t status_count = 0;
+  handlers.status_handler = [&](std::thread::id) noexcept
+  {
+    ++status_count;
+  };
+
   wflow::workflow wfl(io, opt, handlers);
   wfl.start();
 
@@ -159,6 +165,8 @@ UNIT(workflow3, "control handler")
   io.run();
   wfl.stop();
 
+  t << greater<expect, size_t>(status_count, 0) << FAS_FL;
+  t << less<expect, size_t>(status_count, 3) << FAS_FL;
   t << equal<expect, size_t>(counter, 3) << FAS_FL;
   t << equal<expect, size_t>(wfl.dropped(), 0) << FAS_FL;
   t << equal<expect, size_t>(wfl.unsafe_size(), 0) << FAS_FL;

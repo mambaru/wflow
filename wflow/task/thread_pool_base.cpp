@@ -10,6 +10,7 @@
 #include <chrono>
 
 
+
 namespace wflow {
 
 namespace{
@@ -31,6 +32,11 @@ void thread_pool_base::rate_limit(size_t rps)
 void thread_pool_base::set_startup( startup_handler handler )
 {
   _startup = handler;
+}
+
+void thread_pool_base::set_status( status_handler handler )
+{
+  _status = handler;
 }
 
 void thread_pool_base::set_finish( finish_handler handler )
@@ -193,6 +199,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
       try
       {
         thread_pool_base::startup_handler startup;
+        thread_pool_base::status_handler status;
         thread_pool_base::finish_handler finish;
         thread_pool_base::statistics_handler statistics;
 
@@ -200,6 +207,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
         if ( pthis != nullptr )
         {
           startup = pthis->_startup;
+          status = pthis->_status;
           finish = pthis->_finish;
           statistics = pthis->_statistics;
         }
@@ -208,12 +216,23 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           startup(thread_id);
 
         std::chrono::steady_clock::time_point beg = std::chrono::steady_clock::now();
+        time_t status_time = time(nullptr);
         for (;;)
         {
           if ( statistics != nullptr )
             beg = std::chrono::steady_clock::now();
 
           size_t handlers = s->run_one();
+
+          if ( status != nullptr )
+          {
+            if ( time(nullptr) - status_time > 0)
+            {
+              status(thread_id);
+              status_time = time(nullptr);
+            }
+          }
+
           if (  handlers == 0 )
             break;
           if ( wflag.lock() == nullptr)

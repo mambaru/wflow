@@ -123,13 +123,20 @@ struct workflow_handlers
   std::function<bool()> control_handler = nullptr;
 
   /**
-   * @brief тип обработчика для workflow_options::startup_handler
+   * @brief тип обработчика для startup_handler
    * @param std::thread::id Идентификатор текущего потока
    */
   typedef std::function<void(std::thread::id)> startup_handler_t;
 
+
   /**
-   * @brief тип обработчика для workflow_options::finish_handler
+   * @brief тип обработчика для status_handler
+   * @param std::thread::id Идентификатор текущего потока
+   */
+  typedef std::function<void(std::thread::id)> status_handler_t;
+
+  /**
+   * @brief тип обработчика для finish_handler
    * @param std::thread::id Идентификатор текущего потока
    */
   typedef std::function<void(std::thread::id)> finish_handler_t;
@@ -139,6 +146,12 @@ struct workflow_handlers
    * @see workflow_options::startup_handler_t, workflow_options::threads, workflow::reconfigure
    */
   startup_handler_t startup_handler = nullptr;
+
+  /**
+   * @brief Обработчик вызывается в процессе выполенния потоков между заданиями
+   * @see workflow_options::startup_handler_t, workflow_options::threads, workflow::reconfigure
+   */
+  status_handler_t status_handler = nullptr;
 
   /**
    * @brief Обработчик вызывается перед завершением дополнительных потоков

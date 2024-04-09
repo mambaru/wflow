@@ -23,6 +23,7 @@ public:
 
   typedef std::vector<thread_flag> flag_list;
   typedef std::function<void(std::thread::id)> startup_handler;
+  typedef std::function<void(std::thread::id)> status_handler;
   typedef std::function<void(std::thread::id)> finish_handler;
   typedef std::chrono::time_point<std::chrono::steady_clock>::duration statistics_duration;
   typedef std::function<void(std::thread::id, size_t count, statistics_duration)> statistics_handler;
@@ -30,6 +31,7 @@ public:
 
   void rate_limit(size_t rps);
   void set_startup( startup_handler handler );
+  void set_status( status_handler handler );
   void set_finish( finish_handler handler );
   void set_statistics( statistics_handler handler );
 
@@ -70,6 +72,7 @@ private:
   //std::vector< std::function<void()> > _works;
 
   startup_handler _startup;
+  status_handler _status;
   finish_handler _finish;
   statistics_handler _statistics;
  };

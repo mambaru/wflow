@@ -19,7 +19,11 @@ set(
 )
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
-  set_source_files_properties(wflow/queue/asio_queue.cpp PROPERTIES COMPILE_FLAGS -Wno-zero-as-null-pointer-constant)
+  set_source_files_properties(wflow/queue/asio_queue.cpp PROPERTIES COMPILE_FLAGS "-Wno-zero-as-null-pointer-constant")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10.1)
+    set_source_files_properties(wflow/queue/asio_queue.cpp PROPERTIES COMPILE_FLAGS "-Wno-null-dereference")
+  endif()
+
 endif()
 
 if (NOT WFLOW_DISABLE_JSON)
