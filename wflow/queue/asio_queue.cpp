@@ -36,6 +36,21 @@ std::size_t asio_queue::run_one()
   return _io.run_one();
 }
 
+bool asio_queue::stopped() const
+{
+  return _io.stopped();
+}
+
+std::size_t asio_queue::run_one_for_ms(time_t ms)
+{
+  return _io.run_one_for(std::chrono::milliseconds(ms));
+}
+
+std::size_t asio_queue::run_for_ms(time_t ms)
+{
+  return _io.run_for(std::chrono::milliseconds(ms));
+}
+
 std::size_t asio_queue::poll_one()
 {
   return _io.poll_one();

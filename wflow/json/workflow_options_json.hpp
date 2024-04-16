@@ -15,6 +15,7 @@ struct workflow_options_basic_json
   JSON_NAME(quiet_mode)
   JSON_NAME(overflow_reset)
   JSON_NAME(control_ms)
+  JSON_NAME(status_ms)
 
 
   typedef wjson::object<
@@ -26,6 +27,7 @@ struct workflow_options_basic_json
       wjson::member< n_quiet_mode, workflow_options, bool, &workflow_options::quiet_mode >,
       wjson::member< n_overflow_reset, workflow_options, bool, &workflow_options::overflow_reset >,
       wjson::member< n_control_ms, workflow_options, time_t, &workflow_options::control_ms, wjson::time_interval_ms<> >,
+      wjson::member< n_status_ms, workflow_options, time_t, &workflow_options::status_ms, wjson::time_interval_ms<> >,
       wjson::member< n_debug, workflow_options, bool, &workflow_options::debug >
     >,
     wjson::strict_mode

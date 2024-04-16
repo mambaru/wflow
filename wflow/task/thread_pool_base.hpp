@@ -31,7 +31,7 @@ public:
 
   void rate_limit(size_t rps);
   void set_startup( startup_handler handler );
-  void set_status( status_handler handler );
+  void set_status( status_handler handler, time_t status_ms );
   void set_finish( finish_handler handler );
   void set_statistics( statistics_handler handler );
 
@@ -73,6 +73,7 @@ private:
 
   startup_handler _startup;
   status_handler _status;
+  std::atomic<time_t> _status_ms;
   finish_handler _finish;
   statistics_handler _statistics;
  };
