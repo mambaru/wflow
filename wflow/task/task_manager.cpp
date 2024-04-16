@@ -90,10 +90,10 @@ void task_manager::set_startup( startup_handler handler )
     _pool->set_startup(handler);
 }
 
-void task_manager::set_status( status_handler handler )
+void task_manager::set_status( status_handler handler, time_t status_ms )
 {
   if ( _pool!=nullptr)
-    _pool->set_status(handler);
+    _pool->set_status(handler, status_ms);
 }
 
 void task_manager::set_finish( finish_handler handler )

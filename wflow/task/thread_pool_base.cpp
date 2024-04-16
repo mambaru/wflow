@@ -8,7 +8,7 @@
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <chrono>
-
+#include <iostream>
 
 
 namespace wflow {
@@ -21,6 +21,7 @@ inline void nothing(const T& ){}
 thread_pool_base::thread_pool_base()
   : _started(false)
   , _rate_limit(0)
+  , _status_ms(0)
 {
 }
 
@@ -34,9 +35,10 @@ void thread_pool_base::set_startup( startup_handler handler )
   _startup = handler;
 }
 
-void thread_pool_base::set_status( status_handler handler )
+void thread_pool_base::set_status( status_handler handler, time_t status_ms )
 {
   _status = handler;
+  _status_ms = status_ms;
 }
 
 void thread_pool_base::set_finish( finish_handler handler )
@@ -203,8 +205,7 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
         thread_pool_base::finish_handler finish;
         thread_pool_base::statistics_handler statistics;
 
-        auto pthis = wthis.lock();
-        if ( pthis != nullptr )
+        if ( auto pthis = wthis.lock() )
         {
           startup = pthis->_startup;
           status = pthis->_status;
@@ -222,7 +223,15 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           if ( statistics != nullptr )
             beg = std::chrono::steady_clock::now();
 
-          size_t handlers = s->run_one();
+          size_t handlers = 0;
+          time_t status_ms = 0;
+          if ( auto pthis = wthis.lock() )
+            status_ms =pthis->_status_ms;
+
+          if ( statistics != nullptr )
+            handlers = status_ms!=0 ? s->run_one_for_ms( status_ms ) : s->run_one( );
+          else
+            handlers = status_ms!=0 ? s->run_for_ms( status_ms ) : s->run();
 
           if ( status != nullptr )
           {
@@ -233,11 +242,11 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
             }
           }
 
-          if (  handlers == 0 )
+          if ( s->stopped() )
             break;
           if ( wflag.lock() == nullptr)
             break;
-          if ( statistics != nullptr )
+          if ( statistics != nullptr && handlers > 0 )
           {
             auto now = std::chrono::steady_clock::now();
             auto span = now - beg ;

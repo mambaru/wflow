@@ -76,6 +76,21 @@ std::size_t bique::poll_one()
   return this->invoke_( &delayed_queue::poll_one, &asio_queue::poll_one);
 }
 
+std::size_t bique::run_one_for_ms(time_t ms)
+{
+  return this->invoke_( &delayed_queue::run_one_for_ms, &asio_queue::run_one_for_ms, std::move(ms));
+}
+
+std::size_t bique::run_for_ms(time_t ms)
+{
+  return this->invoke_( &delayed_queue::run_for_ms, &asio_queue::run_for_ms, std::move(ms));
+}
+
+bool bique::stopped() const
+{
+  return this->invoke_( &delayed_queue::stopped, &asio_queue::stopped);
+}
+
 void bique::stop()
 {
   _delayed->stop();

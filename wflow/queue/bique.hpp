@@ -41,6 +41,12 @@ public:
 
   std::size_t poll_one();
 
+  std::size_t run_one_for_ms(time_t ms);
+
+  std::size_t run_for_ms(time_t ms);
+
+  bool stopped() const;
+
   void stop();
 
   void safe_post( function_t f);

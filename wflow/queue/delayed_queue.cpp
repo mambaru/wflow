@@ -57,6 +57,17 @@ std::size_t delayed_queue::poll_one()
   return this->poll_one_( lck );
 }
 
+
+std::size_t delayed_queue::run_one_for_ms(time_t )
+{
+  return this->run_one();
+}
+
+std::size_t delayed_queue::run_for_ms(time_t )
+{
+  return this->run();
+}
+
 void delayed_queue::stop()
 {
   std::unique_lock<mutex_t> lck( _mutex );
@@ -67,6 +78,12 @@ void delayed_queue::stop()
     _cond_var.notify_all();
   }
 }
+
+bool delayed_queue::stopped() const
+{
+  return _loop_exit;
+}
+
 
 void delayed_queue::safe_post( function_t f)
 {
