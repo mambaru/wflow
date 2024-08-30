@@ -30,7 +30,9 @@ struct callback_handler
   ~callback_handler()
   {
     if ( _ready!=nullptr && _ready.use_count()==1 && _no_call!=nullptr && !_ready->test_and_set() )
+    {
       _no_call();
+    }
   }
   
   callback_handler(H&& h, const ready_ptr& ready, const double_call_fun_t& dc, const no_call_fun_t& nc)

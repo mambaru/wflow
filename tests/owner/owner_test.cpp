@@ -1,5 +1,6 @@
 #include <fas/testing.hpp>
 #include <wflow/owner.hpp>
+#include <vector>
 
 class foo
 {
@@ -235,6 +236,86 @@ UNIT(callback1, "")
   t << equal<expect>(count, 2) << FAS_FL;
   t << equal<expect>(dcount, 1) << FAS_FL;
   t << equal<expect>(ncount, 1) << FAS_FL;
+}
+
+
+namespace {
+
+class test_callback
+{
+public:
+  void init(const std::function<void(int)>& f)
+  {
+    _handler = f;
+  }
+
+  void call()
+  {
+    _handler(0);
+  }
+private:
+  std::function<void(int)> _handler;
+};
+
+}
+UNIT(callback2, "")
+{
+  using namespace fas::testing;
+  int count = 0;
+  int dcount = 0;
+  int ncount = 0;
+
+  wflow::owner own;
+  own.set_double_call_handler([&dcount]() noexcept {++dcount;});
+  own.set_no_call_handler([&ncount]() noexcept {++ncount;});
+
+  // OK.  Один вызов
+  {
+    test_callback tc; // Проверяем, что ctor и dtor сработали как надо
+    {
+      auto cb1 = own.callback([&count](){count++;});
+      std::function<void()> cb2 = cb1;
+      tc.init( [cb2](int) noexcept {cb2();} );
+    }
+    tc.call();
+  }
+
+  t << equal<expect>(dcount, 0) << FAS_FL;
+  t << equal<expect>(ncount, 0) << FAS_FL;
+  t << equal<expect>(count, 1) << FAS_FL;
+
+  // ERR.  Забыли вызвать
+  count = 0; dcount = 0; ncount = 0;
+  {
+    test_callback tc;
+    {
+      auto cb1 = own.callback([&count](){count++;});
+      std::function<void()> cb2 = cb1;
+      tc.init( [cb2](int) noexcept {cb2();} );
+    }
+  }
+  t << equal<expect>(dcount, 0) << FAS_FL;
+  t << equal<expect>(ncount, 1) << FAS_FL;
+  t << equal<expect>(count, 0) << FAS_FL;
+
+
+  // ERR. Вызвали более одного раза
+  count = 0; dcount = 0; ncount = 0;
+  {
+    test_callback tc;
+    {
+      auto cb1 = own.callback([&count](){count++;});
+      std::function<void()> cb2 = cb1;
+      tc.init( [cb2](int) noexcept {cb2();} );
+    }
+    tc.call();
+    tc.call();
+    tc.call();
+  }
+
+  t << equal<expect>(dcount, 2) << FAS_FL;
+  t << equal<expect>(ncount, 0) << FAS_FL;
+  t << equal<expect>(count, 1) << FAS_FL;
 
 }
 
@@ -242,6 +323,7 @@ BEGIN_SUITE(owner, "")
   ADD_UNIT(wrap)
   ADD_UNIT(wrap_callback)  
   ADD_UNIT(callback1)  
+  ADD_UNIT(callback2)
 END_SUITE(owner)
 
 
