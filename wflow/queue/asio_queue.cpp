@@ -190,6 +190,8 @@ bool asio_queue::check_(function_t drop)
 template<typename TP>
 asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
 {
+  return std::make_shared<timer_type>( this->_io, tp);
+  /*
   typedef std::chrono::microseconds microseconds;
   typedef microseconds::rep rep_t;
   rep_t d = std::chrono::duration_cast<microseconds>(tp.time_since_epoch()).count();
@@ -199,7 +201,7 @@ asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
     ::boost::posix_time::from_time_t(0)
     + ::boost::posix_time::seconds(fas::useless_cast<long>(sec))
     + ::boost::posix_time::microseconds(mksec);
-  return std::make_shared<timer_type>( this->_io, ptime);
+  return std::make_shared<timer_type>( this->_io, ptime); */
 }
 
 asio_queue::work_type asio_queue::work() const

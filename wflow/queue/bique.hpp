@@ -1,9 +1,11 @@
 #pragma once
 
-#include <wflow/system/asio.hpp>
 #include <functional>
 #include <chrono>
 #include <atomic>
+#include <memory>
+
+#include <wflow/system/asio.hpp>
 
 namespace wflow{
 

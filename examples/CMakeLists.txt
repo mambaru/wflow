@@ -1,5 +1,9 @@
 add_definitions(-DBOOST_ASIO_NO_DEPRECATED)
 
+update_ogenc(TARGETS  example07 example03 example01 example02 example04
+                      example05 example08 example09 example10 example11
+                      example12 example13 example14 example15 example16  WARNINGS -Wnull-dereference OFF)
+
 add_executable( example01 example01.cpp )
 target_link_libraries(example01 PRIVATE wflow )
 

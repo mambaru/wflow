@@ -7,6 +7,8 @@ set( SUITE_LIST
   workflow_suite.cpp
 )
 
+update_ogenc(TARGETS workflow_test WARNINGS -Wnull-dereference OFF)
+
 add_executable( workflow_test workflow_test.cpp ${SUITE_LIST} )
 target_compile_definitions(workflow_test PRIVATE -DBOOST_ASIO_NO_DEPRECATED)
 target_link_libraries(workflow_test PRIVATE wflow fas::testing)

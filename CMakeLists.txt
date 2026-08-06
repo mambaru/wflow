@@ -22,8 +22,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
   set_source_files_properties(wflow/queue/asio_queue.cpp PROPERTIES COMPILE_FLAGS "-Wno-zero-as-null-pointer-constant")
   if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10.1)
     set_source_files_properties(wflow/queue/asio_queue.cpp PROPERTIES COMPILE_FLAGS "-Wno-null-dereference")
+    set_source_files_properties(wflow/queue/bique.cpp PROPERTIES COMPILE_FLAGS "-Wno-null-dereference")
   endif()
-
 endif()
 
 if (NOT WFLOW_DISABLE_JSON)
@@ -41,22 +41,22 @@ else()
   add_definitions(-DWFLOW_DISABLE_LOG)
 endif()
 
+get_boost(system asio)
+
 add_library(wflow ${source_list})
 wci_targets(wflow)
-target_include_directories(wflow PUBLIC $<BUILD_INTERFACE:${wflow_SOURCE_DIR}>)
-
+target_include_directories(wflow PUBLIC $<BUILD_INTERFACE:${wflow_SOURCE_DIR}> )
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 include(FindThreads REQUIRED)
 
-get_boost(system)
 target_compile_definitions(wflow PRIVATE -DBOOST_ASIO_NO_DEPRECATED)
 
 if (NOT WFLOW_DISABLE_LOG)
-  target_link_libraries(wflow PUBLIC wlog Threads::Threads Boost::system )
+  target_link_libraries(wflow PRIVATE Threads::Threads PUBLIC wlog Boost::system Boost::asio )
 elseif (NOT WFLOW_DISABLE_JSON)
-  target_link_libraries(wflow PUBLIC wjson Threads::Threads Boost::system )
+  target_link_libraries(wflow PRIVATE Threads::Threads PUBLIC wjson Boost::system Boost::asio )
 else()
-  target_link_libraries(wflow PUBLIC faslib Threads::Threads Boost::system )
+  target_link_libraries(wflow PRIVATE Threads::Threads PUBLIC faslib Boost::system Boost::asio )
 endif()
 
 if ( BUILD_TESTING )

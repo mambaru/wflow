@@ -317,6 +317,25 @@ UNIT(callback2, "")
   t << equal<expect>(ncount, 0) << FAS_FL;
   t << equal<expect>(count, 1) << FAS_FL;
 
+  // ERR.  reset
+  own.reset();
+  count = 0; dcount = 0; ncount = 0;
+  {
+    test_callback tc;
+    {
+      own.enable_tracking(true);
+      auto cb1 = own.tracking(333, own.callback([&count](){count++; }), [&ncount](){ ncount+=33;});
+      std::function<void()> cb2 = cb1;
+      tc.init( [cb2](int) noexcept {cb2();} );
+      own.release_tracking(333);
+    }
+    tc.call();
+  }
+
+  t << equal<expect>(dcount, 0) << FAS_FL;
+  t << equal<expect>(ncount, 33 + 1) << FAS_FL; // +1 in set_no_call_handler
+  t << equal<expect>(count, 0) << FAS_FL;
+
 }
 
 BEGIN_SUITE(owner, "")

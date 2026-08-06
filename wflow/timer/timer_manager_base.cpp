@@ -22,7 +22,7 @@ std::shared_ptr<bool> timer_manager_base::detach(timer_id_t id)
   std::lock_guard< mutex_type > lk(_mutex);
   auto itr = _id_map.find(id);
   if ( itr == _id_map.end() )
-    return nullptr;
+    return res;
   res = itr->second;
   _id_map.erase(itr);
   return res;

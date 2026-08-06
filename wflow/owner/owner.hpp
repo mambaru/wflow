@@ -99,17 +99,22 @@ public:
   std::weak_ptr<int> tracking(io_id_t io_id)
   {
     std::weak_ptr<int> wc;
-    std::lock_guard<mutex_type> lk(_mutex);
-    auto itr = _tracking_map.find(io_id);
-    if ( itr!=_tracking_map.end() )
+    if ( _tracking_flag )
     {
-      ++*(itr->second);
-      wc=itr->second;
+      std::lock_guard<mutex_type> lk(_mutex);
+      auto itr = _tracking_map.find(io_id);
+      if ( itr!=_tracking_map.end() )
+      {
+        ++*(itr->second);
+        wc=itr->second;
+      }
+      else
+      {
+        wc = _tracking_map.insert( std::make_pair(io_id, std::make_shared<int>(1)) ).first->second;
+      }
     }
     else
-    {
-      wc = _tracking_map.insert( std::make_pair(io_id, std::make_shared<int>(1)) ).first->second;
-    }
+      wc = _alive;
     return wc;
   }
 

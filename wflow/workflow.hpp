@@ -3,7 +3,6 @@
 #include <wflow/workflow_options.hpp>
 #include <wflow/expires_at.hpp>
 #include <wflow/task/task_manager.hpp>
-#include <wflow/system/asio.hpp>
 #include <wflow/owner.hpp>
 #include <chrono>
 
@@ -444,7 +443,7 @@ public:
    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    * (вызова callback_timer_handler из обработчика)
-   *
+   *get_timer_manager
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
   timer_id_t create_async_timer(std::string schedule, async_timer_handler ahandler, expires_at expires = expires_at::after);
