@@ -39,7 +39,7 @@
 |    200  | 677 тыс  | ~67  тыс/с |    0    |
 |    300  | 379 тыс  | ~38  тыс/с |    0    |
 */
-int main(int argc, char* argv[])
+int main(int argc, char const* const argv[])
 {
   size_t threads = 0;
   if ( argc > 1 )
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   boost::asio::io_context ios;
   boost::asio::executor_work_guard<boost::asio::io_context::executor_type> wrk(ios.get_executor());
   wflow::workflow_options opt;
-  opt.use_asio = true;
+  opt.use_native = false;
   opt.threads = threads;
   wflow::workflow wf(ios, opt);
   wf.start();

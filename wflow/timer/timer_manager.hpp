@@ -30,7 +30,7 @@ public:
   typedef std::chrono::system_clock         clock_t;
   typedef std::chrono::time_point<clock_t>  time_point_t;
   typedef std::chrono::time_point< std::chrono::steady_clock >::duration duration_t;
-  typedef int timer_id_t;
+  typedef super::timer_id_t                 timer_id_t;
 
   typedef std::mutex mutex_type;
   typedef std::weak_ptr<bool> wflag_type;

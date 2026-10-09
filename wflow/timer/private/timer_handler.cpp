@@ -3,7 +3,7 @@
 
 #include <wflow/queue/bique.hpp>
 #include <wflow/queue/asio_queue.hpp>
-#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/native_queue.hpp>
 
 
 namespace wflow{
@@ -18,7 +18,7 @@ std::function<void()> timer_handler::make( std::shared_ptr<asio_queue> pq,   dur
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer_handler::make( std::shared_ptr<delayed_queue> pq, duration_t delay, handler h, expires_at expires, wflag_type wflag )
+std::function<void()> timer_handler::make( std::shared_ptr<native_queue> pq, duration_t delay, handler h, expires_at expires, wflag_type wflag )
 {
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }
@@ -33,7 +33,7 @@ std::function<void()> timer_handler::make( std::shared_ptr<asio_queue> pq,   dur
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer_handler::make( std::shared_ptr<delayed_queue> pq, duration_t delay, async_handler h, expires_at expires, wflag_type wflag )
+std::function<void()> timer_handler::make( std::shared_ptr<native_queue> pq, duration_t delay, async_handler h, expires_at expires, wflag_type wflag )
 {
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }
@@ -52,7 +52,7 @@ std::function<void()> timer_handler::make( std::shared_ptr<asio_queue> pq, const
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer_handler::make( std::shared_ptr<delayed_queue> pq, const cron_t& delay, handler h, expires_at expires, wflag_type wflag )
+std::function<void()> timer_handler::make( std::shared_ptr<native_queue> pq, const cron_t& delay, handler h, expires_at expires, wflag_type wflag )
 {
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }
@@ -67,7 +67,7 @@ std::function<void()> timer_handler::make( std::shared_ptr<asio_queue> pq, const
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }
 
-std::function<void()> timer_handler::make( std::shared_ptr<delayed_queue> pq, const cron_t& delay, async_handler h, expires_at expires, wflag_type wflag )
+std::function<void()> timer_handler::make( std::shared_ptr<native_queue> pq, const cron_t& delay, async_handler h, expires_at expires, wflag_type wflag )
 {
   return basic_timer_handler::make(pq, delay, std::move(h), expires, wflag);
 }

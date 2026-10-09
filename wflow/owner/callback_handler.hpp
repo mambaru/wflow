@@ -13,13 +13,34 @@
 
 namespace wflow{
 
+// Общее состояние всех копий одного callback.
+// no_call вызывается в деструкторе, когда умирает последний shared_ptr —
+// без опроса use_count() из ~callback_handler.
+struct callback_control
+{
+  typedef std::function<void()> no_call_fun_t;
+
+  std::atomic<bool> called{false};
+  no_call_fun_t no_call;
+
+  explicit callback_control(no_call_fun_t nc) noexcept
+    : no_call(std::move(nc))
+  {
+  }
+
+  ~callback_control()
+  {
+    if ( no_call!=nullptr && !called.exchange(true) )
+      no_call();
+  }
+};
+
 template<typename H>
 struct callback_handler
 {
   typedef std::function<void()> double_call_fun_t;
-  typedef std::function<void()> no_call_fun_t;
-  
-  typedef std::shared_ptr< std::atomic_flag > ready_ptr;
+  typedef std::weak_ptr<void> weak_type;
+  typedef std::shared_ptr<callback_control> control_ptr;
 
   callback_handler() = default;
   callback_handler(const callback_handler&) = default;
@@ -27,19 +48,11 @@ struct callback_handler
   callback_handler& operator=(const callback_handler&) = default;
   callback_handler& operator=(callback_handler&&) = default;
 
-  ~callback_handler()
-  {
-    if ( _ready!=nullptr && _ready.use_count()==1 && _no_call!=nullptr && !_ready->test_and_set() )
-    {
-      _no_call();
-    }
-  }
-  
-  callback_handler(H&& h, const ready_ptr& ready, const double_call_fun_t& dc, const no_call_fun_t& nc)
+  callback_handler(H&& h, const control_ptr& control, const double_call_fun_t& dc, const weak_type& alive)
     : _handler(  std::forward<H>(h) )
-    , _ready(ready)
+    , _control(control)
     , _double_call(dc)
-    , _no_call(nc)
+    , _alive(alive)
   {
   }
   
@@ -47,18 +60,21 @@ struct callback_handler
   auto operator()(Args&&... args)
     ->  typename std::invoke_result< H, Args&&... >::type
   {
-    if ( !_ready->test_and_set() )
-      return _handler(std::forward<Args>(args)...);
-    else if (_double_call!=nullptr)
-      _double_call();
+    if ( auto p = _alive.lock() )
+    {
+      if ( !_control->called.exchange(true) )
+        return _handler(std::forward<Args>(args)...);
+      else if (_double_call!=nullptr)
+        _double_call();
+    }
     return typename std::invoke_result< H, Args&&... >::type();
   }
   
 private:
   H _handler;
-  ready_ptr _ready;
+  control_ptr _control;
   double_call_fun_t _double_call;
-  no_call_fun_t _no_call;
+  weak_type _alive;
 };
 
 }

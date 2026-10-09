@@ -1,7 +1,7 @@
 #pragma once
 
 #include <fas/testing.hpp>
-#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/native_queue.hpp>
 #include <chrono>
 #include <atomic>
 #include <thread>

@@ -43,7 +43,7 @@ Intel(R) Core(TM) i7-2600 CPU @ 3.40GHz
 |    200  | 565 тыс  | ~56  тыс/с | 0       |
 |    300  | 394 тыс  | ~39  тыс/с | 0       |
 */
-int main(int argc, char* argv[])
+int main(int argc, char const* const argv[])
 {
   size_t threads = 0;
   if ( argc > 1 )

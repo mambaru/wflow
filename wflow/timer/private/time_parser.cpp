@@ -5,7 +5,7 @@ namespace wflow{
 
 namespace{ namespace detail{
 
-bool make_check(const std::string& strtime, std::string* err);
+bool make_check(const std::string& strtime, const std::string* err);
 
 bool make_delay(const std::string& strtime, time_t* result, std::string* err);
 
@@ -49,10 +49,10 @@ bool time_parser::make_time_point(const std::string& strtime, time_point_t* resu
   return ret;
 }
 
-bool time_parser::make_cron(const std::string& schedule, cron_t* result, std::string* err)
+bool time_parser::make_cron(const std::string& strtime, cron_t* result, std::string* err)
 try
 {
-  auto crn = cron::make_cron(schedule);
+  auto crn = cron::make_cron(strtime);
   if ( result != nullptr )
     *result = crn;
   return true;
@@ -73,7 +73,7 @@ time_t time_parser::cron_next(const cron_t& crn)
 
 namespace{ namespace detail{
 
-bool make_check(const std::string& strtime, std::string* err)
+bool make_check(const std::string& strtime, const std::string* err)
 {
   if ( err!=nullptr && !err->empty())
     return false;

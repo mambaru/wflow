@@ -9,11 +9,11 @@ namespace wflow{
 
 asio_queue::asio_queue(io_context_type& io, const size_t maxsize)
   : _io(io)
+  , _counter(0)
+  , _safe_counter(0)
+  , _maxsize(maxsize)
+  , _drop_count(0)
 {
-  _counter = 0;
-  _safe_counter = 0;
-  _drop_count = 0;
-  _maxsize = maxsize;
 }
 
 asio_queue::io_context_type& asio_queue::get_io_context()
@@ -83,10 +83,9 @@ void asio_queue::safe_post( function_t f)
 
 bool asio_queue::post( function_t f, function_t drop )
 {
-  if ( !this->check_(std::move(drop)) )
+  if ( !this->acquire_(std::move(drop)) )
     return false;
   std::weak_ptr<self> wthis = this->shared_from_this();
-  ++_counter;
   boost::asio::post(_io, [wthis, f]()
   {
     if (auto pthis = wthis.lock() )
@@ -123,12 +122,11 @@ bool asio_queue::post_at(time_point_t tp, function_t f, function_t drop)
   if ( tp <= time_point_t::clock::now() )
     return this->post( std::move(f), std::move(drop) );
 
-  if ( !this->check_(std::move(drop)) )
+  if ( !this->acquire_(std::move(drop)) )
     return false;
 
   auto ptimer = this->create_timer_( tp );
   std::weak_ptr<self> wthis = this->shared_from_this();
-  ++_counter;
   ptimer->async_wait([f, ptimer, wthis]( const boost::system::error_code& )
   {
     if (auto pthis = wthis.lock() )
@@ -175,14 +173,25 @@ std::size_t asio_queue::dropped() const
 // ----------------------------------------
 // ----------------------------------------
 
-bool asio_queue::check_(function_t drop)
+bool asio_queue::acquire_(function_t drop)
 {
-  if ( _maxsize == 0 )
+  const size_t maxsize = _maxsize.load(std::memory_order_relaxed);
+  if ( maxsize == 0 )
+  {
+    ++_counter;
     return true;
-  if ( _counter < _maxsize )
-    return true;
+  }
+
+  size_t cur = _counter.load(std::memory_order_relaxed);
+  while ( cur < maxsize )
+  {
+    if ( _counter.compare_exchange_weak(cur, cur + 1,
+           std::memory_order_acq_rel, std::memory_order_relaxed) )
+      return true;
+  }
+
   ++_drop_count;
-  if ( drop != nullptr)
+  if ( drop != nullptr )
     drop();
   return false;
 }
@@ -190,6 +199,8 @@ bool asio_queue::check_(function_t drop)
 template<typename TP>
 asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
 {
+  return std::make_shared<timer_type>( this->_io, tp);
+  /*
   typedef std::chrono::microseconds microseconds;
   typedef microseconds::rep rep_t;
   rep_t d = std::chrono::duration_cast<microseconds>(tp.time_since_epoch()).count();
@@ -199,7 +210,7 @@ asio_queue::timer_ptr asio_queue::create_timer_(TP tp)
     ::boost::posix_time::from_time_t(0)
     + ::boost::posix_time::seconds(fas::useless_cast<long>(sec))
     + ::boost::posix_time::microseconds(mksec);
-  return std::make_shared<timer_type>( this->_io, ptime);
+  return std::make_shared<timer_type>( this->_io, ptime); */
 }
 
 asio_queue::work_type asio_queue::work() const

@@ -1,5 +1,10 @@
 add_definitions(-DBOOST_ASIO_NO_DEPRECATED)
 
+update_ogenc(TARGETS  example07 example03 example01 example02 example04
+                      example05 example08 example09 example10 example11
+                      example12 example13 example14 example15 example16 example17
+                      example18 example19 example20  WARNINGS -Wnull-dereference OFF)
+
 add_executable( example01 example01.cpp )
 target_link_libraries(example01 PRIVATE wflow )
 
@@ -45,10 +50,23 @@ target_link_libraries(example14 PRIVATE wflow )
 add_executable( example16 example16.cpp )
 target_link_libraries(example16 PRIVATE wflow )
 
+add_executable( example17 example17.cpp )
+target_link_libraries(example17 PRIVATE wflow )
+
+add_executable( example18 example18.cpp )
+target_link_libraries(example18 PRIVATE wflow )
+
+add_executable( example19 example19.cpp )
+target_link_libraries(example19 PRIVATE wflow )
+
+add_executable( example20 example20.cpp )
+target_link_libraries(example20 PRIVATE wflow )
+
 wci_examples(
   example01 example02 example03 example04 example05
   example06 example07 example08 example09 example10
-  example11 example12 example13 example14 example16)
+  example11 example12 example13 example14 example16 example17
+  example18 example19 example20)
 
 if (NOT WFLOW_DISABLE_JSON)
   add_executable( example15 example15.cpp )

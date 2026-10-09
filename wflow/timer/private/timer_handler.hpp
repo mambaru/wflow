@@ -9,7 +9,7 @@
 
 namespace wflow{
 
-class delayed_queue;
+class native_queue;
 class asio_queue;
 class bique;
 
@@ -30,20 +30,20 @@ public:
 
   static std::function<void()> make( std::shared_ptr<bique>         pq, duration_t delay, handler h, expires_at expires, wflag_type wflag );
   static std::function<void()> make( std::shared_ptr<asio_queue>    pq, duration_t delay, handler h, expires_at expires, wflag_type wflag );
-  static std::function<void()> make( std::shared_ptr<delayed_queue> pq, duration_t delay, handler h, expires_at expires, wflag_type wflag );
+  static std::function<void()> make( std::shared_ptr<native_queue> pq, duration_t delay, handler h, expires_at expires, wflag_type wflag );
 
   static std::function<void()> make( std::shared_ptr<bique> pq,        duration_t delay,  async_handler h, expires_at expires, wflag_type wflag );
   static std::function<void()> make( std::shared_ptr<asio_queue> pq,   duration_t delay,  async_handler h, expires_at expires, wflag_type wflag );
-  static std::function<void()> make( std::shared_ptr<delayed_queue> pq, duration_t delay, async_handler h, expires_at expires, wflag_type wflag );
+  static std::function<void()> make( std::shared_ptr<native_queue> pq, duration_t delay, async_handler h, expires_at expires, wflag_type wflag );
 
 ///
   
   static std::function<void()> make( std::shared_ptr<bique>         pq, const cron_t& delay, handler h, expires_at expires, wflag_type wflag );
   static std::function<void()> make( std::shared_ptr<asio_queue>    pq, const cron_t& delay, handler h, expires_at expires, wflag_type wflag );
-  static std::function<void()> make( std::shared_ptr<delayed_queue> pq, const cron_t& delay, handler h, expires_at expires, wflag_type wflag );
+  static std::function<void()> make( std::shared_ptr<native_queue> pq, const cron_t& delay, handler h, expires_at expires, wflag_type wflag );
   static std::function<void()> make( std::shared_ptr<bique> pq,        const cron_t& delay,  async_handler h, expires_at expires, wflag_type wflag );
   static std::function<void()> make( std::shared_ptr<asio_queue> pq,   const cron_t& delay,  async_handler h, expires_at expires, wflag_type wflag );
-  static std::function<void()> make( std::shared_ptr<delayed_queue> pq, const cron_t& delay, async_handler h, expires_at expires, wflag_type wflag );
+  static std::function<void()> make( std::shared_ptr<native_queue> pq, const cron_t& delay, async_handler h, expires_at expires, wflag_type wflag );
 
 };
 

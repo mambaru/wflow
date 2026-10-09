@@ -1,5 +1,5 @@
 #include <fas/testing.hpp>
-#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/native_queue.hpp>
 #include <wflow/task/thread_pool.hpp>
 #include <chrono>
 #include <atomic>

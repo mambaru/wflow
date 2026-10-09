@@ -1,7 +1,7 @@
 
 
 #include <wflow/queue/bique.hpp>
-#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/native_queue.hpp>
 #include <wflow/queue/asio_queue.hpp>
 #include "private/time_parser.hpp"
 #include "timer_manager.hpp"
@@ -113,6 +113,6 @@ timer_manager<QUE>::timer_id_t                                                  
 
 TIMER_MANAGER(bique)
 TIMER_MANAGER(asio_queue)
-TIMER_MANAGER(delayed_queue)
+TIMER_MANAGER(native_queue)
 
 }

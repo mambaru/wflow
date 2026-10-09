@@ -121,24 +121,23 @@ int main()
     },
     [&callcount](response::ptr resp) -> request::ptr
     {
+      request::ptr req;
       if ( resp == nullptr )
       {
         std::cout << "create FIRST request "  << std::endl;
-        return request::ptr(new request() );
+        req = request::ptr(new request());
       }
       else if ( resp->result != 10)
       {
         std::cout << "create request N" << callcount << "." << resp->result << std::endl;
-        request::ptr req(new request() );
-        req->param = resp->result;
-        return req;
-      }
+        req = request::ptr(new request());
+        req->param = resp->result;      }
       else
       {
         std::cout << "STOP create request" << std::endl;
         callcount = callcount + 1;
-        return nullptr;
       }
+      return req;
     }
   );
   ios.run();
