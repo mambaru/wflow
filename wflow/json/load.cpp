@@ -54,7 +54,9 @@ workflow_options load(const std::string& src, std::string* err)
   workflow_options opt;
   if ( load(src, &opt, err) )
     return opt;
-  return workflow_options();
+  else
+    opt = workflow_options();
+  return opt;
 }
 
 std::string dump(const workflow_options& opt)

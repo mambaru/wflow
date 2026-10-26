@@ -46,8 +46,17 @@ bool workflow::reconfigure(const workflow_handlers& handlers)
 
 bool workflow::reconfigure(const workflow_options& opt, const workflow_handlers& handlers)
 {
-  if ( !_impl->reconfigure(opt) )
-    return false;
+  const bool hard = [&]() {
+    std::lock_guard<mutex_type> lk(_mutex);
+    return (_opt.use_native != opt.use_native) ||
+           ((_opt.threads == 0) != (opt.threads == 0));
+  }();
+
+  // Hard: инвалидируем wrap → при discard/доигрывании сработает alt-handler
+  if ( hard )
+    _owner.reset();
+
+  _impl->reconfigure(opt);
 
   _delay_ms = opt.post_delay_ms;
   {
@@ -139,72 +148,72 @@ bool workflow::post(time_point_t tp, post_handler handler, drop_handler drop)
   return _impl->post_at( tp, handler, drop);
 }
 
-void workflow::safe_post(const std::string& stp, post_handler handler)
+void workflow::safe_post(const std::string& tp, post_handler handler)
 {
-  time_point_t tp;
-  if ( time_parser::make_time_point(stp, &tp, nullptr) )
-    this->safe_post( tp, handler );
+  time_point_t time_point;
+  if ( time_parser::make_time_point(tp, &time_point, nullptr) )
+    this->safe_post( time_point, handler );
   else
     this->safe_post( handler );
 }
 
-bool workflow::post(const std::string& stp, post_handler handler, drop_handler drop)
+bool workflow::post(const std::string& tp, post_handler handler, drop_handler drop)
 {
-  time_point_t tp;
-  if ( time_parser::make_time_point(stp, &tp, nullptr) )
-    return this->post( tp, handler, drop );
+  time_point_t time_point;
+  if ( time_parser::make_time_point(tp, &time_point, nullptr) )
+    return this->post( time_point, handler, drop );
   else
     return this->post( handler, drop );
 }
 
-void workflow::safe_post(duration_t d,   post_handler handler)
+void workflow::safe_post(duration_t duration,   post_handler handler)
 {
-  return _impl->safe_delayed_post(d, handler);
+  return _impl->safe_delayed_post(duration, handler);
 }
 
-bool workflow::post(duration_t d,   post_handler handler, drop_handler drop)
+bool workflow::post(duration_t duration,   post_handler handler, drop_handler drop)
 {
-  return _impl->delayed_post(d, handler, drop);
+  return _impl->delayed_post(duration, handler, drop);
 }
 
-workflow::timer_id_t workflow::create_timer(duration_t d, timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_timer(duration_t duration, timer_handler handler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create(d, handler, expires );
+  return _impl->get_timer_manager()->create(duration, handler, expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(duration_t d, async_timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_async_timer(duration_t duration, async_timer_handler ahandler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create(d, handler, expires );
+  return _impl->get_timer_manager()->create(duration, ahandler, expires );
 }
 
-workflow::timer_id_t workflow::create_timer(duration_t sd, duration_t d, timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_timer(duration_t start_duration, duration_t duration, timer_handler handler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create( sd, d, handler, expires );
+  return _impl->get_timer_manager()->create( start_duration, duration, handler, expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(duration_t sd, duration_t d, async_timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_async_timer(duration_t start_duration, duration_t duration, async_timer_handler ahandler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create( sd, d, handler, expires );
+  return _impl->get_timer_manager()->create( start_duration, duration, ahandler, expires );
 }
 
-workflow::timer_id_t workflow::create_timer(time_point_t start_time, duration_t d, timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_timer(time_point_t start_time, duration_t duration, timer_handler handler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create(start_time, d, handler, expires );
+  return _impl->get_timer_manager()->create(start_time, duration, handler, expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(time_point_t start_time, duration_t d, async_timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_async_timer(time_point_t start_time, duration_t duration, async_timer_handler ahandler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create(start_time, d, handler, expires );
+  return _impl->get_timer_manager()->create(start_time, duration, ahandler, expires );
 }
 
-workflow::timer_id_t workflow::create_timer(std::string start_time, duration_t d, timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_timer(std::string start_time, duration_t duration, timer_handler handler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create(start_time, d, handler, expires );
+  return _impl->get_timer_manager()->create(start_time, duration, handler, expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(std::string start_time, duration_t d, async_timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_async_timer(std::string start_time, duration_t duration, async_timer_handler ahandler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create(start_time, d, handler, expires );
+  return _impl->get_timer_manager()->create(start_time, duration, ahandler, expires );
 }
 
 workflow::timer_id_t workflow::create_timer(std::string schedule, timer_handler handler, expires_at expires)
@@ -212,9 +221,9 @@ workflow::timer_id_t workflow::create_timer(std::string schedule, timer_handler 
   return _impl->get_timer_manager()->create(schedule, handler, expires );
 }
 
-workflow::timer_id_t workflow::create_async_timer(std::string schedule, async_timer_handler handler, expires_at expires)
+workflow::timer_id_t workflow::create_async_timer(std::string schedule, async_timer_handler ahandler, expires_at expires)
 {
-  return _impl->get_timer_manager()->create(schedule, handler, expires );
+  return _impl->get_timer_manager()->create(schedule, ahandler, expires );
 }
 
 std::shared_ptr<bool> workflow::detach_timer(timer_id_t id)
@@ -331,14 +340,14 @@ void workflow::create_wrn_timer_()
   wrkf.release_timer(old_timer);
 }
 
-bool workflow::time_point_from_string(const std::string& strtime, time_point_t* tp, std::string* err)
+bool workflow::time_point_from_string(const std::string& strtime, time_point_t* result, std::string* err)
 {
-  return time_parser::make_time_point(strtime, tp, err);
+  return time_parser::make_time_point(strtime, result, err);
 }
 
-bool workflow::duration_from_string(const std::string& strtime, duration_t* tm, std::string* err)
+bool workflow::duration_from_string(const std::string& strtime, duration_t* result, std::string* err)
 {
-  return time_parser::make_duration(strtime, tm, err);
+  return time_parser::make_duration(strtime, result, err);
 }
 
 }

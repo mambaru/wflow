@@ -1,7 +1,7 @@
 #include <memory>
 #include <fas/testing.hpp>
 #include <wflow/timer/timer_manager.hpp>
-#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/native_queue.hpp>
 #include <wflow/queue/asio_queue.hpp>
 #include <fas/system/memory.hpp>
 

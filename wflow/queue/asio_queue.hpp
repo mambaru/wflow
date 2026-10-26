@@ -12,7 +12,7 @@ class asio_queue
   : public std::enable_shared_from_this<asio_queue >
 {
   typedef asio_queue self;
-  typedef boost::asio::deadline_timer timer_type;
+  typedef boost::asio::system_timer timer_type;
   typedef std::shared_ptr<timer_type> timer_ptr;
   typedef boost::asio::io_context io_context_type;
   typedef boost::asio::executor_work_guard<io_context_type::executor_type> work_type;
@@ -70,7 +70,8 @@ public:
 
 private:
 
-  bool check_(function_t drop);
+  /// Атомарно занять слот unsafe-очереди (или drop при maxsize).
+  bool acquire_(function_t drop);
 
   template<typename TP>
   timer_ptr create_timer_(TP tp);

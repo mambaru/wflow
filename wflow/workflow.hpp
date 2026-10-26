@@ -3,9 +3,9 @@
 #include <wflow/workflow_options.hpp>
 #include <wflow/expires_at.hpp>
 #include <wflow/task/task_manager.hpp>
-#include <wflow/system/asio.hpp>
 #include <wflow/owner.hpp>
 #include <chrono>
+#include <cstdint>
 
 namespace wflow{
 
@@ -142,14 +142,14 @@ public:
   typedef std::function<void(bool)> callback_timer_handler;
   /// Обработчик асинхронного таймера (вызывает callback_timer_handler)
   typedef std::function<void(callback_timer_handler)> async_timer_handler;
-  /// Стандартные часы
+  /// Часы для абсолютного времени / расписаний (чувствительны к NTP и смене системного времени)
   typedef std::chrono::system_clock         clock_t;
   /// Момент времени
   typedef std::chrono::time_point<clock_t>  time_point_t;
-  /// Интервал времени
+  /// Интервал времени (steady; для периодических create_timer(duration, ...))
   typedef std::chrono::time_point< std::chrono::steady_clock >::duration duration_t;
-  /// Идентификатор таймера
-  typedef int                               timer_id_t;
+  /// Идентификатор таймера (монотонный счётчик; не переиспользуется после release)
+  typedef std::int64_t                      timer_id_t;
 
   typedef task_manager::timer_manager_t     timer_manager_t;
 
@@ -189,12 +189,10 @@ public:
   void start();
 
   /**
-   * @brief Реконфигурация после запуска.
-   * @details Позволяет реконфигурировать workflow без сброса очередей.
-   * Можно изменить число потоков или ограничения очереди.
-   *
-   * @attention Не работает при workflow_options::use_io_context == false
-   * @param opt - новые опции.
+   * @brief Реконфигурация (всегда применяется, возвращает true).
+   * @details Мягкие изменения (maxsize, threads 1..N↔M) — без сброса очереди.
+   * Жёсткие (`use_native` или `threads` через 0): owner::reset + discard очереди
+   * (wrap → alt-handler); таймеры с теми же id перепланируются библиотекой.
    */
   bool reconfigure(const workflow_options& opt);
   bool reconfigure(const workflow_handlers& handlers);
@@ -339,6 +337,9 @@ public:
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    *
    * @return идентификатор таймера, который можно использовать для остановки таймера
+   * @remark Пока таймер жив, он держит ресурсы в менеджере. Ненужный таймер нужно
+   * остановить: `release_timer`, `detach_timer` или вернуть false / вызвать callback(false).
+   * Иначе при частых create без release растёт `timer_count` и потребление памяти.
    */
   timer_id_t create_timer(duration_t duration, timer_handler handler, expires_at expires = expires_at::after);
 
@@ -444,7 +445,7 @@ public:
    *           если таймер должен продолжать работать и callback_timer_handler(false) - для завершения.
    * @param expires если expires_at::after (по умолчанию), то отсчет до следующего запуска после выполнения обработчика таймера
    * (вызова callback_timer_handler из обработчика)
-   *
+   *get_timer_manager
    * @return идентификатор таймера, который можно использовать для остановки таймера
    */
   timer_id_t create_async_timer(std::string schedule, async_timer_handler ahandler, expires_at expires = expires_at::after);
@@ -460,6 +461,7 @@ public:
    * @brief Остановить таймер и освободить ресурсы
    * @param id идентификатор таймера
    * @return bool, если true - таймер остановлен, false - таймер с таким id не найдено
+   * @remark Предпочтительный способ завершить таймер снаружи (см. create_timer).
    */
   bool release_timer( timer_id_t id );
 
@@ -640,10 +642,9 @@ public:
   }
 
   /** @brief Возвращает актуальный boost::io_context 
-   *  @details Если установлена опция use_asio и threads > 0, то это созданный boost::io_context 
-   *  который обслуживает потоки, в противном случае boost::io_context который передан в конструкторе
-   *  Если use_asio=false то boost::io_context который передан в конструкторе или не работающий io_context
-   *  (уточнить)
+   *  @details Если use_native=false и threads > 0, то это созданный boost::io_context 
+   *  который обслуживает потоки, в противном случае boost::io_context который передан в конструкторе.
+   *  Если use_native=true — io_context из конструктора или служебный (не обслуживает native_queue).
    */
   io_context_type& get_io_context();
 

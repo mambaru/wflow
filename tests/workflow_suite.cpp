@@ -3,9 +3,14 @@
 #include <wflow/task/task_manager.hpp>
 #include <wflow/workflow.hpp>
 #include <fas/system/memory.hpp>
+#include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <memory>
+#include <mutex>
 #include <set>
+#include <thread>
+#include <vector>
 
 namespace {
 
@@ -16,64 +21,6 @@ time_t get_accuracy(T& t)
     return 0;
 
   return std::atoi( t.get_arg(1).c_str() );
-}
-
-UNIT(workflow1, "")
-{
-  using namespace ::fas::testing;
-  t << flush;
-  boost::asio::io_context io;
-  wflow::workflow_options opt;
-  opt.id="workflow1";
-  opt.maxsize = 3;
-  opt.threads = 1;
-  opt.use_asio = false;
-  wflow::task_manager queue(io, opt);
-  queue.start();
-  std::mutex m;
-  int counter = 0;
-  queue.post([&t, &counter, &m](){
-    std::lock_guard<std::mutex> lk(m);
-    ++counter;
-    t << message("simple post");
-    t << flush;
-  }, [&](){ t << fatal("DROP"); ++counter;});
-
-  queue.get_timer_manager()->create(std::chrono::milliseconds(400), [&t, &counter, &m](){
-    std::lock_guard<std::mutex> lk(m);
-    ++counter;
-    t << message("timer 400ms");
-    t << flush;
-    return true;
-  });
-  queue.delayed_post( std::chrono::milliseconds(600), [&t, &counter, &m](){
-    std::lock_guard<std::mutex> lk(m);
-    ++counter;
-    t << message("delayed post 600ms");
-    t << flush;
-  }, nullptr);
-
-  for (int i =0 ; i < 3 ; ++i)
-  {
-    queue.delayed_post( std::chrono::milliseconds(300 + i*300), [&t, &counter, i, &m](){
-      std::lock_guard<std::mutex> lk(m);
-      ++counter;
-      t << message("delayed post N") <<  i << " = " << 300 + i*300 << "ms";
-      t << flush;
-    }, nullptr);
-  }
-
-  t << flush;
-  t << message("sleep...");
-  t << flush;
-  sleep(2);
-  t << message("flush...");
-  t << flush;
-  queue.stop();
-  time_t accuracy = get_accuracy(t);
-  if ( accuracy == 0 )
-    t << equal< assert,int >( counter, 7 ) << FAS_FL ;
-
 }
 
 UNIT(workflow2, "5 сообщений, одно 'теряется' и одно остаеться в очереди")
@@ -87,6 +34,7 @@ UNIT(workflow2, "5 сообщений, одно 'теряется' и одно �
   opt.id="workflow2";
   opt.maxsize = 4;
   opt.threads = 0;
+  opt.control_ms = 0;
   wflow::workflow wfl(io, opt);
   wfl.start();
 
@@ -197,6 +145,7 @@ UNIT(requester1, "")
   boost::asio::io_context ios;
   wflow::workflow_options wo;
   wo.threads = 0;
+  wo.control_ms = 0;
   wflow::workflow flw(ios, wo);
   wflow::workflow::timer_id_t id;
   auto start = high_resolution_clock::now();
@@ -237,6 +186,7 @@ UNIT(rate_limit, "")
   wflow::workflow_options wo;
   wo.threads = 0;
   wo.rate_limit = 100;
+  wo.control_ms = 0;
   wflow::workflow flw(ios, wo);
   flw.get_timer_manager(); // cppcheck fix
   flw.start();
@@ -258,6 +208,47 @@ UNIT(rate_limit, "")
   t << message("CXX_STANDARD: ") << __cplusplus;
 }
 
+// Несколько потоков одновременно post'ят под rate_limit — все задания доходят, темп ~лимиту.
+UNIT(rate_limit_mt, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  wflow::workflow_options wo;
+  wo.threads = 2;
+  wo.rate_limit = 50;
+  wo.control_ms = 0;
+  wflow::workflow flw(wo);
+  flw.start();
+
+  constexpr int producers = 4;
+  constexpr int per_thread = 25; // всего 100
+  std::atomic<size_t> counter{0};
+
+  const auto start = steady_clock::now();
+  std::vector<std::thread> th;
+  th.reserve(producers);
+  for (int p = 0; p < producers; ++p)
+  {
+    th.emplace_back([&]()
+    {
+      for (int i = 0; i < per_thread; ++i)
+        flw.post([&]() noexcept { counter.fetch_add(1, std::memory_order_relaxed); });
+    });
+  }
+  for (auto& x : th)
+    x.join();
+
+  flw.shutdown();
+  flw.wait();
+  const auto ms = duration_cast<milliseconds>(steady_clock::now() - start).count();
+
+  t << equal<expect, size_t>(counter.load(), 100) << FAS_FL;
+  // 100 post при 50/с ≈ 2с; допуск шире из‑за планировщика и пула
+  t << greater<expect, long long>(ms, 1500) << FAS_FL;
+  t << less<expect, long long>(ms, 4000) << FAS_FL;
+}
+
 UNIT(overflow_reset, "")
 {
   using namespace ::fas::testing;
@@ -268,6 +259,7 @@ UNIT(overflow_reset, "")
   wo.id = "overflow_reset";
   wo.maxsize=100;
   wo.overflow_reset = true;
+  wo.control_ms = 0;
   wflow::workflow flw(ios, wo);
   flw.start();
   size_t counter = 0;
@@ -284,6 +276,27 @@ UNIT(overflow_reset, "")
   ios.run();
   t << equal<expect, size_t>(counter, 32) << FAS_FL;
   t << equal<expect, size_t>(lost_counter, 110) << FAS_FL;
+}
+
+UNIT(overflow_reset_null_drop, "")
+{
+  using namespace ::fas::testing;
+  boost::asio::io_context ios;
+  wflow::workflow_options wo;
+  wo.id = "overflow_reset_null_drop";
+  wo.maxsize = 10;
+  wo.overflow_reset = true;
+  wo.quiet_mode = true;
+  wo.control_ms = 0;
+  wflow::workflow flw(ios, wo);
+
+  size_t counter = 0;
+  for (int i = 0; i != 30; ++i)
+    flw.post([&]() noexcept { ++counter; });
+
+  t << greater<assert, size_t>(flw.get_task_manager()->reset_count(), 0) << FAS_FL;
+  ios.run();
+  t << less_equal<expect, size_t>(counter, 10) << FAS_FL;
 }
 
 UNIT(shutdown, "")
@@ -307,7 +320,7 @@ UNIT(shutdown, "")
       threads_ids.insert(std::this_thread::get_id());
     });
   }
-  flw.create_timer(std::chrono::milliseconds(10), [&]()
+  flw.create_timer(std::chrono::milliseconds(10), [&]() noexcept
   {
     std::lock_guard<std::mutex> lk(mutex);
     t << message("timer");
@@ -375,17 +388,601 @@ UNIT(wait_and_restart, "")
 
 }
 
+UNIT(get_id_and_options, "")
+{
+  using namespace ::fas::testing;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.id = "id-test";
+  opt.maxsize = 7;
+  opt.threads = 0;
+  opt.rate_limit = 42;
+  wflow::workflow wf(io, opt);
+  t << equal<expect, std::string>(wf.get_id(), "id-test") << FAS_FL;
+  auto got = wf.get_options();
+  t << equal<expect, std::string>(got.id, "id-test") << FAS_FL;
+  t << equal<expect, size_t>(got.maxsize, 7) << FAS_FL;
+  t << equal<expect, size_t>(got.rate_limit, 42) << FAS_FL;
+}
+
+UNIT(safe_post_ignores_maxsize, "")
+{
+  using namespace ::fas::testing;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.maxsize = 2;
+  opt.threads = 0;
+  opt.quiet_mode = true;
+  opt.control_ms = 0;
+  wflow::workflow wf(io, opt);
+
+  size_t done = 0;
+  size_t dropped = 0;
+  for (int i = 0; i != 5; ++i)
+    wf.safe_post([&]() noexcept { ++done; });
+
+  t << equal<expect, size_t>(wf.unsafe_size(), 0) << FAS_FL;
+  t << equal<expect, size_t>(wf.safe_size(), 5) << FAS_FL;
+  io.run();
+  t << equal<expect, size_t>(done, 5) << FAS_FL;
+  t << equal<expect, size_t>(dropped, 0) << FAS_FL;
+
+  io.restart();
+  done = 0;
+  for (int i = 0; i != 5; ++i)
+    wf.post([&]() noexcept { ++done; }, [&]() noexcept { ++dropped; });
+
+  t << equal<expect, size_t>(wf.unsafe_size(), 2) << FAS_FL;
+  t << equal<expect, size_t>(dropped, 3) << FAS_FL;
+  io.run();
+  t << equal<expect, size_t>(done, 2) << FAS_FL;
+}
+
+UNIT(delayed_post_duration, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.threads = 0;
+  opt.control_ms = 0;
+  wflow::workflow wf(io, opt);
+
+  size_t done = 0;
+  wf.post(milliseconds(20), [&]() noexcept { ++done; });
+  wf.safe_post(milliseconds(20), [&]() noexcept { ++done; });
+  t << equal<expect, size_t>(done, 0) << FAS_FL;
+  io.run();
+  t << equal<expect, size_t>(done, 2) << FAS_FL;
+}
+
+UNIT(release_and_detach_timer, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.threads = 0;
+  opt.control_ms = 0;
+  wflow::workflow wf(io, opt);
+
+  std::atomic<size_t> ticks{0};
+  auto id = wf.create_timer(milliseconds(10), [&]() noexcept {
+    ++ticks;
+    return true;
+  });
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+  t << is_true<expect>(wf.release_timer(id)) << FAS_FL;
+  t << equal<expect, size_t>(wf.timer_count(), 0) << FAS_FL;
+  t << is_false<expect>(wf.release_timer(id)) << FAS_FL;
+
+  // отпущенный таймер не должен тикать
+  wf.safe_post(milliseconds(40), [&]() { io.stop(); });
+  io.run();
+  t << equal<expect, size_t>(ticks.load(), 0) << FAS_FL;
+
+  io.restart();
+  ticks = 0;
+  id = wf.create_timer(milliseconds(10), [&]() noexcept {
+    ++ticks;
+    return true;
+  });
+  auto guard = wf.detach_timer(id);
+  t << is_true<assert>(guard != nullptr) << FAS_FL;
+  t << equal<expect, size_t>(wf.timer_count(), 0) << FAS_FL;
+  t << is_true<expect>(*guard) << FAS_FL;
+
+  wf.safe_post(milliseconds(35), [&]() { io.stop(); });
+  io.run();
+  t << greater<expect, size_t>(ticks.load(), 0) << FAS_FL;
+
+  guard.reset();
+  const size_t after_detach = ticks.load();
+  io.restart();
+  wf.safe_post(milliseconds(40), [&]() { io.stop(); });
+  io.run();
+  t << equal<expect, size_t>(ticks.load(), after_detach) << FAS_FL;
+}
+
+UNIT(async_timer_once, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.threads = 0;
+  opt.control_ms = 0;
+  wflow::workflow wf(io, opt);
+
+  size_t ticks = 0;
+  wf.create_async_timer(milliseconds(10), [&](wflow::workflow::callback_timer_handler cb) {
+    ++ticks;
+    cb(false);
+  });
+  io.run();
+  t << equal<expect, size_t>(ticks, 1) << FAS_FL;
+}
+
+UNIT(reset_invalidates_timers, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.threads = 0;
+  opt.use_native = false;
+  opt.control_ms = 0;
+  wflow::workflow wf(io, opt);
+
+  std::atomic<size_t> ticks{0};
+  wf.create_timer(milliseconds(10), [&]() noexcept {
+    ++ticks;
+    return true;
+  });
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+  wf.reset();
+  t << equal<expect, size_t>(wf.timer_count(), 0) << FAS_FL;
+
+  wf.safe_post(milliseconds(40), [&]() { io.stop(); });
+  io.run();
+  t << equal<expect, size_t>(ticks.load(), 0) << FAS_FL;
+}
+
+UNIT(reset_clears_native_queue, "")
+{
+  using namespace ::fas::testing;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.threads = 0;
+  opt.use_native = true;
+  opt.quiet_mode = true;
+  wflow::workflow wf(io, opt);
+
+  size_t posts = 0;
+  for (int i = 0; i != 4; ++i)
+    wf.post([&]() noexcept { ++posts; });
+
+  t << equal<expect, size_t>(wf.unsafe_size(), 4) << FAS_FL;
+  wf.reset();
+  t << equal<expect, size_t>(wf.unsafe_size(), 0) << FAS_FL;
+  t << equal<expect, size_t>(wf.get_task_manager()->poll_one(), 0) << FAS_FL;
+  t << equal<expect, size_t>(posts, 0) << FAS_FL;
+}
+
+UNIT(reconfigure_maxsize, "")
+{
+  using namespace ::fas::testing;
+  boost::asio::io_context io;
+  wflow::workflow_options opt;
+  opt.id = "reconfigure_maxsize";
+  opt.threads = 0;
+  opt.maxsize = 1;
+  opt.use_native = false;
+  opt.quiet_mode = true;
+  opt.control_ms = 0;
+  wflow::workflow wf(io, opt);
+
+  size_t done = 0;
+  size_t dropped = 0;
+  wf.post([&]() noexcept { ++done; }, [&]() noexcept { ++dropped; });
+  wf.post([&]() noexcept { ++done; }, [&]() noexcept { ++dropped; });
+  t << equal<expect, size_t>(dropped, 1) << FAS_FL;
+
+  opt.maxsize = 10;
+  t << is_true<expect>(wf.reconfigure(opt)) << FAS_FL;
+  t << equal<expect, size_t>(wf.get_options().maxsize, 10) << FAS_FL;
+
+  dropped = 0;
+  for (int i = 0; i != 5; ++i)
+    wf.post([&]() noexcept { ++done; }, [&]() noexcept { ++dropped; });
+  t << equal<expect, size_t>(dropped, 0) << FAS_FL;
+
+  io.run();
+  t << equal<expect, size_t>(done, 6) << FAS_FL;
+}
+
+UNIT(reconfigure_native_threads, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  wflow::workflow_options opt;
+  opt.threads = 1;
+  opt.use_native = true;
+  opt.quiet_mode = true;
+  opt.status_ms = 50; // быстрее выход из run_for_ms при shrink/grow
+  wflow::workflow wf(opt);
+
+  std::mutex mutex;
+  std::condition_variable cv;
+  size_t count = 0;
+
+  auto wait_count = [&](size_t need)
+  {
+    std::unique_lock<std::mutex> lk(mutex);
+    const bool ok = cv.wait_for(lk, seconds(2), [&]{ return count >= need; });
+    t << is_true<assert>(ok) << "count=" << count << " need=" << need << FAS_FL;
+  };
+
+  for (int i = 0; i != 4; ++i)
+  {
+    wf.post([&]() {
+      std::lock_guard<std::mutex> lk(mutex);
+      ++count;
+      cv.notify_one();
+    });
+  }
+  wf.start();
+  wait_count(4);
+
+  opt.threads = 3;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+  t << equal<expect, size_t>(wf.get_options().threads, 3) << FAS_FL;
+
+  {
+    std::lock_guard<std::mutex> lk(mutex);
+    count = 0;
+  }
+  for (int i = 0; i != 4; ++i)
+  {
+    wf.post([&]() {
+      std::lock_guard<std::mutex> lk(mutex);
+      ++count;
+      cv.notify_one();
+    });
+  }
+  wait_count(4);
+
+  // soft shrink: без реального run_for_ms join завис бы в native run()
+  opt.threads = 1;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+  t << equal<expect, size_t>(wf.get_options().threads, 1) << FAS_FL;
+
+  {
+    std::lock_guard<std::mutex> lk(mutex);
+    count = 0;
+  }
+  for (int i = 0; i != 4; ++i)
+  {
+    wf.post([&]() {
+      std::lock_guard<std::mutex> lk(mutex);
+      ++count;
+      cv.notify_one();
+    });
+  }
+  wait_count(4);
+  wf.stop();
+}
+
+// status_ms=0: status_handler выключен, но shrink всё равно не должен висеть на join
+UNIT(reconfigure_asio_shrink_status_ms_zero, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  wflow::workflow_options opt;
+  opt.threads = 3;
+  opt.use_native = false;
+  opt.quiet_mode = true;
+  opt.status_ms = 0;
+  wflow::workflow wf(opt);
+
+  std::mutex mutex;
+  std::condition_variable cv;
+  size_t count = 0;
+
+  auto wait_count = [&](size_t need)
+  {
+    std::unique_lock<std::mutex> lk(mutex);
+    const bool ok = cv.wait_for(lk, seconds(3), [&]{ return count >= need; });
+    t << is_true<assert>(ok) << "count=" << count << " need=" << need << FAS_FL;
+  };
+
+  wf.start();
+  for (int i = 0; i != 4; ++i)
+  {
+    wf.post([&]() {
+      std::lock_guard<std::mutex> lk(mutex);
+      ++count;
+      cv.notify_one();
+    });
+  }
+  wait_count(4);
+
+  opt.threads = 1;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+
+  {
+    std::lock_guard<std::mutex> lk(mutex);
+    count = 0;
+  }
+  for (int i = 0; i != 4; ++i)
+  {
+    wf.post([&]() {
+      std::lock_guard<std::mutex> lk(mutex);
+      ++count;
+      cv.notify_one();
+    });
+  }
+  wait_count(4);
+  wf.stop();
+}
+
+// hard N→0→N на native: pool join не должен висеть; таймер переживает и снова тикает
+UNIT(reconfigure_native_hard_zero, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  wflow::workflow_options opt;
+  opt.threads = 2;
+  opt.use_native = true;
+  opt.quiet_mode = true;
+  opt.control_ms = 0;
+  opt.status_ms = 50;
+  wflow::workflow wf(opt);
+  wf.start();
+
+  std::atomic<size_t> ticks{0};
+  auto id = wf.create_timer(milliseconds(20), [&]() noexcept {
+    ++ticks;
+    return true;
+  });
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+
+  for (int i = 0; i != 40 && ticks.load() < 1; ++i)
+    std::this_thread::sleep_for(milliseconds(20));
+  t << greater_equal<expect, size_t>(ticks.load(), 1) << FAS_FL;
+
+  opt.threads = 0;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+  t << is_true<expect>(wf.release_timer(id)) << FAS_FL;
+
+  ticks = 0;
+  id = wf.create_timer(milliseconds(20), [&]() noexcept {
+    ++ticks;
+    return ticks.load() < 2;
+  });
+
+  opt.threads = 2;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+
+  for (int i = 0; i != 50 && ticks.load() < 2; ++i)
+    std::this_thread::sleep_for(milliseconds(20));
+
+  t << greater_equal<expect, size_t>(ticks.load(), 2) << FAS_FL;
+  wf.stop();
+}
+
+UNIT(reconfigure_hard_keeps_timers, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  wflow::workflow_options opt;
+  opt.threads = 2;
+  opt.use_native = false;
+  opt.quiet_mode = true;
+  opt.control_ms = 0;
+  wflow::workflow wf(opt);
+  wf.start();
+
+  std::atomic<size_t> ticks{0};
+  auto id = wf.create_timer(milliseconds(15), [&]() noexcept {
+    ++ticks;
+    return true;
+  });
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+
+  opt.threads = 0;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+
+  // тот же id ещё можно отпустить
+  t << is_true<expect>(wf.release_timer(id)) << FAS_FL;
+  t << equal<expect, size_t>(wf.timer_count(), 0) << FAS_FL;
+
+  // снова создаём и проверяем, что после hard таймеры реально тикают на внутреннем io
+  id = wf.create_timer(milliseconds(15), [&]() noexcept {
+    ++ticks;
+    return ticks.load() < 2;
+  });
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+
+  opt.threads = 2;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+  t << equal<expect, size_t>(wf.timer_count(), 1) << FAS_FL;
+
+  for (int i = 0; i != 50 && ticks.load() < 2; ++i)
+    std::this_thread::sleep_for(milliseconds(20));
+
+  t << greater_equal<expect, size_t>(ticks.load(), 2) << FAS_FL;
+  wf.stop();
+}
+
+UNIT(reconfigure_threads_to_zero_no_io, "")
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  // ctor без внешнего io: threads N→0 не должен падать;
+  // очередь остаётся на внутреннем io, крутим через get_io_context().
+  wflow::workflow_options opt;
+  opt.id = "reconfigure_threads_to_zero_no_io";
+  opt.threads = 2;
+  opt.use_native = false;
+  opt.quiet_mode = true;
+  opt.control_ms = 0;
+  wflow::workflow wf(opt);
+
+  std::mutex mutex;
+  std::condition_variable cv;
+  size_t count = 0;
+
+  auto wait_count = [&](size_t need)
+  {
+    std::unique_lock<std::mutex> lk(mutex);
+    const bool ok = cv.wait_for(lk, seconds(2), [&]{ return count >= need; });
+    t << is_true<assert>(ok) << "count=" << count << " need=" << need << FAS_FL;
+  };
+
+  auto post_n = [&](size_t n)
+  {
+    for (size_t i = 0; i != n; ++i)
+    {
+      wf.post([&]() {
+        std::lock_guard<std::mutex> lk(mutex);
+        ++count;
+        cv.notify_one();
+      });
+    }
+  };
+
+  post_n(5);
+  wf.start();
+  wait_count(5);
+
+  opt.threads = 0;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+
+  {
+    std::lock_guard<std::mutex> lk(mutex);
+    count = 0;
+  }
+  post_n(5);
+  wf.get_io_context().run();
+  t << equal<expect, size_t>(count, 5) << FAS_FL;
+
+  opt.threads = 2;
+  t << is_true<assert>(wf.reconfigure(opt)) << FAS_FL;
+  {
+    std::lock_guard<std::mutex> lk(mutex);
+    count = 0;
+  }
+  post_n(5);
+  wait_count(5);
+  t << equal<expect, size_t>(count, 5) << FAS_FL;
+  wf.stop();
+}
+
+template<typename T>
+void stop_start_resume_test(T& t, bool use_native)
+{
+  using namespace ::fas::testing;
+  using namespace std::chrono;
+
+  wflow::workflow_options wo;
+  wo.id = use_native ? "stop_start_native" : "stop_start_asio";
+  wo.threads = 2;
+  wo.use_native = use_native;
+  wo.quiet_mode = true;
+  wflow::workflow wf(wo);
+
+  std::mutex mutex;
+  std::condition_variable cv;
+  size_t count = 0;
+
+  auto wait_count = [&](size_t need)
+  {
+    std::unique_lock<std::mutex> lk(mutex);
+    const bool ok = cv.wait_for(lk, seconds(2), [&]{ return count >= need; });
+    t << is_true<assert>(ok) << "count=" << count << " need=" << need << FAS_FL;
+    t << equal<expect, size_t>(count, need) << FAS_FL;
+  };
+
+  auto post_batch = [&]()
+  {
+    for (int i = 0; i != 10; ++i)
+    {
+      wf.post([&]() {
+        std::lock_guard<std::mutex> lk(mutex);
+        ++count;
+        if ( count >= 10 )
+          cv.notify_one();
+      });
+    }
+  };
+
+  post_batch();
+  wf.start();
+  wait_count(10);
+
+  wf.create_timer(milliseconds(10), []() noexcept { return true; });
+  t << greater<expect, size_t>(wf.timer_count(), 0) << FAS_FL;
+
+  wf.stop();
+  t << equal<expect, size_t>(wf.timer_count(), 0) << FAS_FL;
+
+  {
+    std::lock_guard<std::mutex> lk(mutex);
+    count = 0;
+  }
+  // reset() на start очищает native-очередь — постим после возобновления
+  wf.start();
+  post_batch();
+  wait_count(10);
+  wf.stop();
+}
+
+UNIT(stop_start_resume_asio, "")
+{
+  stop_start_resume_test(t, false);
+}
+
+UNIT(stop_start_resume_native, "")
+{
+  stop_start_resume_test(t, true);
+}
+
 }
 
 
 BEGIN_SUITE(workflow, "")
-  ADD_UNIT(workflow1)
   ADD_UNIT(workflow2)
   ADD_UNIT(workflow3)
   ADD_UNIT(rate_limit)
+  ADD_UNIT(rate_limit_mt)
   ADD_UNIT(requester1)
   ADD_UNIT(overflow_reset)
+  ADD_UNIT(overflow_reset_null_drop)
   ADD_UNIT(shutdown)
   ADD_UNIT(wait_and_restart)
+  ADD_UNIT(get_id_and_options)
+  ADD_UNIT(safe_post_ignores_maxsize)
+  ADD_UNIT(delayed_post_duration)
+  ADD_UNIT(release_and_detach_timer)
+  ADD_UNIT(async_timer_once)
+  ADD_UNIT(reset_invalidates_timers)
+  ADD_UNIT(reset_clears_native_queue)
+  ADD_UNIT(reconfigure_maxsize)
+  ADD_UNIT(reconfigure_native_threads)
+  ADD_UNIT(reconfigure_asio_shrink_status_ms_zero)
+  ADD_UNIT(reconfigure_native_hard_zero)
+  ADD_UNIT(reconfigure_hard_keeps_timers)
+  ADD_UNIT(reconfigure_threads_to_zero_no_io)
+  ADD_UNIT(stop_start_resume_asio)
+  ADD_UNIT(stop_start_resume_native)
 END_SUITE(workflow)
 

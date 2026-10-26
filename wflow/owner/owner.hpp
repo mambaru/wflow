@@ -10,26 +10,35 @@
 #include <wflow/owner/callback_handler.hpp>
 #include <wflow/mutex.hpp>
 #include <memory>
-#include <atomic>
-#include <memory>
 #include <map>
 
 namespace wflow{
+
+/// Токен lifetime owner'а (поколение).
+/// reset() подменяет shared_ptr → старые wrap/callback видят протухший weak_ptr.
+struct alive_token {};
+
+/// Токен lifetime соединения (io_id).
+/// Пока shared_ptr жив в map — tracking-wrap вызывает primary.
+/// release_tracking уничтожает токен → weak_ptr протухает → alt
+/// (например клиент закрыл соединение — нет смысла обрабатывать запрос).
+struct tracking_token {};
 
 class owner
 {
 public:
   typedef size_t io_id_t;
 
-  typedef std::shared_ptr<int> alive_type;
-  typedef std::weak_ptr<int>   weak_type;
+  typedef std::shared_ptr<alive_token> alive_type;
+  typedef std::weak_ptr<void>  weak_type;
+  typedef std::shared_ptr<tracking_token> tracking_token_ptr;
 
   typedef std::function<void()> double_call_fun_t;
   typedef std::function<void()> no_call_fun_t;
   typedef rwlock<std::mutex> mutex_type;
 
   owner()
-    : _alive( std::make_shared<int>(1) )
+    : _alive( std::make_shared<alive_token>() )
     , _tracking_flag(false)
   {
   }
@@ -49,7 +58,7 @@ public:
   void reset()
   {
     std::lock_guard<mutex_type> lk(_mutex);
-    _alive = std::make_shared<int>(*_alive + 1);
+    _alive = std::make_shared<alive_token>();
   }
 
 
@@ -68,49 +77,46 @@ public:
       >(
           std::forward<Handler>(h),
           std::forward<AltHandler>(nh),
-          std::weak_ptr<int>(_alive)
+          weak_type(_alive)
        )
     ;
   }
 
+  /// Снять токен соединения. Вызывать при закрытии клиента/сокета, иначе map растёт.
   void release_tracking(io_id_t io_id)
   {
+    std::lock_guard<mutex_type> lk(_mutex);
     if ( _tracking_flag )
-    {
-      std::lock_guard<mutex_type> lk(_mutex);
       _tracking_map.erase(io_id);
-    }
   }
 
+  /// Включить/выключить per-io_id токены. Выключение очищает map.
   void enable_tracking(bool value)
   {
+    std::lock_guard<mutex_type> lk(_mutex);
     if ( _tracking_flag == value )
       return;
 
     _tracking_flag = value;
     if (!value)
-    {
-      std::lock_guard<mutex_type> lk(_mutex);
       _tracking_map.clear();
-    }
   }
 
 
-  std::weak_ptr<int> tracking(io_id_t io_id)
+  /// Токен для io_id (при выключенном tracking — общий alive owner'а).
+  weak_type tracking(io_id_t io_id)
   {
-    std::weak_ptr<int> wc;
     std::lock_guard<mutex_type> lk(_mutex);
+    if ( !_tracking_flag )
+      return _alive;
+
     auto itr = _tracking_map.find(io_id);
     if ( itr!=_tracking_map.end() )
-    {
-      ++*(itr->second);
-      wc=itr->second;
-    }
-    else
-    {
-      wc = _tracking_map.insert( std::make_pair(io_id, std::make_shared<int>(1)) ).first->second;
-    }
-    return wc;
+      return itr->second;
+
+    return _tracking_map.insert(
+      std::make_pair(io_id, std::make_shared<tracking_token>())
+    ).first->second;
   }
 
   template<typename Handler, typename AltHandler>
@@ -120,7 +126,7 @@ public:
   >
   tracking(io_id_t io_id, Handler&& h, AltHandler&& nh)
   {
-    std::weak_ptr<int> wc = this->tracking(io_id);
+    weak_type wc = this->tracking(io_id);
     return
       owner_handler<
         typename std::remove_reference<Handler>::type,
@@ -139,13 +145,14 @@ public:
   callback(Handler&& h) const
   {
     read_lock<mutex_type> lk(_mutex);
-    auto ready = std::make_shared< std::atomic_flag >();
+    auto control = std::make_shared<callback_control>(_no_call);
     return
       callback_handler<
         typename std::remove_reference<Handler>::type
       >(
           std::forward<Handler>(h),
-          ready, _double_call, _no_call
+          control, _double_call,
+          weak_type(_alive)
        )
     ;
   }
@@ -173,8 +180,8 @@ private:
   double_call_fun_t _double_call;
   no_call_fun_t _no_call;
   mutable mutex_type _mutex;
-  std::atomic_bool _tracking_flag;
-  std::map<io_id_t, std::shared_ptr<int> > _tracking_map;
+  bool _tracking_flag;
+  std::map<io_id_t, tracking_token_ptr> _tracking_map;
 };
 
 }

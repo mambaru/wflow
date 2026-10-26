@@ -12,7 +12,7 @@ namespace wflow {
 
 class bique;
 class asio_queue;
-class delayed_queue;
+class native_queue;
 
 class thread_pool_base
   : public std::enable_shared_from_this< thread_pool_base >
@@ -29,7 +29,6 @@ public:
   typedef std::function<void(std::thread::id, size_t count, statistics_duration)> statistics_handler;
   thread_pool_base();
 
-  void rate_limit(size_t rps);
   void set_startup( startup_handler handler );
   void set_status( status_handler handler, time_t status_ms );
   void set_finish( finish_handler handler );
@@ -37,11 +36,11 @@ public:
 
   bool reconfigure(std::shared_ptr<bique> s, size_t threads);
   bool reconfigure(std::shared_ptr<asio_queue> s, size_t threads);
-  bool reconfigure(std::shared_ptr<delayed_queue> s, size_t threads);
+  bool reconfigure(std::shared_ptr<native_queue> s, size_t threads);
 
   void start(std::shared_ptr<bique> s, size_t threads);
   void start(std::shared_ptr<asio_queue> s, size_t threads);
-  void start(std::shared_ptr<delayed_queue> s, size_t threads);
+  void start(std::shared_ptr<native_queue> s, size_t threads);
 
   void stop();
   void shutdown();
@@ -64,7 +63,6 @@ private:
 
 private:
   bool _started;
-  std::atomic<size_t> _rate_limit;
   mutable std::mutex _mutex;
   mutable std::vector< std::thread > _threads;
   std::vector< thread_flag > _flags;

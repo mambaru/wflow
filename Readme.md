@@ -8,9 +8,12 @@
 
 Библиотека на базе boost::asio для работы с потоками и очередями, с возможностью динамического реконфигурирования и удобными таймерами.
 
-* Документация [doxygen](https://mambaru.github.io/wflow/index.html).
-* Репозитарий на [github.com](https://github.com/mambaru/wflow).
-* Отчет [coverage](https://mambaru.github.io/wflow/cov-report/index.html)
+## Документация
+
+* **[Учебник](docs/tutorial.md)** — введение с примерами из `examples/`
+* **[Справочник API (Doxygen)](https://mambaru.github.io/wflow/index.html)**
+* Репозиторий: [github.com/mambaru/wflow](https://github.com/mambaru/wflow)
+* Coverage: [отчёт](https://mambaru.github.io/wflow/cov-report/index.html)
 
 # Сборка и установка
 

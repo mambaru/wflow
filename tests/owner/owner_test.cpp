@@ -317,6 +317,91 @@ UNIT(callback2, "")
   t << equal<expect>(ncount, 0) << FAS_FL;
   t << equal<expect>(count, 1) << FAS_FL;
 
+  // ERR.  reset
+  own.reset();
+  count = 0; dcount = 0; ncount = 0;
+  {
+    test_callback tc;
+    {
+      own.enable_tracking(true);
+      auto cb1 = own.tracking(333, own.callback([&count](){count++; }), [&ncount](){ ncount+=33;});
+      std::function<void()> cb2 = cb1;
+      tc.init( [cb2](int) noexcept {cb2();} );
+      own.release_tracking(333);
+    }
+    tc.call();
+  }
+
+  t << equal<expect>(dcount, 0) << FAS_FL;
+  t << equal<expect>(ncount, 33 + 1) << FAS_FL; // +1 in set_no_call_handler
+  t << equal<expect>(count, 0) << FAS_FL;
+
+}
+
+// callback() должен учитывать owner::reset() так же, как wrap().
+UNIT(callback_reset, "")
+{
+  using namespace fas::testing;
+
+  int count = 0;
+  wflow::owner own;
+
+  auto wrapped = own.wrap([&count]() noexcept { ++count; }, nullptr);
+  auto cb = own.callback([&count]() noexcept { ++count; });
+
+  own.reset();
+
+  wrapped();
+  t << equal<expect>(count, 0) << FAS_FL; // wrap уже учитывает reset
+
+  cb();
+  t << equal<expect>(count, 0) << FAS_FL; // callback не должен вызываться после reset
+}
+
+// enable/disable tracking: map только при включённом флаге, disable очищает map.
+UNIT(tracking_enable, "")
+{
+  using namespace fas::testing;
+
+  int count = 0;
+  int alt = 0;
+  wflow::owner own;
+
+  t << equal<expect>(own.tracking_size(), 0ul) << FAS_FL;
+
+  // tracking выключен — токен общий (_alive), в map ничего не пишем
+  auto off = own.tracking(1,
+    [&count]() noexcept { ++count; },
+    [&alt]() noexcept { ++alt; });
+  t << equal<expect>(own.tracking_size(), 0ul) << FAS_FL;
+  off();
+  t << equal<expect>(count, 1) << FAS_FL;
+  t << equal<expect>(alt, 0) << FAS_FL;
+
+  own.enable_tracking(true);
+  auto on = own.tracking(42,
+    [&count]() noexcept { ++count; },
+    [&alt]() noexcept { ++alt; });
+  t << equal<expect>(own.tracking_size(), 1ul) << FAS_FL;
+
+  own.enable_tracking(false);
+  t << equal<expect>(own.tracking_size(), 0ul) << FAS_FL;
+
+  // clear() уничтожил токен — handler должен уйти в alt
+  on();
+  t << equal<expect>(count, 1) << FAS_FL;
+  t << equal<expect>(alt, 1) << FAS_FL;
+
+  own.enable_tracking(true);
+  auto again = own.tracking(7,
+    [&count]() noexcept { ++count; },
+    [&alt]() noexcept { ++alt; });
+  t << equal<expect>(own.tracking_size(), 1ul) << FAS_FL;
+  own.release_tracking(7);
+  t << equal<expect>(own.tracking_size(), 0ul) << FAS_FL;
+  again();
+  t << equal<expect>(count, 1) << FAS_FL;
+  t << equal<expect>(alt, 2) << FAS_FL;
 }
 
 BEGIN_SUITE(owner, "")
@@ -324,6 +409,8 @@ BEGIN_SUITE(owner, "")
   ADD_UNIT(wrap_callback)  
   ADD_UNIT(callback1)  
   ADD_UNIT(callback2)
+  ADD_UNIT(callback_reset)
+  ADD_UNIT(tracking_enable)
 END_SUITE(owner)
 
 

@@ -1,3 +1,6 @@
 add_executable( owner_test owner_test.cpp  )
 target_link_libraries(owner_test PRIVATE wflow fas::testing)
 wci_test( TARGET owner_test COMMAND owner_test )
+if ( WFLOW_MEMCHECK_NO_AVX512 )
+  target_compile_options(owner_test PRIVATE -mno-avx512f)
+endif()

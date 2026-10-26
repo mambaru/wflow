@@ -1,6 +1,6 @@
 #include "thread_pool_base.hpp"
 
-#include <wflow/queue/delayed_queue.hpp>
+#include <wflow/queue/native_queue.hpp>
 #include <wflow/queue/bique.hpp>
 #include <wflow/queue/asio_queue.hpp>
 #include <wflow/logger.hpp>
@@ -20,14 +20,8 @@ inline void nothing(const T& ){}
 
 thread_pool_base::thread_pool_base()
   : _started(false)
-  , _rate_limit(0)
   , _status_ms(0)
 {
-}
-
-void thread_pool_base::rate_limit(size_t rps)
-{
-  _rate_limit = rps;
 }
 
 void thread_pool_base::set_startup( startup_handler handler )
@@ -61,7 +55,7 @@ bool thread_pool_base::reconfigure(std::shared_ptr<asio_queue> s, size_t threads
   return this->reconfigure_(s, threads);
 }
 
-bool thread_pool_base::reconfigure(std::shared_ptr<delayed_queue> s, size_t threads)
+bool thread_pool_base::reconfigure(std::shared_ptr<native_queue> s, size_t threads)
 {
   return this->reconfigure_(s, threads);
 }
@@ -76,7 +70,7 @@ void thread_pool_base::start(std::shared_ptr<asio_queue> s, size_t threads)
   this->start_(s, threads);
 }
 
-void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads)
+void thread_pool_base::start(std::shared_ptr<native_queue> s, size_t threads)
 {
   this->start_(s, threads);
 }
@@ -84,17 +78,17 @@ void thread_pool_base::start(std::shared_ptr<delayed_queue> s, size_t threads)
 // только после _service->stop();
 void thread_pool_base::stop()
 {
-  std::lock_guard< std::mutex > lk(_mutex);
-
-  _flags.clear();
-  _work=nullptr;
-
-  for (auto& t : _threads)
+  std::vector<std::thread> threads;
+  {
+    std::lock_guard< std::mutex > lk(_mutex);
+    _flags.clear();
+    _work=nullptr;
+    threads.swap(_threads);
+    _started = false;
+  }
+  // join вне mutex: иначе stop/wait из handler'а пула — self-deadlock
+  for (auto& t : threads)
     t.join();
-
-  _threads.clear();
-
-  _started = false;
 }
 
 void thread_pool_base::shutdown()
@@ -105,53 +99,84 @@ void thread_pool_base::shutdown()
 
 void thread_pool_base::wait()
 {
-  std::lock_guard< std::mutex > lk(_mutex);
-  if ( _work!=nullptr )
-    return;
-  for (auto& t : _threads)
+  std::vector<std::thread> threads;
+  {
+    std::lock_guard< std::mutex > lk(_mutex);
+    if ( _work!=nullptr )
+      return;
+    threads.swap(_threads);
+    _started = false;
+  }
+  for (auto& t : threads)
     t.join();
-  _threads.clear();
-  _started = false;
 }
 
 
 template<typename S>
 bool thread_pool_base::reconfigure_(std::shared_ptr<S> s, size_t threads)
 {
-  std::lock_guard< std::mutex > lk(_mutex);
+  bool need_reset = false;
+  size_t grow = 0;
+  size_t poke = 0;
+  std::vector<std::thread> join_threads;
 
-  if ( !_started )
-    return false;
-
-  if ( threads == _threads.size() )
-    return false;
-
-  if ( threads > _threads.size() )
   {
-    // При серии реконфигураций N->0->N потоков, сбрасываем io_context для нового запуска
-    if ( _threads.empty() )
-      s->reset();
-    size_t diff = threads - _threads.size();
-    this->run_more_(s, diff);
-  }
-  else
-  {
-    size_t oldsize = _threads.size();
-    for ( size_t i = threads; i < _threads.size(); ++i)
-      _threads[i].detach();
-    _threads.resize(threads);
-    _flags.resize(threads);
-    if ( threads == 0 )
-      _work=nullptr;
-    //_works.resize(threads);
-    oldsize*=2;
-    for (;oldsize!=0; --oldsize )
+    std::lock_guard< std::mutex > lk(_mutex);
+
+    if ( !_started )
+      return true;
+
+    if ( threads == _threads.size() )
+      return true;
+
+    if ( threads > _threads.size() )
     {
-      // Даем прочухаться потокам и завершить работу
-      s->safe_post([]() noexcept{});
-      std::this_thread::sleep_for( std::chrono::milliseconds(1) );
+      // При серии реконфигураций N->0->N потоков, сбрасываем io_context для нового запуска
+      if ( _threads.empty() )
+        need_reset = true;
+      grow = threads - _threads.size();
+    }
+    else if ( threads == 0 )
+    {
+      // N→0: дожидаемся потоков — иначе run() ещё крутит io, а вызывающий уже постит вручную
+      _flags.clear();
+      _work = nullptr;
+      join_threads.swap(_threads);
+    }
+    else
+    {
+      // N→M (M>0): гасим лишние флаги и join вне mutex — как N→0, без detach
+      const size_t oldsize = _threads.size();
+      _flags.resize(threads);
+      for ( size_t i = threads; i < oldsize; ++i )
+        join_threads.push_back(std::move(_threads[i]));
+      _threads.resize(threads);
+      poke = oldsize * 2;
     }
   }
+
+  // Сначала будим уходящие потоки (work_guard ещё жив), потом join
+  for (; poke != 0; --poke )
+  {
+    s->safe_post([]() noexcept{});
+    std::this_thread::sleep_for( std::chrono::milliseconds(1) );
+  }
+
+  for (auto& t : join_threads)
+    t.join();
+
+  // reset / grow вне mutex — иначе finish_handler или stop дедлочат
+  if ( need_reset )
+    s->reset();
+
+  if ( grow != 0 )
+  {
+    std::lock_guard< std::mutex > lk(_mutex);
+    if ( !_started )
+      return false;
+    this->run_more_(s, grow);
+  }
+
   return true;
 }
 
@@ -226,14 +251,17 @@ std::thread thread_pool_base::create_thread_( std::shared_ptr<S> s, std::weak_pt
           size_t handlers = 0;
           time_t status_ms = 0;
           if ( auto pthis = wthis.lock() )
-            status_ms =pthis->_status_ms;
+            status_ms = pthis->_status_ms;
 
+          // status_ms==0 отключает status_handler, но slice всё равно нужен:
+          // иначе run() не возвращается и soft shrink / N→0 зависают на join.
+          const time_t slice_ms = status_ms != 0 ? status_ms : 1000;
           if ( statistics != nullptr )
-            handlers = status_ms!=0 ? s->run_one_for_ms( status_ms ) : s->run_one( );
+            handlers = s->run_one_for_ms( slice_ms );
           else
-            handlers = status_ms!=0 ? s->run_for_ms( status_ms ) : s->run();
+            handlers = s->run_for_ms( slice_ms );
 
-          if ( status != nullptr )
+          if ( status != nullptr && status_ms != 0 )
           {
             if ( time(nullptr) - status_time > 0)
             {

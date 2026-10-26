@@ -14,7 +14,7 @@ namespace wflow{
 template<typename H, typename NA >
 struct owner_handler
 {
-  typedef std::weak_ptr<int> weak_type;
+  typedef std::weak_ptr<void> weak_type;
 
   owner_handler() = default;
 
@@ -45,7 +45,7 @@ private:
 template<typename H>
 struct owner_handler< H, std::nullptr_t >
 {
-  typedef std::weak_ptr<int> weak_type;
+  typedef std::weak_ptr<void> weak_type;
 
   owner_handler() = default;
 

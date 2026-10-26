@@ -1,11 +1,13 @@
 #pragma once
 
 #include <wflow/timer/timer_manager.hpp>
-#include <wflow/system/asio.hpp>
+//#include <wflow/system/asio.hpp>
 #include <wflow/workflow_options.hpp>
-
+#include <boost/asio/io_context.hpp>
 #include <thread>
 #include <atomic>
+#include <mutex>
+#include <chrono>
 
 namespace wflow{
 
@@ -80,24 +82,30 @@ public:
 
 private:
   bool post_(function_t f, function_t drop);
+  void reset_rate_limit_state_();
 
 private:
   std::string _id;
   std::atomic<size_t> _threads;
-  std::atomic<bool> _can_reconfigured;
+  std::atomic<bool> _use_native;
   std::shared_ptr<queue_type> _queue;
   std::shared_ptr<timer_manager_t> _timer_manager;
   std::shared_ptr<pool_type>  _pool;
 
   std::atomic<size_t> _rate_limit;
-  std::atomic<time_t> _start_interval;
-  std::atomic<size_t> _interval_count;
+  // Окно rate_limit: первые N post сразу, остальные — слот window_start + i/N сек.
+  // Под mutex, без повторного захода отложенных в post_ (сразу в очередь).
+  mutable std::mutex _rate_mutex;
+  std::chrono::steady_clock::time_point _rate_window_start{};
+  size_t _rate_count = 0;
 
   std::atomic<bool> _quiet_mode;
   std::atomic<bool> _overflow_reset;
+  // Создаётся один раз: generation в atomic, shared_ptr не переназначается (нет data race, C++14).
+  // weak_ptr в handler'е страхует lifetime task_manager.
   std::shared_ptr< std::atomic<size_t> > _reset_count;
-  std::atomic<time_t> _overflow_time;
-  std::atomic<bool> _wait_reset;
+  std::atomic<time_t> _overflow_time{0};
+  std::atomic<bool> _wait_reset{false};
 };
 
 }

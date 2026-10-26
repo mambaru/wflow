@@ -1,18 +1,20 @@
 #pragma once
 
-#include <wflow/system/asio.hpp>
 #include <functional>
 #include <chrono>
 #include <atomic>
+#include <memory>
+
+#include <wflow/system/asio.hpp>
 
 namespace wflow{
 
-class delayed_queue;
+class native_queue;
 class asio_queue;
 
 class bique
 {
-  typedef std::shared_ptr<delayed_queue> delayed_ptr;
+  typedef std::shared_ptr<native_queue> native_ptr;
   typedef std::shared_ptr<asio_queue> asio_ptr;
 public:
   typedef boost::asio::io_context io_context_type;
@@ -25,15 +27,19 @@ public:
 
   virtual ~bique();
 
-  bique( size_t maxsize, bool use_asio);
+  bique( size_t maxsize, bool use_native);
 
-  bique( io_context_type& io, size_t maxsize, bool use_asio, bool mt );
+  bique( io_context_type& io, size_t maxsize, bool use_native, bool mt );
 
   io_context_type& get_io_context();
 
-  void reconfigure( size_t maxsize, bool use_asio, bool mt );
+  void reconfigure( size_t maxsize, bool use_native, bool mt );
 
   void reset();
+
+  /// Native: вызвать handlers и очистить очереди. Внутренний asio: stop+reset
+  /// (handlers доживут до следующего run; после hard уже с протухшим wrap→alt).
+  void discard_queued();
 
   std::size_t run();
 
@@ -70,23 +76,29 @@ public:
   work_type work() const;
 private:
 
+  // Активная asio-очередь:
+  //   threads>0  → внутренний _asio (пул);
+  //   threads==0 → _asio_st на внешнем io, если ctor был с io, иначе тот же _asio.
+  // Никогда не возвращает nullptr.
+  asio_ptr asio_queue_() const;
+
   template<typename R, typename... Args>
   R invoke_(
-    R(delayed_queue::* method1)(Args...),
+    R(native_queue::* method1)(Args...),
     R(asio_queue::* method2)(Args...),
     Args&&... args);
 
   template<typename R, typename... Args>
   R invoke_(
-    R(delayed_queue::* method1)(Args...) const,
+    R(native_queue::* method1)(Args...) const,
     R(asio_queue::* method2)(Args...) const,
     Args&&... args) const;
 
 private:
-  std::atomic<bool> _dflag;
+  std::atomic<bool> _use_native;
   std::atomic<bool> _mt_flag;
   io_context_ptr _io;
-  delayed_ptr _delayed;
+  native_ptr _native;
   asio_ptr   _asio;
   asio_ptr   _asio_st;
 
